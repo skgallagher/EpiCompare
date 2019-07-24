@@ -1,0 +1,19 @@
+Package: timeternR
+Title: functional based data visualized with ternary plots in the simplex.
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Shannon",
+           family = "Gallagher",
+           role = c("aut", "cre"),
+           email = "sgallagh@stat.cmu.edu"),
+      person(given = "Benjamin",
+           family = "LeRoy",
+           role = c("aut"),
+           email = "bpleroy@stat.cmu.edu"))     
+Description: Nothing yet...
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat
+RoxygenNote: 6.1.1
