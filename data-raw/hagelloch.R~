@@ -1,0 +1,3 @@
+## code to prepare `hagelloch` dataset goes here
+
+usethis::use_data("hagelloch")
