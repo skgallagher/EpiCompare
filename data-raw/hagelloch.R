@@ -28,10 +28,4 @@ SMax <- ifelse(SMax > T-1, T-1, SMax)
 IMax <- floor(hagelloch.df$tR) + 1
 IMax <- ifelse(IMax > T-1, T-1, IMax)
 U <- matrix(c(A0, SMax, IMax), byrow = TRUE, nrow = 3)
-X <- UtoX_SIR(U, T = T) # may need to add catalyst:::
-
-
-
-
-## install_github("shannong19/catalyst")
-## devtools::load_all("~/catalyst")
+X <- UtoX_SIR(U, T = T) #
