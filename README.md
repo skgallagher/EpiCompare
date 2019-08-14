@@ -28,10 +28,10 @@ library(timeternR)
 
    Currently there are three data sets available in `timeternR`
 
-   - `hagelloch_raw` -- One row is an agent.  This is taken from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html)
+   - `hagelloch_raw` -- One row is an agent.  This is taken from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html) **Ben: this originally was actually called `hagelloch.df`, but I changed it to fit this name - we can change it back, also I currently only have information for some of the columns of this data frame - form provided link - could we add more.** 
 
    - `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
 
-   - `hagelloch_agents` -- One **column** is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
+   - `hagelloch_agents` -- One **column** is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R. **Ben: why isn't this a data frame with transposed?, also is there a reason we don't change initial state into a factor if we make this into a data.frame?**
 
  

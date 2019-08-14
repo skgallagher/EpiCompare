@@ -17,7 +17,7 @@ T <- 90
 
 ## Suff stats for agents
 
-## install_github("shannong19/catatlyst") # for Ben
+## install_github("shannong19/catalyst") # for Ben
 ## devtools::load_all("~/catalyst")
 A0 <- rep(0, N)
 inf_ind <- which.min(hagelloch.df$tI)
