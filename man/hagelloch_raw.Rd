@@ -6,20 +6,37 @@
 \title{Measles in Hagelloch, Germany, 1861}
 \format{A data frame with 188 rows and 12 columns
 \describe{
-  \item{case_ID}{Case ID number}
-  \item{infector}{Number of patient who is the putative source of infection}
-  \item{date_of_prodrome}{\code{Date} of onset of prodromal symptoms}
-  \item{date_of_rash}{\code{Date} of onset of rash}
-  \item{date_of_death}{\code{Date} of death (\code{NA} implies recovered)}
-  \item{age}{Age in years (fractions ignored)}
-  \item{gender}{Gender of the individual (factor: f, m)}
-  \item{family_ID}{Family ID number}
-  \item{class}{School class (factor: 0, preschool; 1, 1st class; 2, 2nd class )}
-  \item{complications}{Complications (factor: no, yes)}
-  \item{x_loc}{x coordinate of house (in metres). Scaling in metres
+  \item{PN}{Patient number (Case ID) per individual}
+  \item{NAME}{Patient's last name}
+  \item{FN}{Family number (individuals with matching \code{FN} are in the
+  same family)}
+  \item{AGE}{Age in years (fractions ignored)}
+  \item{SEX}{Gender of the individual (factor: female; male)}
+  \item{PRO}{\code{Date} of onset of prodromal symptoms}
+  \item{ERU}{\code{Date} of onset of rash (not 100 sure of this one)}
+  \item{CL}{School class (factor: preschool; 1st class; 2nd class )}
+  \item{DEAD}{.}
+  \item{IFTO}{.}
+  \item{SI}{.}
+  \item{C}{Complications (factor: "no complications", or what complication)}
+  \item{PR}{.}
+  \item{CA}{.}
+  \item{NI}{.}
+  \item{GE}{.}
+  \item{TD}{.}
+  \item{TM}{.}
+  \item{x.loc}{x coordinate of house (in metres). Scaling in metres
   is obtained by multiplying the original coordinates by 2.5 (see details
   in Neal and Roberts (2004))}
-  \item{y_loc}{y coordinate of house (in metres). See \code{x_loc} above.}
+  \item{y.loc}{y coordinate of house (in metres). See \code{x.loc} above}
+  \item{tPRO}{exact time of onset of prodromal symptoms (relative to start
+  of outbreak)}
+  \item{tERU}{exact time of onset of rash (relative to start
+  of outbreak) (not 100 sure of this one)}
+  \item{tDEAD}{time of death (relative to start of outbreak) (\code{NA}
+  implies recovered)}
+  \item{tR}{exact time when individual entered into recovery}
+  \item{tI}{exact time when individual was infected}
 }}
 \source{
 \url{https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html}

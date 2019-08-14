@@ -28,7 +28,7 @@ library(timeternR)
 
    Currently there are three data sets available in `timeternR`
 
-   - `hagelloch_raw` -- One row is an agent.  This is taken from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html) **Ben: this originally was actually called `hagelloch.df`, but I changed it to fit this name - we can change it back.**
+   - `hagelloch_raw` -- One row is an agent.  This is taken from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html) **Ben: this originally was actually called `hagelloch.df`, but I changed it to fit this name - we can change it back, also I currently only have information for some of the columns of this data frame - form provided link - could we add more.** 
 
    - `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
 
