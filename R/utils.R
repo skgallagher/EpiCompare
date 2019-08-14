@@ -15,7 +15,6 @@
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
 #'
-#' @import assertthat
 #'
 #' @export
 #'
@@ -79,8 +78,6 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #' }
 #' @export
 #'
-#' @import dplyr
-#' @import tidyr
 #'
 #' @examples
 #' sir_out <- UtoX_SIR(as.data.frame(t(timeternR::hagelloch_agents)))
