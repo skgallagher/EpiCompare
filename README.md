@@ -1,6 +1,7 @@
 # timeternR
 
 <!-- badges: start -->
+[![Travis build status](https://travis-ci.org/shannong19/timeternR.svg?branch=master)](https://travis-ci.org/shannong19/timeternR)
 <!-- badges: end -->
 
 The goal of timeternR is to develop functional based visualization and statistics
@@ -34,4 +35,15 @@ library(timeternR)
 
    - `hagelloch_agents` -- One **column** is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R. **Ben: why isn't this a data frame with transposed?, also is there a reason we don't change initial state into a factor if we make this into a data.frame?**
 
+## functions
  
+The following can nicely make visuals conditional on grouping, on the flip side
+it appears to be harder to develop your own stats for `ggtern` ([issue](https://github.com/nicholasehamilton/ggtern/issues/40)).
+
+```r
+U_g <- timeternR::hagelloch_raw %>% fortify_agents() %>% group_by(cut(AGE,3))
+data_g <- timeternR::UtoX_SIR_group(U_g)
+ggplot(data_g, aes(x = S, y = I, z = R, color = `cut(AGE, 3)`)) +
+  geom_path() +
+  coord_tern() + facet_grid(~`cut(AGE, 3)`)
+ ```

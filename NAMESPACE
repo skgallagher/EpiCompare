@@ -2,5 +2,6 @@
 
 export("%>%")
 export(UtoX_SIR)
+export(UtoX_SIR_group)
 export(fortify_agents)
 importFrom(magrittr,"%>%")
