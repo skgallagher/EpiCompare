@@ -22,7 +22,7 @@ UtoX_SIR_group(U_g, T = NULL)
 \describe{
   \item{grouping variable name(s)}{column/columns of grouping variable(s)}
   \item{t}{time since outbreak}
-  \item{S}{Number of individuals suspectable}
+  \item{S}{Number of individuals susceptible}
   \item{I}{Number of individuals infected}
   \item{R}{Number of individuals in recovery}
 }

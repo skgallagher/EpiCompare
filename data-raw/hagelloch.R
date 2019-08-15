@@ -4,7 +4,7 @@
 
 data("hagelloch", package = "surveillance")
 
-## Original source and description here: https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html
+## Original source and description here: https://rdrr.io/rforge/surveillance/man/hagelloch.html
 head(hagelloch.df)  # This is the original data
 hagelloch_orig <- rlang::duplicate(hagelloch.df)
 
@@ -13,7 +13,7 @@ usethis::use_data(hagelloch.df)
 
 ## Make SIR format
 N <- nrow(hagelloch.df) #+ 380 ## second term is remianing villagers
-T <- 90
+T <- 94
 
 ## Suff stats for agents
 
@@ -27,5 +27,10 @@ SMax <- floor(hagelloch.df$tI) + 1
 SMax <- ifelse(SMax > T-1, T-1, SMax)
 IMax <- floor(hagelloch.df$tR) + 1
 IMax <- ifelse(IMax > T-1, T-1, IMax)
-U <- matrix(c(A0, SMax, IMax), byrow = TRUE, nrow = 3)
-X <- UtoX_SIR(U, T = T) #
+hagelloch_agents <- data.frame(init_state = factor(A0), max_time_S = SMax, max_time_I = IMax)
+hagelloch_sir <- UtoX_SIR(U, T = T) #
+
+usethis::use_data(hagelloch_sir, overwrite = TRUE)
+
+usethis::use_data(hagelloch_agents, overwrite = TRUE)
+

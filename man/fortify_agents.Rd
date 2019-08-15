@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{fortify_agents}
 \alias{fortify_agents}
-\title{fortity agent data frame with columns when individual stops being suspectable
+\title{fortify agent data frame with columns when individual stops being suspectable
 and stops being infected (as well as initial state).}
 \usage{
 fortify_agents(raw_df, time_col = c("tI", "tR"),
@@ -27,7 +27,7 @@ additional columns:
 }
 }
 \description{
-fortity agent data frame with columns when individual stops being suspectable
+fortify agent data frame with columns when individual stops being suspectable
 and stops being infected (as well as initial state).
 }
 \examples{

@@ -17,16 +17,16 @@
 #'   \item{PRO}{\code{Date} of onset of prodromal symptoms}
 #'   \item{ERU}{\code{Date} of onset of rash (not 100 sure of this one)}
 #'   \item{CL}{School class (factor: preschool; 1st class; 2nd class )}
-#'   \item{DEAD}{.}
-#'   \item{IFTO}{.}
-#'   \item{SI}{.}
+#'   \item{DEAD}{\code{Date} of death (with missings)}
+#'   \item{IFTO}{number of patient who is the putative source of infection (0 = unknown)}
+#'   \item{SI}{serial interval = number of days between dates of prodromes of infection source and infected person}
 #'   \item{C}{Complications (factor: "no complications", or what complication)}
-#'   \item{PR}{.}
-#'   \item{CA}{.}
-#'   \item{NI}{.}
-#'   \item{GE}{.}
-#'   \item{TD}{.}
-#'   \item{TM}{.}
+#'   \item{PR}{duration of prodromes in days}
+#'   \item{CA}{number of cases in family}
+#'   \item{NI}{number of initial cases}
+#'   \item{GE}{generation number of the case}
+#'   \item{TD}{day of max. fever (days after rush)}
+#'   \item{TM}{max.fever (degree Celsius)}
 #'   \item{x.loc}{x coordinate of house (in metres). Scaling in metres
 #'   is obtained by multiplying the original coordinates by 2.5 (see details
 #'   in Neal and Roberts (2004))}
@@ -34,14 +34,14 @@
 #'   \item{tPRO}{exact time of onset of prodromal symptoms (relative to start
 #'   of outbreak)}
 #'   \item{tERU}{exact time of onset of rash (relative to start
-#'   of outbreak) (not 100 sure of this one)}
+#'   of outbreak) }
 #'   \item{tDEAD}{time of death (relative to start of outbreak) (\code{NA}
 #'   implies recovered)}
-#'   \item{tR}{exact time when individual entered into recovery}
-#'   \item{tI}{exact time when individual was infected}
+#'   \item{tR}{imputed time when individual entered into recovery}
+#'   \item{tI}{imputed time when individual was infected}
 #' }
 #'
-#' @source \url{https://rdrr.io/cran/outbreaks/man/measles_hagelloch_1861.html}
+#' @source \url{https://rdrr.io/rforge/surveillance/man/hagelloch.html}
 #'
 #' @examples
 #' ## show first few cases
@@ -84,10 +84,10 @@
 #' infection (or time T), and max time before recovery (or time T). Note time T
 #' is the final recorded time in the SIR model (in this case T = 94).
 #'
-#' @format A matrix with 3 row and 188 columns. Below are the description of
-#' each row.
+#' @format A data frame with 188 rows and 3 columns. Below are the description of
+#' each column.
 #' \describe{
-#'   \item{init_state}{Initial state for individual (at time t = 0). For the
+#'   \item{init_state}{Initial state (\code{factor}) for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
 #'   \item{max_time_S}{maximum time individual was suspectable (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}

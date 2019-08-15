@@ -1,4 +1,4 @@
-#' fortity agent data frame with columns when individual stops being suspectable
+#' fortify agent data frame with columns when individual stops being suspectable
 #' and stops being infected (as well as initial state).
 #'
 #' @param raw_df data frame, agent based data frame
@@ -44,7 +44,7 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
   SMax <- ifelse(SMax > T-1, T-1, SMax)
   IMax <- floor(raw_df[,time_col[2]]) + 1
   IMax <- ifelse(IMax > T-1, T-1, IMax)
-  U <- data.frame(init_state = A0,
+  U <- data.frame(init_state = factor(A0),
                   max_time_S = SMax,
                   max_time_I = IMax)
 
@@ -86,7 +86,7 @@ UtoX_SIR <- function(U, T = NULL){
 
   N <- nrow(U)
   if (is.null(T)) T <- max(U$max_time_I) + 1
-  start_infected <- sum(U$init_state)
+  start_infected <- sum(U$init_state == 1)
 
   new <- U %>%
     dplyr::mutate(start_time_I = max_time_S + 1,
@@ -148,7 +148,7 @@ UtoX_SIR <- function(U, T = NULL){
 #' \describe{
 #'   \item{grouping variable name(s)}{column/columns of grouping variable(s)}
 #'   \item{t}{time since outbreak}
-#'   \item{S}{Number of individuals suspectable}
+#'   \item{S}{Number of individuals susceptible}
 #'   \item{I}{Number of individuals infected}
 #'   \item{R}{Number of individuals in recovery}
 #' }
@@ -167,10 +167,10 @@ UtoX_SIR_group <- function(U_g, T = NULL){
   N <- nrow(U)
   if (is.null(T)) T <- max(U$max_time_I) + 1
 
-  sir_out <- U_g %>% nest() %>%
-    mutate(update = purrr::map(data,UtoX_SIR, T = T)) %>%
+  sir_out <- U_g %>% tidyr::nest() %>%
+    mutate(update = purrr::map(data, UtoX_SIR, T = T)) %>%
     select(-data) %>%
-    unnest(.drop = FALSE)
+    tidyr::unnest(.drop = FALSE)
 
   return(sir_out)
 }
