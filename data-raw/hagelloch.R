@@ -8,7 +8,7 @@ data("hagelloch", package = "surveillance")
 head(hagelloch.df)  # This is the original data
 hagelloch_orig <- rlang::duplicate(hagelloch.df)
 
-usethis::use_data(hagelloch.df)
+usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
 
 ## Make SIR format
