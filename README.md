@@ -32,7 +32,6 @@ library(timeternR)
    - `hagelloch_raw` -- One row is an agent.  This is imported from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/rforge/surveillance/man/hagelloch.html) where it is originally labeled `hagelloch.df`.  We have renamed it here to help distinguish it from the other data sets we derive from it.
    
    
-   
    - `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
 
    - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
@@ -43,9 +42,14 @@ The following can nicely make visuals conditional on grouping, on the flip side
 it appears to be harder to develop your own stats for `ggtern` ([issue](https://github.com/nicholasehamilton/ggtern/issues/40)).
 
 ```{r}
-U_g <- timeternR::hagelloch_raw %>% fortify_agents() %>% group_by(cut(AGE,3))
+library(ggplot2)
+library(ggtern)
+U_g <- timeternR::hagelloch_raw %>% 
+  timeternR::fortify_agents() %>% 
+  dplyr::filter(SEX %in% c("male","female")) %>%
+  dplyr::group_by(SEX)
 data_g <- timeternR::UtoX_SIR_group(U_g)
-ggplot(data_g, aes(x = S, y = I, z = R, color = `cut(AGE, 3)`)) +
+ggplot(data_g, aes(x = S, y = I, z = R, color = `SEX`)) +
   geom_path() +
-  coord_tern() + facet_grid(~`cut(AGE, 3)`)
+  coord_tern() 
 ```
