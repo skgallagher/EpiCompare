@@ -117,6 +117,9 @@ UtoX_SIR <- function(U, T = NULL){
   # correction for initial individuals infected
   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
 
+  # removing rownames
+  rownames(sir_out) <- NULL
+
   return(sir_out)
 }
 
