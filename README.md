@@ -16,6 +16,12 @@ You can install the developmental version of timeternR from github using:
 devtools::install_github("shannong19/timeternR")
 ```
 
+Currently we also need you to download a slightly modified version of `ggtern`, which can be done in the following way
+
+```r
+devtools::install_github("benjaminleroy/ggtern")
+```
+
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
