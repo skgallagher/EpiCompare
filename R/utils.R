@@ -91,14 +91,14 @@ UtoX_SIR <- function(U, T = NULL){
   start_infected <- sum(U$init_state == 1)
 
   new <- U %>%
-    dplyr::mutate(start_time_I = max_time_S + 1,
-                  start_time_R = max_time_I + 1) %>%
-    dplyr::select(start_time_I, start_time_R) %>%
+    dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                  start_time_R = .data$max_time_I + 1) %>%
+    dplyr::select(.data$start_time_I, .data$start_time_R) %>%
     dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
-    tidyr::gather(key = "key", value = "t", I, R) %>%
-    dplyr::group_by(key, t) %>%
+    tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
+    dplyr::group_by(.data$key, .data$t) %>%
     dplyr::summarize(count = dplyr::n()) %>%
-    dplyr::mutate(t = factor(t, levels = 0:T)) %>%
+    dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
     tidyr::spread(key = "t", value = "count",
                   drop = FALSE, fill = 0)
 
@@ -108,11 +108,11 @@ UtoX_SIR <- function(U, T = NULL){
   t_new <- t_new %>% dplyr::rename(I = "X1", R = "X2")
 
   sir_out <- t_new %>% dplyr::mutate_at(c("I", "R"), cumsum) %>%
-    dplyr::mutate(I = I - R,
-           S = N - I - R
+    dplyr::mutate(I = .data$I - .data$R,
+           S = N - .data$I - .data$R
            ) %>%
-    dplyr::select(t, S, I, R) %>%
-    dplyr::mutate(t = as.numeric(t))
+    dplyr::select(.data$t, .data$S, .data$I, .data$R) %>%
+    dplyr::mutate(t = as.numeric(.data$t))
 
   # correction for initial individuals infected
   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
@@ -140,7 +140,11 @@ UtoX_SIR <- function(U, T = NULL){
 #'   \item{R}{Number of individuals in recovery}
 #' }
 #' @export
+#'
+#' @importFrom rlang .data
+#'
 #' @examples
+#' library(dplyr)
 #' T <- 100
 #' U_g <- hagelloch_raw %>% fortify_agents() %>%
 #'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
@@ -152,12 +156,13 @@ UtoX_SIR <- function(U, T = NULL){
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 UtoX_SIR_group <- function(U_g, T = NULL){
+  U <- NULL
 
   if (is.null(T)) T <- max(U$max_time_I) + 1
 
   sir_out <- U_g %>% tidyr::nest() %>%
-    mutate(update = purrr::map(data, UtoX_SIR, T = T)) %>%
-    select(-data) %>%
+    dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+    dplyr::select(-.data$data) %>%
     tidyr::unnest(.drop = FALSE)
 
   return(sir_out)
