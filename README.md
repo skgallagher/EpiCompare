@@ -19,8 +19,7 @@ devtools::install_github("shannong19/timeternR")
 Currently we also need you to download a slightly modified version of `ggtern`, which can be done in the following way (see [Notes on `ggtern` functions](#notes-on-ggtern-functions))
 
 ```r
-devtools::install_github("benjaminleroy/ggtern")
-```
+devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")```
 
 ## Example
 
@@ -45,7 +44,7 @@ library(timeternR)
 ## Notes on `ggtern` functions
  
 The following can nicely make visuals conditional on grouping, on the flip side
-it appears to be harder to develop your own stats for `ggtern` ([issue](https://github.com/nicholasehamilton/ggtern/issues/40)).
+it appears to be harder to develop your own stats for `ggtern` ([issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/8/developing-new-stats-and-geoms)).
 
 
 ## Example

@@ -4,7 +4,7 @@ language: R
 cache: packages
 
 install:
-- R -e 'install.packages("devtools")' -e 'devtools::install_github("benjaminleroy/ggtern")' -e 'devtools::install_deps(dep = T)'
+- R -e 'install.packages("devtools")' -e 'devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")' -e 'devtools::install_deps(dep = T)'
 
 script:
 - R CMD build .
