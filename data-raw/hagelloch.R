@@ -11,7 +11,7 @@ usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
 
 ## Make SIR format
-N <- nrow(hagelloch_raw) #+ 380 ## second term is remianing villagers
+N <- nrow(hagelloch_raw) # second term is remaining villagers
 T <- 94
 
 ## Suff stats for agents
