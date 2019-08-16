@@ -16,7 +16,7 @@ You can install the developmental version of timeternR from github using:
 devtools::install_github("shannong19/timeternR")
 ```
 
-Currently we also need you to download a slightly modified version of `ggtern`, which can be done in the following way
+Currently we also need you to download a slightly modified version of `ggtern`, which can be done in the following way (see ()[#notes-on-ggtern-functions])
 
 ```r
 devtools::install_github("benjaminleroy/ggtern")
@@ -42,20 +42,25 @@ library(timeternR)
 
    - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
 
-## functions
+## Notes on `ggtern` functions
  
 The following can nicely make visuals conditional on grouping, on the flip side
 it appears to be harder to develop your own stats for `ggtern` ([issue](https://github.com/nicholasehamilton/ggtern/issues/40)).
 
+
+## Example
+
 ```{r}
-library(ggplot2)
+library(tidyverse)
 library(ggtern)
-U_g <- timeternR::hagelloch_raw %>% 
-  timeternR::fortify_agents() %>% 
-  dplyr::filter(SEX %in% c("male","female")) %>%
-  dplyr::group_by(SEX)
-data_g <- timeternR::UtoX_SIR_group(U_g)
-ggplot(data_g, aes(x = S, y = I, z = R, color = `SEX`)) +
-  geom_path() +
-  coord_tern() 
+library(timeternR)
+hagelloch_raw %>%
+   dplyr::filter(SEX %in% c("male", "female")) %>%
+   ggplot(aes(y = tI, z = tR, color = SEX)) +
+     stat_sir() + 
+     coord_tern() +
+     labs(x = "S", y = "I", z = "R",
+          color = "Gender")
 ```
+
+![](images/stat_sir_example.png)

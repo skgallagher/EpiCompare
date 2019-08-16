@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat.R
 \name{stat_sir}
 \alias{stat_sir}
-\title{Title a}
+\title{SIR path visuals}
 \usage{
 stat_sir(mapping = NULL, data = NULL, geom = "path",
   position = "identity", na.rm = FALSE, show.legend = NA,
@@ -51,8 +51,19 @@ These are often aesthetics, used to set an aesthetic to a fixed value, like
 paired geom/stat.}
 }
 \description{
-Title a
+SIR path visuals
 }
+\section{Aesthetics}{
+
+\code{stat_SIR()} understands the following aesthetics (required aesthetics are in bold):
+\itemize{
+  \item \strong{\code{y}}
+  \item \strong{\code{z}}
+  \item \code{group}
+}
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+}
+
 \examples{
 library(ggplot2)
 library(dplyr)

@@ -21,7 +21,7 @@ StatSIR <- ggplot2::ggproto("StatSIR", ggplot2::Stat,
 
 
 
-#' Title a
+#' SIR path visuals
 #'
 #' @param mapping Set of aesthetic mappings created by
 #' \code{\link[ggplot2:aes]{aes()}} or \code{\link[ggplot2:aes_]{aes_()}}.
