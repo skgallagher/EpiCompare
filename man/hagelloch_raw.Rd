@@ -10,6 +10,8 @@
   \item{NAME}{Patient's last name}
   \item{FN}{Family number (individuals with matching \code{FN} are in the
   same family)}
+  \item{HN}{Household number ((individuals with matching \code{HN} are in the
+  same household)}
   \item{AGE}{Age in years (fractions ignored)}
   \item{SEX}{Gender of the individual (factor: female; male)}
   \item{PRO}{\code{Date} of onset of prodromal symptoms}
@@ -48,8 +50,8 @@ hagelloch_raw
 These data comprise of 188 cases of measles among children in the German
 city of Hagelloch, 1861. The data were
 originally collected by Dr. Albert Pfeilsticker (1863) and augmented and
-re-analysed by Dr. Heike Oesterle (1992). This data comes from the
-\code{\link[outbreaks]{outbreaks}}.
+re-analysed by Dr. Heike Oesterle (1992). This data comes from the package
+\code{\link[outbreaks:measles_hagelloch_1861]{outbreaks}}.
 }
 \examples{
 ## show first few cases

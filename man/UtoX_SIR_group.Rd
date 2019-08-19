@@ -15,7 +15,8 @@ UtoX_SIR_group(U_g, T = NULL)
   \item{max_time_I}{maximum time individual was infected (I)}
 }}
 
-\item{T}{integer, max length of outbreak (default NULL)}
+\item{T}{integer, max length of outbreak (default NULL), shared across
+all groups}
 }
 \value{
 \code{sir_out} data frame, with columns
@@ -31,13 +32,15 @@ UtoX_SIR_group(U_g, T = NULL)
 UtoX_SIR for grouped data frames
 }
 \examples{
+library(dplyr)
 T <- 100
-U_g <- hagelloch_raw \%>\% fortify_agents() \%>\% group_by(AGE2 = as.numeric(cut(AGE,3)))
+U_g <- hagelloch_raw \%>\% fortify_agents() \%>\%
+  filter(SEX \%in\% c("female", "male")) \%>\% group_by(SEX)
 sir_group <- UtoX_SIR_group(U_g, T)
 U <- U_g \%>\%
-  filter(AGE2 == 1) \%>\% ungroup()
+  filter(SEX == "female") \%>\% ungroup()
 sir_group1 <- UtoX_SIR(U, T)
-sir_group_1 <- sir_group \%>\% filter(AGE2 == 1)
+sir_group_1 <- sir_group \%>\% filter(SEX == "female")
 assertthat::are_equal(sir_group1,
                       sir_group_1 \%>\% select(t, S, I, R) \%>\% data.frame)
 }

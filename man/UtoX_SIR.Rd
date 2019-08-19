@@ -30,6 +30,6 @@ UtoX_SIR(U, T = NULL)
 Convert agent information to SIR format
 }
 \examples{
-sir_out <- UtoX_SIR(as.data.frame(t(timeternR::hagelloch_agents)))
+sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
 assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
 }

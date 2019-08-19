@@ -80,56 +80,45 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #'
 #'
 #' @examples
-#' sir_out <- UtoX_SIR(as.data.frame(t(timeternR::hagelloch_agents)))
+#' sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
 #' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
 UtoX_SIR <- function(U, T = NULL){
 
   N <- nrow(U)
-  if (is.null(T)) T <- max(U$max_time_I) + 1
+  if (is.null(T)) {
+    T <- max(U$max_time_I) + 1
+  }
   start_infected <- sum(U$init_state == 1)
 
   new <- U %>%
-    dplyr::mutate(start_time_I = max_time_S + 1,
-                  start_time_R = max_time_I + 1) %>%
-    dplyr::select(start_time_I, start_time_R) %>%
+    dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                  start_time_R = .data$max_time_I + 1) %>%
+    dplyr::select(.data$start_time_I, .data$start_time_R) %>%
     dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
-    tidyr::gather(key = "key", value = "t", I, R) %>%
-    dplyr::group_by(key, t, add = TRUE) %>%
+    tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
+    dplyr::group_by(.data$key, .data$t) %>%
     dplyr::summarize(count = dplyr::n()) %>%
-    dplyr::mutate(t = factor(t, levels = 0:T)) %>%
+    dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
     tidyr::spread(key = "t", value = "count",
                   drop = FALSE, fill = 0)
 
   t_new <- new[,colnames(new) %in% 0:T] %>% t %>% data.frame() %>%
     tibble::rownames_to_column(var = "t")
 
-  # if (inherits(U, "grouped_df")) { # not actually expected - code wouldn't work
-  #   t_new_inner <- t_new
-  #   names(t_new_inner)[names(t_new_inner) != "t"] <-
-  #     new[,!(colnames(new) %in% 0:T)] %>% sapply(as.character) %>%
-  #     data.frame(check.names = F) %>%
-  #     tidyr::unite("combined", everything(), sep = "_%my_split%_") %>%
-  #     dplyr::pull(combined)
-  #
-  #   t_new_inner <- t_new_inner %>% dplyr::mutate(t = factor(t, levels = 0:T))
-  #   t_new <- t_new_inner %>% tidyr::gather(key = "grouping", value = "value", -t) %>%
-  #     tidyr::separate(grouping, sep = "_%my_split%_",
-  #                     into = colnames(new)[!(colnames(new) %in% 0:T)]) %>%
-  #     tidyr::spread(key = "key", value = "value") %>%
-  #     dplyr::group_by(.dots = sapply(group_vars(U), function(x) paste0("`",x ,"`")))
-  # } else {
-    t_new <- t_new %>% dplyr::rename(I = "X1", R = "X2")
-  #}
+  t_new <- t_new %>% dplyr::rename(I = "X1", R = "X2")
 
   sir_out <- t_new %>% dplyr::mutate_at(c("I", "R"), cumsum) %>%
-    dplyr::mutate(I = I - R,
-           S = N - I - R
+    dplyr::mutate(I = .data$I - .data$R,
+           S = N - .data$I - .data$R
            ) %>%
-    dplyr::select(t, S, I, R) %>%
-    dplyr::mutate(t = as.numeric(t))
+    dplyr::select(.data$t, .data$S, .data$I, .data$R) %>%
+    dplyr::mutate(t = as.numeric(.data$t))
 
   # correction for initial individuals infected
   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+
+  # removing rownames
+  rownames(sir_out) <- NULL
 
   return(sir_out)
 }
@@ -142,7 +131,8 @@ UtoX_SIR <- function(U, T = NULL){
 #'   \item{max_time_S}{maximum time individual was suspectable (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
-#' @param T integer, max length of outbreak (default NULL)
+#' @param T integer, max length of outbreak (default NULL), shared across
+#' all groups
 #'
 #' @return \code{sir_out} data frame, with columns
 #' \describe{
@@ -153,23 +143,29 @@ UtoX_SIR <- function(U, T = NULL){
 #'   \item{R}{Number of individuals in recovery}
 #' }
 #' @export
+#'
+#' @importFrom rlang .data
+#'
 #' @examples
+#' library(dplyr)
 #' T <- 100
-#' U_g <- hagelloch_raw %>% fortify_agents() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
+#' U_g <- hagelloch_raw %>% fortify_agents() %>%
+#'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
 #' sir_group <- UtoX_SIR_group(U_g, T)
 #' U <- U_g %>%
-#'   filter(AGE2 == 1) %>% ungroup()
+#'   filter(SEX == "female") %>% ungroup()
 #' sir_group1 <- UtoX_SIR(U, T)
-#' sir_group_1 <- sir_group %>% filter(AGE2 == 1)
+#' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 UtoX_SIR_group <- function(U_g, T = NULL){
-  N <- nrow(U)
+  U <- NULL
+
   if (is.null(T)) T <- max(U$max_time_I) + 1
 
   sir_out <- U_g %>% tidyr::nest() %>%
-    mutate(update = purrr::map(data, UtoX_SIR, T = T)) %>%
-    select(-data) %>%
+    dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+    dplyr::select(-.data$data) %>%
     tidyr::unnest(.drop = FALSE)
 
   return(sir_out)
