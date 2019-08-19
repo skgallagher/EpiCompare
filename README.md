@@ -37,6 +37,8 @@ library(timeternR)
 
    - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
 
+  - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax)  
+
 ## functions
  
 The following can nicely make visuals conditional on grouping, on the flip side
@@ -49,3 +51,5 @@ ggplot(data_g, aes(x = S, y = I, z = R, color = `cut(AGE, 3)`)) +
   geom_path() +
   coord_tern() + facet_grid(~`cut(AGE, 3)`)
 ```
+
+

@@ -6,7 +6,7 @@ data("hagelloch", package = "surveillance")
 
 ## Original source and description here: https://rdrr.io/rforge/surveillance/man/hagelloch.html
 head(hagelloch.df)  # This is the original data
-hagelloch_orig <- rlang::duplicate(hagelloch.df)
+hagelloch_raw <- rlang::duplicate(hagelloch.df)
 
 usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
