@@ -41,7 +41,13 @@ library(timeternR)
 
    - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
 
+<<<<<<< HEAD
+  - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax)  
+
+## functions
+=======
 ## Notes on `ggtern` functions
+>>>>>>> 3e2f67654e7a0d3b0cb7fbe2e028f58337a44351
  
 The following can nicely make visuals conditional on grouping, on the flip side
 it appears to be harder to develop your own stats for `ggtern` ([issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/8/developing-new-stats-and-geoms)).
@@ -62,4 +68,8 @@ hagelloch_raw %>%
           color = "Gender")
 ```
 
+<<<<<<< HEAD
+
+=======
 ![](images/stat_sir_example.png)
+>>>>>>> 3e2f67654e7a0d3b0cb7fbe2e028f58337a44351
