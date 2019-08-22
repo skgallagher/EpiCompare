@@ -5,10 +5,9 @@
 data("hagelloch", package = "surveillance")
 
 ## Original source and description here: https://rdrr.io/rforge/surveillance/man/hagelloch.html
-<<<<<<< HEAD
+
 head(hagelloch.df)  # This is the original data
-=======
->>>>>>> 3e2f67654e7a0d3b0cb7fbe2e028f58337a44351
+
 hagelloch_raw <- rlang::duplicate(hagelloch.df)
 
 usethis::use_data(hagelloch_raw, overwrite = TRUE)
@@ -22,7 +21,7 @@ T <- 94
 A0 <- rep(0, N)
 inf_ind <- which.min(hagelloch_raw$tI)
 # ^ in general this should be:
-#     which.min(raw_df[raw_df[,time_col[1]] < 0, time_col[1]])
+#     intersect(which.min(raw_df[,time_col[1]]), which(raw_df[,time_col[1]] < 0))
 
 A0[inf_ind] <- 1
 ## round I and R time - going to use floor
