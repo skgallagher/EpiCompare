@@ -33,7 +33,9 @@ devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
 
    - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
 
-  - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax)  
+  - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax)  **Ben: please document - maybe add names for each dimension (see `data_raw/U_sim_tidy.R`).** (**NOT DOCUMENTED**)
+  
+  - `U_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `U_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains addtional information on the individual's inital state, and SMax, IMax. (**NOT DOCUMENTED**)
 
 
 =======
@@ -54,7 +56,7 @@ library(timeternR)
 hagelloch_raw %>%
    dplyr::filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
-     stat_sir() + 
+     stat_sir(data_type = "raw") + 
      coord_tern() +
      labs(x = "S", y = "I", z = "R",
           color = "Gender")
