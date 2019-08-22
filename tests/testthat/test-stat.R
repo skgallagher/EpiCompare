@@ -1,13 +1,13 @@
 context("tests for visualizations")
 
 
-test_that("check StatSIR underlying data is as expected (data_type = 'raw')", {
+test_that("check StatSirRaw underlying data is as expected (data_type = 'raw')", {
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
     dplyr::filter(SEX %in% c("male", "female")) %>%
     ggplot(., aes(y = tI, z = tR)) +
-    geom_path(stat = StatSIR) + ggtern::coord_tern() +
+    geom_path(stat = StatSirRaw) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")
 
   data_vis <- layer_data(vis)[,c("x", "y", "z")]
@@ -22,13 +22,13 @@ test_that("check StatSIR underlying data is as expected (data_type = 'raw')", {
 
 })
 
-test_that("check statSIR works correctly with groups (data_type = 'raw')", {
+test_that("check StatSirRaw works correctly with groups (data_type = 'raw')", {
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
     dplyr::filter(SEX %in% c("male", "female")) %>%
     ggplot(., aes(y = tI, z = tR)) +
-    geom_path(stat = StatSIR) + ggtern::coord_tern() +
+    geom_path(stat = StatSirRaw) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")
 
   data_vis <- layer_data(vis)
@@ -40,7 +40,7 @@ test_that("check statSIR works correctly with groups (data_type = 'raw')", {
   vis <- timeternR::hagelloch_raw %>%
     dplyr::filter(SEX %in% c("male", "female")) %>%
     ggplot(., aes(y = tI, z = tR, color = SEX)) +
-    geom_path(stat = StatSIR) + ggtern::coord_tern() +
+    geom_path(stat = StatSirRaw) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R",
          color = "Gender")
 

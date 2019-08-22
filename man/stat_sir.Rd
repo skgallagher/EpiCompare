@@ -6,7 +6,7 @@
 \usage{
 stat_sir(mapping = NULL, data = NULL, geom = "path",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, ...)
+  inherit.aes = TRUE, data_type = c("raw", "fortified"), ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by
@@ -42,8 +42,9 @@ warning. If \code{TRUE}, missing values are silently removed.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics, rather
 than combining with them. This is most useful for helper functions that
-define both data and aesthetics and shouldn't inherit behaviour from the
-default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+define both data and aesthetics and shouldn't inherit behaviour from the}
+
+\item{data_type}{default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}.
 These are often aesthetics, used to set an aesthetic to a fixed value, like
@@ -55,8 +56,18 @@ SIR path visuals
 }
 \section{Aesthetics}{
 
-\code{stat_SIR()} understands the following aesthetics (required aesthetics are in bold):
+\code{stat_SirRaw()} understands the following aesthetics (required aesthetics are in bold):
 \itemize{
+  \item \strong{\code{y}}
+  \item \strong{\code{z}}
+  \item \code{group}
+}
+Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
+
+
+\code{stat_SirFortified()} understands the following aesthetics (required aesthetics are in bold):
+\itemize{
+  \item \strong{\code{init_state}}
   \item \strong{\code{y}}
   \item \strong{\code{z}}
   \item \code{group}
@@ -72,7 +83,7 @@ library(dplyr)
 timeternR::hagelloch_raw \%>\%
   dplyr::filter(SEX \%in\% c("male", "female")) \%>\%
   ggplot(., aes(y = tI, z = tR, color = SEX)) +
-    geom_path(stat = StatSIR) + ggtern::coord_tern() +
+    geom_path(stat = StatSirRaw) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
