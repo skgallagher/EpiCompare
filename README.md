@@ -46,7 +46,9 @@ library(timeternR)
   - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax)  
 
 ## functions
+
 =======
+
 ## Notes on `ggtern` functions
 
  
@@ -72,4 +74,5 @@ hagelloch_raw %>%
 
 
 =======
+
 ![](images/stat_sir_example.png)
