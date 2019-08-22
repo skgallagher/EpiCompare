@@ -21,6 +21,9 @@ T <- 94
 ## Suff stats for agents
 A0 <- rep(0, N)
 inf_ind <- which.min(hagelloch_raw$tI)
+# ^ in general this should be:
+#     which.min(raw_df[raw_df[,time_col[1]] < 0, time_col[1]])
+
 A0[inf_ind] <- 1
 ## round I and R time - going to use floor
 SMax <- floor(hagelloch_raw$tI) + 1
