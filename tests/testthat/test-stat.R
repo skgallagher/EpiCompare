@@ -1,7 +1,7 @@
 context("tests for visualizations")
 
 
-test_that("check StatSIR underlying data is as expected", {
+test_that("check StatSIR underlying data is as expected (data_type = 'raw')", {
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
@@ -22,7 +22,7 @@ test_that("check StatSIR underlying data is as expected", {
 
 })
 
-test_that("check statSIR works correctly with groups", {
+test_that("check statSIR works correctly with groups (data_type = 'raw')", {
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
@@ -52,7 +52,7 @@ test_that("check statSIR works correctly with groups", {
 
 })
 
-test_that("check stat_sir underlying data is as expected", {
+test_that("check stat_sir underlying data is as expected (data_type = 'raw')", {
   library(ggplot2)
   library(ggtern)
   # a single group
@@ -74,7 +74,7 @@ test_that("check stat_sir underlying data is as expected", {
 
 })
 
-test_that("check stat_sir works correctly with groups", {
+test_that("check stat_sir works correctly with groups (data_type = 'raw')", {
   library(ggplot2)
   # a single grouyp
   vis <- timeternR::hagelloch_raw %>%

@@ -5,19 +5,39 @@
 #' @usage NULL
 #' @export
 StatSIR <- ggplot2::ggproto("StatSIR", ggplot2::Stat,
-                   compute_group = function(data, scales){
+                   compute_group = function(data, scales, data_type = "raw",
+                                            init_state = NULL){
+                     assertthat::assert_that(data_type
+                                             %in% c("raw", "fortified"),
+                                             msg = paste("data_type must be ",
+                                                         "'raw' or 'fortified'"))
+
+                     # saving panel and group info
                      info_inner <- data[, c("PANEL", "group")] %>%
                        sapply(unique)
-                     fortified_df <- fortify_agents(data, c("y", "z"))
-                     p <- ncol(fortified_df)
-                     out <- UtoX_SIR(fortified_df[, (p-2):p]) %>%
-                       dplyr::mutate(PANEL = info_inner[1],
-                                     group = info_inner[2])
+
+                     if (data_type == "raw"){
+                       fortified_df <- fortify_agents(data, c("y", "z"))
+                       p <- ncol(fortified_df)
+                       out <- UtoX_SIR(fortified_df[, (p-2):p])
+
+                     } else {
+                       fortified_df <- data
+                       idx <- sapply(c("init_state", "y", "z"),
+                                     function(x) {
+                                       which(names(fortified_df) == x)
+                                       })
+                       out <- UtoX_SIR(fortified_df, ind = idx)
+                     }
+                     out <- out %>% dplyr::mutate(PANEL = info_inner[1],
+                                                  group = info_inner[2])
                      names(out)[names(out) %in% c("S","I", "R")] <-
                        c("x","y", "z")
                      return(out)
                    },
-                   required_aes = c("y", "z"))
+                   required_aes = ifelse(data_type == raw,
+                                         c("y", "z"),
+                                         c("init_state", "y","z")))
 
 
 
@@ -117,5 +137,7 @@ stat_sir <- function(mapping = NULL, data = NULL, geom = "path",
 #   coord_tern() +
 #   labs(x = "S", y = "I", z = "R",
 #        color = "Gender")
+
+
 
 

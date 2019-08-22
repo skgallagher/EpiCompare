@@ -68,6 +68,8 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
 #' @param T integer, max length of outbreak (default NULL)
+#' @param ind integer vector which columns match up with the columns described
+#' above (default NULL)
 #'
 #' @return \code{sir_out} data frame, with columns
 #' \describe{
@@ -82,7 +84,10 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #' @examples
 #' sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
 #' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
-UtoX_SIR <- function(U, T = NULL){
+UtoX_SIR <- function(U, T = NULL, ind = NULL){
+  if (!is.null(ind)){
+    names(U)[ind] <- c("init_state", "max_time_S", "max_time_I")
+  }
 
   N <- nrow(U)
   if (is.null(T)) {
