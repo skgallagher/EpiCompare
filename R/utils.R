@@ -133,7 +133,7 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
-#'   \item{max_time_S}{maximum time individual was suspectable (S)}
+#'   \item{max_time_S}{maximum time individual was susceptible (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
 #' @param T integer, max length of outbreak (default NULL), shared across

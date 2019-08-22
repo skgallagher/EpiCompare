@@ -67,3 +67,25 @@ hagelloch_raw %>%
 
 
 ![](images/stat_sir_example.png)
+
+
+## Simulate SIR data
+
+
+```{r}
+n_sims <- 100
+n_time_steps <- 100
+beta <- .1
+gamma <- 03
+init_SIR <- c(950, 50, 0)
+output_format <- "data.frame"
+    
+out <- simulate_SIR_agents(n_sims = n_sims,
+                                 n_time_steps = n_time_steps,
+                                 beta = beta, gamma = gamma,
+                                 init_SIR = init_SIR,
+                                 output_format = output_format)
+                                 
+df_groups <- out %>% dplyr::group_by(sim) %>%  UtoX_SIR                              
+
+```

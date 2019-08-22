@@ -65,7 +65,7 @@ simulate_SIR_agents <- function(n_sims,
 
   }
   dimnames(sim_data) <- list(sim = 1:n_sims,
-                        U_stat = c("init_state", "max_time_s", "max_time_i"),
+                        U_stat = c("init_state", "max_time_S", "max_time_I"),
                         agent_id = paste0("id_", 1:n_agents))
 
 
@@ -146,11 +146,11 @@ fortify_sims_array <- function(sims_data){
   n_agents <- array_dim[3]
   stopifnot(array_dim[2] == 3)
   dimnames(sims_data) <- list(sim = 1:n_sims,
-                              U_stat = c("init_state", "max_time_s", "max_time_i"),
+                              U_stat = c("init_state", "max_time_S", "max_time_I"),
                               agent_id = paste0("id_", 1:n_agents))
   df <- as.data.frame.table(sims_data)
   df_spread <- df %>% tidyr::spread(data = .,
                                     key = U_stat, value = Freq) %>%
-    dplyr::select(init_state, max_time_s, max_time_i, sim, agent_id)
+    dplyr::select(init_state, max_time_S, max_time_I, sim, agent_id)
   return(df_spread)
 }

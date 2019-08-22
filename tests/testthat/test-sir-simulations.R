@@ -126,6 +126,12 @@ test_that("simulate_SIR_agents",{
   sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5,
                                    gamma = .1, init_SIR = c(9,1,0), output_format = "data.frame")
   expect_equal(class(sims_data), "data.frame")
+
+
+
+
+  # U_g <- out %>% dplyr::group_by(sim)
+  # sir_group <- UtoX_SIR_group(U_g, T = 10)
 })
 
 
