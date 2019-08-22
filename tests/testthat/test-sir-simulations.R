@@ -39,12 +39,117 @@ test_that("update_agents works", {
 test_that("state_change_inds works", {
 
   new_states <- c(1, 0, 0)
-  old_states <- c(0, 0, 0)
+  current_states <- c(0, 0, 0)
   type <- "inf"
   out <- state_change_inds(new_states = new_states,
                            current_states = current_states,
                            type = type)
   exp_out <- 1
   expect_equal(exp_out, out)
+  #######################
+  #######################
+
+  new_states <- c(0, 0, 0)
+  current_states <- c(0, 0, 0)
+  type <- "inf"
+  out <- state_change_inds(new_states = new_states,
+                           current_states = current_states,
+                           type = type)
+  exp_out <- 1
+  expect_equal(length(out), 0)
+  #######################
+  #######################
+
+  new_states <- c(2, 2, 2)
+  current_states <- c(1, 1, 1)
+  type <- "inf"
+  out <- state_change_inds(new_states = new_states,
+                           current_states = current_states,
+                           type = type)
+  exp_out <- 1
+  expect_equal(length(out), 0)
+  #######################
+  #######################
+
+  new_states <- c(1, 1, 2)
+  current_states <- c(1, 0, 1)
+  type <- "rec"
+  out <- state_change_inds(new_states = new_states,
+                           current_states = current_states,
+                           type = type)
+  exp_out <- 3
+  expect_equal(out, exp_out)
+})
+
+
+test_that("simulate_SIR_agents",{
+  n_sims <- 1
+  n_time_steps <- 5
+  beta <- 0
+  gamma <- 1
+  init_SIR <- c(2, 1, 0)
+  output_format <- "array"
+
+  out <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR,
+                             output_format = output_format)
+  expect_equal(dim(out), c(n_sims, 3, sum(init_SIR)))
+  mat <- matrix(c(0, 0, 1,
+                  4, 4, 4,
+                  4, 4, 0), byrow = TRUE, nrow = 3)
+  expect_equal(as.numeric(out[1,,]), as.numeric(mat))
+  ############
+  ############
+  n_sims <- 2
+  n_time_steps <- 5
+  beta <- 0
+  gamma <- 1
+  init_SIR <- c(2, 1, 0)
+  output_format <- "array"
+
+  out <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR,
+                             output_format = output_format)
+  expect_equal(dim(out), c(n_sims, 3, sum(init_SIR)))
+  mat <- matrix(c(0, 0, 1,
+                  4, 4, 4,
+                  4, 4, 0), byrow = TRUE, nrow = 3)
+  expect_equal(as.numeric(out[1,,]), as.numeric(mat))
+  ############
+  ############
+  ############
+
+  sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5,
+                                   gamma = .1, init_SIR = c(9,1,0), output_format = "data.frame")
+  expect_equal(class(sims_data), "data.frame")
+})
+
+
+test_that("fortify_sims_array", {
+
+  ############
+  n_sims <- 2
+  n_time_steps <- 5
+  beta <- 0
+  gamma <- 1
+  init_SIR <- c(2, 1, 0)
+  output_format <- "array"
+
+  sims_data <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR,
+                             output_format = output_format)
+
+  out <- fortify_sims_array(sims_data)
+  expect_equal(class(out), "data.frame")
+
+
+
+
 
 })

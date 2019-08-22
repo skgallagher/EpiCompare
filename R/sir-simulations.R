@@ -17,6 +17,9 @@
 #'
 #' The 3 pieces that make up the U statistic are (init_state (0/1/2), max time susceptible, max time infectious.)  If the agent never became infectious or was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.  Similarly, if the agent never recovers or is recovered from time 0 on then \eqn{i_max = n_time_steps -1}.
 #' @export
+#' @examples
+#' sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5, gamma = .1, init_SIR = c(9,1,0), output_format = "array")
+#' assertthat::are_equal(class(sims_data), "data.frame")
 simulate_SIR_agents <- function(n_sims,
                                 n_time_steps,
                                 beta, gamma,
@@ -34,7 +37,7 @@ simulate_SIR_agents <- function(n_sims,
   ## Simulate
 
 
-  for(sim in n_sims){
+  for(sim in 1:n_sims){
     SIR_count <- init_SIR
     current_states <- init_states
     for(tt in 0:(n_time_steps -2)){ # Don't update on last known state
@@ -49,16 +52,21 @@ simulate_SIR_agents <- function(n_sims,
                                         current_states,
                                         type = "rec")
       if(length(new_inf_inds) > 0){
-        sim_data[sim, 2,] <- tt
+        sim_data[sim, 2, new_inf_inds] <- tt
       }
       if(length(new_rec_inds) > 0){
-        sim_data[sim, 3, ] <- tt
+        sim_data[sim, 3, new_rec_inds] <- tt
       }
+
+      ## Set new states to be next current states
+      current_states <- new_states
+      SIR_count <- new_states_list$SIR_count
     }
-    ## Set new states to be next current states
-    current_states <- new_states
-    SIR_count <- new_states_list$SIR_count
+
   }
+  dimnames(sim_data) <- list(sim = 1:n_sims,
+                        U_stat = c("init_state", "max_time_s", "max_time_i"),
+                        agent_id = paste0("id_", 1:n_agents))
 
 
   if(output_format == "array"){
@@ -129,6 +137,20 @@ state_change_inds <- function(new_states,
 #' @param sims_data n_sims x 3 x n_agents where entry (i,j,k) is the ith simulation, the jth statistic and the kth agent.
 #' @return data.frame with  If output_format = "data.frame" then the output is a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents x n_sims) x 5.
 #' @export
+#' @examples
+#' sims_array <- array(c(1, 0, 1, 0, 1, 1), dim = c(1, 3, 2))
+#' fortify_sims_array(sims_array)
 fortify_sims_array <- function(sims_data){
-  return(0)
+  array_dim <- dim(sims_data)
+  n_sims <- array_dim[1]
+  n_agents <- array_dim[3]
+  stopifnot(array_dim[2] == 3)
+  dimnames(sims_data) <- list(sim = 1:n_sims,
+                              U_stat = c("init_state", "max_time_s", "max_time_i"),
+                              agent_id = paste0("id_", 1:n_agents))
+  df <- as.data.frame.table(sims_data)
+  df_spread <- df %>% tidyr::spread(data = .,
+                                    key = U_stat, value = Freq) %>%
+    dplyr::select(init_state, max_time_s, max_time_i, sim, agent_id)
+  return(df_spread)
 }
