@@ -99,3 +99,62 @@
 #' ## show first few cases
 #' head(hagelloch_agents)
 "hagelloch_agents"
+
+
+#' U_sims Example output from SIR simulations
+#'
+#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "array"}.  It is a 50 x 3 x 188 array where entry (i,j,k) loks at the ith simulation, the jth statistic, and the kth agent.
+#' Each column is asssociated with 1 agent and
+#' is a "sufficient" statistic for each agent's infection.  Each agent's
+#' infection is uniquely identified by an initial state, max time before
+#' infection (or time T-1), and max time before recovery (or time T-1). Note time T-1
+#' is the final recorded time in the SIR model (in this case T = 50).
+#'
+#' @format An array with dimension 50 x 3 x 188 data frame with 188 rows and 3 columns.  Below are the descriptions of each dimension
+#' \describe{
+#'   \item{sim}{Simulation number is the first dimension.  They are named between 1 and 50}
+#'   \item{U_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
+#'   \item{agent_id}{the ID of the agent}
+#' }
+#'
+#' @examples
+#' ## show first simulation of first 10 agents
+#' U_sims[1, , 1:10]
+"U_sims"
+
+
+
+
+#' U_sim_tidy Example output from SIR simulations in a data.frame format
+#'
+#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "data.frame"}.  It is a 9400 by 5 data.frame where each row corresponds to the U statistic of a given agent and simulation.
+#' Each row is asssociated with 1 agent and contains
+#' is a "sufficient" statistic for each agent's infection.  Each agent's
+#' infection is uniquely identified by an initial state, max time before
+#' infection (or time T-1), and max time before recovery (or time T-1). Note time T-1
+#' is the final recorded time in the SIR model (in this case T = 50).
+#'
+#' @format An 9400 x 5 data frame where each row is an agent for a given simulation and the columns are
+#' \describe{
+#'   \item{sim}{Simulation number between 1 and 50}
+#'   \item{individual}{This is the ID of the individual}
+#'   \item{init_state}{The initial state of the agent at time 0.  It is 0/1/2 for susceptible, infectious, recovered, respectively.}
+#'   \item{SMax}{maximum time individual was suspectable (S)}
+#'   \item{IMax}{maximum time individual was suspectable (I)}
+#' }
+#'
+#' @examples
+#' ## show first simulation of first 10 agents
+#' U_sims[1, , 1:10]
+"U_sims_tidy"
+
+
+
+
+
+
+
+
+
+
+
