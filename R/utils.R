@@ -36,7 +36,8 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 
   # initial state (was the individual the original one infected?)
   A0 <- rep(0, N)
-  inf_ind <- which.min(raw_df[,time_col[1]])
+  inf_ind <- intersect(which.min(raw_df[,time_col[1]]),
+                       which(raw_df[,time_col[1]] < 0))
   A0[inf_ind] <- 1
 
   ## round I and R time - going to use floor
@@ -120,8 +121,9 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
     dplyr::mutate(t = as.numeric(.data$t))
 
   # correction for initial individuals infected
-  sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
-
+  if (start_infected > 0){
+    sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+  }
   # removing rownames
   rownames(sir_out) <- NULL
 

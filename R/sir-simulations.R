@@ -1,7 +1,4 @@
-## SKG
 ## Functions to generate SIR data to visualize
-
-
 
 #' Simulate SIR data according to a chain Binomial
 #'
@@ -147,7 +144,7 @@ fortify_sims_array <- function(sims_data){
   stopifnot(array_dim[2] == 3)
   dimnames(sims_data) <- list(sim = 1:n_sims,
                               U_stat = c("init_state", "max_time_S", "max_time_I"),
-                              agent_id = paste0("id_", 1:n_agents))
+                              agent_id = 1:n_agents)
   df <- as.data.frame.table(sims_data)
   df_spread <- df %>% tidyr::spread(data = .,
                                     key = U_stat, value = Freq) %>%
