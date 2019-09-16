@@ -1,3 +1,26 @@
+test_that("simulate_SIR_agents_groups",{
+
+  par_mat <- matrix(c(.5, .25,
+                       .8, .2), byrow = TRUE, ncol = 2)
+  init_mat <- matrix(c(90, 10, 0,
+                       45, 5, 0), byrow = TRUE, ncol = 3)
+
+  sims_data <- simulate_SIR_agents_groups(n_sims = 5,
+                n_time_steps = 10,
+                par_mat = par_mat,
+                init_mat = init_mat,
+                output_format = "data.frame")
+  expect_equal(ncol(sims_data), 6)
+  expect_equal(nrow(sims_data), 5 * (100 + 50))
+
+
+})
+
+
+
+
+
+
 test_that("update_agents works", {
 
   current_states <- c(0)

@@ -166,9 +166,7 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 UtoX_SIR_group <- function(U_g, T = NULL){
-  U <- NULL
-
-  if (is.null(T)) T <- max(U$max_time_I) + 1
+  if (is.null(T)) T <- max(U_g$max_time_I) + 1
 
   sir_out <- U_g %>% tidyr::nest() %>%
     dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%

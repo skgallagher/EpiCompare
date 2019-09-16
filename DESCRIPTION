@@ -5,7 +5,7 @@ Authors@R:
     c(person(given = "Shannon",
            family = "Gallagher",
            role = c("aut", "cre"),
-           email = "sgallagh@stat.cmu.edu"),
+           email = "skgallagher19@gmail.com"),
       person(given = "Benjamin",
            family = "LeRoy",
            role = c("aut"),
@@ -21,11 +21,11 @@ Imports:
     dplyr,
     ggplot2,
     ggtern,
-    magrittr,
     purrr,
     rlang,
     tidyr,
-    tibble
+    tibble,
+    magrittr
 Suggests: 
     testthat (>= 2.1.0)
 RoxygenNote: 6.1.1
