@@ -147,8 +147,10 @@ simulate_SIR_agents <- function(n_sims,
 #' @param beta infection parameter between 0 and 1
 #' @param gamma infection parameter between 0 and 1
 #' @return list with
+#' \itemize{
 #' \item states vector of size n_agents of new states
 #' \item SIR_count new total number of S, I, R currently in each state
+#' }
 update_agents <- function(current_states, SIR_count,
                           beta, gamma){
   n_agents <- sum(SIR_count)

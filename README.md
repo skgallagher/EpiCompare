@@ -34,7 +34,7 @@ devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
 
   - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax). 
   
-  - `U_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `U_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains addtional information on the individual's inital state, and SMax, IMax. (**NEEDS CLEANUP**)
+  - `U_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `U_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax. (**NEEDS CLEANUP**)
 
 
 =======

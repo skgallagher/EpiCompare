@@ -23,7 +23,7 @@
 #'                              time_col = c("tI","tR"),
 #'                              T = 90)
 #' assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
-#'                       as.data.frame(t(timeternR::hagelloch_agents)))
+#'                       timeternR::hagelloch_agents)
 fortify_agents <- function(raw_df, time_col = c("tI","tR"),
                            T = ceiling(max(raw_df[,time_col])) + 5){
   assertthat::assert_that(inherits(time_col, "character") &&

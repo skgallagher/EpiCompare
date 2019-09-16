@@ -35,5 +35,5 @@ fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                              time_col = c("tI","tR"),
                              T = 90)
 assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
-                      as.data.frame(t(timeternR::hagelloch_agents)))
+                      timeternR::hagelloch_agents)
 }

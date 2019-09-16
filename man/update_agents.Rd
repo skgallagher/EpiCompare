@@ -17,8 +17,10 @@ update_agents(current_states, SIR_count, beta, gamma)
 }
 \value{
 list with
+\itemize{
 \item states vector of size n_agents of new states
 \item SIR_count new total number of S, I, R currently in each state
+}
 }
 \description{
 Update agents based on Bernoulli draws
