@@ -17,7 +17,7 @@ U_sims <- simulate_SIR_agents(n_sims = n_sims,
                            output_format = output_format)
 usethis::use_data(U_sims, overwrite = TRUE)
 
-# shannon, come here
+# shannon, come here # got it :) 9/17/19
 assertthat::assert_that(all(U_sims[,2,] <= U_sims[,3,]))
 
 dimnames(U_sims) <- list(paste(1:50),

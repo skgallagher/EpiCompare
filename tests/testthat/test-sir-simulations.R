@@ -139,7 +139,7 @@ test_that("simulate_SIR_agents",{
                              output_format = output_format)
   expect_equal(dim(out), c(n_sims, 3, sum(init_SIR)))
   mat <- matrix(c(0, 0, 1,
-                  4, 4, 4,
+                  4, 4, 0,
                   4, 4, 0), byrow = TRUE, nrow = 3)
   expect_equal(as.numeric(out[1,,]), as.numeric(mat))
   ############
@@ -166,10 +166,11 @@ test_that("simulate_SIR_agents",{
                              beta = beta, gamma = gamma,
                              init_SIR = init_SIR,
                              output_format = output_format)
-  expect_true(all(out[,2,] <= out[,3,]))
+  expect_true(all(out[ ,2,] <= out[,3,]))
+
   ####
   ####  ## Make sure max_time_S <= max_time_I
-  n_sims <- 1
+  n_sims <- 100
   n_time_steps <- 100
   beta <- .5
   gamma <- .1

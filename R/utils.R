@@ -207,7 +207,7 @@ UtoX_SIR_group <- function(U_g, T = NULL){
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
     # old
-    sir_out2 <- U_g %>% tidyr::nest() %>%
+    sir_out <- U_g %>% tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
