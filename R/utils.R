@@ -219,11 +219,8 @@ UtoX_SIR_group <- function(U_g, T = NULL){
 #' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
 #'
 #' @return logical value (boolean)
-#'
-#' @examples
-#' tidyr_new_interface()
 tidyr_new_interface <- function() {
-  packageVersion("tidyr") > "0.8.99"
+  utils::packageVersion("tidyr") > "0.8.99"
 }
 
 

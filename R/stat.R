@@ -44,10 +44,6 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
                                           which(names(fortified_df) == x)
                                         })
                           out <- UtoX_SIR(fortified_df, ind = idx)
-                          if (!(all(out >= 0))){
-                            #browser()
-                            print("error still occuring")
-                            }
 
                           out <- out %>% dplyr::mutate(PANEL = info_inner[1],
                                                        group = info_inner[2])
