@@ -146,14 +146,14 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender")
 #'
-#' U_sims_tidy %>%
+#' timeternR::U_sims_tidy %>%
 #'   ggplot() +
-#'   geom_path(aes(x = SMax, y = IMax, init_state = init_state,
-#'                 group = sim), alpha = .1,
+#'   geom_path(aes(x = SMax, y = IMax, init_state = init_state, group = sim),
+#'             alpha = .1, stat = timeternR::StatSirFortified) +
 #'   coord_tern() +
 #'   labs(x = "S", y = "I", z = "R")
 #'
-#' U_sims_tidy %>%
+#' timeternR::U_sims_tidy %>%
 #'   ggplot() +
 #'   stat_sir(aes(x = SMax, y = IMax, init_state = init_state,
 #'                 group = sim), alpha = .1,

@@ -7,10 +7,13 @@
 fortify_sims_array(sims_data)
 }
 \arguments{
-\item{sims_data}{n_sims x 3 x n_agents where entry (i,j,k) is the ith simulation, the jth statistic and the kth agent.}
+\item{sims_data}{n_sims x 3 x n_agents where entry (i,j,k) is the ith
+simulation, the jth statistic and the kth agent.}
 }
 \value{
-data.frame with  If output_format = "data.frame" then the output is a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents x n_sims) x 5.
+data.frame with  If output_format = "data.frame" then the output is
+a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The
+size is (n_agents x n_sims) x 5.
 }
 \description{
 Transform the array of simulations to a data frame

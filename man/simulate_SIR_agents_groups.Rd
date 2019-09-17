@@ -10,24 +10,45 @@ simulate_SIR_agents_groups(n_sims, n_time_steps, par_mat, init_mat,
 \arguments{
 \item{n_sims}{number of times to run simulation.}
 
-\item{n_time_steps}{number of total time steps (will use 0 to n_time_steps -1 inclusive).  If size 1 use n_sims for all.  Otherwise should be size K.}
+\item{n_time_steps}{number of total time steps (will use 0 to n_time_steps
+-1 inclusive).  If size 1 use n_sims for all.  Otherwise should be size K.}
 
-\item{init_mat}{K x 3 matrix where entry k1 is the initial S0 for group k, k2 is the initial I0, and k3 is the initial R0.}
+\item{par_mat}{a K x 2 matrix where entry k1 is the beta value for group k
+and k2 is the gamma value for group k.}
 
-\item{output_format}{either "array" or "data.frame".  Default is array (which will return a list of arrays).}
+\item{init_mat}{K x 3 matrix where entry k1 is the initial S0 for group k,
+k2 is the initial I0, and k3 is the initial R0.}
 
-\item{param_mat}{a K x 2 matrix where entry k1 is the beta value for group k and k2 is the gamma value for group k.}
+\item{output_format}{either "array" or "data.frame".  Default is array
+(which will return a list of arrays).}
 }
 \description{
 Simulate SIR data according to many, independent chain Binomials
 }
 \details{
-If output_format = "array" then the output will be a list of K arrays.  Each array is a n_sims x 3 x n_agents array where entry (i,j,k) is the ith simulation, the jth statistic and the kth agent.  If output_format = "data.frame" then the output is a data.frame with columns agent_id, init_state, I_max, R_max, sim_num, group.  The size is (n_agents x n_sims) x 6.
+If output_format = "array" then the output will be a list of K
+arrays.  Each array is a n_sims x 3 x n_agents array where entry (i,j,k) is
+the ith simulation, the jth statistic and the kth agent.  If
+\code{output_format = "data.frame"} then the output is a data.frame with
+columns agent_id, init_state, I_max, R_max, sim_num, group.  The size is
+(n_agents x n_sims) x 6.
 
-For each simulation \eqn{i} and each group \eqn{k}, agent \eqn{A_{t,j}} (the jth agent at time t) will update according to the following where the states are denoted \eqn{S=0,I=1,R=2}.  The update follows a Bernoulli draw based on the agent's current state.  Specifically,
-\deqn{A_{t,j}| S_{t-1,k}, I_{t-1,k} \sim \left \{\begin{array}{ll}\textnormal{Bernoulli} \left ( p_{t-1,k}\right ) & \textnormal{ if } A_{t-1,j} = 0 \\ 1 + Bernoulli(\gamma_k) & \textnormal{ if } A_{t-1,j} = 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
+For each simulation \eqn{i} and each group \eqn{k}, agent
+\eqn{A_{t,j}} (the jth agent at time t) will update according to the
+following where the states are denoted \eqn{S=0,I=1,R=2}.  The update
+follows a Bernoulli draw based on the agent's current state.  Specifically,
+\deqn{A_{t,j}| S_{t-1,k}, I_{t-1,k} \sim \left \{\begin{array}{ll}
+\textnormal{Bernoulli} \left ( p_{t-1,k}\right ) & \textnormal{ if }
+A_{t-1,j} = 0 \\ 1 + Bernoulli(\gamma_k) & \textnormal{ if } A_{t-1,j}
+= 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
 
-The 3 pieces that make up the U statistic are (init_state (0/1/2), max time susceptible, max time infectious.)  If the agent never became infectious or was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.  Similarly, if the agent never recovers or is recovered from time 0 on then \eqn{i_max = n_time_steps -1}.  This function is a wrapper for simulate_SIR_agents() to generate many independent simulations with different initial parameters and disease parameters.
+The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+susceptible, max time infectious.)  If the agent never became infectious or
+was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
+Similarly, if the agent never recovers or is recovered from time 0 on then
+\eqn{i_max = n_time_steps -1}.  This function is a wrapper for
+simulate_SIR_agents() to generate many independent simulations with
+different initial parameters and disease parameters.
 }
 \examples{
 par_mat <- matrix(c(.5, .25,
