@@ -125,6 +125,10 @@ simulate_SIR_agents <- function(n_sims,
     }
 
   }
+ # browser()
+  sim_data[sim, 2, ] <- ifelse(sim_data[sim, 3, ] < sim_data[sim, 2,],
+                              sim_data[sim, 3,  ],
+                              sim_data[sim, 2, ]) # ensure max_time_S <= max_time_i
   dimnames(sim_data) <- list(sim = 1:n_sims,
                         U_stat = c("init_state", "max_time_S", "max_time_I"),
                         agent_id = paste0("id_", 1:n_agents))
