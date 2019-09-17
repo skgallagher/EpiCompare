@@ -96,18 +96,50 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
   }
   start_infected <- sum(U$init_state == 1)
 
-  new <- U %>%
-    dplyr::mutate(start_time_I = .data$max_time_S + 1,
-                  start_time_R = .data$max_time_I + 1) %>%
-    dplyr::select(.data$start_time_I, .data$start_time_R) %>%
-    dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
-    tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
-    dplyr::group_by(.data$key, .data$t) %>%
-    dplyr::summarize(count = dplyr::n()) %>%
-    dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
-    tidyr::spread(key = "t", value = "count",
-                  drop = FALSE, fill = 0)
+  if (tidyr_new_interface()){
+    new <- U %>%
+      dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                    start_time_R = .data$max_time_I + 1) %>%
+      dplyr::select(.data$start_time_I, .data$start_time_R) %>%
+      dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
+      tidyr::pivot_longer(c(.data$I, .data$R),
+                          names_to = "key", values_to = "t") %>%
+      dplyr::group_by(.data$key, .data$t) %>%
+      dplyr::summarize(count = dplyr::n()) %>%
+      dplyr::mutate(t = factor(.data$t, levels = 0:T))
 
+    ## just running
+    # ```
+    #  %>% tidyr::pivot_wider(names_from = .data$t, values_from = .data$count,
+    #                        values_fill = list(count = 0))
+    # ```
+    # would loose the desire to have all values of t - even if no changes for
+    # that t. specifically it would have a `spec`` like:
+    # ```
+    # spec <- new %>% tidyr::build_wider_spec(names_from = .data$t,
+    #                                 values_from = .data$count)
+    # ```
+    # so instead - we make our own `spec`:
+
+    my_spec <- tibble::tibble(.name = as.character(0:T),
+                              .value = "count",
+                              t = factor(0:T))
+
+    new <- new %>%
+      tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0))
+  } else {
+    new <- U %>%
+      dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                    start_time_R = .data$max_time_I + 1) %>%
+      dplyr::select(.data$start_time_I, .data$start_time_R) %>%
+      dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
+      tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
+      dplyr::group_by(.data$key, .data$t) %>%
+      dplyr::summarize(count = dplyr::n()) %>%
+      dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
+      tidyr::spread(key = "t", value = "count",
+                    drop = FALSE, fill = 0)
+  }
   t_new <- new[,colnames(new) %in% 0:T] %>% t %>% data.frame() %>%
     tibble::rownames_to_column(var = "t")
 
@@ -168,10 +200,30 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 UtoX_SIR_group <- function(U_g, T = NULL){
   if (is.null(T)) T <- max(U_g$max_time_I) + 1
 
-  sir_out <- U_g %>% tidyr::nest() %>%
-    dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
-    dplyr::select(-.data$data) %>%
-    tidyr::unnest(.drop = FALSE)
+  if (tidyr_new_interface()){
+    sir_out <- U_g %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(cols = c(.data$update)) # only change
+  } else {
+    # old
+    sir_out2 <- U_g %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(.drop = FALSE)
+  }
 
   return(sir_out)
 }
+
+#' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
+#'
+#' @return logical value (boolean)
+#'
+#' @examples
+#' tidyr_new_interface()
+tidyr_new_interface <- function() {
+  packageVersion("tidyr") > "0.8.99"
+}
+
+

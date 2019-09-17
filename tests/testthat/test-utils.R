@@ -61,7 +61,8 @@ test_that("UtoX_SIR_group passes basic checks", {
   sir_group1 <- UtoX_SIR(U, T)
   sir_group_1 <- sir_group %>% filter(AGE2 == 1)
   testthat::expect_equal(sir_group1,
-                         sir_group_1 %>% select(t, S, I, R) %>% data.frame)
+                         sir_group_1 %>% ungroup %>%
+                           select(t, S, I, R) %>% data.frame)
 })
 
 

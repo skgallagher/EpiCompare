@@ -91,7 +91,14 @@ df_groups <- out %>% dplyr::group_by(sim) %>%  UtoX_SIR_group
 
 ```
 
+## on tidyverse 1.0
+see:
+https://tidyr.tidyverse.org/articles/in-packages.html
+
+
 ## Contributors
 
 - Shannon Gallagher ([`shannong19`](https://github.com/shannong19))
 - Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
+
+
