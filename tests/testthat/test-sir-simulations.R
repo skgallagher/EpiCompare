@@ -154,7 +154,7 @@ test_that("simulate_SIR_agents",{
   #############################
 
   ## Make sure max_time_S <= max_time_I
-  n_sims <- 1
+  n_sims <- 100
   n_time_steps <- 100
   beta <- .5
   gamma <- .1
@@ -166,7 +166,7 @@ test_that("simulate_SIR_agents",{
                              beta = beta, gamma = gamma,
                              init_SIR = init_SIR,
                              output_format = output_format)
-  expect_true(all(out[1,2,] <= out[1,3,]))
+  expect_true(all(out[,2,] <= out[,3,]))
   ####
   ####  ## Make sure max_time_S <= max_time_I
   n_sims <- 1
