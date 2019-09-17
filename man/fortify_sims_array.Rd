@@ -15,3 +15,7 @@ data.frame with  If output_format = "data.frame" then the output is a data.frame
 \description{
 Transform the array of simulations to a data frame
 }
+\examples{
+sims_array <- array(c(1, 0, 1, 0, 1, 1), dim = c(1, 3, 2))
+fortify_sims_array(sims_array)
+}

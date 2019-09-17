@@ -32,3 +32,7 @@ For each simulation \eqn{i}, agent \eqn{A_{t,k}} (the kth agent at time t) will 
 
 The 3 pieces that make up the U statistic are (init_state (0/1/2), max time susceptible, max time infectious.)  If the agent never became infectious or was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.  Similarly, if the agent never recovers or is recovered from time 0 on then \eqn{i_max = n_time_steps -1}.
 }
+\examples{
+sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5, gamma = .1, init_SIR = c(9,1,0), output_format = "array")
+assertthat::are_equal(class(sims_data), "data.frame")
+}
