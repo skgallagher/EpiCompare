@@ -120,7 +120,7 @@ test_that("simulate_SIR_agents",{
                              output_format = output_format)
   expect_equal(dim(out), c(n_sims, 3, sum(init_SIR)))
   mat <- matrix(c(0, 0, 1,
-                  4, 4, 4,
+                  4, 4, 0,
                   4, 4, 0), byrow = TRUE, nrow = 3)
   expect_equal(as.numeric(out[1,,]), as.numeric(mat))
   ############
@@ -149,6 +149,40 @@ test_that("simulate_SIR_agents",{
   sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5,
                                    gamma = .1, init_SIR = c(9,1,0), output_format = "data.frame")
   expect_equal(class(sims_data), "data.frame")
+  ###########################
+  #############################
+  #############################
+
+  ## Make sure max_time_S <= max_time_I
+  n_sims <- 1
+  n_time_steps <- 100
+  beta <- .5
+  gamma <- .1
+  init_SIR <- c(10, 90, 0)
+  output_format <- "array"
+
+  out <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR,
+                             output_format = output_format)
+  expect_true(all(out[1,2,] <= out[1,3,]))
+  ####
+  ####  ## Make sure max_time_S <= max_time_I
+  n_sims <- 1
+  n_time_steps <- 100
+  beta <- .5
+  gamma <- .1
+  init_SIR <- c(10, 90, 0)
+  output_format <- "data.frame"
+
+  out <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR,
+                             output_format = output_format)
+  expect_true(all(out$max_time_S <= out$max_time_I))
+
 
 
 
