@@ -12,6 +12,17 @@ hagelloch_raw <- rlang::duplicate(hagelloch.df)
 
 usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
+## making an updated hagelloch_raw with NAs in tR and tI
+
+hagelloch_raw2 <- rlang::duplicate(hagelloch_raw)
+set.seed(2019)
+five_tI_na <- sample(nrow(hagelloch_raw2), size = 5)
+five_tR_na <- sample(nrow(hagelloch_raw2), size = 5)
+
+hagelloch_raw2[five_tI_na, c("tR", "tI")] <- NA
+hagelloch_raw2[five_tR_na, "tR"] <- NA
+
+usethis::use_data(hagelloch_raw2, overwrite = TRUE)
 
 ## Make SIR format
 N <- nrow(hagelloch_raw) # second term is remaining villagers

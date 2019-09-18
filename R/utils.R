@@ -25,7 +25,8 @@
 #' assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
 #'                       timeternR::hagelloch_agents)
 fortify_agents <- function(raw_df, time_col = c("tI","tR"),
-                           max_time = floor(max(raw_df[,time_col])) + 1){
+                           max_time = floor(
+                             max(raw_df[,time_col], na.rm = TRUE)) + 1){
   assertthat::assert_that(inherits(time_col, "character") &&
                           length(time_col) == 2 &&
                           all(time_col %in% names(raw_df)),
@@ -48,6 +49,25 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
   U <- data.frame(init_state = factor(A0),
                   max_time_S = SMax,
                   max_time_I = IMax)
+
+
+  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+
+  if (sum(inner_na_U) > 0){
+    # check NAs are logical
+    assertthat::assert_that(all(inner_na_U[,1] <= inner_na_U[,2]),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual has a NA for the time",
+                                        "they reached the Infected stage, but",
+                                        "a time for when they reached the",
+                                        "Recovered stage."))
+
+
+    ### standard clean up of NAs
+    # update U
+    U[,c("max_time_S", "max_time_I")][inner_na_U] <- max_time
+  }
+
 
   fortified_df <- cbind(raw_df, U)
 
