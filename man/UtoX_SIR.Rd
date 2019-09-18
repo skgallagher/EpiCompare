@@ -4,7 +4,7 @@
 \alias{UtoX_SIR}
 \title{Convert agent information to SIR format}
 \usage{
-UtoX_SIR(U, T = NULL, ind = NULL)
+UtoX_SIR(U, max_time = NULL, ind = NULL)
 }
 \arguments{
 \item{U}{data frame, with the following format
@@ -15,7 +15,7 @@ UtoX_SIR(U, T = NULL, ind = NULL)
   \item{max_time_I}{maximum time individual was infected (I)}
 }}
 
-\item{T}{integer, max length of outbreak (default NULL)}
+\item{max_time}{integer, max length of outbreak (default NULL)}
 
 \item{ind}{integer vector which columns match up with the columns described
 above (default NULL)}

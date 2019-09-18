@@ -3,7 +3,7 @@ context("test for utility functions")
 test_that("fortify_agent has logical output", {
   fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
-                               T = 94)
+                               max_time = 94)
   # at least 1 person "started" the outbreak
   start_ind <- which(fortify_df$init_state == 1) # this might always be true tho
   testthat::expect_true(length(start_ind) > 0)
@@ -15,7 +15,7 @@ test_that("fortify_agent has logical output", {
 test_that("fortify_agent is able to recreate timeternR::hagelloch_agents", {
   fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
-                               T = 94)
+                               max_time = 94)
 
   testthat::expect_setequal(union(unique(which(fortify_df$init_state == 1)),
                                unique(which.min(fortify_df$max_time_S))),
@@ -38,7 +38,7 @@ test_that("fortify_agent errors when incorrect time_cols entered", {
 
 test_that("UtoX_SIR passes basic checks", {
   # same test as in the example string
-  sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
+  sir_out <- UtoX_SIR(timeternR::hagelloch_agents, max_time = 94)
   testthat::expect_equal(sir_out, timeternR::hagelloch_sir)
 
   testthat::expect_true(all(diff(sir_out$S) <= 0),
@@ -51,14 +51,17 @@ test_that("UtoX_SIR passes basic checks", {
 
 
 test_that("UtoX_SIR_group passes basic checks", {
-  library(dplyr, quietly = TRUE)
+  suppressWarnings(
+    suppressPackageStartupMessages(
+      library(dplyr, quietly = TRUE)
+      ))
   # same test as in the example string
-  T <- 100
+  max_time <- 100
   U_g <- hagelloch_raw %>% fortify_agents() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
-  sir_group <- UtoX_SIR_group(U_g, T)
+  sir_group <- UtoX_SIR_group(U_g, max_time)
   U <- U_g %>%
     filter(AGE2 == 1) %>% ungroup()
-  sir_group1 <- UtoX_SIR(U, T)
+  sir_group1 <- UtoX_SIR(U, max_time)
   sir_group_1 <- sir_group %>% filter(AGE2 == 1)
   testthat::expect_equal(sir_group1,
                          sir_group_1 %>% ungroup %>%

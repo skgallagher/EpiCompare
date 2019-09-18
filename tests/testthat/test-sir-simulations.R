@@ -1,3 +1,5 @@
+context("sir-simulation functions")
+
 test_that("simulate_SIR_agents_groups",{
 
   par_mat <- matrix(c(.5, .25,
@@ -147,8 +149,9 @@ test_that("simulate_SIR_agents",{
   ############
 
   sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5,
-                                   gamma = .1, init_SIR = c(9,1,0), output_format = "data.frame")
-  expect_equal(class(sims_data), "data.frame")
+                                   gamma = .1, init_SIR = c(9,1,0),
+                                   output_format = "data.frame")
+  expect_true(inherits(x = sims_data, what = "data.frame"))
   ###########################
   #############################
   #############################
@@ -210,7 +213,7 @@ test_that("fortify_sims_array", {
                              output_format = output_format)
 
   out <- fortify_sims_array(sims_data)
-  expect_equal(class(out), "data.frame")
+  expect_true(inherits(out, "data.frame"))
 
 
 

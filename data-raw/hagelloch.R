@@ -15,7 +15,7 @@ usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
 ## Make SIR format
 N <- nrow(hagelloch_raw) # second term is remaining villagers
-T <- 94
+max_time <- 94
 
 ## Suff stats for agents
 A0 <- rep(0, N)
@@ -32,7 +32,7 @@ IMax <- ifelse(IMax > T-1, T-1, IMax)
 hagelloch_agents <- data.frame(init_state = factor(A0),
                                max_time_S = SMax,
                                max_time_I = IMax)
-hagelloch_sir <- UtoX_SIR(U, T = T)
+hagelloch_sir <- UtoX_SIR(hagelloch_agents, max_time = max_time)
 
 usethis::use_data(hagelloch_sir, overwrite = TRUE)
 

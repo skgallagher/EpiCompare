@@ -167,7 +167,7 @@ simulate_SIR_agents <- function(n_sims,
     }
 
     sim_data[sim, 2, ] <- ifelse(sim_data[sim, 3, ] < sim_data[sim, 2,],
-                                 sim_data[sim, 3,  ],
+                                 sim_data[sim, 3, ],
                                  sim_data[sim, 2, ])
 
   }
@@ -275,10 +275,17 @@ fortify_sims_array <- function(sims_data){
                                          "max_time_I"),
                               agent_id = 1:n_agents)
   df <- as.data.frame.table(sims_data)
-  df_spread <- df %>% tidyr::spread(data = .,
-                                    key = U_stat,
-                                    value = Freq) %>%
-    dplyr::select(dplyr::one_of("init_state", "max_time_S",
-                                "max_time_I", "sim", "agent_id"))
+
+  if (tidyr_new_interface()){
+    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$U_stat,
+                                           values_from = .data$Freq) %>%
+      dplyr::select(dplyr::one_of("init_state", "max_time_S",
+                                  "max_time_I", "sim", "agent_id"))
+  } else {
+    df_spread <- df %>% tidyr::spread(key = .data$U_stat,
+                                      value = .data$Freq) %>%
+      dplyr::select(dplyr::one_of("init_state", "max_time_S",
+                                  "max_time_I", "sim", "agent_id"))
+  }
   return(df_spread)
 }
