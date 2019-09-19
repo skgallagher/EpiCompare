@@ -69,6 +69,28 @@ test_that("UtoX_SIR passes basic checks", {
 
 })
 
+test_that("UtoX_SIR is monotonoic in S and R", {
+  init_states <- c(0, 1, 1)
+  max_time_S <- c(3, NA, NA)
+  max_time_I <- c(4, 5, NA)
+  U <- data.frame(init_states = init_states,
+                  max_time_S = max_time_S,
+                  max_time_I = max_time_I)
+  X <- UtoX_SIR(U, max_time = 6)
+  expect_true(all(diff(X$S) <= 0))
+  ####
+  init_states <- c(0, 1, 1)
+  max_time_S <- c(3, 2, 3)
+  max_time_I <- c(4, 5, 3)
+  U <- data.frame(init_states = init_states,
+                  max_time_S = max_time_S,
+                  max_time_I = max_time_I)
+  X <- UtoX_SIR(U, max_time = 6)
+  expect_true(all(diff(X$S) <= 0))
+
+})
+
+
 
 
 test_that("UtoX_SIR_group passes basic checks", {

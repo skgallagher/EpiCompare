@@ -128,7 +128,7 @@ simulate_SIR_agents <- function(n_sims,
                                 init_SIR,
                                 output_format = "array"){
   n_agents <- sum(init_SIR)
-  sim_data <- array(n_time_steps -1, dim = c(n_sims, 3, n_agents))
+  sim_data <- array(NA, dim = c(n_sims, 3, n_agents))
   # ^3 is for the U stat
 
   ## Fill in initial states
@@ -144,6 +144,7 @@ simulate_SIR_agents <- function(n_sims,
     SIR_count <- init_SIR
     current_states <- init_states
     for(tt in 0:(n_time_steps -2)){ # Don't update on last known state
+
       new_states_list <- update_agents(current_states,
                                   SIR_count,
                                   beta, gamma)
@@ -289,3 +290,7 @@ fortify_sims_array <- function(sims_data){
   }
   return(df_spread)
 }
+
+
+
+

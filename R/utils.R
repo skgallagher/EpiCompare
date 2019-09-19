@@ -111,6 +111,8 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
     max_time <- max(U$max_time_I)
   }
   start_infected <- sum(U$init_state == 1)
+  start_recovered <- sum(U$init_state == 2)
+  start_susceptible <- sum(U$init_state == 0)
 
   if (tidyr_new_interface()){
     new <- U %>%
@@ -168,9 +170,12 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
     dplyr::select(.data$t, .data$S, .data$I, .data$R) %>%
     dplyr::mutate(t = as.numeric(.data$t))
 
+
   # correction for initial individuals infected
-  if (start_infected > 0){
-    sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+
+  if (start_infected > 0){  ## Ben, I think this is part of the problem.  Works for Hagelloch data but not for cases with more than one infected at start
+   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+
   }
   # removing rownames
   rownames(sir_out) <- NULL
