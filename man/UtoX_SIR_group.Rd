@@ -4,7 +4,7 @@
 \alias{UtoX_SIR_group}
 \title{UtoX_SIR for grouped data frames}
 \usage{
-UtoX_SIR_group(U_g, T = NULL)
+UtoX_SIR_group(U_g, max_time = NULL)
 }
 \arguments{
 \item{U_g}{grouped data frame, with the following format
@@ -15,7 +15,7 @@ UtoX_SIR_group(U_g, T = NULL)
   \item{max_time_I}{maximum time individual was infected (I)}
 }}
 
-\item{T}{integer, max length of outbreak (default NULL), shared across
+\item{max_time}{integer, max length of outbreak (default NULL), shared across
 all groups}
 }
 \value{
@@ -33,13 +33,13 @@ UtoX_SIR for grouped data frames
 }
 \examples{
 library(dplyr)
-T <- 100
+max_time <- 100
 U_g <- hagelloch_raw \%>\% fortify_agents() \%>\%
   filter(SEX \%in\% c("female", "male")) \%>\% group_by(SEX)
-sir_group <- UtoX_SIR_group(U_g, T)
+sir_group <- UtoX_SIR_group(U_g, max_time)
 U <- U_g \%>\%
   filter(SEX == "female") \%>\% ungroup()
-sir_group1 <- UtoX_SIR(U, T)
+sir_group1 <- UtoX_SIR(U, max_time)
 sir_group_1 <- sir_group \%>\% filter(SEX == "female")
 assertthat::are_equal(sir_group1,
                       sir_group_1 \%>\% select(t, S, I, R) \%>\% data.frame)

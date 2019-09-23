@@ -6,7 +6,7 @@
 and stops being infected (as well as initial state).}
 \usage{
 fortify_agents(raw_df, time_col = c("tI", "tR"),
-  T = ceiling(max(raw_df[, time_col])) + 5)
+  max_time = floor(max(raw_df[, time_col], na.rm = TRUE)) + 1)
 }
 \arguments{
 \item{raw_df}{data frame, agent based data frame}
@@ -14,7 +14,7 @@ fortify_agents(raw_df, time_col = c("tI", "tR"),
 \item{time_col}{length 2 string vector, column names recording when
 individual is infected and when they enter the recovery stage}
 
-\item{T}{int, maximum time for infection process}
+\item{max_time}{int, maximum time for infection process}
 }
 \value{
 \code{fortified_df} data frame, the \code{raw_df} plus three
@@ -33,7 +33,7 @@ and stops being infected (as well as initial state).
 \examples{
 fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                              time_col = c("tI","tR"),
-                             T = 90)
+                             max_time = 90)
 assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
                       timeternR::hagelloch_agents)
 }

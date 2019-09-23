@@ -1,9 +1,9 @@
 context("test for utility functions")
 
-test_that("fortify_agent has logical output", {
+test_that("fortify_agent has logical output for hagelloch_raw", {
   fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
-                               T = 94)
+                               max_time = 94)
   # at least 1 person "started" the outbreak
   start_ind <- which(fortify_df$init_state == 1) # this might always be true tho
   testthat::expect_true(length(start_ind) > 0)
@@ -12,10 +12,31 @@ test_that("fortify_agent has logical output", {
 
 })
 
+test_that(paste("fortify_agent has logical output for hagelloch_raw2",
+                "(and works with NAs in tI, tR spots)"), {
+  fortify_df <- fortify_agents(timeternR::hagelloch_raw2,
+                               time_col = c("tI","tR"),
+                               max_time = 94)
+  # at least 1 person "started" the outbreak
+  start_ind <- which(fortify_df$init_state == 1) # this might always be true tho
+  testthat::expect_true(length(start_ind) > 0)
+
+  testthat::expect_true(min(fortify_df$tI, na.rm = TRUE) <= 0)
+
+  testthat::expect_equal(sum(is.na(fortify_df[, c("max_time_S","max_time_I")])),
+                         0)
+
+  bad <- hagelloch_raw2
+  bad$tI[188] <- NA
+  testthat::expect_error(fortify_agents(bad, time_col = c("tI","tR"),
+                                        max_time = 94))
+
+})
+
 test_that("fortify_agent is able to recreate timeternR::hagelloch_agents", {
   fortify_df <- fortify_agents(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
-                               T = 94)
+                               max_time = 94)
 
   testthat::expect_setequal(union(unique(which(fortify_df$init_state == 1)),
                                unique(which.min(fortify_df$max_time_S))),
@@ -38,7 +59,7 @@ test_that("fortify_agent errors when incorrect time_cols entered", {
 
 test_that("UtoX_SIR passes basic checks", {
   # same test as in the example string
-  sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
+  sir_out <- UtoX_SIR(timeternR::hagelloch_agents, max_time = 94)
   testthat::expect_equal(sir_out, timeternR::hagelloch_sir)
 
   testthat::expect_true(all(diff(sir_out$S) <= 0),
@@ -48,17 +69,42 @@ test_that("UtoX_SIR passes basic checks", {
 
 })
 
+test_that("UtoX_SIR is monotonoic in S and R", {
+  init_states <- c(0, 1, 1)
+  max_time_S <- c(3, NA, NA)
+  max_time_I <- c(4, 5, NA)
+  U <- data.frame(init_states = init_states,
+                  max_time_S = max_time_S,
+                  max_time_I = max_time_I)
+  X <- UtoX_SIR(U, max_time = 6)
+  expect_true(all(diff(X$S) <= 0))
+  ####
+  init_states <- c(0, 1, 1)
+  max_time_S <- c(3, 2, 3)
+  max_time_I <- c(4, 5, 3)
+  U <- data.frame(init_states = init_states,
+                  max_time_S = max_time_S,
+                  max_time_I = max_time_I)
+  X <- UtoX_SIR(U, max_time = 6)
+  expect_true(all(diff(X$S) <= 0))
+
+})
+
+
 
 
 test_that("UtoX_SIR_group passes basic checks", {
-  library(dplyr, quietly = TRUE)
+  suppressWarnings(
+    suppressPackageStartupMessages(
+      library(dplyr, quietly = TRUE)
+      ))
   # same test as in the example string
-  T <- 100
+  max_time <- 100
   U_g <- hagelloch_raw %>% fortify_agents() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
-  sir_group <- UtoX_SIR_group(U_g, T)
+  sir_group <- UtoX_SIR_group(U_g, max_time)
   U <- U_g %>%
     filter(AGE2 == 1) %>% ungroup()
-  sir_group1 <- UtoX_SIR(U, T)
+  sir_group1 <- UtoX_SIR(U, max_time)
   sir_group_1 <- sir_group %>% filter(AGE2 == 1)
   testthat::expect_equal(sir_group1,
                          sir_group_1 %>% ungroup %>%

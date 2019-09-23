@@ -1,0 +1,82 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getting_started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+<left>
+![](timeternRhex.png){width=100px}
+</left>
+
+# Installation
+
+To install `timeternR`, run the folllowing code.
+
+```{r eval = FALSE}
+devtools::install_github("shannong19/timeternR")
+
+```
+
+We currently also require a slightly modified version of `ggtern` which can be done by running the following:
+
+```{r eval = FALSE}
+devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
+```
+
+
+# Quickstart
+
+```{r setup, message = FALSE, warning = FALSE}
+#library(timeternR)
+library(tidyverse)
+library(ggtern)
+```
+
+
+```{r quickstart, fig.width=6, eval=FALSE}
+
+
+timeternR::hagelloch_raw %>%
+   dplyr::filter(SEX %in% c("male", "female")) %>%
+   ggplot(aes(y = tI, z = tR, color = SEX)) +
+     timeternR::stat_sir(data_type = "raw") + 
+     coord_tern() +
+     labs(x = "S", y = "I", z = "R",
+          color = "Gender")
+
+```
+
+```{r, eval = FALSE}
+n_sims <- 1
+n_time_steps <- 100
+beta <- .1
+gamma <- .03
+init_SIR <- c(950, 50, 0)
+output_format <- "data.frame"
+    
+out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+                                 n_time_steps = n_time_steps,
+                                 beta = beta, gamma = gamma,
+                                 init_SIR = init_SIR,
+                                 output_format = output_format)
+                                 
+df_ave <- out %>%   UtoX_SIR %>%
+  group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
+
+ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
+                                S, I, R)),
+       aes(x = t, y = Value, group = State)) +
+  geom_line()
+
+
+```

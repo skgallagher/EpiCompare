@@ -3,6 +3,7 @@
 \docType{data}
 \name{hagelloch_raw}
 \alias{hagelloch_raw}
+\alias{hagelloch_raw2}
 \title{Measles in Hagelloch, Germany, 1861}
 \format{A data frame with 188 rows and 12 columns
 \describe{
@@ -45,16 +46,24 @@
 }
 \usage{
 hagelloch_raw
+
+hagelloch_raw2
 }
 \description{
-These data comprise of 188 cases of measles among children in the German
+The data comprise of 188 cases of measles among children in the German
 city of Hagelloch, 1861. The data were
 originally collected by Dr. Albert Pfeilsticker (1863) and augmented and
 re-analysed by Dr. Heike Oesterle (1992). This data comes from the package
 \code{\link[outbreaks:measles_hagelloch_1861]{outbreaks}}.
+
+\code{hallegoch_raw} contains the exact data as desired in this
+document. \code{hallegoch_raw2} has a few rows that have no recorded times
+\code{tR} and \code{tI} which the user can image means the individual
+never reached the Recovery or Infected state (note if \code{tI} is \code{NA},
+then so is \code{tR}).
 }
 \examples{
 ## show first few cases
-head(hagelloch_raw)
+head(hagelloch_raw); head(hagelloch_raw2)
 }
 \keyword{datasets}

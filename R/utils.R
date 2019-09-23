@@ -4,7 +4,7 @@
 #' @param raw_df data frame, agent based data frame
 #' @param time_col length 2 string vector, column names recording when
 #' individual is infected and when they enter the recovery stage
-#' @param T int, maximum time for infection process
+#' @param max_time int, maximum time for infection process
 #'
 #' @return \code{fortified_df} data frame, the \code{raw_df} plus three
 #' additional columns:
@@ -21,11 +21,12 @@
 #' @examples
 #' fortify_df <- fortify_agents(timeternR::hagelloch_raw,
 #'                              time_col = c("tI","tR"),
-#'                              T = 90)
+#'                              max_time = 90)
 #' assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
 #'                       timeternR::hagelloch_agents)
 fortify_agents <- function(raw_df, time_col = c("tI","tR"),
-                           T = ceiling(max(raw_df[,time_col])) + 5){
+                           max_time = floor(
+                             max(raw_df[,time_col], na.rm = TRUE)) + 1){
   assertthat::assert_that(inherits(time_col, "character") &&
                           length(time_col) == 2 &&
                           all(time_col %in% names(raw_df)),
@@ -42,21 +43,36 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 
   ## round I and R time - going to use floor
   SMax <- floor(raw_df[,time_col[1]]) + 1
-  SMax <- ifelse(SMax > T-1, T-1, SMax)
+  SMax <- ifelse(SMax > max_time-1, max_time-1, SMax)
   IMax <- floor(raw_df[,time_col[2]]) + 1
-  IMax <- ifelse(IMax > T-1, T-1, IMax)
+  IMax <- ifelse(IMax > max_time-1, max_time-1, IMax)
   U <- data.frame(init_state = factor(A0),
                   max_time_S = SMax,
                   max_time_I = IMax)
+
+
+  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+
+  if (sum(inner_na_U) > 0){
+    # check NAs are logical
+    assertthat::assert_that(all(inner_na_U[,1] <= inner_na_U[,2]),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual has a NA for the time",
+                                        "they reached the Infected stage, but",
+                                        "a time for when they reached the",
+                                        "Recovered stage."))
+
+
+    ### standard clean up of NAs
+    # update U
+    U[,c("max_time_S", "max_time_I")][inner_na_U] <- max_time
+  }
+
 
   fortified_df <- cbind(raw_df, U)
 
   return(fortified_df)
 }
-
-
-
-# X <- UtoX_SIR(U, T = T) # may need to add catalyst:::
 
 
 #' Convert agent information to SIR format
@@ -68,7 +84,7 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #'   \item{max_time_S}{maximum time individual was suspectable (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
-#' @param T integer, max length of outbreak (default NULL)
+#' @param max_time integer, max length of outbreak (default NULL)
 #' @param ind integer vector which columns match up with the columns described
 #' above (default NULL)
 #'
@@ -85,16 +101,18 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #' @examples
 #' sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
 #' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
-UtoX_SIR <- function(U, T = NULL, ind = NULL){
+UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
   if (!is.null(ind)){
     names(U)[ind] <- c("init_state", "max_time_S", "max_time_I")
   }
 
   N <- nrow(U)
-  if (is.null(T)) {
-    T <- max(U$max_time_I) + 1
+  if (is.null(max_time)) {
+    max_time <- max(U$max_time_I)
   }
   start_infected <- sum(U$init_state == 1)
+  start_recovered <- sum(U$init_state == 2)
+  start_susceptible <- sum(U$init_state == 0)
 
   if (tidyr_new_interface()){
     new <- U %>%
@@ -106,7 +124,7 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
                           names_to = "key", values_to = "t") %>%
       dplyr::group_by(.data$key, .data$t) %>%
       dplyr::summarize(count = dplyr::n()) %>%
-      dplyr::mutate(t = factor(.data$t, levels = 0:T))
+      dplyr::mutate(t = factor(.data$t, levels = 0:max_time))
 
     ## just running
     # ```
@@ -121,9 +139,9 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
     # ```
     # so instead - we make our own `spec`:
 
-    my_spec <- tibble::tibble(.name = as.character(0:T),
+    my_spec <- tibble::tibble(.name = as.character(0:max_time),
                               .value = "count",
-                              t = factor(0:T))
+                              t = factor(0:max_time))
 
     new <- new %>%
       tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0))
@@ -136,11 +154,11 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
       tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
       dplyr::group_by(.data$key, .data$t) %>%
       dplyr::summarize(count = dplyr::n()) %>%
-      dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
+      dplyr::mutate(t = factor(.data$t, levels = 0:max_time)) %>%
       tidyr::spread(key = "t", value = "count",
                     drop = FALSE, fill = 0)
   }
-  t_new <- new[,colnames(new) %in% 0:T] %>% t %>% data.frame() %>%
+  t_new <- new[,colnames(new) %in% 0:max_time] %>% t %>% data.frame() %>%
     tibble::rownames_to_column(var = "t")
 
   t_new <- t_new %>% dplyr::rename(I = "X1", R = "X2")
@@ -152,9 +170,12 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
     dplyr::select(.data$t, .data$S, .data$I, .data$R) %>%
     dplyr::mutate(t = as.numeric(.data$t))
 
+
   # correction for initial individuals infected
-  if (start_infected > 0){
-    sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+
+  if (start_infected > 0){  ## Ben, I think this is part of the problem.  Works for Hagelloch data but not for cases with more than one infected at start
+   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+
   }
   # removing rownames
   rownames(sir_out) <- NULL
@@ -170,7 +191,7 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 #'   \item{max_time_S}{maximum time individual was susceptible (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
-#' @param T integer, max length of outbreak (default NULL), shared across
+#' @param max_time integer, max length of outbreak (default NULL), shared across
 #' all groups
 #'
 #' @return \code{sir_out} data frame, with columns
@@ -187,28 +208,30 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 #'
 #' @examples
 #' library(dplyr)
-#' T <- 100
+#' max_time <- 100
 #' U_g <- hagelloch_raw %>% fortify_agents() %>%
 #'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
-#' sir_group <- UtoX_SIR_group(U_g, T)
+#' sir_group <- UtoX_SIR_group(U_g, max_time)
 #' U <- U_g %>%
 #'   filter(SEX == "female") %>% ungroup()
-#' sir_group1 <- UtoX_SIR(U, T)
+#' sir_group1 <- UtoX_SIR(U, max_time)
 #' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
-UtoX_SIR_group <- function(U_g, T = NULL){
-  if (is.null(T)) T <- max(U_g$max_time_I) + 1
+UtoX_SIR_group <- function(U_g, max_time = NULL){
+  if (is.null(max_time)) max_time <- max(U_g$max_time_I)
 
   if (tidyr_new_interface()){
     sir_out <- U_g %>% tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
+                                        max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
     # old
     sir_out <- U_g %>% tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
+                                        max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
   }
