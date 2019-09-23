@@ -1,0 +1,10 @@
+## SKG EpiModel
+
+library(EpiModel)
+
+## http://statnet.github.io/tut/BasicICMs.html
+
+param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.icm(s.num = 500, i.num = 1)
+control <- control.icm(type = "SIR", nsims = 10, nsteps = 300)
+mod <- icm(param, init, control)
