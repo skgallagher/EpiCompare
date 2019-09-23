@@ -44,7 +44,10 @@ warning. If \code{TRUE}, missing values are silently removed.}
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the}
 
-\item{data_type}{default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
+\item{data_type}{string. Currently can tell the stat to process the data like
+"raw" individual data (formated like \code{\link{hagelloch_raw}}) or
+"fortified" individual data (formated like \code{\link{hagelloch_agents}}
+or the output of \code{\link{fortify_agents}}).}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}.
 These are often aesthetics, used to set an aesthetic to a fixed value, like
@@ -56,42 +59,64 @@ SIR path visuals
 }
 \section{Aesthetics}{
 
-\code{stat_SirRaw()} understands the following aesthetics (required aesthetics are in bold):
-\itemize{
-  \item \strong{\code{y}}
-  \item \strong{\code{z}}
-  \item \code{group}
-}
-Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
 
+The required aesthetics for \code{stat_sir} depend on the \code{data_type}
+parameter.
 
-\code{stat_SirFortified()} understands the following aesthetics (required aesthetics are in bold):
+If \code{data_type = "raw"} then \code{stat_sir} uses \code{stat_SirRaw()}
+as the underlying stat and understands the following aesthetics (required
+aesthetics are in bold):
 \itemize{
-  \item \strong{\code{init_state}}
-  \item \strong{\code{y}}
-  \item \strong{\code{z}}
-  \item \code{group}
-}
+ \item \strong{\code{y}} raw time when initially infected
+ \item \strong{\code{z}} raw time when started recovery
+ \item \code{group}
+ }
+
+If \code{data_type = "fortified"} then \code{stat_sir} uses
+\code{stat_SirFortified()} as the underlying stat and understands the
+following aesthetics (required aesthetics are in bold):
+\itemize{
+ \item \strong{\code{init_state}} initial state of agent (0/1/2 for
+ suspectable/infected/recovered)
+ \item \strong{\code{x}} integer with maximum time suspectable for each agent
+ \item \strong{\code{y}} integer with maximum time infected for each agent
+ \item \code{group}
+ }
+
 Learn more about setting these aesthetics in \code{vignette("ggplot2-specs")}.
 }
 
 \examples{
 library(ggplot2)
 library(dplyr)
+library(ggtern)
 
-
-timeternR::hagelloch_raw \%>\%
-  dplyr::filter(SEX \%in\% c("male", "female")) \%>\%
+timeternR::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
   ggplot(., aes(y = tI, z = tR, color = SEX)) +
-    geom_path(stat = StatSirRaw) + ggtern::coord_tern() +
-    labs(x = "S", y = "I", z = "R",
+  geom_path(stat = StatSirRaw) + coord_tern() +
+  labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
-timeternR::hagelloch_raw \%>\%
-  dplyr::filter(SEX \%in\% c("male", "female")) \%>\%
+timeternR::hagelloch_raw \%>\% dplyr::filter(SEX \%in\% c("male", "female")) \%>\%
   ggplot(., aes(y = tI, z = tR, color = SEX)) +
-    stat_sir(geom = "path") + # note geom = "path" is the default
-    ggtern::coord_tern() +
-    labs(x = "S", y = "I", z = "R",
+  stat_sir(geom = "path") +
+  # note geom = "path" is the default (as is data_type = "raw")
+  coord_tern() +
+  labs(x = "S", y = "I", z = "R",
        color = "Gender")
+
+timeternR::U_sims_tidy \%>\%
+  ggplot() +
+  geom_path(aes(x = SMax, y = IMax, init_state = init_state, group = sim),
+            alpha = .1, stat = timeternR::StatSirFortified) +
+  coord_tern() +
+  labs(x = "S", y = "I", z = "R")
+
+timeternR::U_sims_tidy \%>\%
+  ggplot() +
+  stat_sir(aes(x = SMax, y = IMax, init_state = init_state,
+                group = sim), alpha = .1,
+            data_type = "fortified") +
+  coord_tern() +
+  labs(x = "S", y = "I", z = "R")
 }

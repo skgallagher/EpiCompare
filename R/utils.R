@@ -23,7 +23,7 @@
 #'                              time_col = c("tI","tR"),
 #'                              T = 90)
 #' assertthat::are_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
-#'                       as.data.frame(t(timeternR::hagelloch_agents)))
+#'                       timeternR::hagelloch_agents)
 fortify_agents <- function(raw_df, time_col = c("tI","tR"),
                            T = ceiling(max(raw_df[,time_col])) + 5){
   assertthat::assert_that(inherits(time_col, "character") &&
@@ -36,7 +36,8 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 
   # initial state (was the individual the original one infected?)
   A0 <- rep(0, N)
-  inf_ind <- which.min(raw_df[,time_col[1]])
+  inf_ind <- intersect(which.min(raw_df[,time_col[1]]),
+                       which(raw_df[,time_col[1]] < 0))
   A0[inf_ind] <- 1
 
   ## round I and R time - going to use floor
@@ -95,18 +96,50 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
   }
   start_infected <- sum(U$init_state == 1)
 
-  new <- U %>%
-    dplyr::mutate(start_time_I = .data$max_time_S + 1,
-                  start_time_R = .data$max_time_I + 1) %>%
-    dplyr::select(.data$start_time_I, .data$start_time_R) %>%
-    dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
-    tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
-    dplyr::group_by(.data$key, .data$t) %>%
-    dplyr::summarize(count = dplyr::n()) %>%
-    dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
-    tidyr::spread(key = "t", value = "count",
-                  drop = FALSE, fill = 0)
+  if (tidyr_new_interface()){
+    new <- U %>%
+      dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                    start_time_R = .data$max_time_I + 1) %>%
+      dplyr::select(.data$start_time_I, .data$start_time_R) %>%
+      dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
+      tidyr::pivot_longer(c(.data$I, .data$R),
+                          names_to = "key", values_to = "t") %>%
+      dplyr::group_by(.data$key, .data$t) %>%
+      dplyr::summarize(count = dplyr::n()) %>%
+      dplyr::mutate(t = factor(.data$t, levels = 0:T))
 
+    ## just running
+    # ```
+    #  %>% tidyr::pivot_wider(names_from = .data$t, values_from = .data$count,
+    #                        values_fill = list(count = 0))
+    # ```
+    # would loose the desire to have all values of t - even if no changes for
+    # that t. specifically it would have a `spec`` like:
+    # ```
+    # spec <- new %>% tidyr::build_wider_spec(names_from = .data$t,
+    #                                 values_from = .data$count)
+    # ```
+    # so instead - we make our own `spec`:
+
+    my_spec <- tibble::tibble(.name = as.character(0:T),
+                              .value = "count",
+                              t = factor(0:T))
+
+    new <- new %>%
+      tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0))
+  } else {
+    new <- U %>%
+      dplyr::mutate(start_time_I = .data$max_time_S + 1,
+                    start_time_R = .data$max_time_I + 1) %>%
+      dplyr::select(.data$start_time_I, .data$start_time_R) %>%
+      dplyr::rename(I = "start_time_I", R = "start_time_R") %>%
+      tidyr::gather(key = "key", value = "t", .data$I, .data$R) %>%
+      dplyr::group_by(.data$key, .data$t) %>%
+      dplyr::summarize(count = dplyr::n()) %>%
+      dplyr::mutate(t = factor(.data$t, levels = 0:T)) %>%
+      tidyr::spread(key = "t", value = "count",
+                    drop = FALSE, fill = 0)
+  }
   t_new <- new[,colnames(new) %in% 0:T] %>% t %>% data.frame() %>%
     tibble::rownames_to_column(var = "t")
 
@@ -120,8 +153,9 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
     dplyr::mutate(t = as.numeric(.data$t))
 
   # correction for initial individuals infected
-  sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
-
+  if (start_infected > 0){
+    sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+  }
   # removing rownames
   rownames(sir_out) <- NULL
 
@@ -164,14 +198,29 @@ UtoX_SIR <- function(U, T = NULL, ind = NULL){
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 UtoX_SIR_group <- function(U_g, T = NULL){
-  U <- NULL
+  if (is.null(T)) T <- max(U_g$max_time_I) + 1
 
-  if (is.null(T)) T <- max(U$max_time_I) + 1
-
-  sir_out <- U_g %>% tidyr::nest() %>%
-    dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
-    dplyr::select(-.data$data) %>%
-    tidyr::unnest(.drop = FALSE)
+  if (tidyr_new_interface()){
+    sir_out <- U_g %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(cols = c(.data$update)) # only change
+  } else {
+    # old
+    sir_out <- U_g %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR, T = T)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(.drop = FALSE)
+  }
 
   return(sir_out)
 }
+
+#' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
+#'
+#' @return logical value (boolean)
+tidyr_new_interface <- function() {
+  utils::packageVersion("tidyr") > "0.8.99"
+}
+
+

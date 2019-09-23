@@ -11,8 +11,11 @@ state_change_inds(new_states, current_states, type = "inf")
 
 \item{current_states}{vector of size n_agents of 0/1/2}
 
-\item{type}{either "inf" for new infectious or "rec" for new recovered
-return indices of which agents who were in state type are now in the next state}
+\item{type}{either "inf" for new infectious or "rec" for new recovered}
+}
+\value{
+indices of which agents who were in state type are now in the next
+state
 }
 \description{
 Determine which agents changed states

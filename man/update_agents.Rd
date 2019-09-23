@@ -7,18 +7,21 @@
 update_agents(current_states, SIR_count, beta, gamma)
 }
 \arguments{
+\item{current_states}{vector of 0/1/2 of length n_agents.  Gives the current
+state for each agent}
+
 \item{SIR_count}{total number of S, I, R currently in each state}
 
 \item{beta}{infection parameter between 0 and 1}
 
 \item{gamma}{infection parameter between 0 and 1}
-
-\item{current_state}{vector of 0/1/2 of length n_agents.  Gives the current state for each agent}
 }
 \value{
 list with
+\itemize{
 \item states vector of size n_agents of new states
 \item SIR_count new total number of S, I, R currently in each state
+}
 }
 \description{
 Update agents based on Bernoulli draws

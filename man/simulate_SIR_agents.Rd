@@ -10,29 +10,48 @@ simulate_SIR_agents(n_sims, n_time_steps, beta, gamma, init_SIR,
 \arguments{
 \item{n_sims}{number of times to run simulation}
 
-\item{n_time_steps}{number of total time steps (will use 0 to n_time_steps -1 inclusive)}
+\item{n_time_steps}{number of total time steps (will use 0 to n_time_steps
+-1 inclusive)}
 
 \item{beta}{infection parameter for SIR chain Binomial.  See details}
 
 \item{gamma}{recovery paraemter for SIR chain Binomial.  See details}
 
-\item{init_SIR}{vector of (S0, I0, R0) the number of agents initially in the Susceptible, Infected, and Recovered state, respectively.  The sum of this will be used as the number of agents}
+\item{init_SIR}{vector of (S0, I0, R0) the number of agents initially in the
+Susceptible, Infected, and Recovered state, respectively.  The sum of this
+will be used as the number of agents}
 
 \item{output_format}{either "array" or "data.frame".  Default is array}
 }
 \value{
-If output_format = "array" then it is a n_sims x 3 x n_agents array where entry (i,j,k) is the ith simulation, the jth statistic and the kth agent.  If output_format = "data.frame" then the output is a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents x n_sims) x 5.
+If output_format = "array" then it is a n_sims x 3 x n_agents array
+where entry (i,j,k) is the ith simulation, the jth statistic and the kth
+agent. If output_format = "data.frame" then the output is a data.frame with
+columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents
+x n_sims) x 5.
 }
 \description{
 Simulate SIR data according to a chain Binomial
 }
 \details{
-For each simulation \eqn{i}, agent \eqn{A_{t,k}} (the kth agent at time t) will update according to the following where the states are denoted \eqn{S=0,I=1,R=2}.  The update follows a Bernoulli draw based on the agent's current state.  Specifically,
-\deqn{A_{t,k}| S_{t-1}, I_{t-1} \sim \left \{\begin{array}{ll}\textnormal{Bernoulli} \left ( p_{t-1}\right ) & \textnormal{ if } A_{t-1,k} = 0 \\ 1 + Bernoulli(\gamma) & \textnormal{ if } A_{t-1,k} = 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
+For each simulation \eqn{i}, agent \eqn{A_{t,k}} (the kth agent at
+time t) will update according to the following where the states are denoted
+\eqn{S=0,I=1,R=2}.  The update follows a Bernoulli draw based on the agent's
+ current state.  Specifically,
+\deqn{A_{t,k}| S_{t-1}, I_{t-1} \sim \left \{\begin{array}{ll}
+\textnormal{Bernoulli} \left ( p_{t-1}\right ) & \textnormal{ if }
+A_{t-1,k} = 0 \\ 1 + Bernoulli(\gamma) & \textnormal{ if } A_{t-1,k} = 1
+\\2 & \textnormal{ otherwise}  \end{array} \right . }
 
-The 3 pieces that make up the U statistic are (init_state (0/1/2), max time susceptible, max time infectious.)  If the agent never became infectious or was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.  Similarly, if the agent never recovers or is recovered from time 0 on then \eqn{i_max = n_time_steps -1}.
+The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+susceptible, max time infectious.)  If the agent never became infectious or
+was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
+Similarly, if the agent never recovers or is recovered from time 0 on then
+\eqn{i_max = n_time_steps -1}.
 }
 \examples{
-sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5, beta = .5, gamma = .1, init_SIR = c(9,1,0), output_format = "array")
+sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5,
+                                 beta = .5, gamma = .1, init_SIR = c(9,1,0),
+                                 output_format = "data.frame")
 assertthat::are_equal(class(sims_data), "data.frame")
 }
