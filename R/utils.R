@@ -108,7 +108,7 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 
   N <- nrow(U)
   if (is.null(max_time)) {
-    max_time <- max(U$max_time_I)
+    max_time <- max(c(U$max_time_I, U$max_time_S), na.rm = TRUE)
   }
   start_infected <- sum(U$init_state == 1)
   start_recovered <- sum(U$init_state == 2)
@@ -219,7 +219,7 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 UtoX_SIR_group <- function(U_g, max_time = NULL){
-  if (is.null(max_time)) max_time <- max(U_g$max_time_I)
+  if (is.null(max_time)) max_time <- max(c(U_g$max_time_I, U_g$max_time_S), na.rm = TRUE)
 
   if (tidyr_new_interface()){
     sir_out <- U_g %>% tidyr::nest() %>%
