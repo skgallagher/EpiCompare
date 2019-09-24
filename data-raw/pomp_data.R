@@ -18,12 +18,12 @@ sir.step <- "
   double dN[6];
   double P;
   P = S + I + R;
-  rate[0] = mu * P;       // birth
+  rate[0] = 0;       // birth
   rate[1] = Beta * I / P; // transmission
-  rate[2] = mu;           // death from S
+  rate[2] = 0;           // death from S
   rate[3] = gamma;        // recovery
-  rate[4] = mu;           // death from I
-  rate[5] = mu;           // death from R
+  rate[4] = 0;           // death from I
+  rate[5] = 0;           // death from R
   dN[0] = rpois(rate[0] * dt);
   reulermultinom(2, S, &rate[1], dt, &dN[1]);
   reulermultinom(2, I, &rate[3], dt, &dN[3]);
