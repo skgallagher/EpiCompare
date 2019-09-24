@@ -56,4 +56,8 @@ pomp_sir <- simulate(
   params = c(popsize = 500000, Beta = 400, gamma = 26,
              mu = 1/50, rho = 0.1, theta = 100, S.0 = 26/400,
              I.0 = 0.002, R.0 = 1),
-  seed = 1914679908L)
+  seed = 1914679908L,
+  format = "data.frame",
+  nsim = 100)
+ 
+usethis::use_data(pomp_sir, overwrite = TRUE)
