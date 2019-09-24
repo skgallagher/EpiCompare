@@ -5,7 +5,7 @@ library(EpiModel)
 ## http://statnet.github.io/tut/BasicICMs.html
 
 param <- param.dcm(inf.prob = 0.2, act.rate = 0.8, rec.rate = 1/50,
-                   a.rate = 0, ds.rate = 0, di.rate = 1/90, dr.rate = 0)
+                   a.rate = 0, ds.rate = 0, di.rate = 0, dr.rate = 0)
 init <- init.dcm(s.num = 900, i.num = 100, r.num = 0)
 control <- control.dcm(type = "SIR", nsteps = 300)
 EpiModel_det <- dcm(param, init, control)
