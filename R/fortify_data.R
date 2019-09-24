@@ -24,9 +24,18 @@ fortify_pomp <- function(pomp_output){
 #' \item{S}{number of Susceptibles}
 #' \item{I}{number of Infectious}
 #' \item{R}{number of Recovered}
-#' \item{sim}{simulation number (optional column)}
+#' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
-#' @details
+#' @details Take the output from \code{EpiModel::dcm} and turn it into an SIR data.frame for plotting.
+#' @examples
+#' ## For dcm
+#' sir1 <- fortify_EpiModel(EpiModel_det)
+#' head(sir1)
+#'
+#' ## For icm
+#' sir2 <- fortify_EpiModel(EpiModel_icm)
+#' head(sir2)
+#' @export
 fortify_EpiModel <- function(EpiModel_output){
   object_class <- class(EpiModel_output)
   ## Some basic checks
@@ -44,6 +53,19 @@ fortify_EpiModel <- function(EpiModel_output){
   ## Actual formatting
 
   if(object_class == "icm"){
+    n_sim <- EpiModel_icm$control$nsims
+    S_mat <- EpiModel_icm$epi$s.num
+    S_df <- tidyr::gather(as.data.frame(S_mat), key = "sim", value = "S")
+    I_mat <- EpiModel_icm$epi$i.num
+    ## TODO:  switch over to new tidy format, thanks hads
+    I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
+    R_mat <- EpiModel_icm$epi$r.num
+    R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
+    t <- rep(1:EpiModel_icm$control$nsteps, ncol(S_mat))
+    SIR_df <- data.frame(t = t, S = S_df$S, I = I_df$I,
+                         R = R_df$R, sim = S_df$sim)
+
+
 
   } else if(object_class == "dcm"){
 
@@ -56,8 +78,10 @@ fortify_EpiModel <- function(EpiModel_output){
     names(R) <- NULL
     SIR_df <- data.frame(t = t, S = S, I = I, R = R)
   }
+
   N <- sum(SIR_df[1, c("S", "I", "R")])
-  if(any(rowSums(SIR_df[, c("S", "I", "R")]) != N)){
+  Ns <- rowSums(SIR_df[, c("S", "I", "R")])
+  if(!assertthat::are_equal(Ns, rep(N, length(Ns)))){
     stop("The number of agents is not constant over time")
   }
 
