@@ -165,7 +165,18 @@
 
 #' pomp_sir Example output from the \code{pomp} package.
 #'
-#' Specifcially, this data is made from the SIR example found from \href{https://kingaa.github.io/pomp/vignettes/oaxaca.html}{this \code{pomp} vignette}.  The output format for the data is \code{data.frame}.  This data set is a data frame with 521
+#' Specifcially, this data is made from the SIR example found from \href{https://kingaa.github.io/pomp/vignettes/oaxaca.html}{this \code{pomp} vignette}.  The output format for the data is \code{data.frame}.  This data set is a data frame with dimensions 52100 x 7.  Each row consists of the time, number of individuals in each state, and simulation ID.  The birth and death rates have been set to zero.
+#'
+#' @format a 52100 x 7 data.frame where each row is a time and the number of individuals in each state at that time.  The columns include
+#' \describe{
+#' \item time possibly continuous, greater than 0
+#' \item .id the simulation ID
+#' \item S the number of Susceptible at the given time
+#' \item I the number of Infectious at the given time
+#' \item R the number of Recovered at the given time
+#' \item H the number of new incidence
+#' \item the number of caes recorded within a given reporting interval
+#' }
 
 
 
