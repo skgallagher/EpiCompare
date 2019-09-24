@@ -163,6 +163,9 @@
 
 
 
+#' pomp_sir Example output from the \code{pomp} package.
+#'
+#' Specifcially, this data is made from the SIR example found from \href{https://kingaa.github.io/pomp/vignettes/oaxaca.html}{this \code{pomp} vignette}.  The output format for the data is \code{data.frame}.  This data set is a data frame with 521
 
 
 

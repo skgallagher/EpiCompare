@@ -5,9 +5,11 @@
 
 #' Takes in data from the R pomp package and puts it in SIR format
 #'
-#' @param pomp_output Output from a pomp simulation
+#' @param pomp_output Output from a pomp simulation, \code{pomp::simulate()}
 #' @return data frame with the following columns
-#' @details
+#' @details \description{
+#' \item t
+#' }
 fortify_pomp <- function(pomp_output){
   return(0)
 }
