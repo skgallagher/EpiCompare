@@ -7,11 +7,16 @@
 fortify_pomp(pomp_output)
 }
 \arguments{
-\item{pomp_output}{Output from a pomp simulation}
+\item{pomp_output}{Output from a pomp simulation, \code{pomp::simulate()}}
 }
 \value{
 data frame with the following columns
 }
 \description{
 Takes in data from the R pomp package and puts it in SIR format
+}
+\details{
+\describe{
+\item{t}{}
+}
 }

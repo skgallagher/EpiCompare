@@ -277,6 +277,7 @@ fortify_sims_array <- function(sims_data){
                               agent_id = 1:n_agents)
   df <- as.data.frame.table(sims_data)
 
+
   if (tidyr_new_interface()){
     df_spread <- df %>% tidyr::pivot_wider(names_from = .data$U_stat,
                                            values_from = .data$Freq) %>%

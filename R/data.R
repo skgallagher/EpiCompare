@@ -165,8 +165,65 @@
 
 
 
+#' pomp_sir Example output from the \code{pomp} package.
+#'
+#' Specifcially, this data is made from the SIR example found from \href{https://kingaa.github.io/pomp/vignettes/oaxaca.html}{this \code{pomp} vignette}.  The output format for the data is \code{data.frame}.  This data set is a data frame with dimensions 52100 x 7.  Each row consists of the time, number of individuals in each state, and simulation ID.  The birth and death rates have been set to zero.
+#'
+#' @format A 52100 x 7 data.frame where each row is a time and the number of individuals in each state at that time.  The columns include
+#' \describe{
+#' \item{time}{possibly continuous, greater than 0}
+#' \item{.id}{the simulation ID}
+#' \item{S}{the number of Susceptible at the given time}
+#' \item{I}{the number of Infectious at the given time}
+#' \item{R}{the number of Recovered at the given time}
+#' \item{H}{the number of new incidence}
+#' \item{cases}{the number of cases recorded within a given reporting interval}
+#' }
+#'
+#' @examples
+#' ## Show the first 6 lines
+#' head(pomp_sir)
+"pomp_sir"
 
 
+#' EpiModel_det Example output from the \code{EpiModel} package for a deterministic model
+#'
+#' This data is made from the SIR DCM/ICM example in the \href{http://statnet.github.io/tut/BasicICMs.html}{EpiModel vignette found here}.  We run the discrete compartmental model (DCM) for 300 steps and set the birth and death rates (a.rate, ds.rate, di.rate, dr.rate) to zero.  This is object is of class \code{dcm}.  The output details can be found with \code{?EpiModel::dcm}.
+#'
+#' @format a \code{dcm} object from the \code{EpiModel} package.  This contains the following elements:
+#' \describe{
+#' \item{param}{the epidemic parameters passed into the model through param, with additional parameters added as necessary.}
+#' \item{control}{the control settings passed into the model through control, with additional controls added as necessary.}
+#' \item{epi}{a list of data frames, one for each epidemiological output from the model. Outputs for base models always include the size of each compartment, as well as flows in, out of, and between compartments.}
+#' }
+#'
+#' @examples
+#' ## Look at structure
+#' str(EpiModel_det)
+#'
+#' ## Look at SIR values
+#' head(do.call('cbind', EpiModel_det$epi[c("s.num", "i.num", "r.num")]))
+"EpiModel_det"
+
+
+#' EpiModel_icm Example output from the \code{EpiModel} package for a stochastic ICM
+#'
+#' This data is made from the SIR DCM/ICM example in the \href{http://statnet.github.io/tut/BasicICMs.html}{EpiModel vignette found here}.  We run the individual contact model (ICM) for 300 steps and set the birth and death rates (a.rate, ds.rate, di.rate, dr.rate) to zero.  This is object is of class \code{icm}.  We run the simulation 10 times.  The output details can be found with \code{?EpiModel::icm}.
+#'
+#' @format a \code{icm} object from the \code{EpiModel} package.  This contains the following elements:
+#' \describe{
+#' \item{param}{the epidemic parameters passed into the model through param, with additional parameters added as necessary.}
+#' \item{control}{the control settings passed into the model through control, with additional controls added as necessary.}
+#' \item{epi}{a list of data frames, one for each epidemiological output from the model. Outputs for base models always include the size of each compartment, as well as flows in, out of, and between compartments.}
+#' }
+#'
+#' @examples
+#' ## Look at structure
+#' str(EpiModel_icm)
+#'
+#' ## Look at SIR values
+#' head(EpiModel_icm$epi$s.num)
+"EpiModel_icm"
 
 
 
