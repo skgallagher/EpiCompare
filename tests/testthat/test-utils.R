@@ -17,14 +17,17 @@ test_that(paste("fortify_agent has logical output for hagelloch_raw2",
   fortify_df <- fortify_agents(timeternR::hagelloch_raw2,
                                time_col = c("tI","tR"),
                                max_time = 94)
-  # at least 1 person "started" the outbreak
-  start_ind <- which(fortify_df$init_state == 1) # this might always be true tho
-  testthat::expect_true(length(start_ind) > 0)
 
+  testthat::expect_equal(fortify_df %>% dplyr::pull(init_state) %>% table,
+                         c(rep(0, 185),1,2,2) %>% table)
+
+  # at least 1 person "starts" being infected at time 0
+  testthat::expect_true(sum(fortify_df$init_state == 1) > 0)
+  # and that, this idea relates to at least 1 person having a tI <= 0
   testthat::expect_true(min(fortify_df$tI, na.rm = TRUE) <= 0)
 
   testthat::expect_equal(sum(is.na(fortify_df[, c("max_time_S","max_time_I")])),
-                         0)
+                         5)
 
   bad <- hagelloch_raw2
   bad$tI[188] <- NA
@@ -38,9 +41,8 @@ test_that("fortify_agent is able to recreate timeternR::hagelloch_agents", {
                                time_col = c("tI","tR"),
                                max_time = 94)
 
-  testthat::expect_setequal(union(unique(which(fortify_df$init_state == 1)),
-                               unique(which.min(fortify_df$max_time_S))),
-                         unique(which.min(fortify_df$max_time_S)))
+  testthat::expect_setequal(unique(which(fortify_df$init_state == 1)),
+                         unique(which(is.na(fortify_df$max_time_S))))
 
   testthat::expect_equal(fortify_df[,(ncol(fortify_df) - 2):ncol(fortify_df)],
                        timeternR::hagelloch_agents)

@@ -60,7 +60,9 @@ re-analysed by Dr. Heike Oesterle (1992). This data comes from the package
 document. \code{hallegoch_raw2} has a few rows that have no recorded times
 \code{tR} and \code{tI} which the user can image means the individual
 never reached the Recovery or Infected state (note if \code{tI} is \code{NA},
-then so is \code{tR}).
+then so is \code{tR}). Additionally, \code{hallegoch_raw2} has 2 individuals
+that are in recovery at the start of the observational approach, and as such
+have \code{tR}, \code{tI}, \code{tPRE}, and \code{tERU} that are negative.
 }
 \examples{
 ## show first few cases

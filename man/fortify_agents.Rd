@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{fortify_agents}
 \alias{fortify_agents}
-\title{fortify agent data frame with columns when individual stops being suspectable
+\title{fortify agent data frame with columns when individual stops being susceptible
 and stops being infected (as well as initial state).}
 \usage{
 fortify_agents(raw_df, time_col = c("tI", "tR"),
@@ -22,12 +22,12 @@ additional columns:
 \describe{
   \item{init_state}{Initial state for individual (at time t = 0). For the
   states, 0 = S, 1 = I, 2 = R.}
-  \item{max_time_S}{maximum time individual was suspectable (S)}
+  \item{max_time_S}{maximum time individual was susceptible (S)}
   \item{max_time_I}{maximum time individual was infected (I)}
 }
 }
 \description{
-fortify agent data frame with columns when individual stops being suspectable
+fortify agent data frame with columns when individual stops being susceptible
 and stops being infected (as well as initial state).
 }
 \examples{

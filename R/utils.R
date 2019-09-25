@@ -1,4 +1,4 @@
-#' fortify agent data frame with columns when individual stops being suspectable
+#' fortify agent data frame with columns when individual stops being susceptible
 #' and stops being infected (as well as initial state).
 #'
 #' @param raw_df data frame, agent based data frame
@@ -11,7 +11,7 @@
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
-#'   \item{max_time_S}{maximum time individual was suspectable (S)}
+#'   \item{max_time_S}{maximum time individual was susceptible (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
 #'
@@ -37,25 +37,34 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 
   # initial state (was the individual the original one infected?)
   A0 <- rep(0, N)
-  inf_ind <- intersect(which.min(raw_df[,time_col[1]]),
-                       which(raw_df[,time_col[1]] < 0))
-  A0[inf_ind] <- 1
+  initial_inf <- intersect(which(raw_df[,time_col[1]] < 0),
+                           which(raw_df[,time_col[2]] >= 0))
+  initial_rec <- intersect(which(raw_df[,time_col[1]] < 0),
+                           which(raw_df[,time_col[2]] < 0))
+  A0[initial_inf] <- 1
+  A0[initial_rec] <- 2
+
+
 
   ## round I and R time - going to use floor
-  SMax <- floor(raw_df[,time_col[1]]) + 1
+  SMax <- ceiling(raw_df[,time_col[1]])
   SMax <- ifelse(SMax > max_time-1, max_time-1, SMax)
-  IMax <- floor(raw_df[,time_col[2]]) + 1
+  IMax <- ceiling(raw_df[,time_col[2]])
   IMax <- ifelse(IMax > max_time-1, max_time-1, IMax)
   U <- data.frame(init_state = factor(A0),
                   max_time_S = SMax,
                   max_time_I = IMax)
+  # dealing with initially infected
+  U[union(initial_inf, initial_rec),"max_time_S"] <- NA
+  U[initial_rec,"max_time_I"] <- NA
 
 
   inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
 
   if (sum(inner_na_U) > 0){
     # check NAs are logical
-    assertthat::assert_that(all(inner_na_U[,1] <= inner_na_U[,2]),
+    assertthat::assert_that(all(inner_na_U[-c(initial_inf, initial_rec),1] <=
+                                  inner_na_U[-c(initial_inf, initial_rec),2]),
                             msg = paste("Please manually correct the fact that",
                                         "an individual has a NA for the time",
                                         "they reached the Infected stage, but",
@@ -65,7 +74,11 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 
     ### standard clean up of NAs
     # update U
-    U[,c("max_time_S", "max_time_I")][inner_na_U] <- max_time
+    U[U$init_state == 0,
+      c("max_time_S", "max_time_I")][inner_na_U[U$init_state == 0,]] <- max_time
+    U[U$init_state == 1,
+      "max_time_I"][inner_na_U[U$init_state == 1,2]] <- max_time
+
   }
 
 
@@ -81,7 +94,7 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
-#'   \item{max_time_S}{maximum time individual was suspectable (S)}
+#'   \item{max_time_S}{maximum time individual was susceptible (S)}
 #'   \item{max_time_I}{maximum time individual was infected (I)}
 #' }
 #' @param max_time integer, max length of outbreak (default NULL)
@@ -91,7 +104,7 @@ fortify_agents <- function(raw_df, time_col = c("tI","tR"),
 #' @return \code{sir_out} data frame, with columns
 #' \describe{
 #'   \item{t}{time since outbreak}
-#'   \item{S}{Number of individuals suspectable}
+#'   \item{S}{Number of individuals susceptible}
 #'   \item{I}{Number of individuals infected}
 #'   \item{R}{Number of individuals in recovery}
 #' }
@@ -110,9 +123,56 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
   if (is.null(max_time)) {
     max_time <- max(U$max_time_I)
   }
+
   start_infected <- sum(U$init_state == 1)
   start_recovered <- sum(U$init_state == 2)
   start_susceptible <- sum(U$init_state == 0)
+
+  assertthat::assert_that(all(U$init_state %in% 0:2),
+                          msg = "initial statement must be either 0, 1, or 2.")
+
+  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+
+  if (sum(inner_na_U) > 0){
+    # check NAs are logical
+    assertthat::assert_that(all(inner_na_U[U$init_state == 0,1] <=
+                                  inner_na_U[U$init_state == 0,2]),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual that started as",
+                                        "susceptible (inital_state = 0) has a",
+                                        "NA for the maximum time they were",
+                                        "susceptible, but a maximum time when",
+                                        "they were infected."))
+
+    assertthat::assert_that(all(inner_na_U[U$init_state == 1,1]),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual that started as",
+                                        "infected (inital_state = 1) should",
+                                        "have NA for the maximum time time",
+                                        "they were susceptible."))
+
+    assertthat::assert_that(all(is.na(inner_na_U[U$init_state == 2,1:2])),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual that started as",
+                                        "recovered (inital_state = 2) should",
+                                        "have NA for the maximum time time",
+                                        "they were susceptible and infected"))
+
+    ### standard clean up of NAs
+    # update U
+    U[U$init_state == 0,
+      c("max_time_S", "max_time_I")][inner_na_U[U$init_state == 0,]] <- max_time
+    if (tibble::is_tibble(U)){
+      U[U$init_state == 1,
+        c("max_time_I")][inner_na_U[U$init_state == 1,2],] <- max_time
+    } else{
+      U[U$init_state == 1,
+        c("max_time_I")][inner_na_U[U$init_state == 1,2]] <- max_time
+    }
+
+    U[,c("max_time_S", "max_time_I")][is.na(U[,c("max_time_S", "max_time_I")])] <- -1
+  }
+
 
   if (tidyr_new_interface()){
     new <- U %>%
@@ -173,10 +233,10 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 
   # correction for initial individuals infected
 
-  if (start_infected > 0){  ## Ben, I think this is part of the problem.  Works for Hagelloch data but not for cases with more than one infected at start
-   sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
-
-  }
+  # if (start_infected > 0){  ## Ben, I think this is part of the problem.  Works for Hagelloch data but not for cases with more than one infected at start
+  #  sir_out[1, ] <- c(0, N - start_infected, start_infected, 0)
+  #
+  # }
   # removing rownames
   rownames(sir_out) <- NULL
 
@@ -221,15 +281,17 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 UtoX_SIR_group <- function(U_g, max_time = NULL){
   if (is.null(max_time)) max_time <- max(U_g$max_time_I)
 
+
   if (tidyr_new_interface()){
-    sir_out <- U_g %>% tidyr::nest() %>%
+    sir_out <- U_g %>%
+      tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
                                         max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
     # old
-    sir_out <- U_g %>% tidyr::nest() %>%
+    sir_out <- U_g %>% tidyr::nest_legacy() %>%
       dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
                                         max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%

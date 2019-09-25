@@ -6,7 +6,7 @@ data("hagelloch", package = "surveillance")
 
 ## Original source and description here: https://rdrr.io/rforge/surveillance/man/hagelloch.html
 
-head(hagelloch.df)  # This is the original data
+# head(hagelloch.df)  # This is the original data
 
 hagelloch_raw <- rlang::duplicate(hagelloch.df)
 
@@ -18,9 +18,18 @@ hagelloch_raw2 <- rlang::duplicate(hagelloch_raw)
 set.seed(2019)
 five_tI_na <- sample(nrow(hagelloch_raw2), size = 5)
 five_tR_na <- sample(nrow(hagelloch_raw2), size = 5)
+two_recovered <- sample(nrow(hagelloch_raw2), size = 2)
 
 hagelloch_raw2[five_tI_na, c("tR", "tI")] <- NA
 hagelloch_raw2[five_tR_na, "tR"] <- NA
+
+hagelloch_raw2[two_recovered, "tR"] <- -3*runif(2)
+hagelloch_raw2[two_recovered, "tI"] <- -3*runif(2) +
+  hagelloch_raw2[two_recovered, "tR"]
+hagelloch_raw2[two_recovered,
+               c("tPRO", "tERU")] <- hagelloch_raw2[two_recovered, c("tI")] +
+                                      sapply(two_recovered, function(idx) rep(diff(unlist(hagelloch_raw2[idx, c("tI", "tR")])),2)) * c(1/3, 2/3)
+
 
 usethis::use_data(hagelloch_raw2, overwrite = TRUE)
 
@@ -30,19 +39,28 @@ max_time <- 94
 
 ## Suff stats for agents
 A0 <- rep(0, N)
-inf_ind <- which.min(hagelloch_raw$tI)
-# ^ in general this should be:
-#     intersect(which.min(raw_df[,time_col[1]]), which(raw_df[,time_col[1]] < 0))
+initial_inf <- intersect(which(hagelloch_raw$tI < 0),
+                         which(hagelloch_raw$tR >= 0))
+initial_rec <- intersect(which(hagelloch_raw$tI < 0),
+                         which(hagelloch_raw$tR < 0))
+A0[initial_inf] <- 1
+A0[initial_rec] <- 2
 
-A0[inf_ind] <- 1
 ## round I and R time - going to use floor
 SMax <- floor(hagelloch_raw$tI) + 1
-SMax <- ifelse(SMax > T-1, T-1, SMax)
+SMax <- ifelse(SMax > max_time-1, max_time-1, SMax)
 IMax <- floor(hagelloch_raw$tR) + 1
-IMax <- ifelse(IMax > T-1, T-1, IMax)
+IMax <- ifelse(IMax > max_time-1, max_time-1, IMax)
+
+
 hagelloch_agents <- data.frame(init_state = factor(A0),
                                max_time_S = SMax,
                                max_time_I = IMax)
+
+hagelloch_agents[union(initial_inf, initial_rec),"max_time_S"] <- NA
+hagelloch_agents[initial_rec,"max_time_I"] <- NA
+
+
 hagelloch_sir <- UtoX_SIR(hagelloch_agents, max_time = max_time)
 
 usethis::use_data(hagelloch_sir, overwrite = TRUE)
