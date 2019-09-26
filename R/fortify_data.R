@@ -11,7 +11,11 @@
 #' \item{t}{}
 #' }
 fortify_pomp <- function(pomp_output){
-  return(0)
+  if(!(class(pomp_output) %in% c("data.frame", "pomp", "array"))){
+    stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pomp' or 'array' output")
+  }
+
+
 }
 
 
