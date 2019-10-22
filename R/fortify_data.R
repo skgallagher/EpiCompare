@@ -59,12 +59,23 @@ fortify_EpiModel <- function(EpiModel_output){
   if(object_class == "icm"){
     n_sim <- EpiModel_icm$control$nsims
     S_mat <- EpiModel_icm$epi$s.num
-    S_df <- tidyr::gather(as.data.frame(S_mat), key = "sim", value = "S")
     I_mat <- EpiModel_icm$epi$i.num
-    ## TODO:  switch over to new tidy format, thanks hads
-    I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
     R_mat <- EpiModel_icm$epi$r.num
-    R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
+    if(tidyr_new_interface()){
+      S_df <- tidyr::pivot_longer(as.data.frame(S_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "S")
+      I_df <- tidyr::pivot_longer(as.data.frame(I_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "I")
+      R_df <- tidyr::pivot_longer(as.data.frame(R_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "R")
+    } else{
+      S_df <- tidyr::gather(as.data.frame(S_mat), key = "sim", value = "S")
+      I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
+      R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
+    }
     t <- rep(1:EpiModel_icm$control$nsteps, ncol(S_mat))
     SIR_df <- data.frame(t = t, S = S_df$S, I = I_df$I,
                          R = R_df$R, sim = S_df$sim)

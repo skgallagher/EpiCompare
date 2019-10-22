@@ -309,3 +309,79 @@ tidyr_new_interface <- function() {
 }
 
 
+#' Convert SEIR to XYZ coordinates fixed in a tetrahedron
+#'
+#' @param data data frame with the following columns
+#' \describe{
+#' \item{time}{time step}
+#' \item{S}{Number of people in S}
+#' \item{E}{Number of people in E}
+#' \item{I}{Number of people in I}
+#' \item{R}{Number of people in R}
+#' }
+#' @param var_order vector of column names corresponding to the different axes of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for top, left, right, front.
+#' @return original data frame along with columns x, y, and z
+#' @export
+#' @examples
+#' seir <- data.frame(time = 0:3,
+#' S = c(90, 80, 70, 60),
+#' E = c(0, 10, 10, 10),
+#' I = c(10, 10, 10, 10),
+#' R = c(0, 0, 10, 20))
+#' seir_xyz <- SEIR_to_XYZ(seir)
+#' head(seir_xyz)
+SEIR_to_XYZ <- function(data,
+                      var_order=c("S", "E", "I", "R")){
+
+  new_df <- data %>% dplyr::rename(time = "t",
+                                   t = var_order[1],
+                                   l = var_order[2],
+                                   r = var_order[3],
+                                   f = var_order[4]) %>%
+    dplyr::mutate(N = t + l + r + f) %>%
+    dplyr::mutate(x = (r + 1 - l ) / 2 / N,
+                  y = (sqrt(3)/2 * t + sqrt(3)/6 * f) / N,
+                  z = sqrt(6) / 3 * f / N) %>%
+    dplyr::select(-N) %>%
+    dplyr::rename(t = "time")
+  return(new_df)
+
+}
+
+#' Convert SEIR to XYZ coordinates fixed in a tetrahedron
+#'
+#' @param data data frame with the following columns
+#' \describe{
+#' \item{t}{time step}
+#' \item{S}{Number of people in S}
+#' \item{E}{Number of people in E}
+#' \item{I}{Number of people in I}
+#' \item{R}{Number of people in R}
+#' }
+#' @param ternary_vars named vector of the three variables to use as the sides of the ternary plot
+#' @param group_var name of the variable to use as the color/feature/grouping vector
+#' @return data frame with the transformed variables SEIR -> s, i, r, group variables
+#' @export
+#' @examples
+#' seir <- data.frame(time = 0:3,
+#' S = c(90, 80, 70, 60),
+#' E = c(0, 10, 10, 10),
+#' I = c(10, 10, 10, 10),
+#' R = c(0, 0, 10, 20))
+#' seir_xyz <- SEIR_to_XYZ(seir)
+#' head(seir_xyz)
+SEIR_to_SIR_E <- function(data,
+                          ternary_vars = c("S", "I", "R"),
+                          group_var = "E"){
+  new_df <- data %>% dplyr::rename(S = ternary_vars[1],
+                                   I = ternary_vars[2],
+                                   R = ternary_vars[3],
+                                   group = group_var[1]) %>%
+    dplyr::mutate(N = S + I + R + group,
+                  n = S + I + R) %>%
+    dplyr::mutate(S = S / n, I = I / n, R = R / n,
+                  group = group / N) %>%
+    dplyr::select(-c(N, n))
+  return(new_df)
+}
+
