@@ -56,8 +56,8 @@ fortify_pomp <- function(pomp_output){
 fortify_pomp.df <- function(pomp_output){
     out <- pomp_output %>%
         dplyr::rename(t = "time", sim = ".id") %>%
-        dplyr::select(t, S, I, R, sim) %>%
-        dplyr::mutate(sim = factor(sim))
+        dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
+        dplyr::mutate(sim = factor(.data$sim))
 
     ## #TODO: How do we handle non integer t?
     return(out)
@@ -79,12 +79,12 @@ fortify_pomp.arr <- function(pomp_output){
     arr <- pomp_output[[1]]
     out <- arr %>%
         as.data.frame.table() %>%
-        dplyr::mutate(t = as.numeric(time) - 1,
-                      sim = as.numeric(rep)) %>%
-        tidyr::pivot_wider(values_from = Freq,
-                           names_from = variable) %>%
+        dplyr::mutate(t = as.numeric(.data$time) - 1,
+                      sim = as.numeric(.data$rep)) %>%
+        tidyr::pivot_wider(values_from = .data$Freq,
+                           names_from = .data$variable) %>%
         as.data.frame() %>%
-        dplyr::select(t, S, I, R, sim)
+        dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim)
     return(out)
  }
 
@@ -145,10 +145,10 @@ fortify_EpiModel <- function(EpiModel_output){
   ## Actual formatting
 
   if(object_class == "icm"){
-    n_sim <- EpiModel_icm$control$nsims
-    S_mat <- EpiModel_icm$epi$s.num
-    I_mat <- EpiModel_icm$epi$i.num
-    R_mat <- EpiModel_icm$epi$r.num
+    n_sim <- EpiModel_output$control$nsims
+    S_mat <- EpiModel_output$epi$s.num
+    I_mat <- EpiModel_output$epi$i.num
+    R_mat <- EpiModel_output$epi$r.num
     if(tidyr_new_interface()){
       S_df <- tidyr::pivot_longer(as.data.frame(S_mat), cols = tidyr::everything(),
                                   names_to = "sim",
@@ -164,7 +164,7 @@ fortify_EpiModel <- function(EpiModel_output){
       I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
       R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
     }
-    t <- rep(1:EpiModel_icm$control$nsteps, ncol(S_mat))
+    t <- rep(1:EpiModel_output$control$nsteps, ncol(S_mat))
     SIR_df <- data.frame(t = t, S = S_df$S, I = I_df$I,
                          R = R_df$R, sim = S_df$sim)
 
@@ -172,12 +172,12 @@ fortify_EpiModel <- function(EpiModel_output){
 
   } else if(object_class == "dcm"){
 
-    t <- EpiModel_det$control$timesteps
-    S <- EpiModel_det$epi$s.num
+    t <- EpiModel_output$control$timesteps
+    S <- EpiModel_output$epi$s.num
     names(S) <- NULL
-    I <- EpiModel_det$epi$i.num
+    I <- EpiModel_output$epi$i.num
     names(I) <- NULL
-    R <- EpiModel_det$epi$r.num
+    R <- EpiModel_output$epi$r.num
     names(R) <- NULL
     SIR_df <- data.frame(t = t, S = S, I = I, R = R)
   }

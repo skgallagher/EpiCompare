@@ -4,3 +4,6 @@
 ^data-raw$
 ^\.travis\.yml$
 ^images$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

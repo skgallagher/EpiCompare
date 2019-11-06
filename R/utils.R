@@ -338,11 +338,11 @@ SEIR_to_XYZ <- function(data,
                                    l = var_order[2],
                                    r = var_order[3],
                                    f = var_order[4]) %>%
-    dplyr::mutate(N = t + l + r + f) %>%
-    dplyr::mutate(x = (r + 1 - l ) / 2 / N,
-                  y = (sqrt(3)/2 * t + sqrt(3)/6 * f) / N,
-                  z = sqrt(6) / 3 * f / N) %>%
-    dplyr::select(-N) %>%
+    dplyr::mutate(N = .data$t + .data$l + .data$r + .data$f) %>%
+    dplyr::mutate(x = (.data$r + 1 - .data$l ) / 2 / .data$N,
+                  y = (sqrt(3)/2 * .data$t + sqrt(3)/6 * .data$f) / .data$N,
+                  z = sqrt(6) / 3 * .data$f / .data$N) %>%
+    dplyr::select(-.data$N) %>%
     dplyr::rename(t = "time")
   return(new_df)
 
@@ -377,11 +377,11 @@ SEIR_to_SIR_E <- function(data,
                                    I = ternary_vars[2],
                                    R = ternary_vars[3],
                                    group = group_var[1]) %>%
-    dplyr::mutate(N = S + I + R + group,
-                  n = S + I + R) %>%
-    dplyr::mutate(S = S / n, I = I / n, R = R / n,
-                  group = group / N) %>%
-    dplyr::select(-c(N, n))
+    dplyr::mutate(N = .data$S + .data$I + .data$R + .data$group,
+                  n = .data$S + .data$I + .data$R) %>%
+    dplyr::mutate(S = .data$S / .data$n, I = .data$I / .data$n, R = .data$R / .data$n,
+                  group = .data$group / .data$N) %>%
+    dplyr::select(-c(.data$N, .data$n))
   return(new_df)
 }
 
