@@ -92,4 +92,4 @@ pomp_pomp <- simulate(
 usethis::use_data(pomp_pomp, overwrite = TRUE)
 
 
-out <- 
+

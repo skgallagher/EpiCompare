@@ -11,12 +11,24 @@ fortify_pomp(pomp_output)
 }
 \value{
 data frame with the following columns
+\describe{
+\item{t}{the time}
+\item{S}{number of Susceptibles}
+\item{I}{number of Infectious}
+\item{R}{number of Recovered}
+\item{sim}{simulation number (factor variable) (optional column)}
+}
 }
 \description{
 Takes in data from the R pomp package and puts it in SIR format
 }
-\details{
-\describe{
-\item{t}{}
-}
+\examples{
+data(pomp_df)
+fortified_df <- fortify_pomp(pomp_df)
+data(pomp_pomp)
+fortified_pomp <- fortify_pomp(pomp_pomp)
+fortified_arr <- fortify_pomp(pomp_arr)
+assertthat::are_equal(fortified_df, fortified_pomp)
+assertthat::are_equal(fortified_pomp, fortified_arr)
+head(pomp_df)
 }

@@ -8,7 +8,7 @@
 #' str(pomp_pomp)
 "pomp_pomp"
 
-test <- as.data.frame(pomp_pomp)
+
 
 #' Example SIR simulation output of class ' array' from the \code{pomp} package
 #'
