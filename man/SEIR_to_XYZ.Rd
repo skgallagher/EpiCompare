@@ -25,7 +25,7 @@ original data frame along with columns x, y, and z
 Convert SEIR to XYZ coordinates fixed in a tetrahedron
 }
 \examples{
-seir <- data.frame(time = 0:3,
+seir <- data.frame(t = 0:3,
 S = c(90, 80, 70, 60),
 E = c(0, 10, 10, 10),
 I = c(10, 10, 10, 10),

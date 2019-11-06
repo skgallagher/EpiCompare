@@ -323,7 +323,7 @@ tidyr_new_interface <- function() {
 #' @return original data frame along with columns x, y, and z
 #' @export
 #' @examples
-#' seir <- data.frame(time = 0:3,
+#' seir <- data.frame(t = 0:3,
 #' S = c(90, 80, 70, 60),
 #' E = c(0, 10, 10, 10),
 #' I = c(10, 10, 10, 10),
@@ -363,7 +363,7 @@ SEIR_to_XYZ <- function(data,
 #' @return data frame with the transformed variables SEIR -> s, i, r, group variables
 #' @export
 #' @examples
-#' seir <- data.frame(time = 0:3,
+#' seir <- data.frame(t = 0:3,
 #' S = c(90, 80, 70, 60),
 #' E = c(0, 10, 10, 10),
 #' I = c(10, 10, 10, 10),
