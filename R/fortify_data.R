@@ -7,17 +7,105 @@
 #'
 #' @param pomp_output Output from a pomp simulation, \code{pomp::simulate()}
 #' @return data frame with the following columns
-#' @details \describe{
-#' \item{t}{}
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
+#' @examples
+#' data(pomp_df)
+#' fortified_df <- fortify_pomp(pomp_df)
+#' data(pomp_pomp)
+#' fortified_pomp <- fortify_pomp(pomp_pomp)
+#' fortified_arr <- fortify_pomp(pomp_arr)
+#' assertthat::are_equal(fortified_df, fortified_pomp)
+#' assertthat::are_equal(fortified_pomp, fortified_arr)
+#' head(pomp_df)
+#' @export
 fortify_pomp <- function(pomp_output){
-  if(!(class(pomp_output) %in% c("data.frame", "pomp", "array"))){
-    stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pomp' or 'array' output")
-  }
+    pomp_class <- class(pomp_output)
+    if(!(pomp_class %in% c("data.frame", "pompList", "list"))){
+        stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pompList' or 'array' output")
+    }
+    if(pomp_class == "data.frame"){
+        df_f <- fortify_pomp.df(pomp_output)
+    } else if(pomp_class == "pompList"){
+        df_f <- fortify_pomp.pomp(pomp_output)
+    } else if(pomp_class == "list"){
+        df_f <- fortify_pomp.arr(pomp_output)
+    }
 
 
+    return(df_f)
 }
 
+#' Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR
+#'
+#' @param pomp_output Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}
+#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+fortify_pomp.df <- function(pomp_output){
+    out <- pomp_output %>%
+        dplyr::rename(t = "time", sim = ".id") %>%
+        dplyr::select(t, S, I, R, sim) %>%
+        dplyr::mutate(sim = factor(sim))
+
+    ## #TODO: How do we handle non integer t?
+    return(out)
+}
+
+#' Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR
+#'
+#' @param pomp_output Output from a pomp simulation where the output is 'array', \code{pomp::simulate()}
+#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+fortify_pomp.arr <- function(pomp_output){
+    arr <- pomp_output[[1]]
+    out <- arr %>%
+        as.data.frame.table() %>%
+        dplyr::mutate(t = as.numeric(time) - 1,
+                      sim = as.numeric(rep)) %>%
+        tidyr::pivot_wider(values_from = Freq,
+                           names_from = variable) %>%
+        as.data.frame() %>%
+        dplyr::select(t, S, I, R, sim)
+    return(out)
+ }
+
+
+#' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
+#'
+#' @param pomp_output Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}
+#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+fortify_pomp.pomp <- function(pomp_output){
+    df <- as.data.frame(pomp_output)
+    out <- fortify_pomp.df(df)
+    return(out)
+ }
 
 #' Takes in output from the \code{R} \code{EpiModel} package and puts it in SIR format
 #'

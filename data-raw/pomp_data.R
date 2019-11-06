@@ -35,12 +35,12 @@ sir.step <- "
 "
 
 
-pomp_sir <- simulate(
-  times = seq(0, 10, by = 1/52),
-  t0 = -1/52,
+pomp_df <- simulate(
+  times = seq(0, 100, by = 1),
+  t0 = 0,
   dmeasure = Csnippet(dmeas),
   rmeasure = Csnippet(rmeas),
-  rprocess = euler(step.fun = Csnippet(sir.step), delta.t = 1/52/20),
+  rprocess = euler(step.fun = Csnippet(sir.step), delta.t = 1),
   obsnames="cases",
   statenames = c("S", "I", "R", "H"),
   paramnames = c("gamma", "mu", "theta", "Beta", "popsize",
@@ -53,11 +53,43 @@ pomp_sir <- simulate(
     R = nearbyint(popsize * R_0 / sum);
     H = 0;
     "),
-  params = c(popsize = 500000, Beta = 400, gamma = 26,
-             mu = 1/50, rho = 0.1, theta = 100, S.0 = 26/400,
-             I.0 = 0.002, R.0 = 1),
+  params = c(popsize = 1000, Beta = .1, gamma = .03,
+             mu = 0, rho = 0, theta = 0, S.0 = 950,
+             I.0 = 50, R.0 = 0),
   seed = 1914679908L,
   format = "data.frame",
   nsim = 100)
  
-usethis::use_data(pomp_sir, overwrite = TRUE)
+usethis::use_data(pomp_df, overwrite = TRUE)
+
+
+### pomp object
+pomp_pomp <- simulate(
+  times = seq(0, 100, by = 1),
+  t0 = 0,
+  dmeasure = Csnippet(dmeas),
+  rmeasure = Csnippet(rmeas),
+  rprocess = euler(step.fun = Csnippet(sir.step), delta.t = 1),
+  obsnames="cases",
+  statenames = c("S", "I", "R", "H"),
+  paramnames = c("gamma", "mu", "theta", "Beta", "popsize",
+                 "rho", "S.0", "I.0", "R.0"),
+  accumvars = "H",
+  rinit = Csnippet("
+    double sum = S_0 + I_0 + R_0;
+    S = nearbyint(popsize * S_0 / sum);
+    I = nearbyint(popsize * I_0 / sum);
+    R = nearbyint(popsize * R_0 / sum);
+    H = 0;
+    "),
+  params = c(popsize = 1000, Beta = .1, gamma = .03,
+             mu = 0, rho = 0, theta = 0, S.0 = 950,
+             I.0 = 50, R.0 = 0),
+  seed = 1914679908L,
+  format = "pomp",
+  nsim = 100)
+ 
+usethis::use_data(pomp_pomp, overwrite = TRUE)
+
+
+out <- 

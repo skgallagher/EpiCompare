@@ -17,12 +17,23 @@ seir <- SEIR(pars = parameters, init = initials, time = 0:(150))
 PlotMods(seir)
 
 df <- seir$results
+df <- df %>% dplyr::rename(t = "time")
 
 gg_df <- SEIR_to_XYZ(data = df)
 
-p <- plot_ly(data, x = ~x, y = ~y, z = ~z, type = 'scatter3d', mode = 'lines',
-             opacity = 1, line = list(width = 6, color = ~time, reverscale = FALSE))
+verts <- data.frame(name = c("top", "left", "right", "front"),
+                    x = c(.5, 0, 1, .5),
+                    y = c(sqrt(3)/2, 0, 0, sqrt(3)/6),
+                    z = c(0, 0, 0, sqrt(6)/3))
+tetrahedron <- verts[c(1, 2, 3, 1, 4, 2, 4, 3, 4),]
+tet <- tetrahedron[, c("x", "y", "z")]
+ggdf <- gg_df %>% dplyr::select(-c(""))
 
+p <- plot_ly(gg_df,  type = 'scatter3d', mode = 'lines',
+             opacity = 1, line = list(width = 6, color = ~time, reverscale = FALSE)) +
+  plot_ly(data = verts)
+chart_link = api_create(p, filename="scatter3d-basic")
+chart_link
 #########################
 verts <- data.frame(name = c("top", "left", "right", "front"),
                     x = c(.5, 0, 1, .5),

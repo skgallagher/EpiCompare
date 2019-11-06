@@ -1,3 +1,50 @@
+#' Example SIR simulation output of class ' pomp' from the \code{pomp} package
+#'
+#' @description The data is an example of simulation output from functions from the \href{https://kingaa.github.io/pomp/}{pomp package by King et al}.  The code for how this data was generated can be found in the \code{data-raw} folder.  We also make available the other possible output formats from pomp.  See \link{pomp_df} and \link{pomp_arr}
+#'
+#' @format The object is a 'pompList' which contains essentially all information from a \code{pomp} simulation.
+#' @examples
+#' data("pomp_pomp")
+#' str(pomp_pomp)
+"pomp_pomp"
+
+test <- as.data.frame(pomp_pomp)
+
+#' Example SIR simulation output of class ' array' from the \code{pomp} package
+#'
+#' @description The data is an example of simulation output from functions from the \href{https://kingaa.github.io/pomp/}{pomp package by King et al}.  The code for how this data was generated can be found in the \code{data-raw} folder.  We also make available the other possible output formats from pomp.  See \link{pomp_df} and \link{pomp_pomp}
+#'
+#' @format A list of 2 entries where the first and second entries are both arrays.  The first entry has dimension 4x 100 x10 and the dimension names are respectively variable ("S", "I", "R", "H"), rep, and time.  The second entry has dimension 1 x 100 x 101 where the dimension names are respectively variable ("cases"), 'rep', and 'time'.  Thus entry ijk in either array corresponds to the number of the variable i at simulation/rep j and time k.
+#' @examples
+#' data("pomp_arr")
+#' names(pomp_arr)
+#' dimnames(pomp_arr[[1]])
+"pomp_arr"
+
+#' Example SIR simulation output of class ' data.frame' from the \code{pomp} package
+#'
+#' @description The data is an example of simulation output from functions from the \href{https://kingaa.github.io/pomp/}{pomp package by King et al}.  The code for how this data was generated can be found in the \code{data-raw} folder.  We also make available the other possible output formats from pomp.  See \link{pomp_arr} and \link{pomp_pomp}
+#'
+#' @format A data frame of dimension 10100 x 7 where the columns are
+#' \describe{
+#' \item{time}{an integer value between 0 and 100}
+#'\item{.id}{the simulation ID number}
+#' \item{S}{The number of Susceptible at given time and simulation ID}
+#' \item{I}{The number of Infectious at given time and simulation ID}
+#' \item{R}{The number of Recovered at given time and simulation ID}
+#' \item{H}{A helper variable}
+#' \item{cases}{}
+#' }
+#' @examples
+#' data("pomp_df")
+#' head(pomp_df)
+#' library(ggplot2)
+#' ggplot(pomp_df) + geom_line(aes(x = time, y = I, group = .id,
+#' col = as.numeric(.id)))
+"pomp_df"
+
+
+
 #' Measles in Hagelloch, Germany, 1861
 #'
 #' @description
