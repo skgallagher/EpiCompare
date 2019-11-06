@@ -102,7 +102,8 @@ fortify_pomp.arr <- function(pomp_output){
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
 fortify_pomp.pomp <- function(pomp_output){
-    df <- as.data.frame(pomp_output)
+    convert_fxn <- get("as.data.frame", envir = asNamespace("pomp"))
+    df <- convert_fxn(pomp_output)
     out <- fortify_pomp.df(df)
     return(out)
  }
