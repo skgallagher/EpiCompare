@@ -385,3 +385,34 @@ SEIR_to_SIR_E <- function(data,
   return(new_df)
 }
 
+#' Updates approved layers of ggtern
+#'
+#' @param stat_names named vector of new stats.
+#' @param geom_names named vector of new geoms
+#'
+#' @return NULL
+#'
+#' @examples
+#' .newstat = c(sir_raw       = "StatSirRaw",
+#'              sir_fortified = "StatSirFortified")
+#' .newgeom = NULL
+#' update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
+update_approved_layers <- function(stat_names = NULL, geom_names = NULL){
+  approvestatupdate <- c(ggtern:::.approvedstat,
+                         stat_names)
+  assignInNamespace(".approvedstat", approvestatupdate,
+                    pos = "package:ggtern")
+
+  approvestatupdate <- c(ggtern:::.approvedgeom,
+                         stat_names)
+  assignInNamespace(".approvedstat", approvestatupdate,
+                    pos = "package:ggtern")
+
+}
+
+# List of new stats
+.newstat = c(sir_raw       = "StatSirRaw",
+             sir_fortified = "StatSirFortified")
+.newgeom = NULL
+update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
+
