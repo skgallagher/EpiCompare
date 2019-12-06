@@ -15,12 +15,12 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
-    R (>= 2.10)
+    R (>= 2.10),
+    ggtern
 Imports:
     assertthat,
     dplyr,
     ggplot2,
-    ggtern,
     purrr,
     raster,
     rlang,
