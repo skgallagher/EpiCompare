@@ -16,12 +16,6 @@ You can install the developmental version of timeternR from github using:
 devtools::install_github("shannong19/timeternR")
 ```
 
-Currently we also need you to download a slightly modified version of `ggtern`, which can be done in the following way (see [Notes on `ggtern` functions](#notes-on-ggtern-functions))
-
-```r
-devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
-```
-
 ## Data
 
    Currently there are five small data sets available in `timeternR`
@@ -38,13 +32,6 @@ devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
 
 
 =======
-
-
-## Notes on `ggtern` functions
-
-The following can nicely make visuals conditional on grouping, on the flip side
-it appears to be harder to develop your own stats for `ggtern` ([issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/8/developing-new-stats-and-geoms)).
-
 
 ## Example
 
@@ -63,7 +50,6 @@ hagelloch_raw %>%
 
 
 =======
-
 
 ![](images/stat_sir_example.png)
 
@@ -91,10 +77,12 @@ df_groups <- out %>% dplyr::group_by(sim) %>%  UtoX_SIR_group
 
 ```
 
-## on tidyverse 1.0
-see:
+## Notes:
+1. For writing code that works with `tidyverse` 1.0 vs `tidyverse` <= 0.8.3 see:
 https://tidyr.tidyverse.org/articles/in-packages.html
-
+2. For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
+    a. https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups
+    b. https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479
 
 ## Contributors
 

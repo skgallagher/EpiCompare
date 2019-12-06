@@ -26,6 +26,7 @@ To install `timeternR`, run the folllowing code.
 if(!require(timeternR)){
   devtools::install_github("shannong19/timeternR")
 }
+library(timeternR)
 ```
 
 ```{r echo = F, message = F, warning = F}
@@ -33,18 +34,9 @@ if(!require(timeternR)){
 devtools::load_all()
 ```
 
-
-We currently also require a slightly modified version of `ggtern` which can be done by running the following:
-
-```{r eval = FALSE}
-devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
-```
-
-
 # Quickstart
 
 ```{r setup, message = FALSE, warning = FALSE}
-#library(timeternR)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -96,6 +88,12 @@ df_ave <- out %>% UtoX_SIR %>%
 ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
                                 S, I, R)),
        aes(x = t, y = Value, group = State)) +
+  geom_line()
+
+ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
+                                S, I, R)),
+       aes(x = t, y = Value)) +
+  facet_grid(State~.) + 
   geom_line()
 
 
