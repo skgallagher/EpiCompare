@@ -24,6 +24,7 @@ To install `timeternR`, run the folllowing code.
 
 ```{r eval = FALSE}
 if(!require(timeternR)){
+  library(devtools)
   devtools::install_github("shannong19/timeternR")
 }
 library(timeternR)
@@ -31,6 +32,7 @@ library(timeternR)
 
 ```{r echo = F, message = F, warning = F}
 # hidden load currently
+library(devtools)
 devtools::load_all()
 ```
 
@@ -47,6 +49,7 @@ library(ggtern)
 ## Visualizing epidemic progression using timeternR
 
 ```{r eval = T, warning = F}
+library(kableExtra)
 timeternR::hagelloch_raw %>% head() %>%
   select(PN, NAME, AGE, SEX,
          tPRO, tERU, tI, tR) %>%

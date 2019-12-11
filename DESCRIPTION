@@ -31,6 +31,7 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    pomp
-RoxygenNote: 6.1.1
+    outbreaks,
+    pomp,
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr

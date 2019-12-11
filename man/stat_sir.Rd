@@ -2,11 +2,33 @@
 % Please edit documentation in R/stat.R
 \name{stat_sir}
 \alias{stat_sir}
+\alias{geom_sir}
 \title{SIR path visuals}
 \usage{
-stat_sir(mapping = NULL, data = NULL, geom = "path",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, data_type = c("raw", "fortified"), ...)
+stat_sir(
+  mapping = NULL,
+  data = NULL,
+  geom = "path",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  data_type = c("raw", "fortified"),
+  ...
+)
+
+geom_sir(
+  mapping = NULL,
+  data = NULL,
+  stat = list("SirRaw", "SirFortified")[which(c("raw", "fortified") \%in\%
+    data_type)][[1]],
+  position = "identity",
+  ...,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  data_type = c("raw", "fortified")
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by
@@ -26,7 +48,7 @@ A function will be called with a single argument, the plot data. The return
 value must be a data.frame, and will be used as the layer data. A function
 can be created from a formula (e.g. ~ head(.x, 10)).}
 
-\item{geom}{Override the default connection between stat_sir() and
+\item{geom}{Override the default connection between \code{stat_sir()} and
 \code{\link[ggplot2:geom_path]{geom_path()}}.}
 
 \item{position}{Position adjustment, either as a string, or the result of a
@@ -53,6 +75,8 @@ or the output of \code{\link{fortify_agents}}).}
 These are often aesthetics, used to set an aesthetic to a fixed value, like
 \code{colour = "red"} or \code{size = 3}. They may also be parameters to the
 paired geom/stat.}
+
+\item{stat}{Overrides state that is defined relative to \code{data_type}}
 }
 \description{
 SIR path visuals
@@ -91,6 +115,23 @@ library(ggplot2)
 library(dplyr)
 library(ggtern)
 
+
+# geom_sir
+timeternR::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
+  ggplot(., aes(y = tI, z = tR, color = SEX)) +
+  geom_sir(data_type = "raw") + coord_tern() +
+  labs(x = "S", y = "I", z = "R",
+       color = "Gender")
+
+timeternR::U_sims_tidy \%>\%
+  ggplot() +
+  geom_sir(aes(x = SMax, y = IMax, init_state = init_state,
+                group = sim), alpha = .1,
+            data_type = "fortified") +
+  coord_tern() +
+  labs(x = "S", y = "I", z = "R")
+
+# stat_sir
 timeternR::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
   ggplot(., aes(y = tI, z = tR, color = SEX)) +
   geom_path(stat = StatSirRaw) + coord_tern() +
@@ -119,4 +160,5 @@ timeternR::U_sims_tidy \%>\%
             data_type = "fortified") +
   coord_tern() +
   labs(x = "S", y = "I", z = "R")
+
 }
