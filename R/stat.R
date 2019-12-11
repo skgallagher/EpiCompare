@@ -197,7 +197,7 @@ stat_sir <- function(mapping = NULL, data = NULL, geom = "path",
 #' @export
 #' @rdname stat_sir
 geom_sir <- function(mapping = NULL, data = NULL,
-                     stat = list("SirRaw", "SirFortified")[which(c("raw", "fortified") %in% data_type)][[1]],
+                     stat = c("SirRaw", "SirFortified")[which(c("raw", "fortified") %in% data_type)],
                      position = "identity",
                      ...,
                      na.rm = FALSE,
@@ -225,5 +225,5 @@ geom_sir <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomSIR <- ggplot2::ggproto("GeomSIR", GeomPath)
+GeomSIR <- ggplot2::ggproto("GeomSIR", ggplot2::GeomPath)
 

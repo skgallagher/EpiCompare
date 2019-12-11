@@ -20,8 +20,7 @@ stat_sir(
 geom_sir(
   mapping = NULL,
   data = NULL,
-  stat = list("SirRaw", "SirFortified")[which(c("raw", "fortified") \%in\%
-    data_type)][[1]],
+  stat = c("SirRaw", "SirFortified")[which(c("raw", "fortified") \%in\% data_type)],
   position = "identity",
   ...,
   na.rm = FALSE,

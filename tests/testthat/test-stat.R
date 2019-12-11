@@ -1,5 +1,11 @@
 context("tests for visualizations/ stats")
 
+
+# .newstat = c(sir_raw       = "StatSirRaw",
+#              sir_fortified = "StatSirFortified")
+.newgeom = c(sir = "GeomSIR")
+update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
+
 # stat_sir testing ----------------------
 
 # StatSirRaw ----------------------------
