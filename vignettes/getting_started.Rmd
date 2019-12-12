@@ -80,13 +80,8 @@ timeternR::hagelloch_raw %>%
 
 The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
 
-	
-```{r, eval = TRUE}
-
-
 ## Simulating epidemics with `simulate_SIR_agents`.
 
-=======
 ```{r, eval = T, fig.asp = .62, out.width = '60%'}
 
 
@@ -115,10 +110,7 @@ col = State)) +
 
 
 ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
-=======
-ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
-                                S, I, R)),
-=======
+
 if (tidyr_new_interface()){ # if tidyr version > 0.8.99
   df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
                                           values_to = "Value",

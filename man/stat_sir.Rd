@@ -5,14 +5,29 @@
 \alias{geom_sir}
 \title{SIR path visuals}
 \usage{
-stat_sir(mapping = NULL, data = NULL, geom = "path",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, data_type = c("raw", "fortified"), ...)
+stat_sir(
+  mapping = NULL,
+  data = NULL,
+  geom = "path",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  data_type = c("raw", "fortified"),
+  ...
+)
 
-geom_sir(mapping = NULL, data = NULL, stat = c("SirRaw",
-  "SirFortified")[which(c("raw", "fortified") \%in\% data_type)][1],
-  position = "identity", ..., na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, data_type = c("raw", "fortified"))
+geom_sir(
+  mapping = NULL,
+  data = NULL,
+  stat = c("SirRaw", "SirFortified")[which(c("raw", "fortified") \%in\% data_type)][1],
+  position = "identity",
+  ...,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  data_type = c("raw", "fortified")
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by

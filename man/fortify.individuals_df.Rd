@@ -5,8 +5,11 @@
 \title{Fortify agent data frame with columns when individual stops being susceptible
 and stops being infected (as well as initial state).}
 \usage{
-\method{fortify}{individuals_df}(raw_df, time_col = c("tI", "tR"),
-  max_time = floor(max(raw_df[, time_col], na.rm = TRUE)) + 1)
+\method{fortify}{individuals_df}(
+  raw_df,
+  time_col = c("tI", "tR"),
+  max_time = floor(max(raw_df[, time_col], na.rm = TRUE)) + 1
+)
 }
 \arguments{
 \item{raw_df}{data frame, agent based data frame, class ("individuals_df")}
