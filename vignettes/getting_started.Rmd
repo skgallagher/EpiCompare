@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+devtools::load_all()
 ```
 
 <left>
@@ -45,9 +46,9 @@ library(ggtern)
 ```
 
 
-```{r quickstart, fig.width=6, eval=FALSE}
+The below takes a data frame of individuals who have reported infection and recovery times, groups them into male and females, aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
 
-
+```{r quickstart, fig.width=6, eval=TRUE}
 timeternR::hagelloch_raw %>%
    dplyr::filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
@@ -58,7 +59,11 @@ timeternR::hagelloch_raw %>%
 
 ```
 
-```{r, eval = FALSE}
+The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
+
+	
+```{r, eval = TRUE}
+
 n_sims <- 1
 n_time_steps <- 100
 beta <- .1
@@ -77,8 +82,10 @@ df_ave <- out %>%   UtoX_SIR %>%
 
 ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
                                 S, I, R)),
-       aes(x = t, y = Value, group = State)) +
+       aes(x = t, y = Value, group = State,
+col = State)) +
   geom_line()
 
+ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
 
 ```
