@@ -4,10 +4,10 @@
 \alias{fortify_pomp}
 \title{Generic method that takes in data from the R pomp package and puts it in SIR format}
 \usage{
-fortify_pomp(pomp_output)
+fortify_pomp(data)
 }
 \arguments{
-\item{pomp_output}{Output from a pomp simulation, \code{pomp::simulate()}}
+\item{data}{Output from a pomp simulation, \code{pomp::simulate()}}
 }
 \value{
 data frame with the following columns

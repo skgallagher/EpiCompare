@@ -4,10 +4,12 @@
 \alias{fortify.icm}
 \title{Takes in output from the \code{R} \code{EpiModel} package in \code{icm} format and puts it in SIR format}
 \usage{
-\method{fortify}{icm}(EpiModel_output)
+\method{fortify}{icm}(data, ...)
 }
 \arguments{
-\item{EpiModel_output}{output from  \code{EpiModel::icm}}
+\item{data}{output from  \code{EpiModel::icm}}
+
+\item{...}{additional arguments}
 }
 \value{
 data frame with the following columns

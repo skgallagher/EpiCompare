@@ -4,8 +4,14 @@
 \alias{simulate_SIR_agents}
 \title{Simulate SIR data according to a chain Binomial}
 \usage{
-simulate_SIR_agents(n_sims, n_time_steps, beta, gamma, init_SIR,
-  output_format = "data.frame")
+simulate_SIR_agents(
+  n_sims,
+  n_time_steps,
+  beta,
+  gamma,
+  init_SIR,
+  output_format = "data.frame"
+)
 }
 \arguments{
 \item{n_sims}{number of times to run simulation}

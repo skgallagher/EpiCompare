@@ -4,10 +4,10 @@
 \alias{fortify_pomp.pompList}
 \title{Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR}
 \usage{
-\method{fortify_pomp}{pompList}(pomp_output)
+\method{fortify_pomp}{pompList}(data)
 }
 \arguments{
-\item{pomp_output}{Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}}
+\item{data}{Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}}
 }
 \value{
 data frame with the following columns

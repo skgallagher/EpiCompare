@@ -1,7 +1,7 @@
 context("test for utility functions")
 
 test_that("fortify_agent has logical output for hagelloch_raw", {
-  fortify_df <- fortify_agents(timeternR::hagelloch_raw,
+  fortify_df <- fortify.individuals_df(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
                                max_time = 94)
   # at least 1 person "started" the outbreak
@@ -14,7 +14,7 @@ test_that("fortify_agent has logical output for hagelloch_raw", {
 
 test_that(paste("fortify_agent has logical output for hagelloch_raw2",
                 "(and works with NAs in tI, tR spots)"), {
-  fortify_df <- fortify_agents(timeternR::hagelloch_raw2,
+  fortify_df <- fortify.individuals_df(timeternR::hagelloch_raw2,
                                time_col = c("tI","tR"),
                                max_time = 94)
 
@@ -31,13 +31,13 @@ test_that(paste("fortify_agent has logical output for hagelloch_raw2",
 
   bad <- hagelloch_raw2
   bad$tI[188] <- NA
-  testthat::expect_error(fortify_agents(bad, time_col = c("tI","tR"),
+  testthat::expect_error(fortify.individuals_df(bad, time_col = c("tI","tR"),
                                         max_time = 94))
 
 })
 
 test_that("fortify_agent is able to recreate timeternR::hagelloch_agents", {
-  fortify_df <- fortify_agents(timeternR::hagelloch_raw,
+  fortify_df <- fortify.individuals_df(timeternR::hagelloch_raw,
                                time_col = c("tI","tR"),
                                max_time = 94)
 
@@ -50,11 +50,11 @@ test_that("fortify_agent is able to recreate timeternR::hagelloch_agents", {
 
 test_that("fortify_agent errors when incorrect time_cols entered", {
   # note currently agent 141 has values that don't match...
-  testthat::expect_error(fortify_agents(timeternR::hagelloch_raw,
+  testthat::expect_error(fortify.individuals_df(timeternR::hagelloch_raw,
                                time_col = c("tI")))
-  testthat::expect_error(fortify_agents(timeternR::hagelloch_raw,
+  testthat::expect_error(fortify.individuals_df(timeternR::hagelloch_raw,
                                         time_col = c("tI", "tR, tDeath")))
-  testthat::expect_error(fortify_agents(timeternR::hagelloch_raw,
+  testthat::expect_error(fortify.individuals_df(timeternR::hagelloch_raw,
                                         time_col = c("tI", "banana")))
 })
 
@@ -102,7 +102,7 @@ test_that("UtoX_SIR_group passes basic checks", {
       ))
   # same test as in the example string
   max_time <- 100
-  U_g <- hagelloch_raw %>% fortify_agents() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
+  U_g <- hagelloch_raw %>% fortify.individuals_df() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
   sir_group <- UtoX_SIR_group(U_g, max_time)
   U <- U_g %>%
     filter(AGE2 == 1) %>% ungroup()
@@ -118,7 +118,7 @@ test_that("UtoX_SIR_group passes basic checks", {
 
 test_that("fortification and UtoX_sir work together", {
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.agents()  %>%
     UtoX_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")

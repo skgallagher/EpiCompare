@@ -182,7 +182,7 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 #' @examples
 #' library(dplyr)
 #' max_time <- 100
-#' U_g <- hagelloch_raw %>% fortify_agents() %>%
+#' U_g <- hagelloch_raw %>% fortify.individuals_df() %>%
 #'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
 #' sir_group <- UtoX_SIR_group(U_g, max_time)
 #' U <- U_g %>%

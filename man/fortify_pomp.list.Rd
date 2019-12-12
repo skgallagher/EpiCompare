@@ -4,10 +4,12 @@
 \alias{fortify_pomp.list}
 \title{Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR}
 \usage{
-\method{fortify_pomp}{list}(pomp_output)
+\method{fortify_pomp}{list}(data)
 }
 \arguments{
-\item{pomp_output}{Output from a pomp simulation where the output is 'array', \code{pomp::simulate()}}
+\item{data}{Output from a pomp simulation where the output is 'array', \code{pomp::simulate()}}
+
+\item{...}{additional arguments}
 }
 \value{
 data frame with the following columns

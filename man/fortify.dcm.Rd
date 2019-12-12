@@ -4,10 +4,10 @@
 \alias{fortify.dcm}
 \title{Takes in output from the \code{R} \code{EpiModel} package in the \code{dcm} class and puts it in SIR format}
 \usage{
-\method{fortify}{dcm}(EpiModel_output)
+\method{fortify}{dcm}(data)
 }
 \arguments{
-\item{EpiModel_output}{output from \code{EpiModel::dcm}}
+\item{data}{output from \code{EpiModel::dcm}}
 }
 \value{
 data frame with the following columns
