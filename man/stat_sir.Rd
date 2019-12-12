@@ -10,7 +10,7 @@ stat_sir(mapping = NULL, data = NULL, geom = "path",
   inherit.aes = TRUE, data_type = c("raw", "fortified"), ...)
 
 geom_sir(mapping = NULL, data = NULL, stat = c("SirRaw",
-  "SirFortified")[which(c("raw", "fortified") \%in\% data_type)],
+  "SirFortified")[which(c("raw", "fortified") \%in\% data_type)][1],
   position = "identity", ..., na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, data_type = c("raw", "fortified"))
 }
