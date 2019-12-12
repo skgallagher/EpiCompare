@@ -57,15 +57,20 @@ timeternR::hagelloch_raw %>% head() %>%
   kableExtra::kable_styling()
 ```
 
+```{r}
+theme_set(theme_minimal())
+```
+
 
 ```{r quickstart, fig.width=6, eval=T}
 timeternR::hagelloch_raw %>%
-   dplyr::filter(SEX %in% c("male", "female")) %>%
+   filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
-     timeternR::stat_sir(data_type = "raw") + 
+   geom_sir(data_type = "raw") + 
+   geom_point(stat = "SirRaw") + 
      coord_tern() +
      labs(x = "S", y = "I", z = "R",
-          color = "Gender")
+          color = "Gender") 
 
 ```
 
@@ -91,13 +96,14 @@ df_ave <- out %>% UtoX_SIR %>%
 ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
                                 S, I, R)),
        aes(x = t, y = Value, group = State)) +
-  geom_line()
+  geom_line() 
 
 ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
                                 S, I, R)),
        aes(x = t, y = Value)) +
   facet_grid(State~.) + 
-  geom_line()
+  geom_line() 
+  
 
 
 ```
