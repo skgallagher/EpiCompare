@@ -313,3 +313,13 @@ test_that("get_delta basic tests", {
                                             "mm_delta" = 1))
 
 })
+
+test_that("delta_structure tests", {
+  data_deep_points <- data.frame(lat = c(0,1,1),
+                                 long = c(0,0,1))
+
+  out_list <- delta_structure(data_deep_points)
+
+  expected_min_delta <- 1
+  expected_structure <- data.frame(x )
+})

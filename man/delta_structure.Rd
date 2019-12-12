@@ -4,10 +4,14 @@
 \alias{delta_structure}
 \title{Performs delta ball approach}
 \usage{
-delta_structure(data_deep_points)
+delta_structure(data_deep_points, xy_columns = c("lat", "long"))
 }
 \arguments{
 \item{data_deep_points}{data deep points from depth function}
+
+\item{xy_columns}{strings for column names of the points (x,y) - default is
+actually \code{"lat", "long"} as we are currently using an function from the
+\code{TCpredictionbands} package.}
 }
 \value{
 \describe{

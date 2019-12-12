@@ -339,6 +339,9 @@ get_delta <- function(data = NULL, dist_mat = NULL){
 #' Performs delta ball approach
 #'
 #' @param data_deep_points data deep points from depth function
+#' @param xy_columns strings for column names of the points (x,y) - default is
+#' actually \code{"lat", "long"} as we are currently using an function from the
+#' \code{TCpredictionbands} package.
 #'
 #' @return
 #' \describe{
@@ -346,11 +349,19 @@ get_delta <- function(data = NULL, dist_mat = NULL){
 #' \item{delta}{optimal delta for covering}
 #' }
 #' @export
-delta_structure <- function(data_deep_points){
+delta_structure <- function(data_deep_points, xy_columns = c("lat", "long")){
+  data_deep_points <- data_deep_points %>%
+    dplyr::select(dplyr::one_of(xy_columns)) %>%
+    dplyr::rename(lat = xy_columns[1], long = xy_columns[2])
+
   d_out <- get_delta(data_deep_points)
   delta = d_out$mm_delta
   structure_df <- TCpredictionbands::delta_ball_wrapper(data_deep_points,
                                                         remove_duplicates = TRUE)
+
+  names(structure_df)[names(structure_df) == "lat"] <- xy_columns[1]
+  names(structure_df)[names(structure_df) == "long"] <- xy_columns[2]
+
   out <- list()
   out[["structure"]] <- structure_df
   out[["delta"]] <- delta
