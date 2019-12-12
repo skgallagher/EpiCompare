@@ -5,7 +5,7 @@
 \title{Simulate SIR data according to a chain Binomial}
 \usage{
 simulate_SIR_agents(n_sims, n_time_steps, beta, gamma, init_SIR,
-  output_format = "array")
+  output_format = "data.frame")
 }
 \arguments{
 \item{n_sims}{number of times to run simulation}
@@ -20,13 +20,9 @@ simulate_SIR_agents(n_sims, n_time_steps, beta, gamma, init_SIR,
 \item{init_SIR}{vector of (S0, I0, R0) the number of agents initially in the
 Susceptible, Infected, and Recovered state, respectively.  The sum of this
 will be used as the number of agents}
-
-\item{output_format}{either "array" or "data.frame".  Default is array}
 }
 \value{
-If output_format = "array" then it is a n_sims x 3 x n_agents array
-where entry (i,j,k) is the ith simulation, the jth statistic and the kth
-agent. If output_format = "data.frame" then the output is a data.frame with
+The the output is a data.frame with
 columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents
 x n_sims) x 5.
 }
@@ -52,6 +48,6 @@ Similarly, if the agent never recovers or is recovered from time 0 on then
 \examples{
 sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5,
                                  beta = .5, gamma = .1, init_SIR = c(9,1,0),
-                                 output_format = "data.frame")
-assertthat::are_equal(class(sims_data), "data.frame")
+output_format = "data.frame")
+dim(sims_data)
 }

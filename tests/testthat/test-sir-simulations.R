@@ -10,8 +10,7 @@ test_that("simulate_SIR_agents_groups",{
   sims_data <- simulate_SIR_agents_groups(n_sims = 5,
                 n_time_steps = 10,
                 par_mat = par_mat,
-                init_mat = init_mat,
-                output_format = "data.frame")
+                init_mat = init_mat)
   expect_equal(ncol(sims_data), 6)
   expect_equal(nrow(sims_data), 5 * (100 + 50))
 
@@ -132,7 +131,6 @@ test_that("simulate_SIR_agents",{
   beta <- 0
   gamma <- 1
   init_SIR <- c(2, 1, 0)
-  output_format <- "array"
 
   out <- simulate_SIR_agents(n_sims = n_sims,
                              n_time_steps = n_time_steps,
@@ -198,7 +196,7 @@ test_that("simulate_SIR_agents",{
 })
 
 
-test_that("fortify_sims_array", {
+test_that("fortify.sims_array", {
 
   ############
   n_sims <- 2
@@ -214,7 +212,7 @@ test_that("fortify_sims_array", {
                              init_SIR = init_SIR,
                              output_format = output_format)
 
-  out <- fortify_sims_array(sims_data)
+  out <- fortify.sims_array(sims_data)
   expect_true(inherits(out, "data.frame"))
 
 
