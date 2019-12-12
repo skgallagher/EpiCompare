@@ -4,13 +4,8 @@
 \alias{simulate_SIR_agents_groups}
 \title{Simulate SIR data according to many, independent chain Binomials}
 \usage{
-simulate_SIR_agents_groups(
-  n_sims,
-  n_time_steps,
-  par_mat,
-  init_mat,
-  output_format = "array"
-)
+simulate_SIR_agents_groups(n_sims, n_time_steps, par_mat, init_mat,
+  output_format = "array")
 }
 \arguments{
 \item{n_sims}{number of times to run simulation.}

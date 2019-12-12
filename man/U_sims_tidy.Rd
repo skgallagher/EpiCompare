@@ -24,7 +24,7 @@ infection (or time T-1), and max time before recovery (or time T-1). Note time T
 is the final recorded time in the SIR model (in this case T = 50).
 }
 \examples{
-## show first simulation of first 10 agents
-U_sims[1, , 1:10]
+## show first 10 simulations of the first individual
+U_sims_tidy[1:10,]
 }
 \keyword{datasets}

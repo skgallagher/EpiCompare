@@ -1,9 +1,101 @@
 ## Fortify functions
 
 
+#' Fortify agent data frame with columns when individual stops being susceptible
+#' and stops being infected (as well as initial state).
+#'
+#' @param raw_df data frame, agent based data frame, class ("individuals_df")
+#' @param time_col length 2 string vector, column names recording when
+#' individual is infected and when they enter the recovery stage
+#' @param max_time int, maximum time for infection process
+#'
+#' @return \code{fortified_df} data frame, the \code{raw_df} plus three
+#' additional columns:
+#' \describe{
+#'   \item{init_state}{Initial state for individual (at time t = 0). For the
+#'   states, 0 = S, 1 = I, 2 = R.}
+#'   \item{max_time_S}{maximum time individual was susceptible (S)}
+#'   \item{max_time_I}{maximum time individual was infected (I)}
+#' }
+#'
+#'
+#' @export
+#'
+#' @examples
+#' fortify_df <- fortify.individuals_df(timeternR::hagelloch_raw,
+#'                              time_col = c("tI","tR"),
+#'                              max_time = 95)
+#' assertthat::are_equal(fortify_df[,c("init_state",
+#' "max_time_S", "max_time_I")],
+#'                       timeternR::hagelloch_agents)
+fortify.individuals_df <- function(raw_df, time_col = c("tI","tR"),
+                           max_time = floor(
+                             max(raw_df[,time_col], na.rm = TRUE)) + 1){
+  assertthat::assert_that(inherits(time_col, "character") &&
+                          length(time_col) == 2 &&
+                          all(time_col %in% names(raw_df)),
+                          msg = paste("time_col should be a string vector of",
+                                      "length 2 that has column names relative",
+                                      "to raw_df."))
+  N <- nrow(raw_df)
+
+  # initial state (was the individual the original one infected?)
+  A0 <- rep(0, N)
+  initial_inf <- intersect(which(raw_df[,time_col[1]] < 0),
+                           which(raw_df[,time_col[2]] >= 0))
+  initial_rec <- intersect(which(raw_df[,time_col[1]] < 0),
+                           which(raw_df[,time_col[2]] < 0))
+  A0[initial_inf] <- 1
+  A0[initial_rec] <- 2
 
 
-#' Takes in data from the R pomp package and puts it in SIR format
+
+  ## round I and R time - going to use floor
+  SMax <- ceiling(raw_df[,time_col[1]])
+  SMax <- ifelse(SMax > max_time-1, max_time-1, SMax)
+  IMax <- ceiling(raw_df[,time_col[2]])
+  IMax <- ifelse(IMax > max_time-1, max_time-1, IMax)
+  U <- data.frame(init_state = factor(A0),
+                  max_time_S = SMax,
+                  max_time_I = IMax)
+  # dealing with initially infected
+  U[union(initial_inf, initial_rec),"max_time_S"] <- NA
+  U[initial_rec,"max_time_I"] <- NA
+
+
+  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+
+  if (sum(inner_na_U) > 0){
+    # check NAs are logical
+    assertthat::assert_that(all(inner_na_U[-c(initial_inf, initial_rec),1] <=
+                                  inner_na_U[-c(initial_inf, initial_rec),2]),
+                            msg = paste("Please manually correct the fact that",
+                                        "an individual has a NA for the time",
+                                        "they reached the Infected stage, but",
+                                        "a time for when they reached the",
+                                        "Recovered stage."))
+
+
+    ### standard clean up of NAs
+    # update U
+    U[U$init_state == 0,
+      c("max_time_S", "max_time_I")][inner_na_U[U$init_state == 0,]] <- max_time
+    U[U$init_state == 1,
+      "max_time_I"][inner_na_U[U$init_state == 1,2]] <- max_time
+
+  }
+
+
+  fortified_df <- cbind(raw_df, U)
+  class(fortified_df) <- c("individuals_df", class(fortified_df))
+
+  return(fortified_df)
+}
+
+
+
+
+#' Generic method that takes in data from the R pomp package and puts it in SIR format
 #'
 #' @param pomp_output Output from a pomp simulation, \code{pomp::simulate()}
 #' @return data frame with the following columns
@@ -22,24 +114,29 @@
 #' fortified_arr <- fortify_pomp(pomp_arr)
 #' assertthat::are_equal(fortified_df, fortified_pomp)
 #' assertthat::are_equal(fortified_pomp, fortified_arr)
-#' head(pomp_df)
+#' head(fortified_df)
+#' class(fortified_df)
 #' @export
 fortify_pomp <- function(pomp_output){
-    pomp_class <- class(pomp_output)
-    if(!(pomp_class %in% c("data.frame", "pompList", "list"))){
-        stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pompList' or 'array' output")
-    }
-    if(pomp_class == "data.frame"){
-        df_f <- fortify_pomp.df(pomp_output)
-    } else if(pomp_class == "pompList"){
-        df_f <- fortify_pomp.pomp(pomp_output)
-    } else if(pomp_class == "list"){
-        df_f <- fortify_pomp.arr(pomp_output)
-    }
+
+    UseMethod("fortify_pomp")
+    ## pomp_class <- class(pomp_output)
+    ## if(!(pomp_class %in% c("data.frame", "pompList", "list"))){
+    ##     stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pompList' or 'array' output")
+    ## }
+    ## if(pomp_class == "data.frame"){
+    ##     df_f <- fortify_pomp.df(pomp_output)
+    ## } else if(pomp_class == "pompList"){
+    ##     df_f <- fortify_pomp.pomp(pomp_output)
+    ## } else if(pomp_class == "list"){
+    ##     df_f <- fortify_pomp.arr(pomp_output)
+    ## }
 
 
-    return(df_f)
+    ## return(df_f)
 }
+
+
 
 #' Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR
 #'
@@ -53,11 +150,15 @@ fortify_pomp <- function(pomp_output){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
-fortify_pomp.df <- function(pomp_output){
+fortify_pomp.data.frame <- function(pomp_output){
     out <- pomp_output %>%
         dplyr::rename(t = "time", sim = ".id") %>%
         dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
-        dplyr::mutate(sim = factor(.data$sim))
+        dplyr::mutate(sim = factor(.data$sim, ordered = FALSE)) %>%
+        dplyr::arrange(dplyr::desc(-as.numeric(.data$sim)))
+    class(out) <- c("fortified_df", "aggregate", class(out))
+    attr(out, "source") <- "pomp"
+#    class(out$sim) <- "factor"
 
     ## #TODO: How do we handle non integer t?
     return(out)
@@ -75,7 +176,7 @@ fortify_pomp.df <- function(pomp_output){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
-fortify_pomp.arr <- function(pomp_output){
+fortify_pomp.list <- function(pomp_output){
     arr <- pomp_output[[1]]
     out <- arr %>%
         as.data.frame.table() %>%
@@ -84,9 +185,15 @@ fortify_pomp.arr <- function(pomp_output){
         tidyr::pivot_wider(values_from = .data$Freq,
                            names_from = .data$variable) %>%
         as.data.frame() %>%
-        dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim)
+        dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
+        dplyr::arrange(dplyr::desc(-.data$sim))
+    out$sim <- factor(out$sim)
+    class(out) <- c("fortified_df", "aggregate", class(out))
+    attr(out, "source") <- "pomp"
     return(out)
  }
+
+
 
 
 #' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
@@ -101,15 +208,100 @@ fortify_pomp.arr <- function(pomp_output){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
-fortify_pomp.pomp <- function(pomp_output){
+fortify_pomp.pompList <- function(pomp_output){
     df <- as.data.frame(pomp_output)
-    out <- fortify_pomp.df(df)
+    out <- fortify_pomp.data.frame(df)
+    return(out)
+}
+
+#' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
+#'
+#' @param pomp_output Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}
+#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+fortify.pompList <- function(pomp_output){
+    df <- as.data.frame(pomp_output)
+    out <- fortify_pomp.data.frame(df)
     return(out)
  }
 
-#' Takes in output from the \code{R} \code{EpiModel} package and puts it in SIR format
+
+
+#' Takes in output from the \code{R} \code{EpiModel} package in \code{icm} format and puts it in SIR format
 #'
-#' @param EpiModel_output output from either \code{EpiModel::dcm} or \code{EpiModel::icm}
+#' @param EpiModel_output output from  \code{EpiModel::icm}
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+#' @details Take the output from \code{EpiModel::icm} and turn it into an SIR data.frame for plotting.
+#' @examples
+#' ## For icm
+#' sir <- fortify(EpiModel_icm)
+#' head(sir)
+#' class(sir)
+#' @export
+fortify.icm <- function(EpiModel_output){
+  if(!all(c("s.num", "i.num", "r.num" ) %in% names(EpiModel_output$epi))){
+    stop("This is not in SIR format")
+  } ## Don't have extra states
+  if(sum(grepl(".num", names(EpiModel_output$epi))) > 3){
+    warning("There is at least one extra compartment we are ignoring")
+  }
+
+  ## Actual formatting
+
+  n_sim <- EpiModel_output$control$nsims
+  S_mat <- EpiModel_output$epi$s.num
+  I_mat <- EpiModel_output$epi$i.num
+  R_mat <- EpiModel_output$epi$r.num
+  if(tidyr_new_interface()){
+      S_df <- tidyr::pivot_longer(as.data.frame(S_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "S")
+      I_df <- tidyr::pivot_longer(as.data.frame(I_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "I")
+      R_df <- tidyr::pivot_longer(as.data.frame(R_mat), cols = tidyr::everything(),
+                                  names_to = "sim",
+                                  values_to = "R")
+  } else{
+      S_df <- tidyr::gather(as.data.frame(S_mat), key = "sim", value = "S")
+      I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
+      R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
+  }
+  t <- rep(1:EpiModel_output$control$nsteps, ncol(S_mat))
+  SIR_df <- data.frame(t = t, S = S_df$S, I = I_df$I,
+                       R = R_df$R, sim = S_df$sim)
+
+  ## Reformulate to proper form
+  N <- sum(SIR_df[1, c("S", "I", "R")])
+  Ns <- rowSums(SIR_df[, c("S", "I", "R")])
+  if(!assertthat::are_equal(Ns, rep(N, length(Ns)))){
+    warning("The number of agents is not constant over time")
+  }
+
+  class(SIR_df) <- c("fortified_df", "aggregate", class(SIR_df))
+  attr(SIR_df, "source") <- "EpiModel"
+
+  return(SIR_df)
+}
+
+
+#' Takes in output from the \code{R} \code{EpiModel} package in the \code{dcm} class and puts it in SIR format
+#'
+#' @param EpiModel_output output from \code{EpiModel::dcm} 
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
@@ -121,20 +313,13 @@ fortify_pomp.pomp <- function(pomp_output){
 #' @details Take the output from \code{EpiModel::dcm} and turn it into an SIR data.frame for plotting.
 #' @examples
 #' ## For dcm
-#' sir1 <- fortify_EpiModel(EpiModel_det)
+#' sir1 <- fortify(EpiModel_det)
 #' head(sir1)
-#'
-#' ## For icm
-#' sir2 <- fortify_EpiModel(EpiModel_icm)
-#' head(sir2)
+#' class(sir1)
 #' @export
-fortify_EpiModel <- function(EpiModel_output){
-  object_class <- class(EpiModel_output)
-  ## Some basic checks
-  ## Correct Class
-  if(!(object_class %in% c("icm", "dcm"))){
-    stop("EpiModel_output needs to be of class 'icm' or 'dcm'")
-  } ## Have s, i, and r states
+fortify.dcm <- function(EpiModel_output){
+
+    ## Some checks
   if(!all(c("s.num", "i.num", "r.num" ) %in% names(EpiModel_output$epi))){
     stop("This is not in SIR format")
   } ## Don't have extra states
@@ -142,35 +327,7 @@ fortify_EpiModel <- function(EpiModel_output){
     warning("There is at least one extra compartment we are ignoring")
   }
 
-  ## Actual formatting
-
-  if(object_class == "icm"){
-    n_sim <- EpiModel_output$control$nsims
-    S_mat <- EpiModel_output$epi$s.num
-    I_mat <- EpiModel_output$epi$i.num
-    R_mat <- EpiModel_output$epi$r.num
-    if(tidyr_new_interface()){
-      S_df <- tidyr::pivot_longer(as.data.frame(S_mat), cols = tidyr::everything(),
-                                  names_to = "sim",
-                                  values_to = "S")
-      I_df <- tidyr::pivot_longer(as.data.frame(I_mat), cols = tidyr::everything(),
-                                  names_to = "sim",
-                                  values_to = "I")
-      R_df <- tidyr::pivot_longer(as.data.frame(R_mat), cols = tidyr::everything(),
-                                  names_to = "sim",
-                                  values_to = "R")
-    } else{
-      S_df <- tidyr::gather(as.data.frame(S_mat), key = "sim", value = "S")
-      I_df <- tidyr::gather(as.data.frame(I_mat), key = "sim", value = "I")
-      R_df <- tidyr::gather(as.data.frame(R_mat), key = "sim", value = "R")
-    }
-    t <- rep(1:EpiModel_output$control$nsteps, ncol(S_mat))
-    SIR_df <- data.frame(t = t, S = S_df$S, I = I_df$I,
-                         R = R_df$R, sim = S_df$sim)
-
-
-
-  } else if(object_class == "dcm"){
+    ## Actual formatting
 
     t <- EpiModel_output$control$timesteps
     S <- EpiModel_output$epi$s.num
@@ -180,13 +337,16 @@ fortify_EpiModel <- function(EpiModel_output){
     R <- EpiModel_output$epi$r.num
     names(R) <- NULL
     SIR_df <- data.frame(t = t, S = S, I = I, R = R)
-  }
+    
 
-  N <- sum(SIR_df[1, c("S", "I", "R")])
-  Ns <- rowSums(SIR_df[, c("S", "I", "R")])
-  if(!assertthat::are_equal(Ns, rep(N, length(Ns)))){
-    stop("The number of agents is not constant over time")
-  }
+    N <- sum(SIR_df[1, c("S", "I", "R")])
+    Ns <- rowSums(SIR_df[, c("S", "I", "R")])
+    if(!assertthat::are_equal(Ns, rep(N, length(Ns)))){
+        warning("The number of agents is not constant over time")
+    }
+
+    class(SIR_df) <- c("fortified_df", "aggregate", class(SIR_df))
+    attr(SIR_df, "source") <- "EpiModel"
 
   return(SIR_df)
 }

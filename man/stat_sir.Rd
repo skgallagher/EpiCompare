@@ -5,29 +5,14 @@
 \alias{geom_sir}
 \title{SIR path visuals}
 \usage{
-stat_sir(
-  mapping = NULL,
-  data = NULL,
-  geom = "path",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = TRUE,
-  data_type = c("raw", "fortified"),
-  ...
-)
+stat_sir(mapping = NULL, data = NULL, geom = "path",
+  position = "identity", na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE, data_type = c("raw", "fortified"), ...)
 
-geom_sir(
-  mapping = NULL,
-  data = NULL,
-  stat = c("SirRaw", "SirFortified")[which(c("raw", "fortified") \%in\% data_type)],
-  position = "identity",
-  ...,
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = TRUE,
-  data_type = c("raw", "fortified")
-)
+geom_sir(mapping = NULL, data = NULL, stat = c("SirRaw",
+  "SirFortified")[which(c("raw", "fortified") \%in\% data_type)],
+  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE, data_type = c("raw", "fortified"))
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by
@@ -68,7 +53,7 @@ define both data and aesthetics and shouldn't inherit behaviour from the}
 \item{data_type}{string. Currently can tell the stat to process the data like
 "raw" individual data (formated like \code{\link{hagelloch_raw}}) or
 "fortified" individual data (formated like \code{\link{hagelloch_agents}}
-or the output of \code{\link{fortify_agents}}).}
+or the output of \code{\link{fortify.individuals_df}}).}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}.
 These are often aesthetics, used to set an aesthetic to a fixed value, like

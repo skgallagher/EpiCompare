@@ -2,7 +2,7 @@
 % Please edit documentation in R/fortify_data.R
 \name{fortify_pomp}
 \alias{fortify_pomp}
-\title{Takes in data from the R pomp package and puts it in SIR format}
+\title{Generic method that takes in data from the R pomp package and puts it in SIR format}
 \usage{
 fortify_pomp(pomp_output)
 }
@@ -20,7 +20,7 @@ data frame with the following columns
 }
 }
 \description{
-Takes in data from the R pomp package and puts it in SIR format
+Generic method that takes in data from the R pomp package and puts it in SIR format
 }
 \examples{
 data(pomp_df)
@@ -30,5 +30,6 @@ fortified_pomp <- fortify_pomp(pomp_pomp)
 fortified_arr <- fortify_pomp(pomp_arr)
 assertthat::are_equal(fortified_df, fortified_pomp)
 assertthat::are_equal(fortified_pomp, fortified_arr)
-head(pomp_df)
+head(fortified_df)
+class(fortified_df)
 }

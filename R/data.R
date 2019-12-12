@@ -206,8 +206,8 @@
 #' }
 #'
 #' @examples
-#' ## show first simulation of first 10 agents
-#' U_sims[1, , 1:10]
+#' ## show first 10 simulations of the first individual
+#' U_sims_tidy[1:10,]
 "U_sims_tidy"
 
 

@@ -14,6 +14,11 @@ test_that("fortify_pomp()", {
   expect_equal(ncol(out3), 5)
   expect_true(all(c("t", "S", "I", "R", "sim") %in% colnames(out3)))
 
+###
+  out71 <- fortify(pomp_pomp)
+  expect_equal(ncol(out71), 5)
+  expect_true(all(c("t", "S", "I", "R", "sim") %in% colnames(out71)))
+
 
 })
 
@@ -22,14 +27,14 @@ test_that("fortify_EpiModel()", {
 
   data(EpiModel_det)
 
-  out <- fortify_EpiModel(EpiModel_det)
-  expect_equal(class(out), "data.frame")
+  out <- fortify(EpiModel_det)
+  expect_true("data.frame" %in% class(out))
   expect_equal(dim(out), c(300,4))
 
   ## THE ICM
   data(EpiModel_icm)
-  out <- fortify_EpiModel(EpiModel_icm)
-  expect_equal(class(out), "data.frame")
+  out <- fortify(EpiModel_icm)
+  expect_true("data.frame" %in% class(out))
   expect_equal(dim(out), c(3000,5))
 
 
