@@ -3,6 +3,10 @@
 language: R
 cache: packages
 
+r_packages:
+  - covr
+
+
 install:
 - R -e 'install.packages("devtools")' -e 'devtools::install_deps(dep = T)'
 - R -e 'install.packages("kableExtra")'
@@ -10,3 +14,7 @@ install:
 script:
 - R CMD build .
 - R CMD check *tar.gz
+
+# only report coverage after build is successful
+after_success:
+  - Rscript -e 'covr::codecov()'
