@@ -20,7 +20,7 @@ Coverts list of point locations to a set of equally spaced points through
 linear interpolation.
 }
 \examples{
-library(tidyverse)
+library(dplyr)
 my_df <- data.frame(x = 1:20) \%>\%
   mutate(y = x)
 my_df_compression <- equa_dist_points(my_df)

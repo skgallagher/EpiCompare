@@ -61,7 +61,7 @@ step_along <- function(start_point, angle, distance){
 #' @export
 #'
 #' @examples
-#' library(tidyverse)
+#' library(dplyr)
 #' my_df <- data.frame(x = 1:20) %>%
 #'   mutate(y = x)
 #' my_df_compression <- equa_dist_points(my_df)
@@ -593,7 +593,7 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' be used to approximate confidence band (if needed). Can be reduced to
 #' speed-up computation.
 #' @param alpha_level confidence level for confidence band. Creates a
-#' \eqn{1-\code{alpha_level}} level confidence band.
+#' \code{1-alpha_level} level confidence band.
 #' @param ... Other arguments passed on to \code{\link[ggplot2]{layer}}. These are
 #' often aesthetics, used to set an aesthetic to a fixed value,
 #' like \code{colour = "red"} or \code{size = 3}. They may also be parameters to
@@ -604,29 +604,30 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' I SHOULD PUT INFORMATION ON THE DIFFERENT TYPES OF CONFIDENCE BANDS...
 #'
 #' @section Aesthetics:
-#' \\code{stat_confidence_band} understands the following aesthetics (required
+#' \code{stat_confidence_band} understands the following aesthetics (required
 #' aesthetics are in bold):
-#' \\itemize{
-#'   \\item \\strong{\\code{x}}
-#'   \\item \\strong{\\code{y}}
-#'   \\item \\strong{\\code{z}}
-#'   \\item \\strong{\\code{sim_group}} this cannot be a factor
-#'   \\item \\code{alpha}
-#'   \\item \\code{colour}
-#'   \\item \\code{group}
-#'   \\item \\code{linetype}
-#'   \\item \\code{size}
-#'   \\item \\code{weight}
+#'
+#' \itemize{
+#'   \item \strong{\code{x}}
+#'   \item \strong{\code{y}}
+#'   \item \strong{\code{z}}
+#'   \item \strong{\code{sim_group}} - note: this cannot be a factor
+#'   \item \code{alpha}
+#'   \item \code{colour}
+#'   \item \code{group}
+#'   \item \code{linetype}
+#'   \item \code{size}
+#'   \item \code{weight}
 #' }
 #' Learn more about setting these aesthetics in
-#' \\code{vignette(\"ggplot2-specs\")}.
+#' \code{vignette("ggplot2-specs")}.
 #'
 #' @export
 #' @examples
 #' ## need to get new U_sims_tidy
 #' library(ggplot2)
 #' library(ggtern)
-#' library(tidyverse)
+#' library(dplyr)
 #' if (FALSE){
 #' all_df %>% xy2tlr(coord = coord_tern()) %>%
 #'   ggplot() + geom_line(aes(x = x, y = y, z = z, group = sim)) +

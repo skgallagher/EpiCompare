@@ -81,7 +81,7 @@ be used to approximate confidence band (if needed). Can be reduced to
 speed-up computation.}
 
 \item{alpha_level}{confidence level for confidence band. Creates a
-\eqn{1-\code{alpha_level}} level confidence band.}
+\code{1-alpha_level} level confidence band.}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2]{layer}}. These are
 often aesthetics, used to set an aesthetic to a fixed value,
@@ -99,29 +99,30 @@ I SHOULD PUT INFORMATION ON THE DIFFERENT TYPES OF CONFIDENCE BANDS...
 }
 \section{Aesthetics}{
 
-\\code{stat_confidence_band} understands the following aesthetics (required
+\code{stat_confidence_band} understands the following aesthetics (required
 aesthetics are in bold):
-\\itemize{
-  \\item \\strong{\\code{x}}
-  \\item \\strong{\\code{y}}
-  \\item \\strong{\\code{z}}
-  \\item \\strong{\\code{sim_group}} this cannot be a factor
-  \\item \\code{alpha}
-  \\item \\code{colour}
-  \\item \\code{group}
-  \\item \\code{linetype}
-  \\item \\code{size}
-  \\item \\code{weight}
+
+\itemize{
+  \item \strong{\code{x}}
+  \item \strong{\code{y}}
+  \item \strong{\code{z}}
+  \item \strong{\code{sim_group}} - note: this cannot be a factor
+  \item \code{alpha}
+  \item \code{colour}
+  \item \code{group}
+  \item \code{linetype}
+  \item \code{size}
+  \item \code{weight}
 }
 Learn more about setting these aesthetics in
-\\code{vignette(\"ggplot2-specs\")}.
+\code{vignette("ggplot2-specs")}.
 }
 
 \examples{
 ## need to get new U_sims_tidy
 library(ggplot2)
 library(ggtern)
-library(tidyverse)
+library(dplyr)
 if (FALSE){
 all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
   ggplot() + geom_line(aes(x = x, y = y, z = z, group = sim)) +
