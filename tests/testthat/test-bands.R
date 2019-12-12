@@ -157,6 +157,18 @@ test_that("distance_between_path tests",{
   )
 })
 
+test_that("get_xy_coord tests", {
+  # basic test
+  df = data.frame(x = c(1,0,0),
+                  y = c(0,1,0),
+                  z = c(0,0,1))
+
+  df2d <- get_xy_coord(df, xyz_col = c("x","y","z"))
+  df2d_expected <- data.frame(x = c(0, .5        ,1),
+                              y = c(0, .5*sqrt(3),0))
+  testthat::expect_equivalent(df2d, df2d_expected)
+})
+
 
 
 test_that("get_closest static tests",{
@@ -176,6 +188,7 @@ test_that("get_closest static tests",{
            dplyr::left_join(close_to_point, by = c("x", "y")) %>%
            dplyr::pull(.data$check) %>% is.na %>% sum) == 0))
   testthat::expect_true(all(table(check$z) == c(116, 5)))
+
 
   # small square box:
   border_points <- data.frame(x = c(-1,0,1,
@@ -253,6 +266,25 @@ test_that("get_closest static tests",{
                         (.data$x == .01 & .data$y %in% c( 1.01, .01, -.99)) |
                         (.data$x == -.99 & .data$y %in% c( 1.01, .01, -.99)) ) %>%
           dplyr::pull(.data$z) == 3))
+
+
+  # create gridpoints
+  border_points <- data.frame(x = c(-2,2,
+                                    -2,2),
+                              y = c(2,2,
+                                    -2,-2))
+  inner_points <- border_points[0,]
+  delta = .5
+  check <- get_closest(border_points, inner_points, delta = delta,
+                       gridbreaks = 5)
+  # no "inside"
+  testthat::expect_true(all(check$z != 3))
+
+  border_points_check <- check %>%
+    dplyr::inner_join(border_points, by = c("x","y"))
+  testthat::expect_true(all(dim(border_points_check) == c(4,3)))
+  testthat::expect_true(all(border_points_check$z == 2))
+  testthat::expect_equivalent(table(check$z), table(c(rep(1,21), rep(2,4))))
 })
 
 
