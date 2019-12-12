@@ -72,8 +72,9 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #' value must be a data.frame, and will be used as the layer data. A function
 #' can be created from a formula (e.g. ~ head(.x, 10)).
 #'
-#' @param geom Override the default connection between stat_sir() and
+#' @param geom Override the default connection between \code{stat_sir()} and
 #' \code{\link[ggplot2:geom_path]{geom_path()}}.
+#' @param stat Overrides state that is defined relative to \code{data_type}
 #' @param position Position adjustment, either as a string, or the result of a
 #' call to a position adjustment function
 #' @param na.rm If \code{FALSE}, the default, missing values are removed with a
@@ -128,6 +129,23 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #' library(dplyr)
 #' library(ggtern)
 #'
+#'
+#' # geom_sir
+#' timeternR::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
+#'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
+#'   geom_sir(data_type = "raw") + coord_tern() +
+#'   labs(x = "S", y = "I", z = "R",
+#'        color = "Gender")
+#'
+#' timeternR::U_sims_tidy %>%
+#'   ggplot() +
+#'   geom_sir(aes(x = SMax, y = IMax, init_state = init_state,
+#'                 group = sim), alpha = .1,
+#'             data_type = "fortified") +
+#'   coord_tern() +
+#'   labs(x = "S", y = "I", z = "R")
+#'
+#' # stat_sir
 #' timeternR::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
 #'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
 #'   geom_path(stat = StatSirRaw) + coord_tern() +
@@ -156,6 +174,7 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #'             data_type = "fortified") +
 #'   coord_tern() +
 #'   labs(x = "S", y = "I", z = "R")
+#'
 stat_sir <- function(mapping = NULL, data = NULL, geom = "path",
                        position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = TRUE, data_type = c("raw", "fortified"), ...) {
@@ -175,6 +194,36 @@ stat_sir <- function(mapping = NULL, data = NULL, geom = "path",
   )
 }
 
+#' @export
+#' @rdname stat_sir
+geom_sir <- function(mapping = NULL, data = NULL,
+                     stat = c("SirRaw", "SirFortified")[which(c("raw", "fortified") %in% data_type)],
+                     position = "identity",
+                     ...,
+                     na.rm = FALSE,
+                     show.legend = NA,
+                     inherit.aes = TRUE,
+                     data_type = c("raw", "fortified")) {
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomSIR,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
 
-
+#' GeomSIR
+#'
+#' @rdname GeomSIR
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomSIR <- ggplot2::ggproto("GeomSIR", ggplot2::GeomPath)
 

@@ -1,8 +1,8 @@
 ---
-title: "Getting started"
+title: "Getting started with timeternR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{getting_started}
+  %\VignetteIndexEntry{Getting started with timeternR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,31 +24,40 @@ devtools::load_all()
 To install `timeternR`, run the folllowing code.
 
 ```{r eval = FALSE}
-devtools::install_github("shannong19/timeternR")
-
+if(!require(timeternR)){
+  library(devtools)
+  devtools::install_github("shannong19/timeternR")
+}
+library(timeternR)
 ```
 
-We currently also require a slightly modified version of `ggtern` which can be done by running the following:
-
-```{r eval = FALSE}
-devtools::install_git("https://bitbucket.org/benjaminleroy/ggtern")
+```{r echo = F, message = F, warning = F}
+# hidden load currently
+library(devtools)
+devtools::load_all()
 ```
-
 
 # Quickstart
 
 ```{r setup, message = FALSE, warning = FALSE}
-#library(timeternR)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(ggtern)
 ```
 
-
 The below takes a data frame of individuals who have reported infection and recovery times, groups them into male and females, aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
 
 ```{r quickstart, fig.width=6, eval=TRUE}
+
+## Visualizing epidemic progression using timeternR
+library(kableExtra)
+timeternR::hagelloch_raw %>% head() %>%
+  select(PN, NAME, AGE, SEX,
+         tPRO, tERU, tI, tR) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+
 timeternR::hagelloch_raw %>%
    dplyr::filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
@@ -59,10 +68,14 @@ timeternR::hagelloch_raw %>%
 
 ```
 
+
 The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
 
 	
 ```{r, eval = TRUE}
+
+
+## Simulating epidemics with `simulate_SIR_agents`.
 
 n_sims <- 1
 n_time_steps <- 100
@@ -77,7 +90,7 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  init_SIR = init_SIR,
                                  output_format = output_format)
                                  
-df_ave <- out %>%   UtoX_SIR %>%
+df_ave <- out %>% UtoX_SIR %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
 ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
@@ -86,6 +99,17 @@ ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
 col = State)) +
   geom_line()
 
+<<<<<<< HEAD
 ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
+=======
+ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
+                                S, I, R)),
+       aes(x = t, y = Value)) +
+  facet_grid(State~.) + 
+  geom_line()
+
+
 
 ```
+
+

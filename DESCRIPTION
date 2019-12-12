@@ -15,13 +15,14 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
-    R (>= 2.10)
+    R (>= 2.10),
+    ggtern
 Imports:
     assertthat,
     dplyr,
     ggplot2,
-    ggtern,
     purrr,
+    raster,
     rlang,
     tidyr,
     tibble,
@@ -30,6 +31,7 @@ Suggests:
     testthat (>= 2.1.0),
     knitr,
     rmarkdown,
-    pomp
-RoxygenNote: 6.1.1
+    outbreaks,
+    pomp,
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr
