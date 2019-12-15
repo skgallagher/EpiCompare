@@ -163,7 +163,7 @@
 "hagelloch_agents"
 
 
-#' U_sims Example output from SIR simulations
+#' agents_sims Example output from SIR simulations
 #'
 #' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "array"}.  It is a 50 x 3 x 188 array where entry (i,j,k) loks at the ith simulation, the jth statistic, and the kth agent.
 #' Each column is asssociated with 1 agent and
@@ -175,21 +175,21 @@
 #' @format An array with dimension 50 x 3 x 188 data frame with 188 rows and 3 columns.  Below are the descriptions of each dimension
 #' \describe{
 #'   \item{sim}{Simulation number is the first dimension.  They are named between 1 and 50}
-#'   \item{U_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
+#'   \item{agent_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
 #'   \item{agent_id}{the ID of the agent}
 #' }
 #'
 #' @examples
 #' ## show first simulation of first 10 agents
-#' U_sims[1, , 1:10]
-"U_sims"
+#' agents_sims[1, , 1:10]
+"agents_sims"
 
 
 
 
-#' U_sim_tidy Example output from SIR simulations in a data.frame format
+#' agents_sim_tidy Example output from SIR simulations in a data.frame format
 #'
-#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "data.frame"}.  It is a 9400 by 5 data.frame where each row corresponds to the U statistic of a given agent and simulation.
+#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "data.frame"}.  It is a 9400 by 5 data.frame where each row corresponds to the agents statistic of a given agent and simulation.
 #' Each row is asssociated with 1 agent and contains
 #' is a "sufficient" statistic for each agent's infection.  Each agent's
 #' infection is uniquely identified by an initial state, max time before
@@ -207,8 +207,8 @@
 #'
 #' @examples
 #' ## show first 10 simulations of the first individual
-#' U_sims_tidy[1:10,]
-"U_sims_tidy"
+#' agents_sims_tidy[1:10,]
+"agents_sims_tidy"
 
 
 

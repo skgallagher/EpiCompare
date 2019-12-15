@@ -62,9 +62,6 @@ timeternR::hagelloch_raw %>% head() %>%
 
 ```{r}
 theme_set(theme_minimal())
-```
-
-
 
 timeternR::hagelloch_raw %>%
    filter(SEX %in% c("male", "female")) %>%
@@ -74,24 +71,18 @@ timeternR::hagelloch_raw %>%
      coord_tern() +
      labs(x = "S", y = "I", z = "R",
           color = "Gender") 
-
 ```
+
 
 
 The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
 
-<<<<<<< HEAD
+
 	
 ```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
 
 
 ## Simulating epidemics with `simulate_SIR_agents`.
-
-=======
-## Simulating epidemics with `simulate_SIR_agents`.
-
-```{r, eval = T, fig.asp = .62, out.width = '60%'}
->>>>>>> 88db0d9182ab44e057126298a8f204ecae3d48b7
 
 
 n_sims <- 1
@@ -107,7 +98,7 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  init_SIR = init_SIR,
                                  output_format = output_format)
                                  
-df_ave <- out %>% UtoX_SIR %>%
+df_ave <- out %>% agents_to_aggregate_SIR %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
 
@@ -120,11 +111,7 @@ col = State)) +
 
 ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 88db0d9182ab44e057126298a8f204ecae3d48b7
 if (tidyr_new_interface()){ # if tidyr version > 0.8.99
   df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
                                           values_to = "Value",

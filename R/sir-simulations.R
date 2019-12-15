@@ -25,7 +25,7 @@
 #' A_{t-1,j} = 0 \\ 1 + Bernoulli(\gamma_k) & \textnormal{ if } A_{t-1,j}
 #' = 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
 #'
-#' The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+#' The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
 #' susceptible, max time infectious.)  If the agent never became infectious or
 #' was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
 #' Similarly, if the agent never recovers or is recovered from time 0 on then
@@ -97,7 +97,7 @@ simulate_SIR_agents_groups <- function(n_sims,
 #' A_{t-1,k} = 0 \\ 1 + Bernoulli(\gamma) & \textnormal{ if } A_{t-1,k} = 1
 #' \\2 & \textnormal{ otherwise}  \end{array} \right . }
 #'
-#' The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+#' The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
 #' susceptible, max time infectious.)  If the agent never became infectious or
 #' was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
 #' Similarly, if the agent never recovers or is recovered from time 0 on then
@@ -116,7 +116,7 @@ simulate_SIR_agents <- function(n_sims,
                                 output_format = "data.frame"){
   n_agents <- sum(init_SIR)
   sim_data <- array(NA, dim = c(n_sims, 3, n_agents))
-  # ^3 is for the U stat
+  # ^3 is for the agents stat
 
   ## Fill in initial states
   init_states <- c(rep(0, init_SIR[1]),
@@ -163,14 +163,14 @@ simulate_SIR_agents <- function(n_sims,
  # browser()
  # ensure max_time_S <= max_time_i
   dimnames(sim_data) <- list(sim = 1:n_sims,
-                        U_stat = c("init_state", "max_time_S", "max_time_I"),
+                        agents_stat = c("init_state", "max_time_S", "max_time_I"),
                         agent_id = paste0("id_", 1:n_agents))
 
 
   if(output_format == "array"){
     return(sim_data)
   } else if(output_format == "data.frame"){
-    sim_data <- fortify(sim_data)
+    sim_data <- fortify_sims(sim_data)
     return(sim_data)
   } else {
     stop("output_format should either be 'array' or 'data.frame'")
@@ -240,42 +240,6 @@ state_change_inds <- function(new_states,
 }
 
 
-#' Transform the array of simulations to a data frame
-#'
-#' @param sims_data n_sims x 3 x n_agents where entry (i,j,k) is the ith
-#' simulation, the jth statistic and the kth agent.
-#' @return data.frame with. The output is
-#' a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The
-#' size is (n_agents x n_sims) x 5.
-#' @export
-#' @examples
-#' sims_array <- array(c(1, 0, 1, 0, 1, 1), dim = c(1, 3, 2))
-#' fortify.sims_array(sims_array)
-fortify.sims_array <- function(sims_data){
-  array_dim <- dim(sims_data)
-  n_sims <- array_dim[1]
-  n_agents <- array_dim[3]
-  stopifnot(array_dim[2] == 3)
-  dimnames(sims_data) <- list(sim = 1:n_sims,
-                              U_stat = c("init_state", "max_time_S",
-                                         "max_time_I"),
-                              agent_id = 1:n_agents)
-  df <- as.data.frame.table(sims_data)
-
-
-  if (tidyr_new_interface()){
-    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$U_stat,
-                                           values_from = .data$Freq) %>%
-      dplyr::select(dplyr::one_of("init_state", "max_time_S",
-                                  "max_time_I", "sim", "agent_id"))
-  } else {
-    df_spread <- df %>% tidyr::spread(key = .data$U_stat,
-                                      value = .data$Freq) %>%
-      dplyr::select(dplyr::one_of("init_state", "max_time_S",
-                                  "max_time_I", "sim", "agent_id"))
-  }
-  return(df_spread)
-}
 
 
 

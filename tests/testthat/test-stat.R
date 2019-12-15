@@ -27,8 +27,8 @@ test_that("check StatSirRaw underlying data is as expected (data_type = 'raw')",
                                       "all(diff(sir_out$S) <= -1)"))
 
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
-    UtoX_SIR() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    agents_to_aggregate_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
@@ -90,8 +90,8 @@ test_that("check stat_sir underlying data is as expected (data_type = 'raw')", {
                                       "all(diff(sir_out$S) <= -1)"))
 
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
-    UtoX_SIR() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    agents_to_aggregate_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
@@ -140,7 +140,7 @@ test_that("check StatSirFortified underlying data is as expected (data_type = 'f
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
     ggplot(., aes(x = max_time_S, y = max_time_I, init_state = `init_state`)) +
     geom_path(stat = StatSirFortified) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")
@@ -151,8 +151,8 @@ test_that("check StatSirFortified underlying data is as expected (data_type = 'f
   testthat::expect_true(all(data_vis >= 0))
 
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
-    UtoX_SIR() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    agents_to_aggregate_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
@@ -162,7 +162,7 @@ test_that("check StatSirFortified underlying data is as expected (data_type = 'f
 test_that("check StatSirFortified underlying with multiple groups is as expected (data_type = 'fortified')", {
   library(ggplot2)
   # a single group
-  vis <- U_sims_tidy %>%
+  vis <- agents_sims_tidy %>%
     ggplot(., aes(x = SMax, y = IMax, init_state = init_state, group = sim)) +
     geom_path(stat = StatSirFortified, alpha = .1) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")
@@ -197,8 +197,8 @@ test_that("check geom_sir for Raw underlying data is as expected (data_type = 'r
                                       "all(diff(sir_out$S) <= -1)"))
 
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
-    UtoX_SIR() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    agents_to_aggregate_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
@@ -248,7 +248,7 @@ test_that("check geom_sir with fortified underlying data is as expected (data_ty
   library(ggplot2)
   # a single group
   vis <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
     ggplot(., aes(x = max_time_S, y = max_time_I, init_state = `init_state`)) +
     geom_sir(data_type = "fortified") + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")
@@ -259,8 +259,8 @@ test_that("check geom_sir with fortified underlying data is as expected (data_ty
   testthat::expect_true(all(data_vis >= 0))
 
   fortified_data <- hagelloch_raw %>%
-    dplyr::filter(SEX %in% c("male", "female")) %>% fortify.individuals_df() %>%
-    UtoX_SIR() %>%
+    dplyr::filter(SEX %in% c("male", "female")) %>% fortify_agents() %>%
+    agents_to_aggregate_SIR() %>%
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
@@ -270,7 +270,7 @@ test_that("check geom_sir with fortified underlying data is as expected (data_ty
 test_that("check geom_sir with fortitfied data underlying with multiple groups is as expected (data_type = 'fortified')", {
   library(ggplot2)
   # a single group
-  vis <- U_sims_tidy %>%
+  vis <- agents_sims_tidy %>%
     ggplot(., aes(x = SMax, y = IMax, init_state = init_state, group = sim)) +
     geom_sir(data_type = "fortified", alpha = .1) + ggtern::coord_tern() +
     labs(x = "S", y = "I", z = "R")

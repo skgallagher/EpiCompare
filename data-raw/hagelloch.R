@@ -9,7 +9,7 @@ data("hagelloch", package = "surveillance")
 # head(hagelloch.df)  # This is the original data
 
 hagelloch_raw <- rlang::duplicate(hagelloch.df)
-class(hagelloch_raw) <- c("individuals_df", class(hagelloch_raw))
+class(hagelloch_raw) <- c("agents", class(hagelloch_raw))
 
 usethis::use_data(hagelloch_raw, overwrite = TRUE)
 
@@ -62,11 +62,11 @@ hagelloch_agents <- data.frame(init_state = factor(A0),
 hagelloch_agents[union(initial_inf, initial_rec),"max_time_S"] <- NA
 hagelloch_agents[initial_rec,"max_time_I"] <- NA
 
-class(hagelloch_agents) <- append("individuals_df", class(hagelloch_agents))
+class(hagelloch_agents) <- append("agents", class(hagelloch_agents))
 
 
-hagelloch_sir <- UtoX_SIR(hagelloch_agents, max_time = max_time)
-#class(hagelloch_sir) <- c("aggregate", class(hagelloch_sir))
+hagelloch_sir <- agents_to_aggregate_SIR(hagelloch_agents, max_time = max_time)
+
 
 usethis::use_data(hagelloch_sir, overwrite = TRUE)
 

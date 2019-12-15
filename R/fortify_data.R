@@ -1,14 +1,6 @@
 ## Fortify functions
 
 
-#' Fortify to a format
-#'
-#' @param data data to be fortified
-#' @return a formatted object
-fortify <- function(data){
-    UseMethod("fortify", data)
-
-}
 
 
 #' Fortify agent data frame with columns when individual stops being susceptible
@@ -31,17 +23,17 @@ fortify <- function(data){
 #' @export
 #'
 #' @examples
-#' fortify_df <- fortify.individuals_df(timeternR::hagelloch_raw,
+#' fortify_df <- fortify_agents(timeternR::hagelloch_raw,
 #'                              time_col = c("tI","tR"),
 #'                              max_time = 95)
 #' assertthat::are_equal(fortify_df[,c("init_state",
 #' "max_time_S", "max_time_I")],
 #'                       timeternR::hagelloch_agents)
-fortify.individuals_df <- function(data, time_col = c("tI","tR"),
+fortify_agents <- function(data, time_col = c("tI","tR"),
                            max_time = floor(
                                max(raw_df[,time_col], na.rm = TRUE)) + 1){
     raw_df <- data
-    
+
   assertthat::assert_that(inherits(time_col, "character") &&
                           length(time_col) == 2 &&
                           all(time_col %in% names(raw_df)),
@@ -66,20 +58,20 @@ fortify.individuals_df <- function(data, time_col = c("tI","tR"),
   SMax <- ifelse(SMax > max_time-1, max_time-1, SMax)
   IMax <- ceiling(raw_df[,time_col[2]])
   IMax <- ifelse(IMax > max_time-1, max_time-1, IMax)
-  U <- data.frame(init_state = factor(A0),
+  agents <- data.frame(init_state = factor(A0),
                   max_time_S = SMax,
                   max_time_I = IMax)
   # dealing with initially infected
-  U[union(initial_inf, initial_rec),"max_time_S"] <- NA
-  U[initial_rec,"max_time_I"] <- NA
+  agents[union(initial_inf, initial_rec),"max_time_S"] <- NA
+  agents[initial_rec,"max_time_I"] <- NA
 
 
-  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+  inner_na_agents <- is.na(agents[,c("max_time_S", "max_time_I")])
 
-  if (sum(inner_na_U) > 0){
+  if (sum(inner_na_agents) > 0){
     # check NAs are logical
-    assertthat::assert_that(all(inner_na_U[-c(initial_inf, initial_rec),1] <=
-                                  inner_na_U[-c(initial_inf, initial_rec),2]),
+    assertthat::assert_that(all(inner_na_agents[-c(initial_inf, initial_rec),1] <=
+                                  inner_na_agents[-c(initial_inf, initial_rec),2]),
                             msg = paste("Please manually correct the fact that",
                                         "an individual has a NA for the time",
                                         "they reached the Infected stage, but",
@@ -88,17 +80,17 @@ fortify.individuals_df <- function(data, time_col = c("tI","tR"),
 
 
     ### standard clean up of NAs
-    # update U
-    U[U$init_state == 0,
-      c("max_time_S", "max_time_I")][inner_na_U[U$init_state == 0,]] <- max_time
-    U[U$init_state == 1,
-      "max_time_I"][inner_na_U[U$init_state == 1,2]] <- max_time
+    # update agents
+    agents[agents$init_state == 0,
+      c("max_time_S", "max_time_I")][inner_na_agents[agents$init_state == 0,]] <- max_time
+    agents[agents$init_state == 1,
+      "max_time_I"][inner_na_agents[agents$init_state == 1,2]] <- max_time
 
   }
 
 
-  fortified_df <- cbind(raw_df, U)
-  class(fortified_df) <- c("individuals_df", class(fortified_df))
+  fortified_df <- cbind(raw_df, agents)
+  class(fortified_df) <- c("agents_df", class(fortified_df))
 
   return(fortified_df)
 }
@@ -130,22 +122,11 @@ fortify.individuals_df <- function(data, time_col = c("tI","tR"),
 #' @export
 fortify_pomp <- function(data){
 
-    UseMethod("fortify_pomp", data)
-    ## pomp_class <- class(pomp_output)
-    ## if(!(pomp_class %in% c("data.frame", "pompList", "list"))){
-    ##     stop("Pomp output must be from pomp::simulate and of one of a 'data.frame', 'pompList' or 'array' output")
-    ## }
-    ## if(pomp_class == "data.frame"){
-    ##     df_f <- fortify_pomp.df(pomp_output)
-    ## } else if(pomp_class == "pompList"){
-    ##     df_f <- fortify_pomp.pomp(pomp_output)
-    ## } else if(pomp_class == "list"){
-    ##     df_f <- fortify_pomp.arr(pomp_output)
-    ## }
+    UseMethod("fortify_pomp")
 
-
-    ## return(df_f)
 }
+
+
 
 
 
@@ -161,6 +142,7 @@ fortify_pomp <- function(data){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
+#' @export
 fortify_pomp.data.frame <- function(data){
 
     pomp_output <- data
@@ -169,13 +151,35 @@ fortify_pomp.data.frame <- function(data){
         dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
         dplyr::mutate(sim = factor(.data$sim, ordered = FALSE)) %>%
         dplyr::arrange(dplyr::desc(-as.numeric(.data$sim)))
-    class(out) <- c("fortified_df", "aggregate", class(out))
+    class(out) <- c("aggregate", "fortified_df", class(out))
     attr(out, "source") <- "pomp"
 #    class(out$sim) <- "factor"
 
     ## #TODO: How do we handle non integer t?
     return(out)
 }
+
+
+#' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
+#'
+#' @param data Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}
+#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{S}{number of Susceptibles}
+#' \item{I}{number of Infectious}
+#' \item{R}{number of Recovered}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' }
+#' @export
+fortify_pomp.pompList <- function(data){
+    pomp_output <- data
+    df <- as.data.frame(pomp_output)
+    out <- fortify_pomp.data.frame(df)
+    return(out)
+}
+
 
 #' Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR
 #'
@@ -190,6 +194,7 @@ fortify_pomp.data.frame <- function(data){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
+#' @export
 fortify_pomp.list <- function(data){
     pomp_output <- data
     arr <- pomp_output[[1]]
@@ -203,7 +208,7 @@ fortify_pomp.list <- function(data){
         dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
         dplyr::arrange(dplyr::desc(-.data$sim))
     out$sim <- factor(out$sim)
-    class(out) <- c("fortified_df", "aggregate", class(out))
+    class(out) <- c("aggregate", "fortified_df", class(out))
     attr(out, "source") <- "pomp"
     return(out)
  }
@@ -211,29 +216,11 @@ fortify_pomp.list <- function(data){
 
 
 
-#' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
-#'
-#' @param data Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}
-#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
-#' @return data frame with the following columns
-#' \describe{
-#' \item{t}{the time}
-#' \item{S}{number of Susceptibles}
-#' \item{I}{number of Infectious}
-#' \item{R}{number of Recovered}
-#' \item{sim}{simulation number (factor variable) (optional column)}
-#' }
-fortify_pomp.pompList <- function(data){
-    pomp_output <- data
-    df <- as.data.frame(pomp_output)
-    out <- fortify_pomp.data.frame(df)
-    return(out)
-}
 
-#' Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR
-#'
-#' @param data Output from a pomp simulation where the output is 'pomp', \code{pomp::simulate()}
-#' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
+
+#' Generic method that takes in data from the \code{EpiModel} package and puts it in aggregate, SIR format
+#' 
+#' @param data Output from a EpiModel simulation of class \code{icm} or \code{dcm}
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
@@ -242,18 +229,23 @@ fortify_pomp.pompList <- function(data){
 #' \item{R}{number of Recovered}
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
-fortify.pompList <- function(data){
-    df <- as.data.frame(data)
-    out <- fortify_pomp.data.frame(df)
-    return(out)
- }
+#' @examples
+#' ## For icm
+#' sir <- fortify_EpiModel(EpiModel_icm)
+#' head(sir)
+#' class(sir)
+#' @export
+fortify_EpiModel <- function(data){
+
+    UseMethod("fortify_EpiModel")
+
+}
 
 
 
 #' Takes in output from the \code{R} \code{EpiModel} package in \code{icm} format and puts it in SIR format
 #'
 #' @param data output from  \code{EpiModel::icm}
-#' @param ... additional arguments
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
@@ -265,11 +257,11 @@ fortify.pompList <- function(data){
 #' @details Take the output from \code{EpiModel::icm} and turn it into an SIR data.frame for plotting.
 #' @examples
 #' ## For icm
-#' sir <- fortify(EpiModel_icm)
+#' sir <- fortify_EpiModel(EpiModel_icm)
 #' head(sir)
 #' class(sir)
 #' @export
-fortify.icm <- function(data, ...){
+fortify_EpiModel.icm <- function(data){
   if(!all(c("s.num", "i.num", "r.num" ) %in% names(data$epi))){
     stop("This is not in SIR format")
   } ## Don't have extra states
@@ -310,7 +302,7 @@ fortify.icm <- function(data, ...){
     warning("The number of agents is not constant over time")
   }
 
-  class(SIR_df) <- c("fortified_df", "aggregate", class(SIR_df))
+  class(SIR_df) <- c("aggregate", "fortified_df",  class(SIR_df))
   attr(SIR_df, "source") <- "EpiModel"
 
   return(SIR_df)
@@ -331,11 +323,11 @@ fortify.icm <- function(data, ...){
 #' @details Take the output from \code{EpiModel::dcm} and turn it into an SIR data.frame for plotting.
 #' @examples
 #' ## For dcm
-#' sir1 <- fortify(EpiModel_det)
+#' sir1 <- fortify_EpiModel(EpiModel_det)
 #' head(sir1)
 #' class(sir1)
 #' @export
-fortify.dcm <- function(data){
+fortify_EpiModel.dcm <- function(data){
 
     EpiModel_output <- data
     ## Some checks
@@ -356,7 +348,7 @@ fortify.dcm <- function(data){
     R <- EpiModel_output$epi$r.num
     names(R) <- NULL
     SIR_df <- data.frame(t = t, S = S, I = I, R = R)
-    
+
 
     N <- sum(SIR_df[1, c("S", "I", "R")])
     Ns <- rowSums(SIR_df[, c("S", "I", "R")])
@@ -364,7 +356,7 @@ fortify.dcm <- function(data){
         warning("The number of agents is not constant over time")
     }
 
-    class(SIR_df) <- c("fortified_df", "aggregate", class(SIR_df))
+    class(SIR_df) <- c("aggregate", "fortified_df", class(SIR_df))
     attr(SIR_df, "source") <- "EpiModel"
 
   return(SIR_df)
@@ -382,31 +374,34 @@ fortify.dcm <- function(data){
 #' @export
 #' @examples
 #' sims_array <- array(c(1, 0, 1, 0, 1, 1), dim = c(1, 3, 2))
-#' fortify.sims_array(sims_array)
-fortify.sims_array <- function(data){
+#' fortify_sims(sims_array)
+fortify_sims <- function(data){
   sims_data <- data
   array_dim <- dim(sims_data)
   n_sims <- array_dim[1]
   n_agents <- array_dim[3]
   stopifnot(array_dim[2] == 3)
   dimnames(sims_data) <- list(sim = 1:n_sims,
-                              U_stat = c("init_state", "max_time_S",
+                              agents_stat = c("init_state", "max_time_S",
                                          "max_time_I"),
                               agent_id = 1:n_agents)
   df <- as.data.frame.table(sims_data)
 
 
   if (tidyr_new_interface()){
-    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$U_stat,
+    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$agents_stat,
                                            values_from = .data$Freq) %>%
       dplyr::select(dplyr::one_of("init_state", "max_time_S",
                                   "max_time_I", "sim", "agent_id"))
   } else {
-    df_spread <- df %>% tidyr::spread(key = .data$U_stat,
+    df_spread <- df %>% tidyr::spread(key = .data$agents_stat,
                                       value = .data$Freq) %>%
       dplyr::select(dplyr::one_of("init_state", "max_time_S",
                                   "max_time_I", "sim", "agent_id"))
   }
+  class(df_spread) <- c("agents", "fortified_df", class(df_spread))
+  attr(df_spread, "source") <- "sims"
   return(df_spread)
+
 }
 

@@ -33,5 +33,6 @@ Suggests:
     rmarkdown,
     outbreaks,
     pomp,
+    EpiModel
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr

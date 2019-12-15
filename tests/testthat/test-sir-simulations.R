@@ -192,38 +192,12 @@ test_that("simulate_SIR_agents",{
 
 
   # U_g <- out %>% dplyr::group_by(sim)
-  # sir_group <- UtoX_SIR_group(U_g, T = 10)
+  # sir_group <- agents_to_aggregate_SIR_group(U_g, T = 10)
 })
 
 
-test_that("fortify.sims_array", {
 
-  ############
-  n_sims <- 2
-  n_time_steps <- 5
-  beta <- 0
-  gamma <- 1
-  init_SIR <- c(2, 1, 0)
-  output_format <- "array"
-
-  sims_data <- simulate_SIR_agents(n_sims = n_sims,
-                             n_time_steps = n_time_steps,
-                             beta = beta, gamma = gamma,
-                             init_SIR = init_SIR,
-                             output_format = output_format)
-
-  out <- fortify.sims_array(sims_data)
-  expect_true(inherits(out, "data.frame"))
-
-
-
-
-
-
-})
-
-
-test_that("UtoX_SIR is monotonoic in S and R for these simulations", {
+test_that("agents_to_aggregate_SIR is monotonoic in S and R for these simulations", {
   n_sims <- 1
   n_time_steps <- 50
   beta <- .1
@@ -237,7 +211,7 @@ test_that("UtoX_SIR is monotonoic in S and R for these simulations", {
                              init_SIR = init_SIR,
                              output_format = output_format)
 
-  sir_out <- UtoX_SIR(out, max_time= n_time_steps)
+  sir_out <- agents_to_aggregate_SIR(out, max_time= n_time_steps)
   expect_true(all(diff(sir_out$S) <= 0))
   expect_true(all(diff(sir_out$R) >= 0))
 })
