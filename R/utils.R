@@ -166,6 +166,8 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 #' }
 #' @param max_time integer, max length of outbreak (default NULL), shared across
 #' all groups
+#' @param ind integer vector which columns match up with the columns described
+#' above (default NULL)
 #'
 #' @return \code{sir_out} data frame, with columns
 #' \describe{
@@ -191,22 +193,23 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 #' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
-UtoX_SIR_group <- function(U_g, max_time = NULL){
-  if (is.null(max_time)) max_time <- max(c(U_g$max_time_I, U_g$max_time_S), na.rm = TRUE)
+UtoX_SIR_group <- function(U_g, max_time = NULL, ind = NULL){
+  if (is.null(max_time)) max_time <- max(c(U_g$max_time_I, U_g$max_time_S),
+                                         na.rm = TRUE)
 
 
   if (tidyr_new_interface()){
     sir_out <- U_g %>%
       tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
-                                        max_time = max_time)) %>%
+                                        max_time = max_time, ind = ind)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
     # old
     sir_out <- U_g %>% tidyr::nest_legacy() %>%
       dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
-                                        max_time = max_time)) %>%
+                                        max_time = max_time, ind = ind)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
   }
