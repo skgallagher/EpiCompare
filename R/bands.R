@@ -397,43 +397,40 @@ project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
 StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
                                     ggplot2::Stat,
                                     compute_group =
-                                      function(data, scales, grid_size = rep(300,2), alpha_level = .1){
+  function(data, scales, grid_size = rep(300,2), alpha_level = .1){
+    assertthat::assert_that(class(data$sim_group) != "factor",
+                            msg = paste("'sim_group' cannot be a factor"))
 
+    info_inner <- data[, c("PANEL", "group")] %>%
+      sapply(unique)
 
-                                        assertthat::assert_that(class(data$sim_group) != "factor",
-                                                                msg = paste("'sim_group' cannot be a factor"))
+    data <- data %>% mutate(sim_group = factor(sim_group))
 
+    data2d <- data %>% get_xy_coord(xyz_col = c("x", "y", "z"))
 
+    data2d_list <- split(x = data2d, f = data2d$sim_group)
 
-                                        info_inner <- data[, c("PANEL", "group")] %>%
-                                          sapply(unique)
+    xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+    #kde style
+    kde_ci_list <- TCpredictionbands::kde_from_tclist(dflist = data2d_list,
+                                                      grid_size = grid_size,
+                                                      alpha = alpha_level,
+                                                      position = xy_position)
 
-                                        data <- data %>% mutate(sim_group = factor(sim_group))
+    kde_ci_df <- kde_ci_list$contour %>% lapply(as.data.frame) %>%
+      dplyr::bind_rows(.id = "kde_poly")
 
-                                        data2d <- data %>% get_xy_coord(xyz_col = c("x", "y", "z"))
+    kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
+                                   select(-kde_poly, -level),
+                                 coord = ggtern::coord_tern()) %>%
+      cbind(kde_poly = kde_ci_df$kde_poly, .) %>%
+      dplyr::mutate(PANEL = info_inner[1],
+                    piece = as.integer(kde_poly),
+                    group = as.integer(kde_poly)) %>%
+      # ^this seems like an odd approach
+      project_to_simplex(column_names = c("x","y","z"))
 
-                                        data2d_list <- split(x = data2d, f = data2d$sim_group)
-
-                                        xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-                                        #kde style
-                                        kde_ci_list <- TCpredictionbands::kde_from_tclist(dflist = data2d_list,
-                                                                                          grid_size = grid_size,
-                                                                                          alpha = alpha_level,
-                                                                                          position = xy_position)
-
-                                        kde_ci_df <- kde_ci_list$contour %>% lapply(as.data.frame) %>%
-                                          dplyr::bind_rows(.id = "kde_poly")
-
-                                        kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
-                                                                       select(-kde_poly, -level),
-                                                                     coord = ggtern::coord_tern()) %>%
-                                          cbind(kde_poly = kde_ci_df$kde_poly, .) %>%
-                                          dplyr::mutate(PANEL = info_inner[1],
-                                                        piece = as.integer(kde_poly),
-                                                        group = as.integer(kde_poly)) %>% # this seems like an odd approach
-                                          project_to_simplex(column_names = c("x","y","z"))
-
-                                        return(kde_ci_df3)            },
+    return(kde_ci_df3)            },
                                     required_aes = c("x", "y", "z", "sim_group"))
 
 #' stat object for use in delta_ball based stat_confidence_band and
@@ -531,6 +528,24 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
 
   }, required_aes = c("x", "y", "z", "sim_group"))
 
+
+#' stat object for use in delta_ball based stat_confidence_band and
+#' geom_confidence_band
+#' @export
+StatConfBandSpherical <- ggplot2::ggproto("StatConfBandDeltaBall",
+                                          ggplot2::Stat,
+                                          compute_group =
+  function(data, scales, grid_size = rep(300,2), over_delta = .1,
+           alpha_level = .1, quantiles = c("time", "depth")){
+    if (length(quantiles) > 1){
+      quantiles <- quantiles[1]
+    }
+
+
+
+
+                                            },
+                                          required_aes = c("x", "y", "z", "sim_group", "t"))
 
 #' @export
 #' @rdname geom_confidence_band
