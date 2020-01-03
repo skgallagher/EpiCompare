@@ -26,6 +26,8 @@ simulate_SIR_agents(
 \item{init_SIR}{vector of (S0, I0, R0) the number of agents initially in the
 Susceptible, Infected, and Recovered state, respectively.  The sum of this
 will be used as the number of agents}
+
+\item{output_format}{one of either "array" or "data.frame"}
 }
 \value{
 The the output is a data.frame with

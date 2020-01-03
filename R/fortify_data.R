@@ -132,7 +132,7 @@ fortify_pomp <- function(data){
 
 #' Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR
 #'
-#' @param pomp_output Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}
+#' @param data Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}
 #' @details We require that the variables "S", "I", and "R" must be states in the pomp output.  Moreover, we will assume that these are the only relevant variables in the SIR calculation.
 #' @return data frame with the following columns
 #' \describe{

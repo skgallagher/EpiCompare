@@ -7,7 +7,7 @@
 \method{fortify_pomp}{data.frame}(data)
 }
 \arguments{
-\item{pomp_output}{Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}}
+\item{data}{Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}}
 }
 \value{
 data frame with the following columns

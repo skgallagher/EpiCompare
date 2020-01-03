@@ -32,7 +32,11 @@ test_that("check StatSirRaw underlying data is as expected (data_type = 'raw')",
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
-  testthat::expect_equal(fortified_data, data_vis)
+
+  testthat::expect_true(all(c(any(class(fortified_data) == "data.frame"),
+                              any(class(data_vis) == "data.frame"))))
+  expect_equal(as.matrix(fortified_data),
+               as.matrix(data_vis))                              
 
 })
 
@@ -95,7 +99,9 @@ test_that("check stat_sir underlying data is as expected (data_type = 'raw')", {
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
-  testthat::expect_equal(fortified_data, data_vis)
+  testthat::expect_true(all(c(any(class(fortified_data) == "data.frame"),
+                              any(class(data_vis) == "data.frame"))))
+  expect_equal(as.matrix(fortified_data), as.matrix(data_vis))
 
 })
 
@@ -156,7 +162,10 @@ test_that("check StatSirFortified underlying data is as expected (data_type = 'f
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
-  testthat::expect_equal(fortified_data, data_vis)
+   testthat::expect_true(all(c(any(class(fortified_data) == "data.frame"),
+                               any(class(data_vis) == "data.frame"))))
+   expect_equal(as.matrix(fortified_data), as.matrix(data_vis))
+
 })
 
 test_that("check StatSirFortified underlying with multiple groups is as expected (data_type = 'fortified')", {
@@ -169,7 +178,7 @@ test_that("check StatSirFortified underlying with multiple groups is as expected
 
   data_vis <- layer_data(vis)[,c("x", "y", "z")]
 
-  testthat::expect_equal(length(unique(apply(data_vis,1, sum))), 1)
+
   testthat::expect_true(all(data_vis >= 0))
 
 
@@ -202,7 +211,9 @@ test_that("check geom_sir for Raw underlying data is as expected (data_type = 'r
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
-  testthat::expect_equal(fortified_data, data_vis)
+  testthat::expect_true(all(c(any(class(fortified_data) == "data.frame"),
+                              any(class(data_vis) == "data.frame"))))
+  expect_equal(as.matrix(fortified_data), as.matrix(data_vis))
   })
 
 test_that("check geom_sir for Raw works correctly with groups (data_type = 'raw')", {
@@ -264,7 +275,10 @@ test_that("check geom_sir with fortified underlying data is as expected (data_ty
     .[, c("S", "I", "R")] %>%
     dplyr::rename(x = "S", y = "I", z = "R")
 
-  testthat::expect_equal(fortified_data, data_vis)
+    testthat::expect_true(all(c(any(class(fortified_data) == "data.frame"),
+                                any(class(data_vis) == "data.frame"))))
+    expect_equal(as.matrix(fortified_data),
+                 as.matrix(data_vis))                              
 })
 
 test_that("check geom_sir with fortitfied data underlying with multiple groups is as expected (data_type = 'fortified')", {
@@ -277,8 +291,38 @@ test_that("check geom_sir with fortitfied data underlying with multiple groups i
 
   data_vis <- layer_data(vis)[,c("x", "y", "z")]
 
-  testthat::expect_equal(length(unique(apply(data_vis,1, sum))), 1)
+
+  expect_equal(length(unique(rowSums(data_vis))), 1)
   testthat::expect_true(all(data_vis >= 0))
 
+
+})
+
+
+test_that("Test individual simulation of agents_sims_tidy", {
+
+    out1 <- agents_sims_tidy %>%
+        dplyr::filter(sim == 1)
+    
+    out1 <- agents_to_aggregate_SIR(out1, ind = c(3, 4, 5))
+
+
+    sims1 <- agents_sims_tidy %>%
+        dplyr::filter(sim == 1)
+ 
+
+    library(ggplot2)
+    vis <- sims1 %>%
+        ggplot(., aes(x = SMax, y = IMax,
+                      init_state = init_state, group = sim)) +
+        geom_sir(data_type = "fortified", alpha = .1) + ggtern::coord_tern() +
+        labs(x = "S", y = "I", z = "R")
+
+    data_vis <- layer_data(vis)[,c("x", "y", "z")]
+
+
+    expect_equal(rowSums(out1[, -1]), rowSums(data_vis))
+    
+  testthat::expect_true(all(data_vis >= 0))
 
 })

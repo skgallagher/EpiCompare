@@ -85,6 +85,7 @@ simulate_SIR_agents_groups <- function(n_sims,
 #' @param init_SIR vector of (S0, I0, R0) the number of agents initially in the
 #' Susceptible, Infected, and Recovered state, respectively.  The sum of this
 #' will be used as the number of agents
+#' @param output_format one of either "array" or "data.frame"
 #' @return The the output is a data.frame with
 #' columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents
 #' x n_sims) x 5.

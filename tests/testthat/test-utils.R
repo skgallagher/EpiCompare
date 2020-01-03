@@ -108,9 +108,10 @@ test_that("agents_to_aggregate_SIR_group passes basic checks", {
     filter(AGE2 == 1) %>% ungroup()
   sir_group1 <- agents_to_aggregate_SIR(agents, max_time)
   sir_group_1 <- sir_group %>% filter(AGE2 == 1)
-  testthat::expect_equal(sir_group1,
+  testthat::expect_equal(as.matrix(sir_group1),
                          sir_group_1 %>% ungroup %>%
-                           select(t, S, I, R) %>% data.frame)
+                         select(t, S, I, R) %>% data.frame %>%
+                         as.matrix())
 })
 
 

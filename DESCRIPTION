@@ -33,6 +33,8 @@ Suggests:
     rmarkdown,
     outbreaks,
     pomp,
-    EpiModel
+    EpiModel,
+    kableExtra,
+    devtools
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
