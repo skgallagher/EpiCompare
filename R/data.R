@@ -99,6 +99,7 @@
 #'   implies recovered)}
 #'   \item{tR}{imputed time when individual entered into recovery}
 #'   \item{tI}{imputed time when individual was infected}
+#'  \item{tBORN}{Imputed time when individual was born.  (Only for \code{hagelloch_aug_births}}
 #' }
 #'
 #' @source \url{https://rdrr.io/rforge/surveillance/man/hagelloch.html}
@@ -111,6 +112,9 @@
 
 #' @rdname hagelloch_raw
 "hagelloch_raw2"
+
+#' @rdname hagelloch_raw
+"hagelloch_aug_births"
 
 
 #' Measles in Hagelloch, Germany, 1861 (SIR format)
@@ -277,3 +281,21 @@
 
 
 
+#' EpiModel_agg_bd Example output from the \code{EpiModel} package for a individual model with birth and death rates.
+#'
+#' This data is made from the SIR DCM/ICM example in the \href{http://statnet.github.io/tut/BasicICMs.html}{EpiModel vignette found here}.  We run the discrete compartmental model (DCM) for 300 steps and set the birth and death rates (a.rate, ds.rate, di.rate, dr.rate) to .02.  This is object is of class \code{icm}.  The output details can be found with \code{?EpiModel::icm}.
+#'
+#' @format a \code{dcm} object from the \code{EpiModel} package.  This contains the following elements:
+#' \describe{
+#' \item{param}{the epidemic parameters passed into the model through param, with additional parameters added as necessary.}
+#' \item{control}{the control settings passed into the model through control, with additional controls added as necessary.}
+#' \item{epi}{a list of data frames, one for each epidemiological output from the model. Outputs for base models always include the size of each compartment, as well as flows in, out of, and between compartments.}
+#' }
+#'
+#' @examples
+#' ## Look at structure
+#' str(EpiModel_agg_bd)
+#'
+#' ## Look at SIR values
+#' head(do.call('cbind', EpiModel_agg_bd$epi[c("s.num", "i.num", "r.num")]))
+"EpiModel_agg_bd"
