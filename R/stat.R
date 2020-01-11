@@ -6,20 +6,22 @@
 #' @export
 StatSirRaw <- ggplot2::ggproto("StatSirRaw", ggplot2::Stat,
                    compute_group = function(data, scales,
-                                            init_state = NULL){
+                                            init_state = NULL,
+                                            na.rm = FALSE){
+
 
                      # saving panel and group info
                      info_inner <- data[, c("PANEL", "group")] %>%
                        sapply(unique)
 
-                     fortified_df <- fortify(data, c("y", "z"))
+                     fortified_df <- fortify_agents(data, c("y", "z"))
                      p <- ncol(fortified_df)
-                     out <- UtoX_SIR(fortified_df[, (p-2):p])
+                     out <- agents_to_aggregate_SIR(fortified_df[, (p-2):p])
 
                      out <- out %>% dplyr::mutate(PANEL = info_inner[1],
                                                   group = info_inner[2])
                      names(out)[names(out) %in% c("S","I","R")] <-
-                       c("x","y", "z")
+                         c("x","y", "z")
                      return(out)
                    },
                    required_aes = c("y", "z"))
@@ -32,18 +34,23 @@ StatSirRaw <- ggplot2::ggproto("StatSirRaw", ggplot2::Stat,
 #' @export
 StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
                         compute_group = function(data, scales,
-                                                 init_state = NULL){
+                                                 init_state = NULL,
+                                                 na.rm = FALSE){
                           #
                           # saving panel and group info
                           info_inner <- data[, c("PANEL", "group")] %>%
-                            sapply(unique)
+                              sapply(unique)
 
                           fortified_df <- data
+
                           idx <- sapply(c("init_state", "x", "y"),
                                         function(x) {
                                           which(names(fortified_df) == x)
                                         })
-                          out <- UtoX_SIR(fortified_df, ind = idx)
+
+                          out <- agents_to_aggregate_SIR(fortified_df,
+                                                         ind = idx)
+
 
                           out <- out %>% dplyr::mutate(PANEL = info_inner[1],
                                                        group = info_inner[2])
@@ -89,7 +96,7 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #' @param data_type string. Currently can tell the stat to process the data like
 #' "raw" individual data (formated like \code{\link{hagelloch_raw}}) or
 #' "fortified" individual data (formated like \code{\link{hagelloch_agents}}
-#' or the output of \code{\link{fortify.individuals_df}}).
+#' or the output of \code{\link{fortify_agents}}).
 #' @param ... Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}.
 #' These are often aesthetics, used to set an aesthetic to a fixed value, like
 #' \code{colour = "red"} or \code{size = 3}. They may also be parameters to the
@@ -137,7 +144,7 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender")
 #'
-#' timeternR::U_sims_tidy %>%
+#' timeternR::agents_sims_tidy %>%
 #'   ggplot() +
 #'   geom_sir(aes(x = SMax, y = IMax, init_state = init_state,
 #'                 group = sim), alpha = .1,
@@ -160,14 +167,14 @@ StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender")
 #'
-#' timeternR::U_sims_tidy %>%
+#' timeternR::agents_sims_tidy %>%
 #'   ggplot() +
 #'   geom_path(aes(x = SMax, y = IMax, init_state = init_state, group = sim),
 #'             alpha = .1, stat = timeternR::StatSirFortified) +
 #'   coord_tern() +
 #'   labs(x = "S", y = "I", z = "R")
 #'
-#' timeternR::U_sims_tidy %>%
+#' timeternR::agents_sims_tidy %>%
 #'   ggplot() +
 #'   stat_sir(aes(x = SMax, y = IMax, init_state = init_state,
 #'                 group = sim), alpha = .1,

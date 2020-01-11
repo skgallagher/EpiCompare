@@ -4,13 +4,7 @@
 \alias{simulate_SIR_agents_groups}
 \title{Simulate SIR data according to many, independent chain Binomials}
 \usage{
-simulate_SIR_agents_groups(
-  n_sims,
-  n_time_steps,
-  par_mat,
-  init_mat,
-  output_format = "array"
-)
+simulate_SIR_agents_groups(n_sims, n_time_steps, par_mat, init_mat)
 }
 \arguments{
 \item{n_sims}{number of times to run simulation.}
@@ -23,9 +17,6 @@ and k2 is the gamma value for group k.}
 
 \item{init_mat}{K x 3 matrix where entry k1 is the initial S0 for group k,
 k2 is the initial I0, and k3 is the initial R0.}
-
-\item{output_format}{either "array" or "data.frame".  Default is array
-(which will return a list of arrays).}
 }
 \description{
 Simulate SIR data according to many, independent chain Binomials
@@ -47,7 +38,7 @@ follows a Bernoulli draw based on the agent's current state.  Specifically,
 A_{t-1,j} = 0 \\ 1 + Bernoulli(\gamma_k) & \textnormal{ if } A_{t-1,j}
 = 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
 
-The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
 susceptible, max time infectious.)  If the agent never became infectious or
 was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
 Similarly, if the agent never recovers or is recovered from time 0 on then
@@ -63,7 +54,6 @@ init_mat <- matrix(c(90, 10, 0,
 sims_data <- simulate_SIR_agents_groups(n_sims = 5,
                                         n_time_steps = 10,
                                         par_mat = par_mat,
-                                        init_mat = init_mat,
-                                        output_format = "data.frame")
-assertthat::are_equal(class(sims_data), "data.frame")
+                                        init_mat = init_mat)
+dim(sims_data)
 }

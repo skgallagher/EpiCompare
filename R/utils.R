@@ -2,7 +2,7 @@
 
 #' Convert agent information to SIR format
 #'
-#' @param U data frame, with the following format
+#' @param agents data frame, with the following format
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
@@ -24,31 +24,31 @@
 #'
 #'
 #' @examples
-#' sir_out <- UtoX_SIR(timeternR::hagelloch_agents)
+#' sir_out <- agents_to_aggregate_SIR(timeternR::hagelloch_agents)
 #' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
-UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
+agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
   if (!is.null(ind)){
-    names(U)[ind] <- c("init_state", "max_time_S", "max_time_I")
+    names(agents)[ind] <- c("init_state", "max_time_S", "max_time_I")
   }
 
-  N <- nrow(U)
+  N <- nrow(agents)
   if (is.null(max_time)) {
-    max_time <- max(c(U$max_time_I, U$max_time_S), na.rm = TRUE)
+    max_time <- max(c(agents$max_time_I, agents$max_time_S), na.rm = TRUE)
   }
 
-  start_infected <- sum(U$init_state == 1)
-  start_recovered <- sum(U$init_state == 2)
-  start_susceptible <- sum(U$init_state == 0)
+  start_infected <- sum(agents$init_state == 1)
+  start_recovered <- sum(agents$init_state == 2)
+  start_susceptible <- sum(agents$init_state == 0)
 
-  assertthat::assert_that(all(U$init_state %in% 0:2),
+  assertthat::assert_that(all(agents$init_state %in% 0:2),
                           msg = "initial statement must be either 0, 1, or 2.")
 
-  inner_na_U <- is.na(U[,c("max_time_S", "max_time_I")])
+  inner_na_agents <- is.na(agents[,c("max_time_S", "max_time_I")])
 
-  if (sum(inner_na_U) > 0){
+  if (sum(inner_na_agents) > 0){
     # check NAs are logical
-    assertthat::assert_that(all(inner_na_U[U$init_state == 0,1] <=
-                                  inner_na_U[U$init_state == 0,2]),
+    assertthat::assert_that(all(inner_na_agents[agents$init_state == 0,1] <=
+                                  inner_na_agents[agents$init_state == 0,2]),
                             msg = paste("Please manually correct the fact that",
                                         "an individual that started as",
                                         "susceptible (inital_state = 0) has a",
@@ -56,14 +56,14 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
                                         "susceptible, but a maximum time when",
                                         "they were infected."))
 
-    assertthat::assert_that(all(inner_na_U[U$init_state == 1,1]),
+    assertthat::assert_that(all(inner_na_agents[agents$init_state == 1,1]),
                             msg = paste("Please manually correct the fact that",
                                         "an individual that started as",
                                         "infected (inital_state = 1) should",
                                         "have NA for the maximum time time",
                                         "they were susceptible."))
 
-    assertthat::assert_that(all(is.na(inner_na_U[U$init_state == 2,1:2])),
+    assertthat::assert_that(all(is.na(inner_na_agents[agents$init_state == 2,1:2])),
                             msg = paste("Please manually correct the fact that",
                                         "an individual that started as",
                                         "recovered (inital_state = 2) should",
@@ -71,23 +71,23 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
                                         "they were susceptible and infected"))
 
     ### standard clean up of NAs
-    # update U
-    U[U$init_state == 0,
-      c("max_time_S", "max_time_I")][inner_na_U[U$init_state == 0,]] <- max_time
-    if (tibble::is_tibble(U)){
-      U[U$init_state == 1,
-        c("max_time_I")][inner_na_U[U$init_state == 1,2],] <- max_time
+    # update agents
+    agents[agents$init_state == 0,
+      c("max_time_S", "max_time_I")][inner_na_agents[agents$init_state == 0,]] <- max_time
+    if (tibble::is_tibble(agents)){
+      agents[agents$init_state == 1,
+        c("max_time_I")][inner_na_agents[agents$init_state == 1,2],] <- max_time
     } else{
-      U[U$init_state == 1,
-        c("max_time_I")][inner_na_U[U$init_state == 1,2]] <- max_time
+      agents[agents$init_state == 1,
+        c("max_time_I")][inner_na_agents[agents$init_state == 1,2]] <- max_time
     }
 
-    U[,c("max_time_S", "max_time_I")][is.na(U[,c("max_time_S", "max_time_I")])] <- -1
+    agents[,c("max_time_S", "max_time_I")][is.na(agents[,c("max_time_S", "max_time_I")])] <- -1
   }
 
 
   if (tidyr_new_interface()){
-    new <- U %>%
+    new <- agents %>%
       dplyr::mutate(start_time_I = .data$max_time_S + 1,
                     start_time_R = .data$max_time_I + 1) %>%
       dplyr::select(.data$start_time_I, .data$start_time_R) %>%
@@ -118,7 +118,7 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
     new <- new %>%
       tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0))
   } else {
-    new <- U %>%
+    new <- agents %>%
       dplyr::mutate(start_time_I = .data$max_time_S + 1,
                     start_time_R = .data$max_time_I + 1) %>%
       dplyr::select(.data$start_time_I, .data$start_time_R) %>%
@@ -156,8 +156,8 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
   return(sir_out)
 }
 
-#' UtoX_SIR for grouped data frames
-#' @param U_g grouped data frame, with the following format
+#' agents_to_aggregate_SIR for grouped data frames
+#' @param agents_g grouped data frame, with the following format
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
@@ -184,32 +184,32 @@ UtoX_SIR <- function(U, max_time = NULL, ind = NULL){
 #' @examples
 #' library(dplyr)
 #' max_time <- 100
-#' U_g <- hagelloch_raw %>% fortify_agents() %>%
+#' agents_g <- hagelloch_raw %>% fortify_agents() %>%
 #'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
-#' sir_group <- UtoX_SIR_group(U_g, max_time)
-#' U <- U_g %>%
+#' sir_group <- agents_to_aggregate_SIR_group(agents_g, max_time)
+#' agents <- agents_g %>%
 #'   filter(SEX == "female") %>% ungroup()
-#' sir_group1 <- UtoX_SIR(U, max_time)
+#' sir_group1 <- agents_to_aggregate_SIR(agents, max_time)
 #' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
-UtoX_SIR_group <- function(U_g, max_time = NULL, ind = NULL){
-  if (is.null(max_time)) max_time <- max(c(U_g$max_time_I, U_g$max_time_S),
-                                         na.rm = TRUE)
+agents_to_aggregate_SIR_group <- function(agents_g, max_time = NULL){
+  if (is.null(max_time)) max_time <- max(c(agents_g$max_time_I, agents_g$max_time_S), na.rm = TRUE)
 
 
   if (tidyr_new_interface()){
-    sir_out <- U_g %>%
+    sir_out <- agents_g %>%
       tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
-                                        max_time = max_time, ind = ind)) %>%
+      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate_SIR,
+                                        max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
     # old
-    sir_out <- U_g %>% tidyr::nest_legacy() %>%
-      dplyr::mutate(update = purrr::map(.data$data, UtoX_SIR,
-                                        max_time = max_time, ind = ind)) %>%
+
+    sir_out <- agents_g %>% tidyr::nest_legacy() %>%
+      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate_SIR,
+                                        max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
   }

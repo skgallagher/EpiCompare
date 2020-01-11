@@ -68,7 +68,7 @@ define both data and aesthetics and shouldn't inherit behaviour from the}
 \item{data_type}{string. Currently can tell the stat to process the data like
 "raw" individual data (formated like \code{\link{hagelloch_raw}}) or
 "fortified" individual data (formated like \code{\link{hagelloch_agents}}
-or the output of \code{\link{fortify.individuals_df}}).}
+or the output of \code{\link{fortify_agents}}).}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2:layer]{layer()}}.
 These are often aesthetics, used to set an aesthetic to a fixed value, like
@@ -122,7 +122,7 @@ timeternR::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
   labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   geom_sir(aes(x = SMax, y = IMax, init_state = init_state,
                 group = sim), alpha = .1,
@@ -145,14 +145,14 @@ timeternR::hagelloch_raw \%>\% dplyr::filter(SEX \%in\% c("male", "female")) \%>
   labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   geom_path(aes(x = SMax, y = IMax, init_state = init_state, group = sim),
             alpha = .1, stat = timeternR::StatSirFortified) +
   coord_tern() +
   labs(x = "S", y = "I", z = "R")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   stat_sir(aes(x = SMax, y = IMax, init_state = init_state,
                 group = sim), alpha = .1,

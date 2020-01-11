@@ -99,6 +99,7 @@
 #'   implies recovered)}
 #'   \item{tR}{imputed time when individual entered into recovery}
 #'   \item{tI}{imputed time when individual was infected}
+#'  \item{tBORN}{Imputed time when individual was born.  (Only for \code{hagelloch_aug_births}}
 #' }
 #'
 #' @source \url{https://rdrr.io/rforge/surveillance/man/hagelloch.html}
@@ -111,6 +112,9 @@
 
 #' @rdname hagelloch_raw
 "hagelloch_raw2"
+
+#' @rdname hagelloch_raw
+"hagelloch_aug_births"
 
 
 #' Measles in Hagelloch, Germany, 1861 (SIR format)
@@ -163,7 +167,7 @@
 "hagelloch_agents"
 
 
-#' U_sims Example output from SIR simulations
+#' agents_sims Example output from SIR simulations
 #'
 #' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "array"}.  It is a 50 x 3 x 188 array where entry (i,j,k) loks at the ith simulation, the jth statistic, and the kth agent.
 #' Each column is asssociated with 1 agent and
@@ -175,21 +179,21 @@
 #' @format An array with dimension 50 x 3 x 188 data frame with 188 rows and 3 columns.  Below are the descriptions of each dimension
 #' \describe{
 #'   \item{sim}{Simulation number is the first dimension.  They are named between 1 and 50}
-#'   \item{U_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
+#'   \item{agent_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
 #'   \item{agent_id}{the ID of the agent}
 #' }
 #'
 #' @examples
 #' ## show first simulation of first 10 agents
-#' U_sims[1, , 1:10]
-"U_sims"
+#' agents_sims[1, , 1:10]
+"agents_sims"
 
 
 
 
-#' U_sim_tidy Example output from SIR simulations in a data.frame format
+#' agents_sim_tidy Example output from SIR simulations in a data.frame format
 #'
-#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "data.frame"}.  It is a 9400 by 5 data.frame where each row corresponds to the U statistic of a given agent and simulation.
+#' This simulated data is an example of the output from the function \code{simulate_SIR_agents()} when \code{output_format = "data.frame"}.  It is a 9400 by 5 data.frame where each row corresponds to the agents statistic of a given agent and simulation.
 #' Each row is asssociated with 1 agent and contains
 #' is a "sufficient" statistic for each agent's infection.  Each agent's
 #' infection is uniquely identified by an initial state, max time before
@@ -207,8 +211,8 @@
 #'
 #' @examples
 #' ## show first 10 simulations of the first individual
-#' U_sims_tidy[1:10,]
-"U_sims_tidy"
+#' agents_sims_tidy[1:10,]
+"agents_sims_tidy"
 
 
 
@@ -277,3 +281,21 @@
 
 
 
+#' EpiModel_agg_bd Example output from the \code{EpiModel} package for a individual model with birth and death rates.
+#'
+#' This data is made from the SIR DCM/ICM example in the \href{http://statnet.github.io/tut/BasicICMs.html}{EpiModel vignette found here}.  We run the discrete compartmental model (DCM) for 300 steps and set the birth and death rates (a.rate, ds.rate, di.rate, dr.rate) to .02.  This is object is of class \code{icm}.  The output details can be found with \code{?EpiModel::icm}.
+#'
+#' @format a \code{dcm} object from the \code{EpiModel} package.  This contains the following elements:
+#' \describe{
+#' \item{param}{the epidemic parameters passed into the model through param, with additional parameters added as necessary.}
+#' \item{control}{the control settings passed into the model through control, with additional controls added as necessary.}
+#' \item{epi}{a list of data frames, one for each epidemiological output from the model. Outputs for base models always include the size of each compartment, as well as flows in, out of, and between compartments.}
+#' }
+#'
+#' @examples
+#' ## Look at structure
+#' str(EpiModel_agg_bd)
+#'
+#' ## Look at SIR values
+#' head(do.call('cbind', EpiModel_agg_bd$epi[c("s.num", "i.num", "r.num")]))
+"EpiModel_agg_bd"

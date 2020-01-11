@@ -4,6 +4,7 @@
 \name{hagelloch_raw}
 \alias{hagelloch_raw}
 \alias{hagelloch_raw2}
+\alias{hagelloch_aug_births}
 \title{Measles in Hagelloch, Germany, 1861}
 \format{A data frame with 188 rows and 12 columns
 \describe{
@@ -40,6 +41,7 @@
   implies recovered)}
   \item{tR}{imputed time when individual entered into recovery}
   \item{tI}{imputed time when individual was infected}
+ \item{tBORN}{Imputed time when individual was born.  (Only for \code{hagelloch_aug_births}}
 }}
 \source{
 \url{https://rdrr.io/rforge/surveillance/man/hagelloch.html}
@@ -48,6 +50,8 @@
 hagelloch_raw
 
 hagelloch_raw2
+
+hagelloch_aug_births
 }
 \description{
 The data comprise of 188 cases of measles among children in the German
