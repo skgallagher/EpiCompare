@@ -10,7 +10,7 @@ r_packages:
 install:
 - R -e 'install.packages("devtools")' -e 'devtools::install_deps(dep = T)'
 - R -e 'install.packages("kableExtra")'
-- R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands"")'
+- R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")'
 - R -e 'devtools::install_github("ngloe/olpsR")'
 
 script:

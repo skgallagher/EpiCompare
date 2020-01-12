@@ -40,8 +40,6 @@ devtools::install_github("ngloe/olpsR")
   - `U_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `U_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax. (**NEEDS CLEANUP**)
 
 
-=======
-
 ## Example
 
 ```{r}
@@ -51,14 +49,12 @@ library(timeternR)
 hagelloch_raw %>%
    dplyr::filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
-     stat_sir(data_type = "raw") + 
-     coord_tern() +
-     labs(x = "S", y = "I", z = "R",
-          color = "Gender")
+       stat_sir(data_type = "raw") + 
+       coord_tern() +
+       labs(x = "S", y = "I", z = "R",
+            color = "Gender")
 ```
 
-
-=======
 
 ![](images/stat_sir_example.png)
 
@@ -75,16 +71,20 @@ init_SIR <- c(950, 50, 0)
 output_format <- "data.frame"
     
 out <- simulate_SIR_agents(n_sims = n_sims,
-                                 n_time_steps = n_time_steps,
-                                 beta = beta, gamma = gamma,
-                                 init_SIR = init_SIR,
-                                 output_format = output_format)
+                           n_time_steps = n_time_steps,
+                           beta = beta, gamma = gamma,
+                           init_SIR = init_SIR,
+                           output_format = output_format)
                                  
-df_groups <- out %>% dplyr::group_by(sim) %>%  UtoX_SIR_group                       
-
-# check this error / write a test?
-
+df_groups <- out %>% dplyr::group_by(sim) %>%
+    agents_to_aggregate_SIR_group  
+  
+df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
+    geom_line(alpha = .1) +
+    coord_tern()
 ```
+![](images/group_simulation_example.png)
+
 
 ## Notes:
 1. For writing code that works with `tidyverse` 1.0 vs `tidyverse` <= 0.8.3 see:
