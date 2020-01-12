@@ -14,7 +14,7 @@ stat_confidence_band(
   show.legend = NA,
   inherit.aes = TRUE,
   cb_type = c("kde", "delta_ball"),
-  grid_size = rep(300, 2),
+  grid_size = rep(100, 2),
   alpha_level = 0.1,
   ...
 )
@@ -30,7 +30,7 @@ geom_confidence_band(
   show.legend = NA,
   inherit.aes = TRUE,
   cb_type = c("kde", "delta_ball"),
-  grid_size = rep(300, 2),
+  grid_size = rep(100, 2),
   alpha_level = 0.1
 )
 }

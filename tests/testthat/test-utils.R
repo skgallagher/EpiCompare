@@ -103,7 +103,7 @@ test_that("agents_to_aggregate_SIR_group passes basic checks", {
   # same test as in the example string
   max_time <- 100
   agents_g <- hagelloch_raw %>% fortify_agents() %>% group_by(AGE2 = as.numeric(cut(AGE,3)))
-  sir_group <- agents_to_aggregate_SIR_group(agents_g, max_time)
+  sir_group <- agents_to_aggregate_SIR(agents_g, max_time)
   agents <- agents_g %>%
     filter(AGE2 == 1) %>% ungroup()
   sir_group1 <- agents_to_aggregate_SIR(agents, max_time)

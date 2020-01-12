@@ -1,4 +1,35 @@
 
+#' Method for converting agent information to SIR format. Note this works
+#' differently on \code{data.frame} and \code{grouped_df} objects.
+#'
+#' @param agents data frame (grouped for ungrouped), with the following format
+#' \describe{
+#'   \item{init_state}{Initial state for individual (at time t = 0). For the
+#'   states, 0 = S, 1 = I, 2 = R.}
+#'   \item{max_time_S}{maximum time individual was susceptible (S)}
+#'   \item{max_time_I}{maximum time individual was infected (I)}
+#' }
+#' @param max_time integer, max length of outbreak (default NULL)
+#' @param ind integer vector which columns match up with the columns described
+#' above (default NULL)
+#'
+#'
+#' @return \code{sir_out} data frame, with columns
+#' \describe{
+#'   \item{t}{time since outbreak}
+#'   \item{S}{Number of individuals susceptible}
+#'   \item{I}{Number of individuals infected}
+#'   \item{R}{Number of individuals in recovery}
+#' }
+#' @export
+#'
+#'
+#' @examples
+#' sir_out <- agents_to_aggregate_SIR(timeternR::hagelloch_agents)
+#' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
+agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
+  UseMethod("agents_to_aggregate_SIR")
+}
 
 #' Convert agent information to SIR format
 #'
@@ -26,7 +57,7 @@
 #' @examples
 #' sir_out <- agents_to_aggregate_SIR(timeternR::hagelloch_agents)
 #' assertthat::are_equal(sir_out, timeternR::hagelloch_sir)
-agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
+agents_to_aggregate_SIR.data.frame <- function(agents, max_time = NULL, ind = NULL){
   if (!is.null(ind)){
     names(agents)[ind] <- c("init_state", "max_time_S", "max_time_I")
   }
@@ -157,7 +188,7 @@ agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
 }
 
 #' agents_to_aggregate_SIR for grouped data frames
-#' @param agents_g grouped data frame, with the following format
+#' @param agents grouped data frame, with the following format
 #' \describe{
 #'   \item{init_state}{Initial state for individual (at time t = 0). For the
 #'   states, 0 = S, 1 = I, 2 = R.}
@@ -186,27 +217,27 @@ agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
 #' max_time <- 100
 #' agents_g <- hagelloch_raw %>% fortify_agents() %>%
 #'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
-#' sir_group <- agents_to_aggregate_SIR_group(agents_g, max_time)
+#' sir_group <- agents_to_aggregate_SIR(agents_g, max_time)
 #' agents <- agents_g %>%
 #'   filter(SEX == "female") %>% ungroup()
 #' sir_group1 <- agents_to_aggregate_SIR(agents, max_time)
 #' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
-agents_to_aggregate_SIR_group <- function(agents_g,
-                                          max_time = NULL, ind = NULL){
+agents_to_aggregate_SIR.grouped_df <- function(agents,
+                                               max_time = NULL, ind = NULL){
   if (is.null(max_time)) {
-    max_time <- max(c(agents_g$max_time_I,
-                      agents_g$max_time_S), na.rm = TRUE)
+    max_time <- max(c(agents$max_time_I,
+                      agents$max_time_S), na.rm = TRUE)
   }
 
   if (!is.null(ind)){
-    names(agents_g)[ind] <- c("init_state", "max_time_S", "max_time_I")
+    names(agents)[ind] <- c("init_state", "max_time_S", "max_time_I")
   }
 
 
   if (tidyr_new_interface()){
-    sir_out <- agents_g %>%
+    sir_out <- agents %>%
       tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate_SIR,
                                         max_time = max_time)) %>%
@@ -215,7 +246,7 @@ agents_to_aggregate_SIR_group <- function(agents_g,
   } else {
     # old
 
-    sir_out <- agents_g %>% tidyr::nest_legacy() %>%
+    sir_out <- agents %>% tidyr::nest_legacy() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate_SIR,
                                         max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
