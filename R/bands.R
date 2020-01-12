@@ -439,7 +439,7 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
 StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
                                           ggplot2::Stat,
                                           compute_group =
-  function(data, scales, grid_size = rep(300,2), over_delta = .1,
+  function(data, scales, grid_size = rep(100,2), over_delta = .1,
            alpha_level = .1){
 
     assertthat::assert_that(class(data$sim_group) != "factor",
@@ -448,7 +448,8 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
 
     info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
 
-    data2d <- data %>% get_xy_coord(xyz_col = c("x", "y", "z"))
+    data2d <- data %>% as.data.frame() %>%
+      get_xy_coord(xyz_col = c("x", "y", "z"))
 
     data2d_list <- split(x = data2d, f = data2d$sim_group)
     xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
@@ -461,7 +462,7 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
                                                         dist_mat = dist_mat) %>%
       dplyr::rename(lat = "x", long = "y")
 
-    delta_info <- delta_structure(data2d_list)
+    delta_info <- delta_structure(data_deep_points)
 
     structure <- delta_info$structure %>%
       dplyr::rename(x = "long", y = "lat")
@@ -553,7 +554,7 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  position = "identity", na.rm = FALSE,
                                  show.legend = NA, inherit.aes = TRUE,
                                  cb_type = c("kde", "delta_ball"),
-                                 grid_size = rep(300, 2),
+                                 grid_size = rep(100, 2),
                                  alpha_level = .1,
                                  ...) {
 
@@ -697,7 +698,7 @@ geom_confidence_band <- function(mapping = NULL, data = NULL,
                                  show.legend = NA,
                                  inherit.aes = TRUE,
                                  cb_type = c("kde", "delta_ball"),
-                                 grid_size = rep(300, 2),
+                                 grid_size = rep(100, 2),
                                  alpha_level = .1) {
   ggplot2::layer(
     data = data,

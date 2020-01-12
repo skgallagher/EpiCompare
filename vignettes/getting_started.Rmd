@@ -32,6 +32,15 @@ if(!require(timeternR)){
 library(timeternR)
 ```
 
+For this package, we currently use 2 github based packages which you can load in the following manner:
+
+```{r eval=FALSE}
+library(devtools)
+devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")
+devtools::install_github("ngloe/olpsR")
+```
+
+
 ```{r echo = F, message = F, warning = F}
 # hidden load currently
 library(devtools)
@@ -74,17 +83,11 @@ timeternR::hagelloch_raw %>%
 ```
 
 
-
-The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
-
-
-	
-```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
-
-
 ## Simulating epidemics with `simulate_SIR_agents`.
 
-
+The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
+	
+```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
 n_sims <- 1
 n_time_steps <- 100
 beta <- .1
@@ -97,21 +100,11 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR,
                                  output_format = output_format)
-                                 
+              
 df_ave <- out %>% agents_to_aggregate_SIR %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
-
-ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
-                                S, I, R)),
-       aes(x = t, y = Value, group = State,
-col = State)) +
-  geom_line()
-
-
-ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
-
-
+                   
 if (tidyr_new_interface()){ # if tidyr version > 0.8.99
   df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
                                           values_to = "Value",
@@ -121,17 +114,80 @@ if (tidyr_new_interface()){ # if tidyr version > 0.8.99
                                 S, I, R)
 }
 
-  
 ggplot(data = df_ave_lines,
-       aes(x = t, y = Value, group = State, color = State)) +
-  geom_line() 
+       aes(x = t, y = Value, group = State, col = State)) +
+  geom_line()
 
 ggplot(data = df_ave_lines,
        aes(x = t, y = Value)) +
-  facet_grid(State~.) + 
+  facet_grid(State ~ .) + 
   geom_line() 
 
 
 ```
 
+We visualize this simulation with a single line in the following way.
+
+```{r}
+ggplot(data = df_ave, aes(x = S, y = I, z = R)) + geom_path() +
+  coord_tern()
+```
+
+## Simulating and visualizing multiple epidemics 
+
+We can also simulation multiple epidemics with different parameters (and can also examine simulations from both `pomp` and `epiModels` packages).
+
+Using the same simulation parameters above we can simulate 10 epidemics:
+
+```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
+n_sims <- 10 # only code changed
+n_time_steps <- 100
+beta <- .1
+gamma <- .03
+init_SIR <- c(950, 50, 0)
+output_format <- "data.frame"
+    
+out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+                                 n_time_steps = n_time_steps,
+                                 beta = beta, gamma = gamma,
+                                 init_SIR = init_SIR,
+                                 output_format = output_format)
+          
+```
+
+We then use the `agents_to_aggregate_SIR_group` function to do the same thing:
+
+```{r}
+df_group <- out %>% group_by(sim) %>% agents_to_aggregate_SIR_group 
+
+ggplot(df_group, aes(x = S, y = I, z = R, group = sim)) +
+  geom_path(alpha = .1) +
+  coord_tern()
+```
+
+What's more if we want to compare the original simulation with these new simulations (and see how well they match) we can do the following:
+
+```{r}
+ggplot() + 
+  geom_path(data = df_ave, aes(x = S, y = I, z = R)) +
+  geom_path(data = df_group, aes(x = S, y = I, z = R, group = sim),
+       alpha = .1) +
+  coord_tern() 
+```
+
+How extreme is the first simulation compared to the rest? Let's create a empirical 95% confidence band from the later simulations.
+
+```{r}
+ggplot() + 
+  geom_confidence_band(data = df_group, 
+                       aes(x = S, y = I, z = R,
+                           sim_group = as.numeric(as.character(sim))),
+                       fill = "blue", color = NA, alpha = .2,
+                       alpha_level = .05, grid_size = rep(100, 2),
+                       cb_type = "delta_ball"
+                       ) +
+  geom_path(data = df_ave, aes(x = S, y = I, z = R)) +
+  coord_tern() 
+# note: the error message actually comes from the geom_path
+```
 

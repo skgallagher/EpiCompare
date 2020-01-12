@@ -21,7 +21,7 @@ Currently we are also using some helper functions from 2 github based packages, 
 
 ```r
 # install.package("devtools")
-devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands"")
+devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")
 devtools::install_github("ngloe/olpsR")
 ```
 
