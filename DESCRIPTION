@@ -21,9 +21,11 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
+    olpsR,
     purrr,
     raster,
     rlang,
+    TCpredictionbands,
     tidyr,
     tibble,
     magrittr
@@ -33,6 +35,7 @@ Suggests:
     rmarkdown,
     outbreaks,
     pomp,
+    progress,
     EpiModel,
     kableExtra,
     devtools

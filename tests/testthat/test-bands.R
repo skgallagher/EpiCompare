@@ -334,9 +334,11 @@ test_that("delta_structure tests", {
   for (line in expected_structure) {
     in_the_match <- FALSE
     for (line_num in line_numbers) {
-      d_structure <- structure_out_list %>% filter(idx == line_num)
+      d_structure <- structure_out_list %>%
+        dplyr::filter(idx == line_num)
 
-      combined_info <- d_structure %>% left_join(line, by = c("lat", "long"))
+      combined_info <- d_structure %>%
+        dplyr::left_join(line, by = c("lat", "long"))
 
     if (sum(is.na(combined_info)) == 0){
         in_the_match  <- TRUE

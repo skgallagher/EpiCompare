@@ -4,7 +4,7 @@
 \alias{agents_to_aggregate_SIR_group}
 \title{agents_to_aggregate_SIR for grouped data frames}
 \usage{
-agents_to_aggregate_SIR_group(agents_g, max_time = NULL)
+agents_to_aggregate_SIR_group(agents_g, max_time = NULL, ind = NULL)
 }
 \arguments{
 \item{agents_g}{grouped data frame, with the following format

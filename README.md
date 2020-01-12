@@ -17,6 +17,14 @@ You can install the developmental version of timeternR from github using:
 devtools::install_github("shannong19/timeternR")
 ```
 
+Currently we are also using some helper functions from 2 github based packages, so for before loading our package please do:
+
+```r
+# install.package("devtools")
+devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands"")
+devtools::install_github("ngloe/olpsR")
+```
+
 ## Data
 
    Currently there are five small data sets available in `timeternR`
