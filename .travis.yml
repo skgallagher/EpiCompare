@@ -1,6 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
+language: r
 cache: packages
 
 install:
@@ -10,3 +10,13 @@ install:
 script:
 - R CMD build .
 - R CMD check *tar.gz
+
+
+matrix:
+  include:
+  - r: release
+    name: tidyr-current
+    before_script: Rscript -e 'install.packages("tidyverse")'
+  - r: release
+    name: tidyr-old
+    before_script: Rscript - 'install.packages("tidyverse", version = "0.9.1", repos = "http://cran.us.r-project.org")'
