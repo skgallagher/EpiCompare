@@ -16,7 +16,7 @@ matrix:
   include:
   - r: release
     name: tidyr-current
-    before_script: Rscript -e 'install.packages("tidyverse")'
+    before_script: Rscript -e 'install.packages("tidyr")'
   - r: release
     name: tidyr-old
-    before_script: Rscript - 'install.packages("tidyverse", version = "0.9.1", repos = "http://cran.us.r-project.org")'
+    before_script: Rscript - 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
