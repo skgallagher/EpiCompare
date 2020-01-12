@@ -308,7 +308,7 @@ test_that("get_delta basic tests", {
   gd_out3 <- get_delta(data2)
   gd_out4 <- get_delta(dist_mat = dist_mat2)
 
-  testthat::expect_equivalent(gd_out3,gd_out4)
+  testthat::expect_equivalent(gd_out3, gd_out4)
   testthat::expect_equivalent(gd_out3, list("dist_mat" = dist_mat2,
                                             "mm_delta" = 1))
 
@@ -319,7 +319,32 @@ test_that("delta_structure tests", {
                                  long = c(0,0,1))
 
   out_list <- delta_structure(data_deep_points)
+  structure_out_list <- out_list$structure
+  line_numbers <- structure_out_list %>% dplyr::pull(idx) %>% unique
 
   expected_min_delta <- 1
-  expected_structure <- data.frame(x )
+  expected_structure <- list(first = data.frame(long = c(0,1),
+                                                lat = c(0,0),
+                                                extra = 1:2),
+                             second = data.frame(long = c(1, 1),
+                                                 lat = c(0, 1),
+                                                 extra = 1:2))
+
+  line_info <- c()
+  for (line in expected_structure) {
+    in_the_match <- FALSE
+    for (line_num in line_numbers) {
+      d_structure <- structure_out_list %>% filter(idx == line_num)
+
+      combined_info <- d_structure %>% left_join(line, by = c("lat", "long"))
+
+    if (sum(is.na(combined_info)) == 0){
+        in_the_match  <- TRUE
+      }
+    }
+    line_info <- c(line_info, in_the_match)
+
+  }
+  testthat::expect_true(all(line_info))
+
 })

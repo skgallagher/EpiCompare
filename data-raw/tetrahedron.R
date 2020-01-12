@@ -27,7 +27,7 @@ verts <- data.frame(name = c("top", "left", "right", "front"),
                     z = c(0, 0, 0, sqrt(6)/3))
 tetrahedron <- verts[c(1, 2, 3, 1, 4, 2, 4, 3, 4),]
 tet <- tetrahedron[, c("x", "y", "z")]
-ggdf <- gg_df %>% dplyr::select(-c(""))
+ggdf <- gg_df #%>% dplyr::select(-c(""))
 
 p <- plot_ly(gg_df,  type = 'scatter3d', mode = 'lines',
              opacity = 1, line = list(width = 6, color = ~time, reverscale = FALSE)) +
@@ -56,7 +56,8 @@ initials <- c(S = 0.9, E = 1e-04, I = 1e-04, R = 1 - 0.9 - 1e-4 - 1e-4)
 
 # Solve and plot.
 seir2 <- SEIR(pars = parameters, init = initials, time = 0:(150))
-df2 <- SEIR_to_XYZ(seir2$results)
+df2 <- seir2$results %>% dplyr::rename(t = "time")
+df2 <- SEIR_to_XYZ(df2)
 scatter3D(x = df2$x, y = df2$y, z = df2$z,
           col = "purple", add = TRUE, pch = 16)
 ########## sim 3
@@ -66,7 +67,8 @@ initials <- c(S = 0.9, E = 1e-04, I = 1e-04, R = 1 - 0.9 - 1e-4 - 1e-4)
 
 # Solve and plot.
 seir3 <- SEIR(pars = parameters, init = initials, time = 0:(850))
-df3 <- SEIR_to_XYZ(seir3$results)
+df3 <- seir3$results %>% dplyr::rename(t = "time")
+df3 <- SEIR_to_XYZ(df3)
 scatter3D(x = df3$x, y = df3$y, z = df3$z,
           col = "red", add = TRUE, pch = 16)
 

@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.align = "center"
 )
+devtools::load_all()
 ```
 
 <left>
@@ -46,24 +47,22 @@ library(tidyr)
 library(ggtern)
 ```
 
+The below takes a data frame of individuals who have reported infection and recovery times, groups them into male and females, aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
 
+```{r quickstart, fig.width=6, eval=TRUE}
 ## Visualizing epidemic progression using timeternR
-
-```{r eval = T, warning = F, message = F}
 library(kableExtra)
 timeternR::hagelloch_raw %>% head() %>%
   select(PN, NAME, AGE, SEX,
          tPRO, tERU, tI, tR) %>%
   knitr::kable() %>%
   kableExtra::kable_styling()
+
 ```
 
 ```{r}
 theme_set(theme_minimal())
-```
 
-
-```{r quickstart, fig.width=6, eval=T}
 timeternR::hagelloch_raw %>%
    filter(SEX %in% c("male", "female")) %>%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
@@ -72,12 +71,20 @@ timeternR::hagelloch_raw %>%
      coord_tern() +
      labs(x = "S", y = "I", z = "R",
           color = "Gender") 
-
 ```
+
+
+
+The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
+
+
+	
+```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
+
 
 ## Simulating epidemics with `simulate_SIR_agents`.
 
-```{r, eval = T, fig.asp = .62, out.width = '60%'}
+
 n_sims <- 1
 n_time_steps <- 100
 beta <- .1
@@ -91,8 +98,19 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  init_SIR = init_SIR,
                                  output_format = output_format)
                                  
-df_ave <- out %>% UtoX_SIR %>%
+df_ave <- out %>% agents_to_aggregate_SIR %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
+
+
+ggplot(data = (df_ave %>% gather(key = "State", value = "Value",
+                                S, I, R)),
+       aes(x = t, y = Value, group = State,
+col = State)) +
+  geom_line()
+
+
+ggtern(data = df_ave, aes(x = S, y = I, z = R)) + geom_path()
+
 
 if (tidyr_new_interface()){ # if tidyr version > 0.8.99
   df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
@@ -112,6 +130,7 @@ ggplot(data = df_ave_lines,
        aes(x = t, y = Value)) +
   facet_grid(State~.) + 
   geom_line() 
+
 
 ```
 

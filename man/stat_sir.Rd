@@ -122,7 +122,7 @@ timeternR::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
   labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   geom_sir(aes(x = SMax, y = IMax, init_state = init_state,
                 group = sim), alpha = .1,
@@ -145,14 +145,14 @@ timeternR::hagelloch_raw \%>\% dplyr::filter(SEX \%in\% c("male", "female")) \%>
   labs(x = "S", y = "I", z = "R",
        color = "Gender")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   geom_path(aes(x = SMax, y = IMax, init_state = init_state, group = sim),
             alpha = .1, stat = timeternR::StatSirFortified) +
   coord_tern() +
   labs(x = "S", y = "I", z = "R")
 
-timeternR::U_sims_tidy \%>\%
+timeternR::agents_sims_tidy \%>\%
   ggplot() +
   stat_sir(aes(x = SMax, y = IMax, init_state = init_state,
                 group = sim), alpha = .1,

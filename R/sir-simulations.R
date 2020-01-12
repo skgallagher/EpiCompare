@@ -10,8 +10,6 @@
 #' and k2 is the gamma value for group k.
 #' @param init_mat K x 3 matrix where entry k1 is the initial S0 for group k,
 #' k2 is the initial I0, and k3 is the initial R0.
-#' @param output_format either "array" or "data.frame".  Default is array
-#' (which will return a list of arrays).
 #' @details If output_format = "array" then the output will be a list of K
 #' arrays.  Each array is a n_sims x 3 x n_agents array where entry (i,j,k) is
 #' the ith simulation, the jth statistic and the kth agent.  If
@@ -27,7 +25,7 @@
 #' A_{t-1,j} = 0 \\ 1 + Bernoulli(\gamma_k) & \textnormal{ if } A_{t-1,j}
 #' = 1 \\2 & \textnormal{ otherwise}  \end{array} \right . }
 #'
-#' The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+#' The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
 #' susceptible, max time infectious.)  If the agent never became infectious or
 #' was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
 #' Similarly, if the agent never recovers or is recovered from time 0 on then
@@ -43,14 +41,12 @@
 #' sims_data <- simulate_SIR_agents_groups(n_sims = 5,
 #'                                         n_time_steps = 10,
 #'                                         par_mat = par_mat,
-#'                                         init_mat = init_mat,
-#'                                         output_format = "data.frame")
-#' assertthat::are_equal(class(sims_data), "data.frame")
+#'                                         init_mat = init_mat)
+#' dim(sims_data)
 simulate_SIR_agents_groups <- function(n_sims,
                                        n_time_steps,
                                        par_mat,
-                                       init_mat,
-                                       output_format = "array"){
+                                       init_mat){
   K <- nrow(par_mat)
   stopifnot(nrow(init_mat) == K)
   sim_data <- vector(mode = "list", length = K)
@@ -68,19 +64,13 @@ simulate_SIR_agents_groups <- function(n_sims,
                                           n_time_steps = n_time_steps_k,
                                           beta = beta, gamma = gamma,
                                           init_SIR = init_SIR,
-                                          output_format = output_format)
-    if(output_format == "data.frame"){
-      df$group <- kk  ## add a grouping column
-    }
+                                          output_format = "data.frame")
+    
+    df$group <- kk  ## add a grouping column
     sim_data[[kk]] <- df
   }
-  if(output_format == "array"){
-    # do nothing
-  } else if(output_format == "data.frame"){
-    sim_data <- do.call('rbind', sim_data)
-  } else{
-    stop("Choose a proper output format")
-  }
+  sim_data <- do.call('rbind', sim_data)
+  class(sim_data)
   return(sim_data)
 
 }
@@ -95,10 +85,8 @@ simulate_SIR_agents_groups <- function(n_sims,
 #' @param init_SIR vector of (S0, I0, R0) the number of agents initially in the
 #' Susceptible, Infected, and Recovered state, respectively.  The sum of this
 #' will be used as the number of agents
-#' @param output_format either "array" or "data.frame".  Default is array
-#' @return If output_format = "array" then it is a n_sims x 3 x n_agents array
-#' where entry (i,j,k) is the ith simulation, the jth statistic and the kth
-#' agent. If output_format = "data.frame" then the output is a data.frame with
+#' @param output_format one of either "array" or "data.frame"
+#' @return The the output is a data.frame with
 #' columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents
 #' x n_sims) x 5.
 #' @details For each simulation \eqn{i}, agent \eqn{A_{t,k}} (the kth agent at
@@ -110,7 +98,7 @@ simulate_SIR_agents_groups <- function(n_sims,
 #' A_{t-1,k} = 0 \\ 1 + Bernoulli(\gamma) & \textnormal{ if } A_{t-1,k} = 1
 #' \\2 & \textnormal{ otherwise}  \end{array} \right . }
 #'
-#' The 3 pieces that make up the U statistic are (init_state (0/1/2), max time
+#' The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
 #' susceptible, max time infectious.)  If the agent never became infectious or
 #' was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
 #' Similarly, if the agent never recovers or is recovered from time 0 on then
@@ -120,16 +108,16 @@ simulate_SIR_agents_groups <- function(n_sims,
 #' @examples
 #' sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5,
 #'                                  beta = .5, gamma = .1, init_SIR = c(9,1,0),
-#'                                  output_format = "data.frame")
-#' assertthat::are_equal(class(sims_data), "data.frame")
+#' output_format = "data.frame")
+#' dim(sims_data)
 simulate_SIR_agents <- function(n_sims,
                                 n_time_steps,
                                 beta, gamma,
                                 init_SIR,
-                                output_format = "array"){
+                                output_format = "data.frame"){
   n_agents <- sum(init_SIR)
   sim_data <- array(NA, dim = c(n_sims, 3, n_agents))
-  # ^3 is for the U stat
+  # ^3 is for the agents stat
 
   ## Fill in initial states
   init_states <- c(rep(0, init_SIR[1]),
@@ -172,17 +160,18 @@ simulate_SIR_agents <- function(n_sims,
                                  sim_data[sim, 2, ])
 
   }
+  class(sim_data) <- c("sims_array", class(sim_data))
  # browser()
  # ensure max_time_S <= max_time_i
   dimnames(sim_data) <- list(sim = 1:n_sims,
-                        U_stat = c("init_state", "max_time_S", "max_time_I"),
+                        agents_stat = c("init_state", "max_time_S", "max_time_I"),
                         agent_id = paste0("id_", 1:n_agents))
 
 
   if(output_format == "array"){
     return(sim_data)
   } else if(output_format == "data.frame"){
-    sim_data <- fortify_sims_array(sim_data)
+    sim_data <- fortify_sims(sim_data)
     return(sim_data)
   } else {
     stop("output_format should either be 'array' or 'data.frame'")
@@ -201,8 +190,6 @@ simulate_SIR_agents <- function(n_sims,
 #' \item states vector of size n_agents of new states
 #' \item SIR_count new total number of S, I, R currently in each state
 #' }
-#'
-#' @export
 update_agents <- function(current_states, SIR_count,
                           beta, gamma){
   n_agents <- sum(SIR_count)
@@ -240,7 +227,6 @@ update_agents <- function(current_states, SIR_count,
 #' @return indices of which agents who were in state type are now in the next
 #' state
 #'
-#' @export
 state_change_inds <- function(new_states,
                   current_states,
                   type = "inf"){
@@ -255,42 +241,6 @@ state_change_inds <- function(new_states,
 }
 
 
-#' Transform the array of simulations to a data frame
-#'
-#' @param sims_data n_sims x 3 x n_agents where entry (i,j,k) is the ith
-#' simulation, the jth statistic and the kth agent.
-#' @return data.frame with  If output_format = "data.frame" then the output is
-#' a data.frame with columns agent_id, init_state, I_max, R_max, sim_num.  The
-#' size is (n_agents x n_sims) x 5.
-#' @export
-#' @examples
-#' sims_array <- array(c(1, 0, 1, 0, 1, 1), dim = c(1, 3, 2))
-#' fortify_sims_array(sims_array)
-fortify_sims_array <- function(sims_data){
-  array_dim <- dim(sims_data)
-  n_sims <- array_dim[1]
-  n_agents <- array_dim[3]
-  stopifnot(array_dim[2] == 3)
-  dimnames(sims_data) <- list(sim = 1:n_sims,
-                              U_stat = c("init_state", "max_time_S",
-                                         "max_time_I"),
-                              agent_id = 1:n_agents)
-  df <- as.data.frame.table(sims_data)
-
-
-  if (tidyr_new_interface()){
-    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$U_stat,
-                                           values_from = .data$Freq) %>%
-      dplyr::select(dplyr::one_of("init_state", "max_time_S",
-                                  "max_time_I", "sim", "agent_id"))
-  } else {
-    df_spread <- df %>% tidyr::spread(key = .data$U_stat,
-                                      value = .data$Freq) %>%
-      dplyr::select(dplyr::one_of("init_state", "max_time_S",
-                                  "max_time_I", "sim", "agent_id"))
-  }
-  return(df_spread)
-}
 
 
 
