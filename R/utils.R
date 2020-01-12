@@ -193,8 +193,16 @@ agents_to_aggregate_SIR <- function(agents, max_time = NULL, ind = NULL){
 #' sir_group_1 <- sir_group %>% filter(SEX == "female")
 #' assertthat::are_equal(sir_group1,
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
-agents_to_aggregate_SIR_group <- function(agents_g, max_time = NULL){
-  if (is.null(max_time)) max_time <- max(c(agents_g$max_time_I, agents_g$max_time_S), na.rm = TRUE)
+agents_to_aggregate_SIR_group <- function(agents_g,
+                                          max_time = NULL, ind = NULL){
+  if (is.null(max_time)) {
+    max_time <- max(c(agents_g$max_time_I,
+                      agents_g$max_time_S), na.rm = TRUE)
+  }
+
+  if (!is.null(ind)){
+    names(agents_g)[ind] <- c("init_state", "max_time_S", "max_time_I")
+  }
 
 
   if (tidyr_new_interface()){
