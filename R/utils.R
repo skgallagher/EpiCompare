@@ -226,15 +226,15 @@ agents_to_aggregate_SIR.data.frame <- function(agents, max_time = NULL, ind = NU
 #'                       sir_group_1 %>% select(t, S, I, R) %>% data.frame)
 agents_to_aggregate_SIR.grouped_df <- function(agents,
                                                max_time = NULL, ind = NULL){
-  if (is.null(max_time)) {
-    max_time <- max(c(agents$max_time_I,
-                      agents$max_time_S), na.rm = TRUE)
-  }
 
   if (!is.null(ind)){
     names(agents)[ind] <- c("init_state", "max_time_S", "max_time_I")
   }
 
+  if (is.null(max_time)) {
+    max_time <- max(c(agents$max_time_I,
+                      agents$max_time_S), na.rm = TRUE)
+  }
 
   if (tidyr_new_interface()){
     sir_out <- agents %>%
@@ -339,37 +339,4 @@ SEIR_to_SIR_E <- function(data,
     dplyr::select(-c(.data$N, .data$n))
   return(new_df)
 }
-
-#' #' Updates approved layers of ggtern
-#' #'
-#' #' @param stat_names named vector of new stats.
-#' #' @param geom_names named vector of new geoms
-#' #'
-#' #' @return NULL
-#' #'
-#' #' @import ggtern
-#' #'
-#' #' @examples
-#' #' .newstat = c(sir_raw       = "StatSirRaw",
-#' #'              sir_fortified = "StatSirFortified")
-#' #' .newgeom = NULL
-#' #' #update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
-#' update_approved_layers <- function(stat_names = NULL, geom_names = NULL){
-#'   approvestatupdate <- c(ggtern:::.approvedstat,
-#'                          stat_names)
-#'   utils::assignInNamespace(".approvedstat", approvestatupdate,
-#'                     pos = "package:ggtern")
-#'
-#'   approvegeomupdate <- c(ggtern:::.approvedgeom,
-#'                          geom_names)
-#'   utils::assignInNamespace(".approvedgeom", approvegeomupdate,
-#'                     pos = "package:ggtern")
-#'
-#' }
-#'
-#' # List of new stats
-#' .newstat = c(sir_raw       = "StatSirRaw",
-#'              sir_fortified = "StatSirFortified")
-#' .newgeom = c(sir = "GeomSIR")
-#' update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
 

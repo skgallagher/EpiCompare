@@ -1,3 +1,18 @@
+#' import hidden function / variable from other package
+#'
+#' see ?`:::`
+#'
+#' @param pkg package to grab hidden item from
+#' @param name hidden item (function / variable)
+#' @return hidden object or function
+#' @export
+importsHiddenFrom <- function(pkg, name){
+  pkg <- as.character(substitute(pkg))
+  name <- as.character(substitute(name))
+  get(name, envir = asNamespace(pkg), inherits = FALSE)
+}
+
+
 #' Updates approved layers of ggtern
 #'
 #' @param stat_names named vector of new stats.
@@ -13,12 +28,13 @@
 #' .newgeom = NULL
 #' #update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
 update_approved_layers <- function(stat_names = NULL, geom_names = NULL){
-  approvestatupdate <- c(ggtern:::.approvedstat,
+  requireNamespace("ggtern", quietly = TRUE)
+  approvestatupdate <- c(importsHiddenFrom("ggtern",".approvedstat"),
                          stat_names)
   utils::assignInNamespace(".approvedstat", approvestatupdate,
                            pos = "package:ggtern")
 
-  approvegeomupdate <- c(ggtern:::.approvedgeom,
+  approvegeomupdate <- c(importsHiddenFrom("ggtern",".approvedgeom"),
                          geom_names)
   utils::assignInNamespace(".approvedgeom", approvegeomupdate,
                            pos = "package:ggtern")
