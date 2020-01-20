@@ -294,7 +294,7 @@ get_closest <- function(border_points, inner_points, delta,
     second_min <- rep(Inf, nrow(gridpoints))
   }
 
-  z = apply(cbind(delta, first_min, second_min), 1, which.min)
+  z <- apply(cbind(delta, first_min, second_min), 1, which.min)
 
   updated_gridpoints <- gridpoints %>%
     dplyr::mutate(z = z)

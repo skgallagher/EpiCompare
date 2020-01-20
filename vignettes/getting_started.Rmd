@@ -137,10 +137,10 @@ ggplot(data = df_ave, aes(x = S, y = I, z = R)) + geom_path() +
 
 We can also simulation multiple epidemics with different parameters (and can also examine simulations from both `pomp` and `epiModels` packages).
 
-Using the same simulation parameters above we can simulate 10 epidemics:
+Using the same simulation parameters above we can simulate 50 epidemics:
 
 ```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
-n_sims <- 10 # only code changed
+n_sims <- 50 # only code changed
 n_time_steps <- 100
 beta <- .1
 gamma <- .03
