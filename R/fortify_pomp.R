@@ -99,15 +99,28 @@ fortify_pomp.pompList <- function(data){
 fortify_pomp.list <- function(data){
     pomp_output <- data
     arr <- pomp_output[[1]]
-    out <- arr %>%
-        as.data.frame.table() %>%
-        dplyr::mutate(t = as.numeric(.data$time) - 1,
-                      sim = as.numeric(.data$rep)) %>%
-        tidyr::pivot_wider(values_from = .data$Freq,
-                           names_from = .data$variable) %>%
-        as.data.frame() %>%
-        dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
-        dplyr::arrange(dplyr::desc(-.data$sim))
+    if(tidyr_new_interface()){
+        out <- arr %>%
+            as.data.frame.table() %>%
+            dplyr::mutate(t = as.numeric(.data$time) - 1,
+                          sim = as.numeric(.data$rep)) %>%
+            tidyr::pivot_wider(values_from = .data$Freq,
+                               names_from = .data$variable) %>%
+            as.data.frame() %>%
+            dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
+            dplyr::arrange(dplyr::desc(-.data$sim))
+    } else{
+
+        out <- arr %>%
+            as.data.frame.table() %>%
+            dplyr::mutate(t = as.numeric(.data$time) - 1,
+                          sim = as.numeric(.data$rep)) %>%
+            tidyr::spread(.data$variable,
+                               .data$Freq) %>%
+            as.data.frame() %>%
+            dplyr::select(.data$t, .data$S, .data$I, .data$R, .data$sim) %>%
+            dplyr::arrange(dplyr::desc(-.data$sim))
+    }
     out$sim <- factor(out$sim)
     class(out) <- c("aggregate", "fortified_df", class(out))
     attr(out, "source") <- "pomp"

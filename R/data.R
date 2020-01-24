@@ -10,7 +10,7 @@
 
 
 
-#' Example SIR simulation output of class ' array' from the \code{pomp} package
+#' Example SIR simulation output of class 'array' from the \code{pomp} package
 #'
 #' @description The data is an example of simulation output from functions from the \href{https://kingaa.github.io/pomp/}{pomp package by King et al}.  The code for how this data was generated can be found in the \code{data-raw} folder.  We also make available the other possible output formats from pomp.  See \link{pomp_df} and \link{pomp_pomp}
 #'

@@ -5,6 +5,9 @@
 #' @usage NULL
 #' @export
 StatSirRaw <- ggplot2::ggproto("StatSirRaw", ggplot2::Stat,
+                               setup_data = function(data, params){
+                                 data  # This is so ggplot does NOT remove NA rows
+                               },
                    compute_group = function(data, scales,
                                             init_state = NULL,
                                             na.rm = FALSE){
@@ -33,6 +36,9 @@ StatSirRaw <- ggplot2::ggproto("StatSirRaw", ggplot2::Stat,
 #' @usage NULL
 #' @export
 StatSirFortified <- ggplot2::ggproto("StatSirFortified", ggplot2::Stat,
+                                     setup_data = function(data, params){
+                                       data  # This is so ggplot does NOT remove NA rows
+                                     },
                         compute_group = function(data, scales,
                                                  init_state = NULL,
                                                  na.rm = FALSE){
@@ -232,5 +238,6 @@ geom_sir <- function(mapping = NULL, data = NULL,
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomSIR <- ggplot2::ggproto("GeomSIR", ggplot2::GeomPath)
+GeomSIR <- ggplot2::ggproto("GeomSIR", ggplot2::GeomPath,
+                            handle_na = function(data, params){ data})
 

@@ -8,3 +8,5 @@ README.html
 inst/doc
 docs/
 *~
+inst/*.pdf
+inst/*.jpg

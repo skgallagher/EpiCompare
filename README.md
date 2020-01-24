@@ -27,17 +27,45 @@ devtools::install_github("ngloe/olpsR")
 
 ## Data
 
-   Currently there are five small data sets available in `timeternR`
-
-   - `hagelloch_raw` -- One row is an agent.  This is imported from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/rforge/surveillance/man/hagelloch.html) where it is originally labeled `hagelloch.df`.  We have renamed it here to help distinguish it from the other data sets we derive from it.
+   Currently there are 13 data sets in which to explore the different `timeternR` functions.  These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
    
-   - `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
-
-   - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
-
-  - `U_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax). 
+   Details of each can be found with `?{data}`.
+   
+  - `agent_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax). 
   
-  - `U_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `U_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax. (**NEEDS CLEANUP**)
+  - `agent_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `agent_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax.
+  
+  
+  - `EpiModel_agg_bd` Example output from the `EpiModel package` for an ICM with birth and death rates.  The population $N$ is non-constant.
+  
+  - `EpiModel_det` output from the `EpiModel` package for a deterministic model (aggregate)
+  
+  - `EpiModel_icm` Output from the `EpiModel` package for a stochastic ICM (aggregate)
+     
+
+  - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
+   
+  - `hagelloch_aug_births` Like Hagelloch raw but augmented with births (it already had deaths).  Five fake people have been added who join the population over time
+   
+      
+
+  - `hagelloch_raw` -- One row is an agent.  This is imported from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/rforge/surveillance/man/hagelloch.html) where it is originally labeled `hagelloch.df`.  We have renamed it here to help distinguish it from the other data sets we derive from it.
+   
+  - `hagelloch_raw2` Like Hagelloch raw but with additional, fake people with NA values for `tI` and `tR`
+   
+   
+  - `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
+   
+  - `pomp_arr` Example SIR simulation output of class `array` from the `pomp` packagee
+  
+  - `pomp_df` Example SIR simulation of class `data.frame` from the `pomp` package
+
+  - `pomp_pomp` Example SIR simulation output of class `pomp` from the `pomp` package
+  
+  - `pomp_sir` Example output from the `pomp` package.
+
+  
+
 
 
 ## Example
@@ -97,7 +125,7 @@ https://tidyr.tidyverse.org/articles/in-packages.html, and for doing both with T
 
 ## Contributors
 
-- Shannon Gallagher ([`shannong19`](https://github.com/shannong19))
+- Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
 - Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
 
 
