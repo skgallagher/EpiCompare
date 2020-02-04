@@ -13,7 +13,7 @@ stat_confidence_band(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball"),
   grid_size = rep(100, 2),
   alpha_level = 0.1,
   ...
@@ -22,14 +22,14 @@ stat_confidence_band(
 geom_confidence_band(
   mapping = NULL,
   data = NULL,
-  stat = list("ConfBandKDE", "ConfBandDeltaBall")[c("kde", "delta_ball") ==
-    cb_type][[1]],
+  stat = list("ConfBandKDE", "ConfBandDeltaBall", "StatConfBandSpherical")[c("kde",
+    "delta_ball", "spherical_ball") == cb_type][[1]],
   position = "identity",
   ...,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball"),
   grid_size = rep(100, 2),
   alpha_level = 0.1
 )
@@ -114,6 +114,16 @@ aesthetics are in bold):
   \item \code{size}
   \item \code{weight}
 }
+
+For confidence band types = "kde", "delta_ball":
+\itemize{
+  \item \strong{\code{sim_group}} - note: this cannot be a factor
+}
+For confidence band type = "spherical_balls":
+\itemize{
+  \item \strong{\code{t}} - note: this cannot be a factor
+}
+
 Learn more about setting these aesthetics in
 \code{vignette("ggplot2-specs")}.
 }

@@ -3,14 +3,14 @@
 \docType{data}
 \name{StatConfBandSpherical}
 \alias{StatConfBandSpherical}
-\title{stat object for use in delta_ball based stat_confidence_band and
+\title{stat object for use in spherical ball based stat_confidence_band and
 geom_confidence_band}
-\format{An object of class \code{StatConfBandDeltaBall} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.}
+\format{An object of class \code{StatConfBandSpherical} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.}
 \usage{
 StatConfBandSpherical
 }
 \description{
-stat object for use in delta_ball based stat_confidence_band and
+stat object for use in spherical ball based stat_confidence_band and
 geom_confidence_band
 }
 \keyword{datasets}
