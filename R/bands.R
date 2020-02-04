@@ -391,6 +391,9 @@ project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
 
 #' assert if observation is inside elipsoid
 #'
+#' See https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
+#' for details.
+#'
 #' @param data data.frame or matrix of data (row is observation), ncol = p
 #' @param Sigma covariance matrix (p x p)
 #' @param center center of elipsoid (vector length p)
