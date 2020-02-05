@@ -644,8 +644,7 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
 
         updated_gridpoints <- get_grid_elipsoid_containment(a$inside_func,
                                                             xrange = xrange,
-                                                            yrange = yrange,
-                                                            gridbreaks = NULL)
+                                                            yrange = yrange)
 
         if (tidyr_new_interface()){
           update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,

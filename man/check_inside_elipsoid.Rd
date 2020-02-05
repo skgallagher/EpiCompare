@@ -22,5 +22,6 @@ relative to non PSD Sigma or bound <= 0.}
 all false if Sigma not PSD
 }
 \description{
-assert if observation is inside elipsoid
+See https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
+for details.
 }
