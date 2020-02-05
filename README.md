@@ -1,8 +1,8 @@
 # timeternR
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/shannong19/timeternR.svg?branch=master)](https://travis-ci.org/shannong19/timeternR)
-[![codecov](https://codecov.io/gh/shannong19/timeternR.svg/branch/master/graph/badge.svg)](https://codecov.io/gh/shannong19/timeternR)
+[![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR)
+[![codecov](https://codecov.io/gh/skgallagher/timeternR.svg/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR)
 <!-- badges: end -->
 
 The goal of timeternR is to develop functional based visualization and statistics
@@ -14,7 +14,7 @@ You can install the developmental version of timeternR from github using:
 
 ```r
 # install.package("devtools")
-devtools::install_github("shannong19/timeternR")
+devtools::install_github("skgallagher/timeternR")
 ```
 
 Currently we are also using some helper functions from 2 github based packages, so for before loading our package please do:
