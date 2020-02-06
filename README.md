@@ -2,7 +2,9 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR)
-[![codecov](https://codecov.io/gh/skgallagher/timeternR.svg/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR)
+
+[![codecov](https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR)
+
 <!-- badges: end -->
 
 The goal of timeternR is to develop functional based visualization and statistics
