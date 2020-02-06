@@ -15,7 +15,7 @@ stat_confidence_band(
   inherit.aes = TRUE,
   cb_type = c("kde", "delta_ball", "spherical_ball"),
   grid_size = rep(100, 2),
-  alpha_level = 0.1,
+  alpha_level = 0.9,
   ...
 )
 
@@ -31,7 +31,7 @@ geom_confidence_band(
   inherit.aes = TRUE,
   cb_type = c("kde", "delta_ball", "spherical_ball"),
   grid_size = rep(100, 2),
-  alpha_level = 0.1
+  alpha_level = 0.9
 )
 }
 \arguments{
@@ -129,41 +129,43 @@ Learn more about setting these aesthetics in
 }
 
 \examples{
-## need to get new U_sims_tidy
 library(ggplot2)
 library(ggtern)
 library(dplyr)
-if (FALSE){
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  ggplot() + geom_line(aes(x = x, y = y, z = z, group = sim)) +
+
+vis_data <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  ggplot(aes(x = x, y =y, z = z, group = .id)) +
+  geom_path(alpha = .03) +
   coord_tern()
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "kde") +
-  coord_tern()
+vis_spherical <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R", t = "time") \%>\%
+  ggplot(aes(x = x, y =y, z = z, t = t)) +
+  geom_path(stat = StatConfBandSpherical, grid_size = rep(300,2),
+            alpha_level = .95) +
+  coord_tern() +
+  labs(title = "Spherical Confidence Band")
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "delta_ball") +
-  coord_tern()
+vis_delta_ball <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
+  geom_path(stat = StatConfBandDeltaBall, grid_size = rep(300,2),
+            alpha_level = .95) +
+  coord_tern() +
+  labs(title = "Delta-Ball Confidence Band")
 
-all_df \%>\% xy2tlr(coord = coord_tern())  \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                      cb_type = "kde") +
-  coord_tern()
+vis_kde <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
+  geom_path(stat = StatConfBandKDE, grid_size = rep(100,2),
+            alpha_level = .95) +
+  coord_tern() +
+  labs(title = "KDE Confidence Band")
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "delta_ball") +
-  coord_tern()
-}
+gridExtra::grid.arrange(vis_data, vis_spherical,
+                        vis_delta_ball, vis_kde, nrow = 2)
+
 }

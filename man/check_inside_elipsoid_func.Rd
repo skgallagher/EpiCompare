@@ -4,7 +4,7 @@
 \alias{check_inside_elipsoid_func}
 \title{create a function assert if observations are inside elipsoid}
 \usage{
-check_inside_elipsoid_func(Sigma, center, bound)
+check_inside_elipsoid_func(Sigma, center, bound, suppress_warning = FALSE)
 }
 \arguments{
 \item{Sigma}{covariance matrix (p x p)}
@@ -12,6 +12,9 @@ check_inside_elipsoid_func(Sigma, center, bound)
 \item{center}{center of elipsoid (vector length p)}
 
 \item{bound}{contraint for equation of ellipsoid}
+
+\item{suppress_warning}{logic to suppress warning if just returning all false
+relative to non PSD Sigma or bound <= 0.}
 }
 \value{
 check_inside_elipsoid_function, that takes in \code{data}

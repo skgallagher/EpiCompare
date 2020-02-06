@@ -421,12 +421,16 @@ check_inside_elipsoid <- function(data, Sigma, center, bound,
 #' @param Sigma covariance matrix (p x p)
 #' @param center center of elipsoid (vector length p)
 #' @param bound contraint for equation of ellipsoid
+#' @param suppress_warning logic to suppress warning if just returning all false
+#' relative to non PSD Sigma or bound <= 0.
 #'
 #' @return check_inside_elipsoid_function, that takes in \code{data}
 #' @export
-check_inside_elipsoid_func <- function(Sigma, center, bound){
+check_inside_elipsoid_func <- function(Sigma, center, bound,
+                                       suppress_warning = FALSE){
   check_inside_elipsoid_function <- function(data){
-    return(check_inside_elipsoid(data, Sigma, center, bound))
+    return(check_inside_elipsoid(data, Sigma, center, bound,
+                                 suppress_warning = suppress_warning))
   }
   return(check_inside_elipsoid_function)
 }
@@ -467,8 +471,8 @@ get_grid_elipsoid_containment <- function(inside_func_list,
 StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
                                     ggplot2::Stat,
                                     compute_group =
-  function(data, scales, grid_size = rep(300,2), alpha_level = .1){
-    assertthat::assert_that(class(data$sim_group) != "factor",
+  function(data, scales, grid_size = rep(300,2), alpha_level = .9){
+    assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
     info_inner <- data[, c("PANEL", "group")] %>%
@@ -484,7 +488,7 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
     #kde style
     kde_ci_list <- TCpredictionbands::kde_from_tclist(dflist = data2d_list,
                                                       grid_size = grid_size,
-                                                      alpha = alpha_level,
+                                                      alpha = 1-alpha_level,
                                                       position = xy_position)
 
     kde_ci_df <- kde_ci_list$contour %>% lapply(as.data.frame) %>%
@@ -510,9 +514,9 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
                                           ggplot2::Stat,
                                           compute_group =
   function(data, scales, grid_size = rep(100,2), over_delta = .1,
-           alpha_level = .1){
+           alpha_level = .9){
 
-    assertthat::assert_that(class(data$sim_group) != "factor",
+    assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
 
@@ -607,8 +611,8 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
    ggplot2::Stat,
    compute_group =
      function(data, scales, grid_size = rep(100,2), over_delta = .1,
-              alpha_level = .1){
-        assertthat::assert_that(class(data$t) != "factor",
+              alpha_level = .9){
+        assertthat::assert_that(!is.factor(data$t),
                                 msg = paste("'t' cannot be a factor"))
 
         info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
@@ -632,7 +636,8 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
                        pf(q = alpha_level, df1 = x_dim, df2 = n - x_dim))})) %>%
           mutate(inside_func = pmap(list(bound, mean, Sigma),
                   function(bound, mean, Sigma) {
-                    check_inside_elipsoid_func(Sigma, mean, bound)}))
+                    check_inside_elipsoid_func(Sigma, mean, bound,
+                                               suppress_warning = TRUE)}))
 
         xrange <- seq(min(data2d$x) - over_delta,
                       max(data2d$x) + over_delta,
@@ -688,7 +693,7 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  cb_type = c("kde", "delta_ball",
                                              "spherical_ball"),
                                  grid_size = rep(100, 2),
-                                 alpha_level = .1,
+                                 alpha_level = .9,
                                  ...) {
 
   if (length(cb_type) > 1){
@@ -797,44 +802,45 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'
 #' @export
 #' @examples
-#' ## need to get new U_sims_tidy
 #' library(ggplot2)
 #' library(ggtern)
 #' library(dplyr)
-#' if (FALSE){
-#' all_df %>% xy2tlr(coord = coord_tern()) %>%
-#'   ggplot() + geom_line(aes(x = x, y = y, z = z, group = sim)) +
+#'
+#' vis_data <- timeternR::pomp_df %>%
+#'   rename(x = "S", y = "I", z = "R") %>%
+#'   ggplot(aes(x = x, y =y, z = z, group = .id)) +
+#'   geom_path(alpha = .03) +
 #'   coord_tern()
 #'
-#' all_df %>% xy2tlr(coord = coord_tern()) %>%
-#'   mutate(sim = as.numeric(as.character(sim))) %>%
-#'   ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-#'                                       sim_group = sim),
-#'                                   cb_type = "kde") +
-#'   coord_tern()
+#' vis_spherical <- timeternR::pomp_df %>%
+#'   rename(x = "S", y = "I", z = "R", t = "time") %>%
+#'   ggplot(aes(x = x, y =y, z = z, t = t)) +
+#'   geom_path(stat = StatConfBandSpherical, grid_size = rep(300,2),
+#'             alpha_level = .95) +
+#'   coord_tern() +
+#'   labs(title = "Spherical Confidence Band")
 #'
-#' all_df %>% xy2tlr(coord = coord_tern()) %>%
-#'   mutate(sim = as.numeric(as.character(sim))) %>%
-#'   ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-#'                                       sim_group = sim),
-#'                                   cb_type = "delta_ball") +
-#'   coord_tern()
+#' vis_delta_ball <- timeternR::pomp_df %>%
+#'   rename(x = "S", y = "I", z = "R") %>%
+#'   mutate(.id = as.numeric(.id)) %>%
+#'   ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
+#'   geom_path(stat = StatConfBandDeltaBall, grid_size = rep(300,2),
+#'             alpha_level = .95) +
+#'   coord_tern() +
+#'   labs(title = "Delta-Ball Confidence Band")
 #'
-#' all_df %>% xy2tlr(coord = coord_tern())  %>%
-#'   mutate(sim = as.numeric(as.character(sim))) %>%
-#'   ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-#'                                       sim_group = sim),
-#'                                       cb_type = "kde") +
-#'   coord_tern()
+#' vis_kde <- timeternR::pomp_df %>%
+#'   rename(x = "S", y = "I", z = "R") %>%
+#'   mutate(.id = as.numeric(.id)) %>%
+#'   ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
+#'   geom_path(stat = StatConfBandKDE, grid_size = rep(100,2),
+#'             alpha_level = .95) +
+#'   coord_tern() +
+#'   labs(title = "KDE Confidence Band")
 #'
-#' all_df %>% xy2tlr(coord = coord_tern()) %>%
-#'   mutate(sim = as.numeric(as.character(sim))) %>%
-#'   ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-#'                                       sim_group = sim),
-#'                                   cb_type = "delta_ball") +
-#'   coord_tern()
-
-#' }
+#' gridExtra::grid.arrange(vis_data, vis_spherical,
+#'                         vis_delta_ball, vis_kde, nrow = 2)
+#'
 geom_confidence_band <- function(mapping = NULL, data = NULL,
                                  stat = list("ConfBandKDE",
                                              "ConfBandDeltaBall",
@@ -850,7 +856,7 @@ geom_confidence_band <- function(mapping = NULL, data = NULL,
                                  cb_type = c("kde", "delta_ball",
                                              "spherical_ball"),
                                  grid_size = rep(100, 2),
-                                 alpha_level = .1) {
+                                 alpha_level = .9) {
   ggplot2::layer(
     data = data,
     mapping = mapping,
