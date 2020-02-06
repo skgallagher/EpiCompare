@@ -13,7 +13,7 @@ stat_confidence_band(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball", "spherical_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
   alpha_level = 0.9,
   ...
@@ -22,14 +22,15 @@ stat_confidence_band(
 geom_confidence_band(
   mapping = NULL,
   data = NULL,
-  stat = list("ConfBandKDE", "ConfBandDeltaBall", "StatConfBandSpherical")[c("kde",
-    "delta_ball", "spherical_ball") == cb_type][[1]],
+  stat = list("ConfBandKDE", "ConfBandDeltaBall", "ConfBandSpherical",
+    "ConfBandConvexHull")[c("kde", "delta_ball", "spherical_ball", "convex_hull") ==
+    cb_type][[1]],
   position = "identity",
   ...,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball", "spherical_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
   alpha_level = 0.9
 )
@@ -137,35 +138,49 @@ vis_data <- timeternR::pomp_df \%>\%
   rename(x = "S", y = "I", z = "R") \%>\%
   ggplot(aes(x = x, y =y, z = z, group = .id)) +
   geom_path(alpha = .03) +
-  coord_tern()
+  coord_tern() +
+  labs(title = "Actually data paths")
 
 vis_spherical <- timeternR::pomp_df \%>\%
   rename(x = "S", y = "I", z = "R", t = "time") \%>\%
-  ggplot(aes(x = x, y =y, z = z, t = t)) +
-  geom_path(stat = StatConfBandSpherical, grid_size = rep(300,2),
-            alpha_level = .95) +
+  ggplot(aes(x = x, y = y, z = z, t = t)) +
+  geom_confidence_band(cb_type = "spherical_ball",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
   coord_tern() +
-  labs(title = "Spherical Confidence Band")
+  labs(title = "Spherical CB")
 
 vis_delta_ball <- timeternR::pomp_df \%>\%
   rename(x = "S", y = "I", z = "R") \%>\%
   mutate(.id = as.numeric(.id)) \%>\%
-  ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
-  geom_path(stat = StatConfBandDeltaBall, grid_size = rep(300,2),
-            alpha_level = .95) +
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_confidence_band(cb_type = "delta_ball",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
   coord_tern() +
-  labs(title = "Delta-Ball Confidence Band")
+  labs(title = "Delta-ball CB")
 
 vis_kde <- timeternR::pomp_df \%>\%
   rename(x = "S", y = "I", z = "R") \%>\%
   mutate(.id = as.numeric(.id)) \%>\%
-  ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
-  geom_path(stat = StatConfBandKDE, grid_size = rep(100,2),
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_confidence_band(cb_type = "kde",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
+  coord_tern() +
+  labs(title = "KDE CB")
+
+vis_convex_hull <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_path(stat = StatConfBandConvexHull,
             alpha_level = .95) +
   coord_tern() +
-  labs(title = "KDE Confidence Band")
+  labs(title = "Convex hull CB")
 
-gridExtra::grid.arrange(vis_data, vis_spherical,
-                        vis_delta_ball, vis_kde, nrow = 2)
+grid.arrange(vis_data, vis_spherical,
+             vis_delta_ball, vis_kde,
+             vis_convex_hull, nrow = 2)
 
 }

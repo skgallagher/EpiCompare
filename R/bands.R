@@ -624,17 +624,19 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
 
         a <- data2d %>% group_by(t) %>%
           nest() %>%
-          mutate(n = map(data, function(df){nrow(df)}),
-                 mean = map(data,function(df){df %>% dplyr::select(x,y) %>%
+          mutate(n = purrr::map(data, function(df){nrow(df)}),
+                 mean = purrr::map(data,function(df){df %>%
+                     dplyr::select(x,y) %>%
                      sapply(mean)}),
-                 Sigma = map(data, function(df){df %>% dplyr::select(x,y) %>%
+                 Sigma = purrr::map(data, function(df){df %>%
+                     dplyr::select(x,y) %>%
                      cov})
           ) %>%
           mutate(
-            bound = map(n, function(n) {
+            bound = purrr::map(n, function(n) {
               return((x_dim * (n-1)) / (n - x_dim) *
                        pf(q = alpha_level, df1 = x_dim, df2 = n - x_dim))})) %>%
-          mutate(inside_func = pmap(list(bound, mean, Sigma),
+          mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
                   function(bound, mean, Sigma) {
                     check_inside_elipsoid_func(Sigma, mean, bound,
                                                suppress_warning = TRUE)}))
@@ -685,13 +687,59 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
       }, required_aes = c("x", "y", "z", "t"))
 
 
+#' stat object for use in convex hull based stat_confidence_band and
+#' geom_confidence_band
+#' @export
+StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
+    ggplot2::Stat,
+    compute_group =
+      function(data, scales, grid_size = NULL, alpha_level = .9){
+        assertthat::assert_that(!is.factor(data$sim_group),
+                                msg = paste("'sim_group' cannot be a factor"))
+
+        info_inner <- data[, c("PANEL", "group")] %>%
+          sapply(unique)
+
+        data2d <- data %>% as.data.frame() %>%
+          get_xy_coord(xyz_col = c("x", "y", "z"))
+
+        data2d_list <- split(x = data2d, f = data2d$sim_group)
+        xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+
+        dist_mat <- dist_matrix_innersq(data2d_list,
+                                        position = xy_position,
+                                        verbose = FALSE)
+        data_deep_points <- TCpredictionbands::depth_curves_to_points(
+          data2d_list, alpha = alpha_level, dist_mat = dist_mat) %>%
+          dplyr::rename(lat = "x", long = "y") %>%
+          dplyr::rename(x = "lat", y = "long") %>%
+          dplyr::select(x,y)
+
+        chull_ids <- data_deep_points %>% chull()
+
+        chull_ci_df <- data_deep_points[c(chull_ids, chull_ids[1]),]
+
+
+        chull_ci_df3 <- ggtern::xy2tlr(data = chull_ci_df,
+                                     coord = ggtern::coord_tern()) %>%
+          dplyr::mutate(PANEL = info_inner[1],
+                        piece = info_inner[2],
+                        group = info_inner[2]) %>%
+          # ^this seems like an odd approach
+          project_to_simplex(column_names = c("x","y","z"))
+
+        return(chull_ci_df3)            },
+    required_aes = c("x", "y", "z", "sim_group"))
+
+
 #' @export
 #' @rdname geom_confidence_band
 stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  position = "identity", na.rm = FALSE,
                                  show.legend = NA, inherit.aes = TRUE,
                                  cb_type = c("kde", "delta_ball",
-                                             "spherical_ball"),
+                                             "spherical_ball",
+                                             "convex_hull"),
                                  grid_size = rep(100, 2),
                                  alpha_level = .9,
                                  ...) {
@@ -700,15 +748,18 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
     cb_type <- cb_type[1]
   }
 
-  assertthat::assert_that(cb_type %in% c("kde", "delta_ball", "spherical_ball"),
-                          msg = paste("bc_type needs to either be 'kde' or ",
-                                      "'delta_ball' or 'spherical_ball'."))
+  assertthat::assert_that(cb_type %in% c("kde", "delta_ball",
+                                         "spherical_ball", "convex_hull"),
+                          msg = paste("bc_type needs to either be 'kde' or",
+                                      "'delta_ball' or 'spherical_ball' or",
+                                      "'convex_hull'."))
 
   ggplot2::layer(
     stat = list(StatConfBandKDE,
                 StatConfBandDeltaBall,
                 StatConfBandSpherical)[
-                  which(c("kde", "delta_ball", "spherical_ball") == cb_type)
+                  which(c("kde", "delta_ball",
+                          "spherical_ball", "convex_hull") == cb_type)
                   ][[1]],
     data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend,
@@ -810,43 +861,59 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   ggplot(aes(x = x, y =y, z = z, group = .id)) +
 #'   geom_path(alpha = .03) +
-#'   coord_tern()
+#'   coord_tern() +
+#'   labs(title = "Actually data paths")
 #'
 #' vis_spherical <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R", t = "time") %>%
-#'   ggplot(aes(x = x, y =y, z = z, t = t)) +
-#'   geom_path(stat = StatConfBandSpherical, grid_size = rep(300,2),
-#'             alpha_level = .95) +
+#'   ggplot(aes(x = x, y = y, z = z, t = t)) +
+#'   geom_confidence_band(cb_type = "spherical_ball",
+#'                        grid_size = rep(300,2),
+#'                        alpha_level = .95) +
 #'   coord_tern() +
-#'   labs(title = "Spherical Confidence Band")
+#'   labs(title = "Spherical CB")
 #'
 #' vis_delta_ball <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
-#'   ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
-#'   geom_path(stat = StatConfBandDeltaBall, grid_size = rep(300,2),
-#'             alpha_level = .95) +
+#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'   geom_confidence_band(cb_type = "delta_ball",
+#'                        grid_size = rep(300,2),
+#'                        alpha_level = .95) +
 #'   coord_tern() +
-#'   labs(title = "Delta-Ball Confidence Band")
+#'   labs(title = "Delta-ball CB")
 #'
 #' vis_kde <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
-#'   ggplot(aes(x = x, y =y, z = z, sim_group = .id)) +
-#'   geom_path(stat = StatConfBandKDE, grid_size = rep(100,2),
+#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'   geom_confidence_band(cb_type = "kde",
+#'                        grid_size = rep(300,2),
+#'                        alpha_level = .95) +
+#'   coord_tern() +
+#'   labs(title = "KDE CB")
+#'
+#' vis_convex_hull <- timeternR::pomp_df %>%
+#'   rename(x = "S", y = "I", z = "R") %>%
+#'   mutate(.id = as.numeric(.id)) %>%
+#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'   geom_path(stat = StatConfBandConvexHull,
 #'             alpha_level = .95) +
 #'   coord_tern() +
-#'   labs(title = "KDE Confidence Band")
+#'   labs(title = "Convex hull CB")
 #'
-#' gridExtra::grid.arrange(vis_data, vis_spherical,
-#'                         vis_delta_ball, vis_kde, nrow = 2)
+#' grid.arrange(vis_data, vis_spherical,
+#'              vis_delta_ball, vis_kde,
+#'              vis_convex_hull, nrow = 2)
 #'
 geom_confidence_band <- function(mapping = NULL, data = NULL,
                                  stat = list("ConfBandKDE",
                                              "ConfBandDeltaBall",
-                                             "StatConfBandSpherical")[
+                                             "ConfBandSpherical",
+                                             "ConfBandConvexHull")[
                                                c("kde", "delta_ball",
-                                                 "spherical_ball") == cb_type
+                                                 "spherical_ball",
+                                                 "convex_hull") == cb_type
                                                ][[1]],
                                  position = "identity",
                                  ...,
@@ -854,7 +921,8 @@ geom_confidence_band <- function(mapping = NULL, data = NULL,
                                  show.legend = NA,
                                  inherit.aes = TRUE,
                                  cb_type = c("kde", "delta_ball",
-                                             "spherical_ball"),
+                                             "spherical_ball",
+                                             "convex_hull"),
                                  grid_size = rep(100, 2),
                                  alpha_level = .9) {
   ggplot2::layer(
