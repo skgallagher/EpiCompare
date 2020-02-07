@@ -117,6 +117,10 @@ raw_agents_to_aggregate <- function(agents,
   if(!is.null(death)){
     change_of_state_after_death <- which(info_only[,states] > info_only[,death])
     info_only[,states][change_of_state_after_death] <- NA
+
+    # new change:
+    states <- c(states, death)
+    K <- K + 1
     }
 
   # if changed before birth, convert to time of birth
@@ -137,15 +141,14 @@ raw_agents_to_aggregate <- function(agents,
   # if t_state is strictly more than t_max, convert to NA
   if(!is.na(t_max)){
     info_only[,states][info_only[,states] > t_max] <- NA
+  } else {
+    t_max <- max(ceiling(info_only_int[,states]), na.rm = TRUE)
   }
 
   # Switch to integer values ------------------------------------------
 
   info_only_int <- info_only %>% ceiling()
 
-  if (is.na(t_max)){
-    t_max <- max(info_only_int[,states])
-  }
 
   # getting new counts of state membership (not 0) --------------------
   # tidyr 1.0
@@ -199,60 +202,60 @@ raw_agents_to_aggregate <- function(agents,
 
     }
   }
-  if(!is.null(death)){
-    if(sum(!is.na(info_only_int[, death]))){
-      info_dead <- info_only_int[!is.na(info_only_int[,death]),]
-      info_dead_states <- info_dead[, states]
-      info_dead_col <- info_dead[, death]
-
-      states_per <- info_dead[, states] %>% tibble::rownames_to_column() %>%
-        pivot_longer(cols = one_of(states),
-                     names_to = "state",
-                     values_to = "t", values_drop_na = FALSE) %>%
-        mutate(state = factor(state, levels = states,
-                              labels = 1:K))
-
-      death_per <- info_dead %>% tibble::rownames_to_column() %>%
-        select(one_of(c(death, "rowname")))
-
-      states_per <- states_per %>% left_join(death_per, by = c("rowname"))
-
-      states_per$logic <- states_per$t <= as.vector(t(states_per[,death]))
-
-      states_per <- states_per %>% filter(logic) %>%
-        mutate(state = as.numeric(state)) %>%
-        group_by(state, !!sym(death)) %>%
-        dplyr::summarize(count = n())
-
-      death_per_zero <- death_per %>% group_by(!!sym(death)) %>%
-        dplyr::summarize(count = n())
-
-
-      # death_counts <- apply(info_dead, 1,
-      #       function(x_vec) {
-      #         c(0, (1:K)[unlist(x_vec[states]) <= unlist(x_vec[death])])
-      #         }) %>% as.data.frame %>% tibble::rownames_to_column() %>%
-      #   dplyr::rename(state = ".", t = "rowname") %>%
-      #   dplyr::group_by(state, t) %>%
-      #   dplyr::summarize(count = n())
-
-
-
-    one_plus_state_count <- one_plus_state_count %>%
-      mutate(state = as.numeric(state),
-             t = as.numeric(t)) %>%
-      dplyr::left_join(states_per, by = c("state", "t" = death)) %>%
-      dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
-      dplyr::select(-count.x, -count.y)
-
-    zero_state_count <- zero_state_count %>%
-      mutate(t = as.numeric(t)*1.0) %>%
-      dplyr::left_join(death_per_zero, by = c("t" = death)) %>%
-      dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
-      dplyr::select(-count.x, -count.y)
-
-    }
-  }
+  # if(!is.null(death)){
+  #   if(sum(!is.na(info_only_int[, death]))){
+  #     info_dead <- info_only_int[!is.na(info_only_int[,death]),]
+  #     info_dead_states <- info_dead[, states]
+  #     info_dead_col <- info_dead[, death]
+  #
+  #     states_per <- info_dead[, states] %>% tibble::rownames_to_column() %>%
+  #       pivot_longer(cols = one_of(states),
+  #                    names_to = "state",
+  #                    values_to = "t", values_drop_na = FALSE) %>%
+  #       mutate(state = factor(state, levels = states,
+  #                             labels = 1:K))
+  #
+  #     death_per <- info_dead %>% tibble::rownames_to_column() %>%
+  #       select(one_of(c(death, "rowname")))
+  #
+  #     states_per <- states_per %>% left_join(death_per, by = c("rowname"))
+  #
+  #     states_per$logic <- states_per$t <= as.vector(t(states_per[,death]))
+  #
+  #     states_per <- states_per %>% filter(logic) %>%
+  #       mutate(state = as.numeric(state)) %>%
+  #       group_by(state, !!sym(death)) %>%
+  #       dplyr::summarize(count = n())
+  #
+  #     death_per_zero <- death_per %>% group_by(!!sym(death)) %>%
+  #       dplyr::summarize(count = n())
+  #
+  #
+  #     # death_counts <- apply(info_dead, 1,
+  #     #       function(x_vec) {
+  #     #         c(0, (1:K)[unlist(x_vec[states]) <= unlist(x_vec[death])])
+  #     #         }) %>% as.data.frame %>% tibble::rownames_to_column() %>%
+  #     #   dplyr::rename(state = ".", t = "rowname") %>%
+  #     #   dplyr::group_by(state, t) %>%
+  #     #   dplyr::summarize(count = n())
+  #
+  #
+  #
+  #   one_plus_state_count <- one_plus_state_count %>%
+  #     mutate(state = as.numeric(state),
+  #            t = as.numeric(t)) %>%
+  #     dplyr::left_join(states_per, by = c("state", "t" = death)) %>%
+  #     dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
+  #     dplyr::select(-count.x, -count.y)
+  #
+  #   zero_state_count <- zero_state_count %>%
+  #     mutate(t = as.numeric(t)*1.0) %>%
+  #     dplyr::left_join(death_per_zero, by = c("t" = death)) %>%
+  #     dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
+  #     dplyr::select(-count.x, -count.y)
+  #
+  #   }
+  # }
 
   # now to actually get the population counts -------------------
   state_count <- rbind(one_plus_state_count,zero_state_count)
@@ -283,6 +286,12 @@ raw_agents_to_aggregate <- function(agents,
     dplyr::mutate(t = as.numeric(t)) #%>%
     #rbind(c(-1, t(init_counts$value)), .) %>% # I don't think this is the correct way to solve the problem
     #mutate(t = t + 1)
+
+  if(!is.null(death)){
+    final_state_count <- final_state_count %>% select(-one_of(paste0("X", K)))
+  }
+
+  class(final_state_count) <- c("aggregate", class(final_state_count))
 
   return(final_state_count)
 }
