@@ -1,3 +1,54 @@
+Comments for Shannon:
+  #' # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
+  #' (difference between the below examples. - this may correspond to comment:
+  #' timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
+  #' is part of the problem...") additionally, this doesn't cost us anything in
+  #' the filament visualization as the data points are the same.
+  #'
+  #' # example code:
+  #'
+  #' agents <- timeternR::hagelloch_raw
+  #' states = c("tI", "tR")
+  #' death <- "tDEAD"
+#' min_max_time <- c(0, NA)
+#'
+#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' a <- timeternR::hagelloch_raw %>%
+#' timeternR::fortify_agents() %>%
+#' timeternR::agents_to_aggregate_SIR() %>%
+#' as.matrix
+#'
+#' #look at:
+#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
+#'
+#' timeternR::hagelloch_raw %>% filter(!is.na(tDEAD)) %>% pull(tDEAD) %>%
+#' ceiling() %>% sort
+#'
+#' ### example 2 of code:
+#' agents <- timeternR::hagelloch_raw
+#' # making babies
+#' set.seed(5)
+#' babies <- sample(nrow(agents),size = 5)
+#' agents$tBIRTH <- NA
+#' agents$tBIRTH[babies] <- agents$tI[babies] - 5
+#' states = c("tI", "tR")
+#' death <- NULL
+#' birth <- "tBIRTH"
+#' min_max_time <- c(0, NA)
+#'
+#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' a <- timeternR::hagelloch_raw %>%
+#' timeternR::fortify_agents() %>%
+#' timeternR::agents_to_aggregate_SIR() %>%
+#' as.matrix
+#'
+#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
+#'
+#' agents %>% filter(!is.na(tBIRTH)) %>% pull(tBIRTH) %>% ceiling() %>% sort
+
+
+
+
 #' min_max_time vector check
 #'
 #' this is an internal function
@@ -220,16 +271,6 @@ test_that("expanding_info", {
 #' @export
 #'
 #' @examples
-#'
-#' Comments for Shannon:
-#' # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
-#' (difference between the below examples. - this may correspond to comment:
-#' timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
-#' is part of the problem...") additionally, this doesn't cost us anything in
-#' the filament visualization as the data points are the same.
-#'
-#' # example code:
-#'
 #' agents <- timeternR::hagelloch_raw
 #' states = c("tI", "tR")
 #' death <- "tDEAD"
@@ -244,6 +285,7 @@ test_that("expanding_info", {
 #' #look at:
 #' b[1:(nrow(b)-2),] - a[2:nrow(a),]
 #'
+#' # keeping in mind:
 #' timeternR::hagelloch_raw %>% filter(!is.na(tDEAD)) %>% pull(tDEAD) %>%
 #' ceiling() %>% sort
 #'
@@ -274,7 +316,7 @@ raw_agents_to_aggregate <- function(agents,
                                 birth = NULL,
                                 min_max_time = c(0, NA)
                                 ){
-  # parameter check
+  # parameter check -----------------------------------
   check_min_max_time(min_max_time)
   t_min <- min_max_time[1]
   t_max <- min_max_time[2]
@@ -282,14 +324,15 @@ raw_agents_to_aggregate <- function(agents,
   N <- nrow(agents)
   K <- length(states)
 
-  # ordering of states check
+  # ordering of states check --------------------------
   check_ordered(agents, states)
 
   info_only <- agents[,c(states, death, birth)] %>% sapply(as.numeric) %>%
     as.data.frame
 
 
-  # dealing with death and birth
+  # beyond death and before birth ----------------------
+
   # if change after death, then convert to NA
   if (!is.null(death)) {
     change_of_state_after_death <- which(info_only[,states] > info_only[,death])
@@ -325,6 +368,7 @@ raw_agents_to_aggregate <- function(agents,
     N_born <- 0
   }
 
+  # beyond time max and time min -----------------------
   # if t_state is strictly less than t_min, convert to t_min
   info_only[,states][info_only[,states] < t_min] <- t_min
 
@@ -340,7 +384,7 @@ raw_agents_to_aggregate <- function(agents,
   info_only_int <- info_only %>% ceiling()
 
   # dealing with NAs --------------------------------------------------
-
+  # in all but the last class - NA just means the person jumped that class
   if(sum(is.na(info_only_int[, only_states])) > 0 & K > 1){
 
     info_only_int_na <- info_only_int[, only_states]
@@ -355,13 +399,12 @@ raw_agents_to_aggregate <- function(agents,
   }
 
   # getting new counts of state membership (not 0) --------------------
-  # tidyr 1.0
-
   info_only_into_long <- info_only_int[,states] %>%
     tidyr::pivot_longer(cols = everything(),
                  names_to = "state",
                  values_to = "t") %>%
-    dplyr::mutate(state = as.numeric(factor(state, labels = 1:K, levels = states)))
+    dplyr::mutate(state = as.numeric(factor(state, labels = 1:K,
+                                            levels = states)))
 
   one_plus_state_count <- info_only_into_long %>%
     dplyr::group_by(state, t) %>%
@@ -370,20 +413,15 @@ raw_agents_to_aggregate <- function(agents,
   one_plus_state_count <- expanding_info(one_plus_state_count, t_min = t_min,
                                          t_max = t_max, K = K)
 
-  # init_counts <- one_plus_state_count %>% dplyr::filter(t <= t_min) %>%
-  #   dplyr::group_by(state) %>%
-  #   dplyr::summarize(value = sum(count)) ## do I need this? (not really)
-  #
-  # init_0 <- N - N_born - sum(init_counts$value)  ## do I need this?
-  init_0_cum <- N - N_born
-  # init_counts <- init_counts %>%
-  #   rbind(data.frame(state = 0, value = init_0), .)
+  # getting new counts of state membership for 0 class --------------------
 
+  init_0_cum <- N - N_born
   zero_state_count <- data.frame(state = rep(0, t_max - t_min + 1),
                                  t = t_min:t_max,
                                  count = c(init_0_cum, rep(0, t_max-t_min)))
 
-  # dealing with births and deaths directly -----------------------
+  # applying births to state member counts ----------------------
+
   if(!is.null(birth)){
     if(sum(!is.na(info_only_int[, birth]))){
       births_col <- info_only_int %>%
@@ -403,62 +441,8 @@ raw_agents_to_aggregate <- function(agents,
 
     }
   }
-  # if(!is.null(death)){
-  #   if(sum(!is.na(info_only_int[, death]))){
-  #     info_dead <- info_only_int[!is.na(info_only_int[,death]),]
-  #     info_dead_states <- info_dead[, states]
-  #     info_dead_col <- info_dead[, death]
-  #
-  #     states_per <- info_dead[, states] %>% tibble::rownames_to_column() %>%
-  #       pivot_longer(cols = one_of(states),
-  #                    names_to = "state",
-  #                    values_to = "t", values_drop_na = FALSE) %>%
-  #       mutate(state = factor(state, levels = states,
-  #                             labels = 1:K))
-  #
-  #     death_per <- info_dead %>% tibble::rownames_to_column() %>%
-  #       select(one_of(c(death, "rowname")))
-  #
-  #     states_per <- states_per %>% left_join(death_per, by = c("rowname"))
-  #
-  #     states_per$logic <- states_per$t <= as.vector(t(states_per[,death]))
-  #
-  #     states_per <- states_per %>% filter(logic) %>%
-  #       mutate(state = as.numeric(state)) %>%
-  #       group_by(state, !!sym(death)) %>%
-  #       dplyr::summarize(count = n())
-  #
-  #     death_per_zero <- death_per %>% group_by(!!sym(death)) %>%
-  #       dplyr::summarize(count = n())
-  #
-  #
-  #     # death_counts <- apply(info_dead, 1,
-  #     #       function(x_vec) {
-  #     #         c(0, (1:K)[unlist(x_vec[states]) <= unlist(x_vec[death])])
-  #     #         }) %>% as.data.frame %>% tibble::rownames_to_column() %>%
-  #     #   dplyr::rename(state = ".", t = "rowname") %>%
-  #     #   dplyr::group_by(state, t) %>%
-  #     #   dplyr::summarize(count = n())
-  #
-  #
-  #
-  #   one_plus_state_count <- one_plus_state_count %>%
-  #     mutate(state = as.numeric(state),
-  #            t = as.numeric(t)) %>%
-  #     dplyr::left_join(states_per, by = c("state", "t" = death)) %>%
-  #     dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
-  #     dplyr::select(-count.x, -count.y)
-  #
-  #   zero_state_count <- zero_state_count %>%
-  #     mutate(t = as.numeric(t)*1.0) %>%
-  #     dplyr::left_join(death_per_zero, by = c("t" = death)) %>%
-  #     dplyr::mutate(count = count.x - ifelse(is.na(count.y), 0, count.y)) %>%
-  #     dplyr::select(-count.x, -count.y)
-  #
-  #   }
-  # }
 
-  # now to actually get the population counts -------------------
+  # population counts from cummulative counts -------------------
   state_count <- one_plus_state_count %>% as.data.frame %>%
     rbind(.,zero_state_count)
 
@@ -488,8 +472,7 @@ raw_agents_to_aggregate <- function(agents,
   final_state_count <- final_state_count  %>%
     dplyr::mutate(t = as.numeric(t)) %>%
     dplyr::arrange(t) #%>%
-    #rbind(c(-1, t(init_counts$value)), .) %>% # I don't think this is the correct way to solve the problem
-    #mutate(t = t + 1)
+
 
   if(!is.null(death)){
     final_state_count <- final_state_count %>% select(-one_of(paste0("X", K)))
