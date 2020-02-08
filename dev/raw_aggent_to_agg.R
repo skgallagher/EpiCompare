@@ -1,26 +1,12 @@
-agents <- timeternR::hagelloch_raw
-
-# making babies
-set.seed(5)
-babies <- sample(nrow(agents),size = 5)
-agents$tBirth <- NA
-agents$tBirth[babies] <- agents$tI[babies] - 5
-
-states = c("tI", "tR")
-death <- "tDEAD"
-birth <- NULL
-min_max_time <- c(0, NA)
-init_state
-
 #' internal min_max_time vector check
 #'
-#' @param x min_max_time
+#' @param min_max_time min_max_time
 #'
 #' @return
 #' @export
 #'
 #' @examples
-check_min_max_time <- function(x){
+check_min_max_time <- function(min_max_time){
   assertthat::assert_that(length(min_max_time) == 2 & is.vector(min_max_time),
                           msg = "min_max_time should be a vector of length 2")
   assertthat::assert_that(is.na(min_max_time[2]) ||
@@ -33,22 +19,105 @@ check_min_max_time <- function(x){
                           msg = "min_max_time (non NA values) must be integer")
 }
 
-# count_new <- function(df, group_by_value = sym("value")){
-#   df %>% group_by({{group_by_value}}) %>%
-#     summarize(count = n())
-# }
+test_that("check_min_max_time", {
+  # NEEDS TO BE COMPLETED!!!
+  testthat::expect_true(FALSE)
+})
 
+#' checks if states within data frame are ordered as inputted (<=)
+#'
+#' @details This function returns either 1) TRUE, if the states are ordered, 2)
+#' an error is observed (when assert_error = TRUE), or 3) a list of 2 data
+#' frames, the first containing information for each individual (their observed
+#' ordering and if they broke the provided ordering), and the second containing
+#' summarization on the number of individuals in each of the ordering "classes".
+#'
+#' @param df data frame with individual agent information
+#' @param states time entered state, in expected order
+#' @param assert_error boolean if we should raise error if ordering assumption
+#' is violated.
+#'
+#' @return depends, see details
+#' @export
+check_ordered <- function(df, states, assert_error = TRUE){
+  df_select <- df[, states]
+  K <- length(states)
+
+  if(sum(is.na(df_select[, states])) > 0 & K > 1){
+
+    info_only_int_na <- df_select[, states]
+
+    for (i in (K):2) {
+      if (sum(is.na(info_only_int_na[,i-1])) > 0) {
+        info_only_int_na[,i-1][
+          is.na(info_only_int_na[,i-1])
+          ] <- info_only_int_na[,i][is.na(info_only_int_na[,i-1])]
+      }
+    }
+
+    df_select[, states] <- info_only_int_na
+  }
+
+  logic_out <- matrix(FALSE, nrow = nrow(df_select), ncol = ncol(df_select) - 1)
+  for (i in 1:(K-1)){
+    logic_out[,i] <- df_select[,i] > df_select[,i+1]
+  }
+
+  if (assert_error){
+    assertthat::assert_that(sum(logic_out) == 0,
+                            msg = paste("assumed order isn't correct, use",
+                                        "'check_ordered' function with",
+                                        "'assert_error = FALSE' to get info",
+                                        "on which rows made this assumption",
+                                        "incorrect"))
+  }
+
+  if (sum(logic_out) != 0) {
+    ordering <- df[, states] %>% apply(1, function(x){
+      paste(states[order(x)], collapse = " <= ")})
+    row_logic <- logic_out %>% apply(1, function(x){sum(x) != 0})
+    df_out <- data.frame(id = rownames(df[,states]),
+                         error = row_logic,
+                         ordering = ordering)
+
+    summary_out <- df_out %>% group_by(ordering, error) %>%
+      summarize(count = n())
+
+    return(list(ordering_df = df_out, summary_df = summary_out))
+  } else {
+    return(TRUE)
+  }
+
+
+}
+
+test_that("check_ordered", {
+  # NEEDS TO BE COMPLETED!!!
+  testthat::expect_true(FALSE)
+  })
+
+#' Title
+#'
+#' @param df
+#' @param t_min
+#' @param t_max
+#' @param K
+#'
+#' @return
+#' @export
+#'
+#' @examples
 expanding_info <- function(df, t_min, t_max, K){
-  min_t <- t_min - 1
-  my_spec <- tibble::tibble(.name = as.character(min_t:t_max),
+  my_spec <- tibble::tibble(.name = as.character(t_min:t_max),
                             .value = "count",
-                            t = min_t:t_max)
+                            t = as.integer(t_min:t_max))
 
-  hold <- df %>%
+  hold <- df %>% mutate(t = as.integer(t)) %>%
     tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0)) %>%
     t()
   names(hold) <- hold[1,]
-  hold <- hold[-1,] %>% as.data.frame() %>% tibble::rownames_to_column() %>%
+  hold <- hold %>% as.data.frame()
+  hold <- hold[-1,] %>% tibble::rownames_to_column() %>%
     dplyr::rename(t = "rowname") %>%
     tidyr::pivot_longer(cols = one_of(paste0("V",1:K)),
                  names_to = "state",
@@ -58,26 +127,63 @@ expanding_info <- function(df, t_min, t_max, K){
   return(hold)
 }
 
-#' Title
+test_that("expanding_info", {
+  # NEEDS TO BE COMPLETED!!!
+  testthat::expect_true(FALSE)
+  df <- data.frame(state = rep(1:3, each = 2),
+                   t = c(-1,0,2,3,3,4),
+                   count = c(2,1,1,2,1,2))
+  t_min <- -1
+  t_max <- 4
+  K <- 3
+
+  expanding_info(df ,t_min, t_max, K)
+  # this is not done
+
+  # special case when only 1 time point
+  df <- data.frame(data = 1:2,
+                   t = rep(0,2),
+                   count = rep(12,2))
+  expanding_info(df, t_min = 0, t_max = 0, K = 2)
+})
+
+#' generalized function to convert raw agent based data to aggregate data
 #'
-#' @param agents
+#' @param agents data frame with individual agent information
 #' @param states time entered state. Do not include column for original state.
-#' These need to be ordered, for example: for an SIR model, with columns "tI"
-#' and "tR" expressing the time the individual became infected and recovered
-#' (respectively), we want "states = c("tI", "tR").
-#' @param death
-#' @param birth
-#' @param min_max_time
+#' These need to be ordered, for example: for an SIR model, with columns
+#' "\code{tI}" and "\code{tR}" expressing the time the individual became
+#' infected and recovered (respectively), we want
+#' "\code{states = c("tI", "tR")}".
+#' @param death string for column with death time information (default
+#' \code{NULL})
+#' @param birth string for column with birth time information (default
+#' \code{NULL})
+#' @param min_max_time vector (length 2) of minimum and maximum integer time,
+#' the second value can be \code{NA} - and if so, we estimate maximum time from
+#' the data.
 #'
-#' @return will relabel classes "class_i" for i in 0:(length(states))
+#' @return dataset with aggregated information, We label classes
+#' "\code{class_\{i\}}" for i in \code{0:(length(states))}.
 #' @export
 #'
 #' @examples
 #'
 #' TODO:
-#' #also - not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
+#' # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
+#' (difference between the below examples. - this may correspond to comment:
+#' timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
+#' is part of the problem...") additionally, this doesn't cost us anything in
+#' the filament visualization as the data points are the same.
+#'
 #' # example code:
-#' b <- final_state_count %>% as.matrix
+#'
+#' agents <- timeternR::hagelloch_raw
+#' states = c("tI", "tR")
+#' death <- "tDEAD"
+#' min_max_time <- c(0, NA)
+#'
+#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%
 #' timeternR::agents_to_aggregate_SIR() %>%
@@ -86,7 +192,30 @@ expanding_info <- function(df, t_min, t_max, K){
 #' #look at:
 #' b[1:(nrow(b)-2),] - a[2:nrow(a),]
 #'
-#' timeternR::hagelloch_raw %>% filter(!is.na(tDEAD)) %>% pull(tDEAD) %>% ceiling() %>% sort
+#' timeternR::hagelloch_raw %>% filter(!is.na(tDEAD)) %>% pull(tDEAD) %>%
+#' ceiling() %>% sort
+#'
+#' ### example 2 of code:
+#' agents <- timeternR::hagelloch_raw
+#' # making babies
+#' set.seed(5)
+#' babies <- sample(nrow(agents),size = 5)
+#' agents$tBIRTH <- NA
+#' agents$tBIRTH[babies] <- agents$tI[babies] - 5
+#' states = c("tI", "tR")
+#' death <- NULL
+#' birth <- "tBIRTH"
+#' min_max_time <- c(0, NA)
+#'
+#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' a <- timeternR::hagelloch_raw %>%
+#' timeternR::fortify_agents() %>%
+#' timeternR::agents_to_aggregate_SIR() %>%
+#' as.matrix
+#'
+#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
+#'
+#' agents %>% filter(!is.na(tBIRTH)) %>% pull(tBIRTH) %>% ceiling() %>% sort
 raw_agents_to_aggregate <- function(agents,
                                 states,
                                 death = NULL,
@@ -101,12 +230,8 @@ raw_agents_to_aggregate <- function(agents,
   N <- nrow(agents)
   K <- length(states)
 
-
-
-  # TODO:
-  # 1. check that ordering is followed
-  # 2. insert function to create new classes and columns if not ordered
-  #
+  # ordering of states check
+  check_ordered(agents, states)
 
   info_only <- agents[,c(states, death, birth)] %>% sapply(as.numeric) %>%
     as.data.frame
@@ -114,49 +239,72 @@ raw_agents_to_aggregate <- function(agents,
 
   # dealing with death and birth
   # if change after death, then convert to NA
-  if(!is.null(death)){
+  if (!is.null(death)) {
     change_of_state_after_death <- which(info_only[,states] > info_only[,death])
     info_only[,states][change_of_state_after_death] <- NA
 
     # new change:
+    only_states <- states
     states <- c(states, death)
     K <- K + 1
-    }
+  } else {
+    only_states <- states
+  }
 
   # if changed before birth, convert to time of birth
   if(!is.null(birth)){
+    non_na_birth <- !is.na(info_only[,birth])
     change_of_state_before_birth <-
-      apply(info_only, 2, function(x){x < info_only[,birth]})
-    info_only[,states][change_of_state_before_birth] <-
-      matrix(rep(info_only[,birth], 3), ncol = 3)[change_of_state_before_birth]
+      apply(info_only[non_na_birth,], 1, function(x){x[states] < x[birth]}) %>%
+      t()
 
-    N_born <- sum(info_only[births] > t_min)
+    change_of_state_before_birth[is.na(change_of_state_before_birth)] <- FALSE
+
+    inner <- info_only[non_na_birth,states]
+    inner[change_of_state_before_birth] <-
+      matrix(rep(info_only[non_na_birth,birth], 3), ncol = 3)[change_of_state_before_birth]
+
+    info_only[non_na_birth,states] <- inner
+
+    N_born <- sum(info_only[birth] >= t_min, na.rm = TRUE)
   } else {
     N_born <- 0
   }
 
-  # if t_state is strictly less than t_min, convert to t_min -1 (not sure needed)
+  # if t_state is strictly less than t_min, convert to t_min - 1 (not sure needed)
   info_only[,states][info_only[,states] < t_min] <- t_min
 
   # if t_state is strictly more than t_max, convert to NA
   if(!is.na(t_max)){
     info_only[,states][info_only[,states] > t_max] <- NA
   } else {
-    t_max <- max(ceiling(info_only_int[,states]), na.rm = TRUE)
+    t_max <- max(ceiling(info_only[,states]), na.rm = TRUE)
   }
 
   # Switch to integer values ------------------------------------------
 
   info_only_int <- info_only %>% ceiling()
 
+  # dealing with NAs --------------------------------------------------
+  ## maybe this should go before deaths?
+
+  if(sum(is.na(info_only_int[, only_states])) > 0 & K > 1){
+
+    info_only_int_na <- info_only_int[, only_states]
+
+    for (i in (K):2) {
+      if (sum(is.na(info_only_int_na[,i-1])) > 0) {
+        info_only_int_na[,i-1][is.na(info_only_int_na[,i-1])] <- info_only_int_na[,i][is.na(info_only_int_na[,i-1])]
+      }
+    }
+
+    info_only_int[, only_states] <- info_only_int_na
+  }
 
   # getting new counts of state membership (not 0) --------------------
   # tidyr 1.0
 
-
-
-
-  info_only_into_long <- info_only_int[,c(states)] %>%
+  info_only_into_long <- info_only_int[,states] %>%
     tidyr::pivot_longer(cols = everything(),
                  names_to = "state",
                  values_to = "t") %>%
@@ -178,15 +326,15 @@ raw_agents_to_aggregate <- function(agents,
   init_counts <- init_counts %>%
     rbind(data.frame(state = 0, value = init_0), .)
 
-  zero_state_count <- data.frame(state = rep(0, t_max - t_min + 2),
-                                 t = (t_min - 1):t_max,
-                                 count = c(0, init_0_cum, rep(0, t_max-t_min)))
+  zero_state_count <- data.frame(state = rep(0, t_max - t_min + 1),
+                                 t = t_min:t_max,
+                                 count = c(init_0_cum, rep(0, t_max-t_min)))
 
   # dealing with births and deaths directly -----------------------
   if(!is.null(birth)){
     if(sum(!is.na(info_only_int[, birth]))){
       births_col <- info_only_int %>%
-        tibble::as_tibble %>% dplyr::select(one_of(birth)) %>%
+        dplyr::select(one_of(birth)) %>%
         tidyr::drop_na()
 
       births_counts <- births_col %>%
@@ -258,7 +406,8 @@ raw_agents_to_aggregate <- function(agents,
   # }
 
   # now to actually get the population counts -------------------
-  state_count <- rbind(one_plus_state_count,zero_state_count)
+  state_count <- one_plus_state_count %>% as.data.frame %>%
+    rbind(.,zero_state_count)
 
   cum_state_count <- state_count %>%
     dplyr::mutate(state = factor(state, levels = 0:K, labels = paste0("X",0:K))) %>%
@@ -270,20 +419,21 @@ raw_agents_to_aggregate <- function(agents,
                             mutate(cum_count = cumsum(count))})) %>%
     dplyr::select(-data) %>%
     unnest(new_data) %>% select(-count) %>%
-    tidyr::pivot_wider(id_cols = "t",
+    tidyr::pivot_wider(id_cols = "t",values_fill = list("cum_count" = 0),
                 names_from = "state",values_from = "cum_count") %>%
     dplyr::filter(t >= t_min)
 
 
-  final_state_count <- cum_state_count
+  final_state_count <- cum_state_count %>%
+    dplyr::select(one_of(c("t",paste0("X",0:K))))
   for(i in 0:(K-1)){
     final_state_count[, paste0("X",i)] <- cum_state_count[, paste0("X",i)] -
       cum_state_count[, paste0("X",i+1)]
   }
 
-  final_state_count <- final_state_count %>%
-    dplyr::select(one_of(c("t",paste0("X",0:K)))) %>%
-    dplyr::mutate(t = as.numeric(t)) #%>%
+  final_state_count <- final_state_count  %>%
+    dplyr::mutate(t = as.numeric(t)) %>%
+    dplyr::arrange(t) #%>%
     #rbind(c(-1, t(init_counts$value)), .) %>% # I don't think this is the correct way to solve the problem
     #mutate(t = t + 1)
 
@@ -297,50 +447,258 @@ raw_agents_to_aggregate <- function(agents,
 }
 
 
-# examples to deal with:
-# think group1 = E, group2 = I, group3 = R
-# the "_x" is that the individual starts at group "x" when start time = 0
-data_example_s <- data.frame(group1 = c(.1,0),
-                             group2 = c(2.1,2),
-                             group3 = c(3.1,3))
+test_that("raw_agents_to_aggregate, data_example_s example",{
+  data_example_s <- data.frame(group1 = c(.1,0),
+                               group2 = c(2.1,2),
+                               group3 = c(3.1,3))
+  ## three classes
+  s_output3 <- raw_agents_to_aggregate(agents = data_example_s,
+                                       states = c("group2", "group3"))
 
-data_example_e <- data.frame(group1 = c(-1.1, -.1,-1),
-                             group2 = c(2.1,2.1,2),
-                             group3 = c(3.1,3.1,3))
+  # if start time is 0, should start with 2 group1, and non of the other groups
+  testthat::expect_equivalent(s_output3 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 2, X1 = 0, X2 = 0))
 
-data_example_i <- data.frame(group1 = c(NA, -2.1, NA, -2.1, NA, -2),
-                             group2 = c(-1.1,-1.1,-.1,-.1,-1,-1),
-                             group3 = c(3.1,3.1,3.1,3.1,3,3))
-
-data_example_r_cont <- data.frame(group1 = c(-3.1, -3.1, NA , NA  , -3.1, -3.1, NA  , NA),
-                                  group2 = c(-2.1, -2.1,-2.1, -2.1,   NA, NA  , NA  , NA),
-                                  group3 = c(-1.1, -.1, -1.1, -.1 , -1.1, -.1 , -1.1, -.1))
-
-data_example_r_disc <- data.frame(group1 = c(-3, NA, -3, NA),
-                                  group2 = c(-2, -2, NA, NA),
-                                  group3 = c(-1, -1, -1, -1))
+  t_start <- sample(s_output3$t,size = 1)
+  s_output3.1 <- raw_agents_to_aggregate(agents = data_example_s,
+                                         states = c("group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output3.1, s_output3[s_output3$t >= t_start,])
 
 
-# if we make start_time = 1:
-data_example_s[1,] # is now start at E
-##all same for _e, _i, r_cont,r_disc
 
-# if we make start_time = -1:
-## data_example_s same
-data_example_e[2,] #is now starting at S
-data_example_i[c(3, 4)] # now start at E
-data_example_r_cont[c(2,4,6,8)] # now start at I
+  ## four classes
+  s_output4 <- raw_agents_to_aggregate(agents = data_example_s,
+                                      states = c("group1","group2", "group3"))
 
+  # if start time is 0, should start with 1 group0, and 1 in group1
+  testthat::expect_equivalent(s_output4 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 1, X1 = 1, X2 = 0, X3 = 0))
 
-# if start_time = -5, birth = -4
-## all start out at S
-# if start_time = 0, birth = 1
-## _s output's S = 0 = EIR at time t = 0
-## output t = 1: E = 2, rest == 0
-## _e output's S = 0 = EIR at time t = 0
-## output t = 1: E = 3, rest == 0
-## _i output's S = 0 = rest at time t = 0
-## output t = 1: I = 6
-## _r_cont output's S = 0 = rest at time t = 0
-## output t = 1: r = 8
+  t_start <- sample(s_output4$t,size = 1)
+  s_output4.1 <- raw_agents_to_aggregate(agents = data_example_s,
+                                         states = c("group1", "group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output4.1, s_output4[s_output4$t >= t_start,])
+
+  s_output4._neg1 <- raw_agents_to_aggregate(agents = data_example_s,
+                                             states = c("group1", "group2",
+                                                        "group3"),
+                                             min_max_time = c(-1L,NA))
+
+  # if start time is -1, should start with 2 in group1
+  testthat::expect_equivalent(s_output4._neg1 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 2, X1 = 0, X2 = 0, X3 = 0))
+
+  testthat::expect_equal(s_output4._neg1[2:nrow(s_output4._neg1),],
+                         s_output4)
+})
+
+test_that("raw_agents_to_aggregate, data_example_e example", {
+  data_example_e <- data.frame(group1 = c(-1.1, -.1,-1),
+                               group2 = c(2.1,2.1,2),
+                               group3 = c(3.1,3.1,3))
+
+  ## three classes
+  s_output3 <- raw_agents_to_aggregate(agents = data_example_e,
+                                       states = c("group2", "group3"))
+
+  # if start time is 0, should start with 3 group0,
+  testthat::expect_equivalent(s_output3 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 3, X1 = 0, X2 = 0))
+  testthat::expect_equivalent(s_output3[s_output3$t == 2,] %>% select(matches("X")),
+                              data.frame(X0 = 2, X1 = 1, X2 = 0))
+  testthat::expect_equivalent(s_output3[s_output3$t == 3,] %>% select(matches("X")),
+                              data.frame(X0 = 0, X1 = 2, X2 = 1))
+
+  t_start <- sample(s_output3$t,size = 1)
+  s_output3.1 <- raw_agents_to_aggregate(agents = data_example_e,
+                                         states = c("group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output3.1, s_output3[s_output3$t >= t_start,])
+
+  # four classes
+
+  s_output4 <- raw_agents_to_aggregate(agents = data_example_e,
+                                         states = c("group1","group2","group3"),
+                                         min_max_time = c(0,NA))
+
+  # if start time is 0, should start with 3 group1,
+  testthat::expect_equivalent(s_output4 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 0, X1 = 3, X2 = 0, X3 = 0))
+
+  t_start <- sample(s_output4$t,size = 1)
+  s_output4.1 <- raw_agents_to_aggregate(agents = data_example_e,
+                                         states = c("group1", "group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output4.1, s_output4[s_output4$t >= t_start,])
+
+  #if start time is -1, start with 2 group1, 1 group0
+  s_output4._neg1 <- raw_agents_to_aggregate(agents = data_example_e,
+                                             states = c("group1","group2",
+                                                        "group3"),
+                                             min_max_time = c(-1,NA))
+  testthat::expect_equivalent(s_output4._neg1 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 1, X1 = 2, X2 = 0, X3 = 0))
+
+  testthat::expect_equal(s_output4._neg1[s_output4._neg1$t > -1,],
+                         s_output4)
+
+})
+
+test_that("raw_agents_to_aggregate, data_example_i example", {
+  data_example_i <- data.frame(group1 = c(NA, -2.1, NA, -2.1, NA, -2),
+                               group2 = c(-1.1,-1.1,-.1,-.1,-1,-1),
+                               group3 = c(3.1,3.1,3.1,3.1,3,3))
+
+  ## three classes
+  s_output3 <- raw_agents_to_aggregate(agents = data_example_i,
+                                       states = c("group2", "group3"))
+
+  # if start time is 0, should start with all 6 X1,
+  testthat::expect_equivalent(s_output3 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 0, X1 = 6, X2 = 0))
+  testthat::expect_equivalent(s_output3[s_output3$t == 3,] %>% select(matches("X")),
+                              data.frame(X0 = 0, X1 = 4, X2 = 2))
+
+  t_start <- sample(s_output3$t,size = 1)
+  s_output3.1 <- raw_agents_to_aggregate(agents = data_example_i,
+                                         states = c("group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output3.1, s_output3[s_output3$t >= t_start,])
+
+  # four classes
+  s_output4 <- raw_agents_to_aggregate(agents = data_example_i,
+                                       states = c("group1","group2","group3"),
+                                       min_max_time = c(0,NA))
+
+  # if start time is 0, should start with 6 X2,
+  testthat::expect_equivalent(s_output4 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 0, X1 = 0, X2 = 6, X3 = 0))
+  # t == 3: 4 X2, 2 X3
+  testthat::expect_equivalent(s_output4[s_output4$t == 3,] %>%
+                                select(matches("X")),
+                              data.frame(X0 = 0, X1 = 0, X2 = 4, X3 = 2))
+  # t == 4: 6 X3
+  testthat::expect_equivalent(s_output4[s_output4$t == 4,] %>%
+                                select(matches("X")),
+                              data.frame(X0 = 0, X1 = 0, X2 = 0, X3 = 6))
+
+  t_start <- sample(s_output4$t,size = 1)
+  s_output4.1 <- raw_agents_to_aggregate(agents = data_example_i,
+                                         states = c("group1", "group2", "group3"),
+                                         min_max_time = c(t_start,NA))
+  testthat::expect_equal(s_output4.1, s_output4[s_output4$t >= t_start,])
+
+  # if start time is -1, start with 2 X2, 2 X1, 2 X0
+  # as data_example_i[3,] => X0
+  # [4,] => X1
+  # rest X2
+  s_output4._neg1 <- raw_agents_to_aggregate(agents = data_example_i,
+                                             states = c("group1","group2",
+                                                        "group3"),
+                                             min_max_time = c(-1,NA))
+  testthat::expect_equivalent(s_output4._neg1 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 1, X1 = 1, X2 = 4, X3 = 0))
+
+  testthat::expect_equal(s_output4._neg1[s_output4._neg1$t > -1,],
+                         s_output4)
+})
+
+test_that("raw_agents_to_aggregate, data_example_r example", {
+  data_example_r_cont <- data.frame(group1 = c(-3.1, -3.1, NA , NA  , -3.1, -3.1, NA  , NA),
+                                    group2 = c(-2.1, -2.1,-2.1, -2.1,   NA, NA  , NA  , NA),
+                                    group3 = c(-1.1, -.1, -1.1, -.1 , -1.1, -.1 , -1.1, -.1))
+
+  data_example_r_disc <- data.frame(group1 = c(-3, NA, -3, NA),
+                                    group2 = c(-2, -2, NA, NA),
+                                    group3 = c(-1, -1, -1, -1))
+
+  data_example_r <- rbind(data_example_r_cont, data_example_r_disc)
+
+  ## three classes
+  s_output3 <- raw_agents_to_aggregate(agents = data_example_r,
+                                       states = c("group2", "group3"))
+
+  # if start time is 0, should start with all 12 X2,
+  testthat::expect_equivalent(s_output3 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 0, X1 = 0, X2 = 12))
+  testthat::expect_equivalent(nrow(s_output3),1)
+
+  # four classes
+  s_output4 <- raw_agents_to_aggregate(agents = data_example_r,
+                                       states = c("group1","group2","group3"),
+                                       min_max_time = c(0,NA))
+
+  # if start time is 0, should start with 6 X2,
+  testthat::expect_equivalent(s_output4 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 0, X1 = 0, X2 = 0, X3 = 12))
+
+  # if start time is -1, start with 8 X3, 2 X2, 1 X1, 1 X0
+  # rest in X3
+  # data_example([c(1,3,5,7,9:12),]) => X3
+  # data_example_r[c(2,4),] => X2
+  # data_example_r[6,] => X1
+  # data_example_r[8] => X0
+  s_output4._neg1 <- raw_agents_to_aggregate(agents = data_example_r,
+                                             states = c("group1","group2",
+                                                        "group3"),
+                                             min_max_time = c(-1,NA))
+  testthat::expect_equivalent(s_output4._neg1 %>% select(matches("X")) %>% .[1,],
+                              data.frame(X0 = 1, X1 = 1, X2 = 2, X3 = 8))
+
+  testthat::expect_equal(s_output4._neg1[s_output4._neg1$t > -1,],
+                         s_output4)
+})
+
+test_that("raw_agents_to_aggregate, births", {
+  data_example_s <- data.frame(group1 = c(.1,0),
+                               group2 = c(2.1,2),
+                               group3 = c(3.1,3))
+
+  data_example_e <- data.frame(group1 = c(-1.1, -.1,-1),
+                               group2 = c(2.1,2.1,2),
+                               group3 = c(3.1,3.1,3))
+
+  data_example_i <- data.frame(group1 = c(NA, -2.1, NA, -2.1, NA, -2),
+                               group2 = c(-1.1,-1.1,-.1,-.1,-1,-1),
+                               group3 = c(3.1,3.1,3.1,3.1,3,3))
+
+  data_example_r_cont <- data.frame(group1 = c(-3.1, -3.1, NA , NA  , -3.1, -3.1, NA  , NA),
+                                    group2 = c(-2.1, -2.1,-2.1, -2.1,   NA, NA  , NA  , NA),
+                                    group3 = c(-1.1, -.1, -1.1, -.1 , -1.1, -.1 , -1.1, -.1))
+
+  data_example_r_disc <- data.frame(group1 = c(-3, NA, -3, NA),
+                                    group2 = c(-2, -2, NA, NA),
+                                    group3 = c(-1, -1, -1, -1))
+
+  all_data <- rbind(data_example_s,
+                    data_example_e,
+                    data_example_i,
+                    data_example_r_cont,
+                    data_example_r_disc) %>%
+    mutate(birth = rep(c(0,1,NA), length = 23))
+
+  all_out <- raw_agents_to_aggregate(agents = all_data,
+                                     birth = "birth",
+                                     states = c("group1","group2", "group3"))
+  testthat::expect_equal(all_out %>% select(matches("X")) %>% apply(1, sum),
+                         c(23-8,rep(23,4)))
+
+  all_out_no_birth <- raw_agents_to_aggregate(agents = all_data,
+                                              states = c("group1","group2",
+                                                         "group3"))
+  # babies born at t == 0
+  # obs 2: g1
+  # obs 5: g1
+  # obs 8: g2
+  # obs 11:g2
+  # obs 14:g3
+  # obs 17:g3
+  # obs 20:g3
+  # obs 23:g3
+  testthat::expect_equal((all_out_no_birth - all_out)[1,],
+                         data.frame(t = 0, X0 = 0, X1 = 2, X2 = 2, X3 = 4))
+})
+
 
