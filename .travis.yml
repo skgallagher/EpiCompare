@@ -9,10 +9,10 @@ r_packages:
   - kableExtra
 
 install:
-  - R -e 'install.packages("devtools")'
-  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")'
-  - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")'
-  - R -e 'devtools::install_deps(dep = T, upgrade = "never")'
+  - R -e 'install.packages("devtools")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_deps(dep = T, upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
 
 script:
 - R CMD build .
@@ -23,7 +23,7 @@ matrix:
   include:
   - r: release
     name: tidyr-old
-    before_install: R -e 'install.packages("tidyr", version = "0.8.3")'
+    before_install: R -e 'install.packages("tidyr", version = "0.8.3")' -e 'print(utils::packageVersion("tidyr"))'
 
 after_success:
 - R -e 'covr::codecov()'
