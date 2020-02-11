@@ -1,10 +1,14 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-cache: packages
+repos:
+  CRAN: https://cloud.r-project.org
 
 r_packages:
   - covr
+
+install:
+  - R -e 'devtools::install_deps(dep = T, upgrade = "never")'
 
 script:
 - R -e 'install.packages("kableExtra")'
@@ -21,7 +25,7 @@ matrix:
     before_script: R -e 'install.packages("tidyr")'
   - r: release
     name: tidyr-old
-    before_script: R -e 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
+    before_script: R -e 'install.packages("tidyr", version = "0.8.3")'
 
 after_success:
 - R -e 'covr::codecov()'
