@@ -6,15 +6,16 @@ repos:
 
 r_packages:
   - covr
-  - devtools
   - kableExtra
 
 install:
+  - R -e 'install.packages("devtools")'
+  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")'
+  - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")'
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")'
 
 script:
-- R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")'
-- R -e 'devtools::install_github("ngloe/olpsR")'
+
 - R CMD build .
 - R CMD check *tar.gz
 
@@ -23,7 +24,7 @@ matrix:
   include:
   - r: release
     name: tidyr-old
-    before_script: R -e 'install.packages("tidyr", version = "0.8.3")'
+    before_install: R -e 'install.packages("tidyr", version = "0.8.3")'
 
 after_success:
 - R -e 'covr::codecov()'
