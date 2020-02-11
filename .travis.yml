@@ -15,7 +15,6 @@ install:
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")'
 
 script:
-
 - R CMD build .
 - R CMD check *tar.gz
 
