@@ -10,7 +10,6 @@ script:
 - R -e 'install.packages("kableExtra")'
 - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")'
 - R -e 'devtools::install_github("ngloe/olpsR")'
-- R -e 'install.packages("devtools")' -e 'devtools::install_deps(dep = T)'
 - R CMD build .
 - R CMD check *tar.gz
 
@@ -19,11 +18,11 @@ matrix:
   include:
   - r: release
     name: tidyr-current
-    before_script: Rscript -e 'install.packages("tidyr")'
+    before_script: R -e 'install.packages("tidyr")'
     after_success: Rscript -e 'covr::codecov()'
   - r: release
     name: tidyr-old
-    before_script: Rscript -e 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
+    before_script: R -e 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
     after_success: Rscript -e 'covr::codecov()'
 
 
