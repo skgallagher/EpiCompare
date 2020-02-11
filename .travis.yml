@@ -20,10 +20,10 @@ matrix:
   - r: release
     name: tidyr-current
     before_script: Rscript -e 'install.packages("tidyr")'
+    after_success: Rscript -e 'covr::codecov()'
   - r: release
     name: tidyr-old
     before_script: Rscript -e 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
+    after_success: Rscript -e 'covr::codecov()'
 
-# only report coverage after build is successful
-after_success:
-  - Rscript -e 'covr::codecov()'
+
