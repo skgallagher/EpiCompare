@@ -21,9 +21,6 @@ script:
 matrix:
   include:
   - r: release
-    name: tidyr-current
-    before_script: R -e 'install.packages("tidyr")'
-  - r: release
     name: tidyr-old
     before_script: R -e 'install.packages("tidyr", version = "0.8.3")'
 
