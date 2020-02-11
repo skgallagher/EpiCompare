@@ -6,12 +6,13 @@ repos:
 
 r_packages:
   - covr
+  - devtools
+  - kableExtra
 
 install:
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")'
 
 script:
-- R -e 'install.packages("kableExtra")'
 - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")'
 - R -e 'devtools::install_github("ngloe/olpsR")'
 - R CMD build .
