@@ -155,7 +155,7 @@ check_ordered <- function(df, states, assert_error = TRUE){
 #'
 #' @return expanded data frame
 expanding_info <- function(df, t_min, t_max, K){
-  if (TRUE){#tidyr_new_interface()){
+  if (tidyr_new_interface()){
     ## just running
     # ```
     #  %>% tidyr::pivot_wider(names_from = .data$t, values_from = .data$count,
