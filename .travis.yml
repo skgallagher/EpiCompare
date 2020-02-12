@@ -22,7 +22,7 @@ matrix:
   include:
   - r: release
     name: tidyr-old
-    before_install: R -e 'install.packages("devtools")' -e 'install_version("tidyr", version = "0.8.3")' -e 'print(utils::packageVersion("tidyr"))'
+    before_install: R -e 'install.packages("devtools")' -e 'devtools::install_version("tidyr", version = "0.8.3")' -e 'print(utils::packageVersion("tidyr"))'
 
 after_success:
 - R -e 'covr::codecov()'
