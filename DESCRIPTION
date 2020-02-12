@@ -41,4 +41,6 @@ Suggests:
     devtools,
     gridExtra
 RoxygenNote: 7.0.2
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr,
+    kableExtra
