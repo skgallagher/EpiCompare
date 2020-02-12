@@ -464,7 +464,7 @@ raw_agents_to_aggregate <- function(agents,
       cum_state_count[, paste0("X",i+1)]
   }
 
-  final_state_count <- final_state_count  %>%
+  final_state_count <- final_state_count %>% dplyr::ungroup() %>%
     dplyr::mutate(t = as.numeric(.data$t)) %>%
     dplyr::arrange(.data$t)
 

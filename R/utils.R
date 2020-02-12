@@ -256,12 +256,12 @@ agents_to_aggregate_SIR.grouped_df <- function(agents,
   return(sir_out)
 }
 
-#' #' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
-#' #'
-#' #' @return logical value (boolean)
-#' tidyr_new_interface <- function() {
-#'   utils::packageVersion("tidyr") > "0.8.99"
-#' }
+#' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
+#'
+#' @return logical value (boolean)
+tidyr_new_interface <- function() {
+  utils::packageVersion("tidyr") > "0.8.99"
+}
 
 
 #' Convert SEIR to XYZ coordinates fixed in a tetrahedron
