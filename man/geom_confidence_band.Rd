@@ -13,25 +13,26 @@ stat_confidence_band(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
-  alpha_level = 0.1,
+  alpha_level = 0.9,
   ...
 )
 
 geom_confidence_band(
   mapping = NULL,
   data = NULL,
-  stat = list("ConfBandKDE", "ConfBandDeltaBall")[c("kde", "delta_ball") ==
+  stat = list("ConfBandKDE", "ConfBandDeltaBall", "ConfBandSpherical",
+    "ConfBandConvexHull")[c("kde", "delta_ball", "spherical_ball", "convex_hull") ==
     cb_type][[1]],
   position = "identity",
   ...,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  cb_type = c("kde", "delta_ball"),
+  cb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
-  alpha_level = 0.1
+  alpha_level = 0.9
 )
 }
 \arguments{
@@ -114,46 +115,72 @@ aesthetics are in bold):
   \item \code{size}
   \item \code{weight}
 }
+
+For confidence band types = "kde", "delta_ball":
+\itemize{
+  \item \strong{\code{sim_group}} - note: this cannot be a factor
+}
+For confidence band type = "spherical_balls":
+\itemize{
+  \item \strong{\code{t}} - note: this cannot be a factor
+}
+
 Learn more about setting these aesthetics in
 \code{vignette("ggplot2-specs")}.
 }
 
 \examples{
-## need to get new U_sims_tidy
 library(ggplot2)
 library(ggtern)
 library(dplyr)
-if (FALSE){
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  ggplot() + geom_line(aes(x = x, y = y, z = z, group = sim)) +
-  coord_tern()
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "kde") +
-  coord_tern()
+vis_data <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  ggplot(aes(x = x, y =y, z = z, group = .id)) +
+  geom_path(alpha = .03) +
+  coord_tern() +
+  labs(title = "Actually data paths")
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + stat_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "delta_ball") +
-  coord_tern()
+vis_spherical <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R", t = "time") \%>\%
+  ggplot(aes(x = x, y = y, z = z, t = t)) +
+  geom_confidence_band(cb_type = "spherical_ball",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
+  coord_tern() +
+  labs(title = "Spherical CB")
 
-all_df \%>\% xy2tlr(coord = coord_tern())  \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                      cb_type = "kde") +
-  coord_tern()
+vis_delta_ball <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_confidence_band(cb_type = "delta_ball",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
+  coord_tern() +
+  labs(title = "Delta-ball CB")
 
-all_df \%>\% xy2tlr(coord = coord_tern()) \%>\%
-  mutate(sim = as.numeric(as.character(sim))) \%>\%
-  ggplot() + geom_confidence_band(aes(x = x, y = y, z = z,
-                                      sim_group = sim),
-                                  cb_type = "delta_ball") +
-  coord_tern()
-}
+vis_kde <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_confidence_band(cb_type = "kde",
+                       grid_size = rep(300,2),
+                       alpha_level = .95) +
+  coord_tern() +
+  labs(title = "KDE CB")
+
+vis_convex_hull <- timeternR::pomp_df \%>\%
+  rename(x = "S", y = "I", z = "R") \%>\%
+  mutate(.id = as.numeric(.id)) \%>\%
+  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+  geom_path(stat = StatConfBandConvexHull,
+            alpha_level = .95) +
+  coord_tern() +
+  labs(title = "Convex hull CB")
+
+grid.arrange(vis_data, vis_spherical,
+             vis_delta_ball, vis_kde,
+             vis_convex_hull, nrow = 2)
+
 }

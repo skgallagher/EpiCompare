@@ -4,7 +4,7 @@
 \alias{SEIR_to_XYZ}
 \title{Convert SEIR to XYZ coordinates fixed in a tetrahedron}
 \usage{
-SEIR_to_XYZ(data, var_order = c("S", "E", "I", "R"))
+SEIR_to_XYZ(data, var_order = c("S", "E", "I", "R"), time_name = "t")
 }
 \arguments{
 \item{data}{data frame with the following columns
@@ -16,7 +16,11 @@ SEIR_to_XYZ(data, var_order = c("S", "E", "I", "R"))
 \item{R}{Number of people in R}
 }}
 
-\item{var_order}{vector of column names corresponding to the different axes of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for top, left, right, front.}
+\item{var_order}{vector of column names corresponding to the different axes
+of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for
+top, left, right, front.}
+
+\item{time_name}{string for column name that is associated with the time step}
 }
 \value{
 original data frame along with columns x, y, and z
@@ -31,5 +35,5 @@ E = c(0, 10, 10, 10),
 I = c(10, 10, 10, 10),
 R = c(0, 0, 10, 20))
 seir_xyz <- SEIR_to_XYZ(seir)
-head(seir_xyz)
+#head(seir_xyz)
 }

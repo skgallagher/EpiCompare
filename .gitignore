@@ -1,3 +1,4 @@
+.DS_store
 .Rproj.user
 .Rhistory
 .RData
@@ -12,3 +13,6 @@ inst/*.pdf
 inst/*.jpg
 inst/*.png
 inst/*.xcf
+dev/
+shannon_thesis/
+

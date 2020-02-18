@@ -1,17 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-cache: packages
+repos:
+  CRAN: https://cloud.r-project.org
 
 r_packages:
   - covr
 
-
 install:
-- R -e 'install.packages("devtools")' -e 'devtools::install_deps(dep = T)'
-- R -e 'install.packages("kableExtra")'
-- R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")'
-- R -e 'devtools::install_github("ngloe/olpsR")'
+  - R -e 'install.packages("devtools")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_deps(dep = T, upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
 
 script:
 - R CMD build .
@@ -21,12 +21,12 @@ script:
 matrix:
   include:
   - r: release
-    name: tidyr-current
-    before_script: Rscript -e 'install.packages("tidyr")'
-  - r: release
     name: tidyr-old
-    before_script: Rscript -e 'install.packages("tidyr", version = "0.8.3", repos = "http://cran.us.r-project.org")'
+    before_install: R -e 'install.packages("devtools")' -e 'devtools::install_version("tidyr", version = "0.8.3")' -e 'print(utils::packageVersion("tidyr"))'
+  - r: release
+    name: tidyr-current
+    before_install: R -e 'install.packages("devtools")' -e 'install.packages("tidyr")' -e 'print(utils::packageVersion("tidyr"))'
 
-# only report coverage after build is successful
 after_success:
-  - Rscript -e 'covr::codecov()'
+- R -e 'covr::codecov()'
+

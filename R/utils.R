@@ -246,7 +246,7 @@ agents_to_aggregate_SIR.grouped_df <- function(agents,
   } else {
     # old
 
-    sir_out <- agents %>% tidyr::nest_legacy() %>%
+    sir_out <- agents %>% tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate_SIR,
                                         max_time = max_time)) %>%
       dplyr::select(-.data$data) %>%
@@ -274,7 +274,10 @@ tidyr_new_interface <- function() {
 #' \item{I}{Number of people in I}
 #' \item{R}{Number of people in R}
 #' }
-#' @param var_order vector of column names corresponding to the different axes of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for top, left, right, front.
+#' @param var_order vector of column names corresponding to the different axes
+#' of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for
+#' top, left, right, front.
+#' @param time_name string for column name that is associated with the time step
 #' @return original data frame along with columns x, y, and z
 #' @export
 #' @examples
@@ -284,11 +287,12 @@ tidyr_new_interface <- function() {
 #' I = c(10, 10, 10, 10),
 #' R = c(0, 0, 10, 20))
 #' seir_xyz <- SEIR_to_XYZ(seir)
-#' head(seir_xyz)
+#' #head(seir_xyz)
 SEIR_to_XYZ <- function(data,
-                      var_order=c("S", "E", "I", "R")){
+                      var_order=c("S", "E", "I", "R"),
+                      time_name = "t"){
 
-  new_df <- data %>% dplyr::rename(time = "t",
+  new_df <- data %>% dplyr::rename(time = time_name,
                                    t = var_order[1],
                                    l = var_order[2],
                                    r = var_order[3],
@@ -297,8 +301,9 @@ SEIR_to_XYZ <- function(data,
     dplyr::mutate(x = (.data$r + 1 - .data$l ) / 2 / .data$N,
                   y = (sqrt(3)/2 * .data$t + sqrt(3)/6 * .data$f) / .data$N,
                   z = sqrt(6) / 3 * .data$f / .data$N) %>%
-    dplyr::select(-.data$N) %>%
-    dplyr::rename(t = "time")
+    dplyr::select(-.data$N)
+
+  names(new_df)[names(new_df) == "time"] <- time_name
   return(new_df)
 
 }

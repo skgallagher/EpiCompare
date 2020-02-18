@@ -1,8 +1,9 @@
 # timeternR
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/shannong19/timeternR.svg?branch=master)](https://travis-ci.org/shannong19/timeternR)
-[![codecov](https://codecov.io/gh/shannong19/timeternR.svg/branch/master/graph/badge.svg)](https://codecov.io/gh/shannong19/timeternR)
+[![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR)
+[![codecov](https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR)
+
 <!-- badges: end -->
 
 The goal of timeternR is to develop functional based visualization and statistics
@@ -14,7 +15,7 @@ You can install the developmental version of timeternR from github using:
 
 ```r
 # install.package("devtools")
-devtools::install_github("shannong19/timeternR")
+devtools::install_github("skgallagher/timeternR")
 ```
 
 Currently we are also using some helper functions from 2 github based packages, so for before loading our package please do:
@@ -116,12 +117,12 @@ df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
 
 ## Notes:
 1. For writing code that works with `tidyverse` 1.0 vs `tidyverse` <= 0.8.3 see:
-https://tidyr.tidyverse.org/articles/in-packages.html, and for doing both with Travis CI (using a matrix), see https://github.com/tidyverse/design/issues/95
+https://tidyr.tidyverse.org/articles/in-packages.html, and for doing both with Travis CI (using a matrix), see https://github.com/tidyverse/design/issues/95. See Wiki for more comments on this.
 2. For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
     a. https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups
     b. https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479
     c. we've also leveraged ideas from https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`)
-  
+
 
 ## Contributors
 
