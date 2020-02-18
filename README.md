@@ -27,7 +27,7 @@ devtools::install_github("ngloe/olpsR")
 
 ## Data
 
-   Currently there are 13 data sets in which to explore the different `timeternR` functions.  These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
+   Currently there are 14 data sets in which to explore the different `timeternR` functions.  These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
    
    Details of each can be found with `?{data}`.
    

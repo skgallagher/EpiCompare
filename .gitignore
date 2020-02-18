@@ -10,3 +10,5 @@ docs/
 *~
 inst/*.pdf
 inst/*.jpg
+inst/*.png
+inst/*.xcf
