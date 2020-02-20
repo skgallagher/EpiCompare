@@ -6,14 +6,13 @@
 #' the filament visualization as the data points are the same.
 #'
 #' # example code:
-#' library(tidyverse)
-#'
 #' agents <- timeternR::hagelloch_raw
-#' states = c("tI", "tR")
+#' states <- c("tI", "tR")
 #' death <- "tDEAD"
+#' birth <- NULL
 #' min_max_time <- c(0, NA)
 #'
-#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' b <- agents_to_aggregate(agents, states, death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%
 #' timeternR::agents_to_aggregate_SIR() %>%
@@ -22,8 +21,9 @@
 #' #look at:
 #' b[1:(nrow(b)-2),] - a[2:nrow(a),]
 #'
-#' timeternR::hagelloch_raw %>% filter(!is.na(tDEAD)) %>% pull(tDEAD) %>%
-#' ceiling() %>% sort
+#' # keeping in mind:
+#' timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
+#' dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
 #'
 #' ### example 2 of code:
 #' agents <- timeternR::hagelloch_raw
@@ -32,12 +32,12 @@
 #' babies <- sample(nrow(agents),size = 5)
 #' agents$tBIRTH <- NA
 #' agents$tBIRTH[babies] <- agents$tI[babies] - 5
-#' states = c("tI", "tR")
+#' states <- c("tI", "tR")
 #' death <- NULL
 #' birth <- "tBIRTH"
 #' min_max_time <- c(0, NA)
 #'
-#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' b <- agents_to_aggregate(agents, states, death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%
 #' timeternR::agents_to_aggregate_SIR() %>%
@@ -45,8 +45,8 @@
 #'
 #' b[1:(nrow(b)-2),] - a[2:nrow(a),]
 #'
-#' agents %>% filter(!is.na(tBIRTH)) %>% pull(tBIRTH) %>% ceiling() %>% sort
-
+#' agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
+#' dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
 
 
 
@@ -210,9 +210,11 @@ expanding_info <- function(df, t_min, t_max, K){
   return(hold)
 }
 
-#' generalized function to convert raw agent based data to aggregate data
+
+#' generalized method to convert raw agent based data to aggregate data
 #'
-#' @param agents data frame with individual agent information
+#' @param agents data frame style object (currently either of class
+#' \code{data.frame} or \code{grouped_df})
 #' @param states time entered state. Do not include column for original state.
 #' These need to be ordered, for example: for an SIR model, with columns
 #' "\code{tI}" and "\code{tR}" expressing the time the individual became
@@ -226,8 +228,47 @@ expanding_info <- function(df, t_min, t_max, K){
 #' the second value can be \code{NA} - and if so, we estimate maximum time from
 #' the data.
 #'
-#' @return dataset with aggregated information, We label classes
-#' "\code{class_\{i\}}" for i in \code{0:(length(states))}.
+#' @return dataset with aggregated information, we label classes
+#' "\code{X\{i\}}" for i in \code{0:(length(states))}. Potentially
+#' calculated per group of a \code{grouped_df}.
+#' @export
+#'
+#' @examples
+#' # see ?agent_to_aggregate.data.frame or ?agent_to_aggregate.grouped_df
+#' # for examples
+agents_to_aggregate <- function(agents,
+                                states,
+                                death = NULL,
+                                birth = NULL,
+                                min_max_time = c(0, NA)
+){
+  UseMethod("agents_to_aggregate")
+}
+
+
+
+#' generalized function to convert raw agent based data to aggregate data
+#'
+#' @details note that all parameters related to name columns can also be in a
+#'   string format.
+#'
+#' @param agents data frame with individual agent information
+#' @param states Name-variable pairs of the form \code{states = c(col1, col2)},
+#'   that describe which columns contain the time one entered the state. Do not
+#'   include column for original state. These need to be ordered, for example:
+#'   for an SIR model, with columns "\code{tI}" and "\code{tR}" expressing the
+#'   time the individual became infected and recovered (respectively), we want
+#'   "\code{states = c(tI, tR)}".
+#' @param death string for column with death time information (default
+#'   \code{NULL})
+#' @param birth string for column with birth time information (default
+#'   \code{NULL})
+#' @param min_max_time vector (length 2) of minimum and maximum integer time,
+#'   the second value can be \code{NA} - and if so, we estimate maximum time
+#'   from the data.
+#'
+#' @return dataset with aggregated information, We label classes "\code{X\{i\}}"
+#'   for i in \code{0:(length(states))}.
 #' @export
 #'
 #' @examples
@@ -237,7 +278,7 @@ expanding_info <- function(df, t_min, t_max, K){
 #' birth <- NULL
 #' min_max_time <- c(0, NA)
 #'
-#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' b <- agents_to_aggregate(agents, states, death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%
 #' timeternR::agents_to_aggregate_SIR() %>%
@@ -257,12 +298,11 @@ expanding_info <- function(df, t_min, t_max, K){
 #' babies <- sample(nrow(agents),size = 5)
 #' agents$tBIRTH <- NA
 #' agents$tBIRTH[babies] <- agents$tI[babies] - 5
-#' states <- c("tI", "tR")
 #' death <- NULL
 #' birth <- "tBIRTH"
 #' min_max_time <- c(0, NA)
 #'
-#' b <- raw_agents_to_aggregate(agents, states, death, birth = birth)
+#' b <- agents_to_aggregate(agents, states = c(tI, tR), death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%
 #' timeternR::agents_to_aggregate_SIR() %>%
@@ -272,12 +312,53 @@ expanding_info <- function(df, t_min, t_max, K){
 #'
 #' agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
 #' dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
-raw_agents_to_aggregate <- function(agents,
-                                states,
-                                death = NULL,
-                                birth = NULL,
-                                min_max_time = c(0, NA)
-                                ){
+#'
+#' b2 <- agents_to_aggregate(agents, states = c("tI", "tR"), death,
+#'                           birth = birth) # not that you may also use strings
+#' assertthat::are_equal(b, b2)
+agents_to_aggregate.data.frame <- function(agents,
+                                           states,
+                                           death = NULL,
+                                           birth = NULL,
+                                           min_max_time = c(0, NA)
+                                           ){
+  # columns states - converting to strings ------------
+  # this code mirrors tidyr::nest's code
+
+  # states ---
+  state_cols <- enquos(states)
+  if (any(names2(state_cols) == "")) {
+    state_col_names <- unname(tidyselect::vars_select(tbl_vars(agents),
+                                                !!!state_cols))
+    state_cols_expr <- expr(c(!!!syms(state_col_names)))
+    states <- state_col_names
+  }
+  # death ---
+  death_col <- enquos(death)
+  if (length(death) !=  1 && !is.null(death)){
+    stop("death should be a single column or NULL")
+  }
+
+  if (!is.null(death) && names2(death_col) == ""){
+    death_col_name <- unname(tidyselect::vars_select(tbl_vars(agents),
+                                                      !!!death_col))
+    death_cols_expr <- expr(c(!!!syms(death_col_name)))
+    death <- death_col_name
+  }
+
+  # birth ---
+  birth_col <- enquos(birth)
+  if (length(birth_col) != 1 && !is.null(death)){
+    stop("birth should be a single column or NULL")
+  }
+
+  if (!is.null(birth) && names2(birth_col) == ""){
+    birth_col_name <- unname(tidyselect::vars_select(tbl_vars(agents),
+                                                     !!!birth_col))
+    birth_cols_expr <- expr(c(!!!syms(birth_col_name)))
+    birth <- birth_col_name
+  }
+
   # parameter check -----------------------------------
   check_min_max_time(min_max_time)
   t_min <- min_max_time[1]
@@ -481,3 +562,84 @@ raw_agents_to_aggregate <- function(agents,
 
 
 
+
+
+#' generalized function to convert raw agent based data to aggregate data
+#' for grouped_data (preforms per group)
+#'
+#' @param agents grouped data.frame with individual agent information
+#' @param states Name-variable pairs of the form
+#' \code{states = c(col1, col2, col3)}, that describe which columns contain the
+#' time one entered the state. Do not include column for original state. These
+#' need to be ordered, for example: for an SIR model, with columns
+#' "\code{tI}" and "\code{tR}" expressing the time the individual became
+#' infected and recovered (respectively), we want "\code{states = c(tI, tR)}".
+#' @param death string for column with death time information (default
+#' \code{NULL})
+#' @param birth string for column with birth time information (default
+#' \code{NULL})
+#' @param min_max_time vector (length 2) of minimum and maximum integer time,
+#' the second value can be \code{NA} - and if so, we estimate maximum time from
+#' the data.
+#'
+#' @return grouped dataset with aggregated information per group, We label
+#' classes "\code{X\{i\}}" for i in \code{0:(length(states))}.
+#' @export
+#'
+#' @importFrom rlang .data
+#'
+#' @examples
+#' library(dplyr)
+#'
+#' max_time <- 100
+#' agents_g <- hagelloch_raw %>%
+#'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
+#' sir_group <- agents_to_aggregate(agents_g, states = c(tI, tR),
+#'                                  min_max_time = c(0, max_time))
+#' agents <- agents_g %>%
+#'   filter(SEX == "female") %>% ungroup()
+#' sir_group1 <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                  min_max_time = c(0, max_time))
+#' sir_group_1 <- sir_group %>% filter(SEX == "female")
+#' assertthat::are_equal(sir_group1,
+#'                       sir_group_1 %>% ungroup %>% select(t, X0, X1, X2))
+agents_to_aggregate.grouped_df <- function(agents,
+                                           states,
+                                           death = NULL,
+                                           birth = NULL,
+                                           min_max_time = c(0, NA)
+                                           ){
+  check_min_max_time(min_max_time)
+  t_min <- min_max_time[1]
+  t_max <- min_max_time[2]
+
+  if (is.null(t_max)) {
+    t_max <- max(ceiling(agents[,states]), na.rm = TRUE)
+  }
+
+  min_max_time_all <- c(t_min, t_max)
+
+  if (tidyr_new_interface()){
+    out <- agents %>%
+      tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
+                                        states = !!!enquos(states),
+                                        death = !!enquo(death),
+                                        birth = !!enquo(birth),
+                                        min_max_time = min_max_time_all)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(cols = c(.data$update)) # only change
+  } else {
+    # old
+    out <- agents %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
+                                        states = !!!enquos(states),
+                                        death = !!enquo(death),
+                                        birth = !!enquo(birth),
+                                        min_max_time = min_max_time_all)) %>%
+      dplyr::select(-.data$data) %>%
+      tidyr::unnest(.drop = FALSE)
+  }
+
+  return(out)
+}
