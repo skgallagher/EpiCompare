@@ -27,6 +27,7 @@ Imports:
     rlang,
     TCpredictionbands,
     tidyr,
+    tidyselect,
     tibble,
     magrittr
 Suggests: 

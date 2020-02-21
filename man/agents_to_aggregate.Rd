@@ -2,7 +2,7 @@
 % Please edit documentation in R/agent-to-aggregate.R
 \name{agents_to_aggregate}
 \alias{agents_to_aggregate}
-\title{generalized function to convert raw agent based data to aggregate data}
+\title{generalized method to convert raw agent based data to aggregate data}
 \usage{
 agents_to_aggregate(
   agents,
@@ -13,7 +13,8 @@ agents_to_aggregate(
 )
 }
 \arguments{
-\item{agents}{data frame with individual agent information}
+\item{agents}{data frame style object (currently either of class
+\code{data.frame} or \code{grouped_df})}
 
 \item{states}{time entered state. Do not include column for original state.
 These need to be ordered, for example: for an SIR model, with columns
@@ -32,52 +33,14 @@ the second value can be \code{NA} - and if so, we estimate maximum time from
 the data.}
 }
 \value{
-dataset with aggregated information, We label classes
-"\code{class_\{i\}}" for i in \code{0:(length(states))}.
+dataset with aggregated information, we label classes
+"\code{X\{i\}}" for i in \code{0:(length(states))}. Potentially
+calculated per group of a \code{grouped_df}.
 }
 \description{
-generalized function to convert raw agent based data to aggregate data
+generalized method to convert raw agent based data to aggregate data
 }
 \examples{
-agents <- timeternR::hagelloch_raw
-states <- c("tI", "tR")
-death <- "tDEAD"
-birth <- NULL
-min_max_time <- c(0, NA)
-
-b <- agents_to_aggregate(agents, states, death, birth = birth)
-a <- timeternR::hagelloch_raw \%>\%
-timeternR::fortify_agents() \%>\%
-timeternR::agents_to_aggregate_SIR() \%>\%
-as.matrix
-
-#look at:
-b[1:(nrow(b)-2),] - a[2:nrow(a),]
-
-# keeping in mind:
-timeternR::hagelloch_raw \%>\% dplyr::filter(!is.na(.data$tDEAD)) \%>\%
-dplyr::pull(.data$tDEAD) \%>\% ceiling() \%>\% sort
-
-### example 2 of code:
-agents <- timeternR::hagelloch_raw
-# making babies
-set.seed(5)
-babies <- sample(nrow(agents),size = 5)
-agents$tBIRTH <- NA
-agents$tBIRTH[babies] <- agents$tI[babies] - 5
-states <- c("tI", "tR")
-death <- NULL
-birth <- "tBIRTH"
-min_max_time <- c(0, NA)
-
-b <- agents_to_aggregate(agents, states, death, birth = birth)
-a <- timeternR::hagelloch_raw \%>\%
-timeternR::fortify_agents() \%>\%
-timeternR::agents_to_aggregate_SIR() \%>\%
-as.matrix
-
-b[1:(nrow(b)-2),] - a[2:nrow(a),]
-
-agents \%>\% dplyr::filter(!is.na(.data$tBIRTH)) \%>\%
-dplyr::pull(.data$tBIRTH) \%>\% ceiling() \%>\% sort
+# see ?agent_to_aggregate.data.frame or ?agent_to_aggregate.grouped_df
+# for examples
 }

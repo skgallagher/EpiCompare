@@ -326,37 +326,46 @@ agents_to_aggregate.data.frame <- function(agents,
   # this code mirrors tidyr::nest's code
 
   # states ---
-  state_cols <- enquos(states)
-  if (any(names2(state_cols) == "")) {
-    state_col_names <- unname(tidyselect::vars_select(tbl_vars(agents),
+  state_cols <- dplyr::enquos(states)
+  if (any(rlang::names2(state_cols) == "")) {
+    state_col_names <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
                                                 !!!state_cols))
-    state_cols_expr <- expr(c(!!!syms(state_col_names)))
+    state_cols_expr <- dplyr::expr(c(!!!dplyr::syms(state_col_names)))
     states <- state_col_names
   }
   # death ---
-  death_col <- enquos(death)
-  if (length(death) !=  1 && !is.null(death)){
+  death_col <- dplyr::enquo(death)
+  death_col2 <- dplyr::enquos(death)
+
+  if (length(death_col2) !=  1){
     stop("death should be a single column or NULL")
   }
 
-  if (!is.null(death) && names2(death_col) == ""){
-    death_col_name <- unname(tidyselect::vars_select(tbl_vars(agents),
+  if (all(rlang::names2(death_col) == "")){
+    death_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
                                                       !!!death_col))
-    death_cols_expr <- expr(c(!!!syms(death_col_name)))
-    death <- death_col_name
+    death_cols_expr <- dplyr::expr(c(!!!dplyr::syms(death_col_name)))
+
+    if (length(death_col_name) != 0){
+      death <- death_col_name
+    }
   }
 
+  #browser()
   # birth ---
-  birth_col <- enquos(birth)
-  if (length(birth_col) != 1 && !is.null(death)){
+  birth_col <- dplyr::enquo(birth)
+  birth_col2 <- dplyr::enquos(birth)
+  if (length(birth_col2) != 1){
     stop("birth should be a single column or NULL")
   }
 
-  if (!is.null(birth) && names2(birth_col) == ""){
-    birth_col_name <- unname(tidyselect::vars_select(tbl_vars(agents),
+  if (all(rlang::names2(birth_col) == "")){
+    birth_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
                                                      !!!birth_col))
-    birth_cols_expr <- expr(c(!!!syms(birth_col_name)))
-    birth <- birth_col_name
+    birth_cols_expr <- dplyr::expr(c(!!!dplyr::syms(birth_col_name)))
+    if (length(birth_col_name) != 0){
+      birth <- birth_col_name
+    }
   }
 
   # parameter check -----------------------------------
@@ -623,9 +632,9 @@ agents_to_aggregate.grouped_df <- function(agents,
     out <- agents %>%
       tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
-                                        states = !!!enquos(states),
-                                        death = !!enquo(death),
-                                        birth = !!enquo(birth),
+                                        states = !!!dplyr::enquos(states),
+                                        death = !!dplyr::enquo(death),
+                                        birth = !!dplyr::enquo(birth),
                                         min_max_time = min_max_time_all)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
@@ -633,9 +642,9 @@ agents_to_aggregate.grouped_df <- function(agents,
     # old
     out <- agents %>% tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
-                                        states = !!!enquos(states),
-                                        death = !!enquo(death),
-                                        birth = !!enquo(birth),
+                                        states = !!!dplyr::enquos(states),
+                                        death = !!dplyr::enquo(death),
+                                        birth = !!dplyr::enquo(birth),
                                         min_max_time = min_max_time_all)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
