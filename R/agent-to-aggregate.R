@@ -140,8 +140,6 @@ check_ordered <- function(df, states, assert_error = TRUE){
 }
 
 
-
-
 #' add class and time placeholder with zero individuals to data frame
 #'
 #' this is an internal function (so t_min, t_max, K should be correct)
@@ -213,29 +211,132 @@ expanding_info <- function(df, t_min, t_max, K){
 
 #' generalized method to convert raw agent based data to aggregate data
 #'
-#' @param agents data frame style object (currently either of class
-#' \code{data.frame} or \code{grouped_df})
-#' @param states time entered state. Do not include column for original state.
-#' These need to be ordered, for example: for an SIR model, with columns
-#' "\code{tI}" and "\code{tR}" expressing the time the individual became
-#' infected and recovered (respectively), we want
-#' "\code{states = c("tI", "tR")}".
-#' @param death string for column with death time information (default
-#' \code{NULL})
-#' @param birth string for column with birth time information (default
-#' \code{NULL})
-#' @param min_max_time vector (length 2) of minimum and maximum integer time,
-#' the second value can be \code{NA} - and if so, we estimate maximum time from
-#' the data.
+#' This function converts data on an agent-based level (1 row = 1 agent)
+#' relative when an agent is in each state and aggregates it, so that the user
+#' can know how many agents are in each state at a given time point (integer
+#' based). This function can take standard \code{data.frame}s and
+#' \code{grouped_df} \code{data.frame}s (from \pkg{dplyr}). For the
+#' later, this function aggregates within grouping parameters and also provides
+#' the columns associated with the grouping.
 #'
-#' @return dataset with aggregated information, we label classes
-#' "\code{X\{i\}}" for i in \code{0:(length(states))}. Potentially
-#' calculated per group of a \code{grouped_df}.
+#' @param agents data frame style object (currently either of class
+#'   \code{data.frame} or \code{grouped_df})
+#' @param states time entered state. Do not include column for original state.
+#'   These need to be ordered, for example: for an SIR model, with columns
+#'   "\code{tI}" and "\code{tR}" expressing the time the individual became
+#'   infected and recovered (respectively), we want "\code{states = c("tI",
+#'   "tR")}". \strong{See details for more information.}
+#' @param death string for column with death time information (default
+#'   \code{NULL})
+#' @param birth string for column with birth time information (default
+#'   \code{NULL})
+#' @param min_max_time vector (length 2) of minimum and maximum integer time,
+#'   the second value can be \code{NA} - and if so, we estimate maximum time
+#'   from the data.
+#'
+#' @return dataset with aggregated information, we label classes \code{X\{i\}}
+#'   for i in \code{0:(length(states))}. Potentially calculated per group of a
+#'   \code{grouped_df} (and retains grouping columns).
+#'
+#' @details
+#'
+#' This function converts data on an agent-based level (1 row = 1 agent)
+#' relative when an agent is in each state and aggregates it, so that the user
+#' can know how many agents are in each state at a given time point (integer
+#' based). This function can take standard \code{data.frame}s and
+#' \code{grouped_df} \code{data.frame}s (from \pkg{dplyr}). For the
+#' later, this function aggregates within grouping parameters and also provides
+#' the columns associated with the grouping.
+#'
+#' \strong{D.1. What each column should have (NAs, orderings, births & deaths,...)}
+#'
+#' The parameters \code{state}, \code{death}, \code{birth}, and
+#' \code{min_max_time} provide the user with the flexibility to capture any
+#' potential structure related to agent's progression to through the epidemic
+#' (and life).
+#'
+#' As mentioned in the \code{states} parameter details, we expect a set of
+#' column names \code{X1}, \code{X2}, ..., \code{XK} that contain information on
+#' when an individual enters each state. Also mentioned in the parameter details
+#' is that the function assumes that each agent is in the initial state
+#' \code{X0} until \code{X1} (except if \code{min_max_time[1] >= X1},
+#' which means the agent starts out at state \code{X1}).
+#'
+#' This function expects transition in an \strong{ordered} fashion, i.e.
+#' \code{X(I+1) >= X(I)}, but does allow agents to jump states. This can either
+#' be recorded with a value at the jumped state the same as the next non-jumped
+#' state or an \code{NA} (and the authors of this package believe this is a
+#' cleaner approach - and matches expectation in \code{birth} and \code{death}).
+#'
+#' Specifically, \code{birth} and \code{death} can contain \code{NA} values,
+#' which the function interprets as an individual not being born (or dying
+#' respectively) in the given time interval.
+#'
+#' The time interval (defined by \code{min_max_time}) can be moved, which
+#' abstractly just shifts the rows (or time points) the user gets at the end.
+#'
+#' \strong{D.2. Changing time points}
+#'
+#' Beyond defining the time interval with \code{min_max_time}, if a user wishes
+#' to have more minute (smaller) time steps than integers, we recommend they
+#' just multiple all values by \eqn{1/s} where \eqn{s} is the length of the
+#' desired time steps. A transformation of the output's \code{t} column by
+#' \eqn{s} would get the time back to the standard time.
+#'
 #' @export
 #'
 #' @examples
-#' # see ?agent_to_aggregate.data.frame or ?agent_to_aggregate.grouped_df
-#' # for examples
+#'
+#' ###
+#' # for standard data.frame objects (agents_to_aggregate.grouped_df)
+#' ###
+#' library(dplyr)
+#' agents <- timeternR::hagelloch_raw
+#' # making babies
+#' set.seed(5)
+#' babies <- sample(nrow(agents),size = 5)
+#' agents$tBIRTH <- NA
+#' agents$tBIRTH[babies] <- agents$tI[babies] - 5
+#'
+#' aggregate_b <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                    death = NULL, birth = tBIRTH)
+#'
+#' # looking at when babies where born:
+#' agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
+#'   dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
+#' # vs:
+#' data.frame(counts = 1:nrow(aggregate_b),
+#'            num_people = aggregate_b %>% select(-t) %>% apply(1, sum))
+#'
+#'
+#' # including death
+#' aggregate_d <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                    death = tDEAD, birth = NULL)
+#'
+#' # looking at when people died:
+#' agents %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
+#'   dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
+#' # vs:
+#' data.frame(counts = 1:nrow(aggregate_d),
+#'            num_people = aggregate_d %>% select(-t) %>% apply(1, sum))
+#'
+#' ###
+#' # for grouped_df objects (agents_to_aggregate.grouped_df)
+#' ###
+#'
+#'
+#' max_time <- 100
+#' agents_g <- hagelloch_raw %>%
+#'   filter(SEX %in% c("female", "male")) %>% group_by(SEX)
+#' sir_group <- agents_to_aggregate(agents_g, states = c(tI, tR),
+#'                                  min_max_time = c(0, max_time))
+#' agents <- agents_g %>%
+#'   filter(SEX == "female") %>% ungroup()
+#' sir_group1 <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                  min_max_time = c(0, max_time))
+#' sir_group_1 <- sir_group %>% filter(SEX == "female")
+#' assertthat::are_equal(sir_group1,
+#'                       sir_group_1 %>% ungroup %>% select(t, X0, X1, X2))
 agents_to_aggregate <- function(agents,
                                 states,
                                 death = NULL,
@@ -249,8 +350,14 @@ agents_to_aggregate <- function(agents,
 
 #' generalized function to convert raw agent based data to aggregate data
 #'
+#' This function converts data on an agent-based level (1 row = 1 agent)
+#' relative when an agent is in each state and aggregates it, so that the user
+#' can know how many agents are in each state at a given time point (integer
+#' based).
+#'
 #' @details note that all parameters related to name columns can also be in a
-#'   string format.
+#'   string format. More details can be found in \code{agent_to_aggregate}'s
+#'   documentation.
 #'
 #' @param agents data frame with individual agent information
 #' @param states Name-variable pairs of the form \code{states = c(col1, col2)},
@@ -272,50 +379,35 @@ agents_to_aggregate <- function(agents,
 #' @export
 #'
 #' @examples
-#' agents <- timeternR::hagelloch_raw
-#' states <- c("tI", "tR")
-#' death <- "tDEAD"
-#' birth <- NULL
-#' min_max_time <- c(0, NA)
-#'
-#' b <- agents_to_aggregate(agents, states, death, birth = birth)
-#' a <- timeternR::hagelloch_raw %>%
-#' timeternR::fortify_agents() %>%
-#' timeternR::agents_to_aggregate_SIR() %>%
-#' as.matrix
-#'
-#' #look at:
-#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#'
-#' # keeping in mind:
-#' timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
-#' dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
-#'
-#' ### example 2 of code:
+#' library(dplyr)
 #' agents <- timeternR::hagelloch_raw
 #' # making babies
 #' set.seed(5)
 #' babies <- sample(nrow(agents),size = 5)
 #' agents$tBIRTH <- NA
 #' agents$tBIRTH[babies] <- agents$tI[babies] - 5
-#' death <- NULL
-#' birth <- "tBIRTH"
-#' min_max_time <- c(0, NA)
 #'
-#' b <- agents_to_aggregate(agents, states = c(tI, tR), death, birth = birth)
-#' a <- timeternR::hagelloch_raw %>%
-#' timeternR::fortify_agents() %>%
-#' timeternR::agents_to_aggregate_SIR() %>%
-#' as.matrix
+#' aggregate_b <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                    death = NULL, birth = tBIRTH)
 #'
-#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#'
+#' # looking at when babies where born:
 #' agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
-#' dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
+#'   dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
+#' # vs:
+#' data.frame(counts = 1:nrow(aggregate_b),
+#'            num_people = aggregate_b %>% select(-t) %>% apply(1, sum))
 #'
-#' b2 <- agents_to_aggregate(agents, states = c("tI", "tR"), death,
-#'                           birth = birth) # not that you may also use strings
-#' assertthat::are_equal(b, b2)
+#'
+#' # including death
+#' aggregate_d <- agents_to_aggregate(agents, states = c(tI, tR),
+#'                                    death = tDEAD, birth = NULL)
+#'
+#' # looking at when people died:
+#' agents %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
+#'   dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
+#' # vs:
+#' data.frame(counts = 1:nrow(aggregate_d),
+#'            num_people = aggregate_d %>% select(-t) %>% apply(1, sum))
 agents_to_aggregate.data.frame <- function(agents,
                                            states,
                                            death = NULL,
@@ -575,6 +667,17 @@ agents_to_aggregate.data.frame <- function(agents,
 
 #' generalized function to convert raw agent based data to aggregate data
 #' for grouped_data (preforms per group)
+#'
+#' This function converts data on an agent-based level (1 row = 1 agent)
+#' relative when an agent is in each state and aggregates it, so that the user
+#' can know how many agents are in each state at a given time point (integer
+#' based). This function takes \code{grouped_df} \code{data.frame}s (from
+#' \pkg{dplyr}) and aggregates within grouping parameters and also
+#' provides the columns associated with the grouping.
+#'
+#' @details note that all parameters related to name columns can also be in a
+#'   string format. More details can be found in \code{agent_to_aggregate}'s
+#'   documentation.
 #'
 #' @param agents grouped data.frame with individual agent information
 #' @param states Name-variable pairs of the form

@@ -37,55 +37,44 @@ dataset with aggregated information, We label classes "\code{X\{i\}}"
   for i in \code{0:(length(states))}.
 }
 \description{
-generalized function to convert raw agent based data to aggregate data
+This function converts data on an agent-based level (1 row = 1 agent)
+relative when an agent is in each state and aggregates it, so that the user
+can know how many agents are in each state at a given time point (integer
+based).
 }
 \details{
 note that all parameters related to name columns can also be in a
-  string format.
+  string format. More details can be found in \code{agent_to_aggregate}'s
+  documentation.
 }
 \examples{
-agents <- timeternR::hagelloch_raw
-states <- c("tI", "tR")
-death <- "tDEAD"
-birth <- NULL
-min_max_time <- c(0, NA)
-
-b <- agents_to_aggregate(agents, states, death, birth = birth)
-a <- timeternR::hagelloch_raw \%>\%
-timeternR::fortify_agents() \%>\%
-timeternR::agents_to_aggregate_SIR() \%>\%
-as.matrix
-
-#look at:
-b[1:(nrow(b)-2),] - a[2:nrow(a),]
-
-# keeping in mind:
-timeternR::hagelloch_raw \%>\% dplyr::filter(!is.na(.data$tDEAD)) \%>\%
-dplyr::pull(.data$tDEAD) \%>\% ceiling() \%>\% sort
-
-### example 2 of code:
+library(dplyr)
 agents <- timeternR::hagelloch_raw
 # making babies
 set.seed(5)
 babies <- sample(nrow(agents),size = 5)
 agents$tBIRTH <- NA
 agents$tBIRTH[babies] <- agents$tI[babies] - 5
-death <- NULL
-birth <- "tBIRTH"
-min_max_time <- c(0, NA)
 
-b <- agents_to_aggregate(agents, states = c(tI, tR), death, birth = birth)
-a <- timeternR::hagelloch_raw \%>\%
-timeternR::fortify_agents() \%>\%
-timeternR::agents_to_aggregate_SIR() \%>\%
-as.matrix
+aggregate_b <- agents_to_aggregate(agents, states = c(tI, tR),
+                                   death = NULL, birth = tBIRTH)
 
-b[1:(nrow(b)-2),] - a[2:nrow(a),]
-
+# looking at when babies where born:
 agents \%>\% dplyr::filter(!is.na(.data$tBIRTH)) \%>\%
-dplyr::pull(.data$tBIRTH) \%>\% ceiling() \%>\% sort
+  dplyr::pull(.data$tBIRTH) \%>\% ceiling() \%>\% sort
+# vs:
+data.frame(counts = 1:nrow(aggregate_b),
+           num_people = aggregate_b \%>\% select(-t) \%>\% apply(1, sum))
 
-b2 <- agents_to_aggregate(agents, states = c("tI", "tR"), death,
-                          birth = birth) # not that you may also use strings
-assertthat::are_equal(b, b2)
+
+# including death
+aggregate_d <- agents_to_aggregate(agents, states = c(tI, tR),
+                                   death = tDEAD, birth = NULL)
+
+# looking at when people died:
+agents \%>\% dplyr::filter(!is.na(.data$tDEAD)) \%>\%
+  dplyr::pull(.data$tDEAD) \%>\% ceiling() \%>\% sort
+# vs:
+data.frame(counts = 1:nrow(aggregate_d),
+           num_people = aggregate_d \%>\% select(-t) \%>\% apply(1, sum))
 }

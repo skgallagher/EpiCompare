@@ -65,7 +65,7 @@ simulate_SIR_agents_groups <- function(n_sims,
                                           beta = beta, gamma = gamma,
                                           init_SIR = init_SIR,
                                           output_format = "data.frame")
-    
+
     df$group <- kk  ## add a grouping column
     sim_data[[kk]] <- df
   }
@@ -164,7 +164,8 @@ simulate_SIR_agents <- function(n_sims,
  # browser()
  # ensure max_time_S <= max_time_i
   dimnames(sim_data) <- list(sim = 1:n_sims,
-                        agents_stat = c("init_state", "max_time_S", "max_time_I"),
+                        agents_stat = c("init_state", "max_time_S",
+                                        "max_time_I"),
                         agent_id = paste0("id_", 1:n_agents))
 
 

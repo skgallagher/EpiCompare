@@ -38,8 +38,17 @@ grouped dataset with aggregated information per group, We label
 classes "\code{X\{i\}}" for i in \code{0:(length(states))}.
 }
 \description{
-generalized function to convert raw agent based data to aggregate data
-for grouped_data (preforms per group)
+This function converts data on an agent-based level (1 row = 1 agent)
+relative when an agent is in each state and aggregates it, so that the user
+can know how many agents are in each state at a given time point (integer
+based). This function takes \code{grouped_df} \code{data.frame}s (from
+\pkg{dplyr}) and aggregates within grouping parameters and also
+provides the columns associated with the grouping.
+}
+\details{
+note that all parameters related to name columns can also be in a
+  string format. More details can be found in \code{agent_to_aggregate}'s
+  documentation.
 }
 \examples{
 library(dplyr)
