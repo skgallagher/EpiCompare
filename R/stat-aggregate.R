@@ -5,24 +5,25 @@
 #' @usage NULL
 #' @export
 StatSirAggregate <- ggplot2::ggproto("StatSirAggregate", ggplot2::Stat,
-                   setup_data = function(data, params){
-                                  data  # This is so ggplot does NOT remove NA rows
-                                    },
-                   compute_group = function(data, scales){
-                     # saving panel and group info
-                     info_inner <- data[, c("PANEL", "group")] %>%
-                       sapply(unique)
+                                     setup_data = function(data, params){
+                                       data  # This is so ggplot does NOT remove NA rows
+                                     },
+                                     compute_group = function(data, scales){
+                                       # saving panel and group info
+                                       info_inner <- data[, c("PANEL", "group")] %>%
+                                         sapply(unique)
 
-                     out <- agents_to_aggregate(data,
-                                                states = c(.data$y,.data$z))
+                                       out <- agents_to_aggregate(data,
+                                                                  states = c(.data$y,.data$z))
 
-                     out <- out %>% dplyr::mutate(PANEL = info_inner[1],
-                                                  group = info_inner[2])
-                     names(out)[names(out) %in% c("X0","X1","X2")] <-
-                         c("x", "y", "z")
-                     return(out)
-                   },
-                   required_aes = c("y", "z"))
+                                       out <- out %>% dplyr::mutate(PANEL = info_inner[1],
+                                                                    group = info_inner[2])
+                                       names(out)[names(out) %in% c("X0","X1","X2")] <-
+                                         c("x", "y", "z")
+                                       return(out)
+                                     },
+                                     required_aes = c("y", "z"))
+
 
 #'aggregate SIR path visuals from agent data
 #'
@@ -123,8 +124,8 @@ StatSirAggregate <- ggplot2::ggproto("StatSirAggregate", ggplot2::Stat,
 #'
 #'
 stat_aggregate <- function(mapping = NULL, data = NULL, geom = "path",
-                       position = "identity", na.rm = FALSE, show.legend = NA,
-                       inherit.aes = TRUE, ...) {
+                           position = "identity", na.rm = FALSE, show.legend = NA,
+                           inherit.aes = TRUE, ...) {
   ggplot2::layer(
     stat = StatSirAggregate,
     data = data, mapping = mapping, geom = geom,
@@ -132,38 +133,3 @@ stat_aggregate <- function(mapping = NULL, data = NULL, geom = "path",
     params = list(na.rm = na.rm, ...)
   )
 }
-
-#' @export
-#' @rdname stat_aggregate
-geom_aggregate <- function(mapping = NULL, data = NULL,
-                     stat = StatSirAggregate,
-                     position = "identity",
-                     ...,
-                     na.rm = FALSE,
-                     show.legend = NA,
-                     inherit.aes = TRUE) {
-  ggplot2::layer(
-    data = data,
-    mapping = mapping,
-    stat = stat,
-    geom = GeomSirAggregate,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      na.rm = na.rm,
-      ...
-    )
-  )
-}
-
-#' GeomSirAggregate
-#'
-#' @rdname GeomSirAggregate
-#' @format NULL
-#' @usage NULL
-#' @export
-GeomSirAggregate <- ggplot2::ggproto("GeomSirAggregate",
-                                     ggplot2::GeomPath,
-                                     handle_na = function(data, params){data})
-

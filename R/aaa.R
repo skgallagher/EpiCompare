@@ -42,12 +42,11 @@ update_approved_layers <- function(stat_names = NULL, geom_names = NULL){
 }
 
 # List of new stats
-.newstat = c(sir_raw              = "StatSirRaw",
-             sir_fortified        = "StatSirFortified",
+.newstat = c(sir_aggregate        = "StatSirAggregate",
              conf_band_kde        = "StatConfBandKDE",
              conf_band_delta_ball = "StatConfBandDeltaBall",
              conf_band_spherical  = "StatConfBandSpherical",
              conf_band_chull      = "StatConfBandConvexHull")
-.newgeom = c(sir       = "GeomSIR",
+.newgeom = c(sir       = "GeomSirAggregate",
              conf_band = "GeomConfBand")
 update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
