@@ -9,7 +9,7 @@
 #' @param dist_mat distance matrix
 #' @param dist_func function to calculate depth via the distance_matrix
 #'
-#' @return
+#' @return data frame from curves of correct depth.
 #' @export
 #'
 #' @examples
@@ -46,7 +46,7 @@ depth_curves_to_points.list <- function(x, alpha, dist_mat,
   depth_vector <- dist_func(dist_mat)
   deep_idx <- which(depth_vector > stats::quantile(depth_vector, probs = alpha))
 
-  updated_df <- x[deep_idx] %>% do.call(rbind, .)
+  updated_df <- do.call(rbind, x[deep_idx])
 
   return(updated_df)
 }
@@ -62,14 +62,15 @@ depth_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
     updated_df <- x %>% tidyr::nest() %>%
       dplyr::ungroup() %>%
       dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(depth > stats::quantile(depth_vector, probs = alpha)) %>%
-      dplyr::select(-depth) %>%
-      tidyr::unnest(cols = everything())
+      dplyr::filter(.data$depth >
+                      stats::quantile(depth_vector, probs = alpha)) %>%
+      dplyr::select(-.data$depth) %>%
+      tidyr::unnest(cols = dplyr::everything())
   } else {
     updated_df <- x %>% tidyr::nest() %>%
       dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(depth > stats::quantile(depth_vector, probs = alpha)) %>%
-      dplyr::select(-depth) %>%
+      dplyr::filter(.data$depth > stats::quantile(depth_vector, probs = alpha)) %>%
+      dplyr::select(-.data$depth) %>%
       tidyr::unnest()
   }
 

@@ -25,7 +25,7 @@ points together. Takes value in (0, 1.0)}
 \item{dist_func}{function to calculate depth via the distance_matrix}
 }
 \value{
-
+data frame from curves of correct depth.
 }
 \description{
 Global Distance Depth

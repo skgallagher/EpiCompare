@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+
 context("test for distance-depth related functions")
 
 test_that("test for depth_curves_to_points.list", {
@@ -38,8 +41,8 @@ test_that("test for depth_curves_to_points.grouped_df", {
                                                alpha = .2,
                                                dist_mat)
 
-  testthat::expect_equal(combined_points_list %>% select(-id),
-                         random_data_list[[1]])
+  testthat::expect_equal(combined_points_df,
+                         random_data_df %>% filter(id == 1))
 })
 
 test_that("test for distance_depth_function", {
