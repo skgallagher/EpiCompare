@@ -15,6 +15,4 @@ dist_along_path(data_df)
 }
 \description{
 Calculates the distance and angle between each point of a path
-
-MAYBE REWRITE - using library(raster)?
 }

@@ -1,10 +1,10 @@
 # utility functions ---------
 
+## distance_functions -------
+
 #' Distance/angle between points along path relative to eculidean distance
 #'
 #' @description Calculates the distance and angle between each point of a path
-#'
-#' MAYBE REWRITE - using library(raster)?
 #'
 #' @param data_df (n x 2) data.frame, each row is a pair of values (x,y)
 #'
@@ -14,7 +14,7 @@
 #' @export
 #'
 dist_along_path <- function(data_df){
-  #MAYBE REWRITE THIS FUNCTION?
+  #MAYBE REWRITE THIS FUNCTION - using library(raster)?
   assertthat::assert_that(assertthat::are_equal(ncol(data_df), 2),
                           msg = "data_df is expected to have 2 columns")
   n <- nrow(data_df)
@@ -194,7 +194,7 @@ dist_matrix_innersq <- function(path_list,  position = 3:4,
 #' @return vector of n distances between each order point in the two data frames
 #' @export
 dist_between_paths <- function(data_df_p1, data_df_p2){
-  # WHY ARE WE USING RASTER HERE?
+  # WHY ARE WE USING NOT RASTER HERE?
   n <- dim(data_df_p1)[1]
   p <- dim(data_df_p1)[2]
   assertthat::assert_that(assertthat::are_equal(n, dim(data_df_p2)[1]),
@@ -211,6 +211,7 @@ dist_between_paths <- function(data_df_p1, data_df_p2){
   return(output_d)
 }
 
+## coordinate transformations ---------------
 
 #' get xy ternary coordinates from xyz based data.frame
 #'
