@@ -101,6 +101,10 @@ depth_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
 #'
 #' dd_vec <- distance_depth_function(dist_mat) # c(1,0,0)
 distance_depth_function <- function(dist_mat){
+  # This is a cleaned up version of the \code{depth_function} from
+  # \pkg{TCpredictionbands} available on github. One of the authors of this
+  # package wrote both versions (and given \pkg{TCpredictionbands} is not on
+  # CRAN...).
 
   if (nrow(dist_mat) != ncol(dist_mat) |
       any(t(dist_mat) != dist_mat) |
