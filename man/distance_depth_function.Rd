@@ -21,9 +21,13 @@ defined as:
 \details{
 \eqn{DD(x, \hat{P}) = 1/(n choose 2) * sum_{i!=j} I(d(X_1, X_2) > max(d(X_1,x),
 d(X_2,x)))}
+
+
+This function (renamed as \code{depth_function}) is shared with
+\pkg{TCpredictionbands} on github:
+\href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
 }
 \examples{
-
 dist_mat <- matrix(c(0,   1, 1.5,
                      1,   0, 2,
                      1.5, 2, 0   ),

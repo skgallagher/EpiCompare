@@ -21,7 +21,6 @@ test_that("test for depth_curves_to_points.list", {
   testthat::expect_equal(combined_points_list, random_data_list[[1]])
 })
 
-
 test_that("test for depth_curves_to_points.grouped_df", {
   set.seed(1)
 
@@ -55,4 +54,15 @@ test_that("test for distance_depth_function", {
   dd_vec <- distance_depth_function(dist_mat)
 
   testthat::expect_equal(dd_vec, c(1,0,0))
+
+  dist_mat_not_sym <- matrix(c(0,   1, 0,
+                               1,   0, 2,
+                               1.5, 2, 0   ))
+  dist_mat_not_pos <- matrix(c(0,   -1, 1.5,
+                               -1,   0, 2,
+                               1.5, 2, 0   ))
+
+  testthat::expect_error(distance_depth_function(dist_mat_not_sym))
+  testthat::expect_error(distance_depth_function(dist_mat_not_pos))
+
 })

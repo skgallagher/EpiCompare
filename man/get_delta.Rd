@@ -18,11 +18,10 @@ get_delta(data = NULL, dist_mat = NULL)
 }
 }
 \description{
-Find the minimum distance (delta) such that all points are within delta of at
-least one other point
+Find the minimum distance (delta) such that all points are
+within delta of at least one other point
 }
 \details{
-This function is a simplification and rewrite of a function with the same
-name from the \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}
-package.
+This function is shared with \pkg{TCpredictionbands} on github:
+\href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
 }

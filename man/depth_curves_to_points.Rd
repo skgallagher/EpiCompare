@@ -31,6 +31,11 @@ data frame from curves of correct depth.
 Global Distance Depth
 pulling out data points from curves that are the most deep
 }
+\details{
+This function for lists (renamed as \code{depth_curves_to_points})
+is shared with \pkg{TCpredictionbands} on github:
+\href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
+}
 \examples{
 library(dplyr)
 set.seed(1)

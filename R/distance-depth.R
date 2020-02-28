@@ -2,6 +2,10 @@
 
 #' pulling out data points from curves that are the most deep
 #'
+#' @details This function for lists (renamed as \code{depth_curves_to_points})
+#' is shared with \pkg{TCpredictionbands} on github:
+#' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
+#'
 #' @param x list or grouped_df containing curves, with index ordering associated
 #'   with the dist_mat's row/column ordering
 #' @param alpha the proportion of curves to be removed before presenting all the
@@ -86,6 +90,11 @@ depth_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
 #' \eqn{DD(x, \hat{P}) = 1/(n choose 2) * sum_{i!=j} I(d(X_1, X_2) > max(d(X_1,x),
 #' d(X_2,x)))}
 #'
+#' @details
+#' This function (renamed as \code{depth_function}) is shared with
+#' \pkg{TCpredictionbands} on github:
+#' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
+#'
 #' @param dist_mat a n x n square positive symmetric matrix
 #'
 #' @return depth vector length n with depth values associated with indices in
@@ -93,7 +102,6 @@ depth_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
 #' @export
 #'
 #' @examples
-#'
 #' dist_mat <- matrix(c(0,   1, 1.5,
 #'                      1,   0, 2,
 #'                      1.5, 2, 0   ),
