@@ -9,7 +9,6 @@ r_packages:
 
 install:
   - R -e 'install.packages("devtools")' -e 'print(utils::packageVersion("tidyr"))'
-  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
   - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
 

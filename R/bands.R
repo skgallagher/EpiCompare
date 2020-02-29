@@ -210,12 +210,12 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
 
     xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
     #kde style
-    kde_ci_list <- TCpredictionbands::kde_from_tclist(dflist = data2d_list,
-                                                      grid_size = grid_size,
-                                                      alpha = 1-alpha_level,
-                                                      position = xy_position)
+    kde_ci_list <- kde_from_list(dflist = data2d_list,
+                                 grid_size = grid_size,
+                                 alpha = alpha_level,
+                                 position = xy_position)
 
-    kde_ci_df <- kde_ci_list$contour %>% lapply(as.data.frame) %>%
+    kde_ci_df <- kde_ci_list %>% lapply(as.data.frame) %>%
       dplyr::bind_rows(.id = "kde_poly")
 
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
@@ -229,7 +229,7 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
       project_to_simplex(column_names = c("x","y","z"))
 
     return(kde_ci_df3)            },
-                                    required_aes = c("x", "y", "z", "sim_group"))
+  required_aes = c("x", "y", "z", "sim_group"))
 
 #' stat object for use in delta_ball based stat_confidence_band and
 #' geom_confidence_band

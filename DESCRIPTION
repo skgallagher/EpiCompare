@@ -25,14 +25,14 @@ Imports:
     purrr,
     raster,
     rlang,
-    TCpredictionbands,
     tidyr,
     tidyselect,
     tibble,
     magrittr,
     RANN,
     rgeos,
-    sp
+    sp,
+    ks
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
