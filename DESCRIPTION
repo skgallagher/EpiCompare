@@ -29,7 +29,10 @@ Imports:
     tidyr,
     tidyselect,
     tibble,
-    magrittr
+    magrittr,
+    RANN,
+    rgeos,
+    sp
 Suggests: 
     testthat (>= 2.1.0),
     knitr,

@@ -95,74 +95,6 @@ get_closest <- function(border_points, inner_points, delta,
 
 
 
-#' Find delta for covering
-#'
-#' @description Find the minimum distance (delta) such that all points are
-#' within delta of at least one other point
-#'
-#' @details
-#' This function is shared with \pkg{TCpredictionbands} on github:
-#' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
-#'
-#' @param data continuous data frame of individual points (in each row)
-#' @param dist_mat distance matrix, calculated otherwise via euclidean distance
-#'
-#' @return
-#' \describe{
-#' \item{dist_mat}{distance matrix between points}
-#' \item{mm_delta}{the minimum distance (delta)}
-#' }
-#' @export
-get_delta <- function(data = NULL, dist_mat = NULL){
-  if (is.null(dist_mat) & is.null(data)) {
-    stop("need to provide either data or dist_mat")
-  }
-
-  if (is.null(dist_mat)) {
-    dist_mat <- as.matrix(stats::dist(data))
-  }
-
-  diag(dist_mat) <- max(dist_mat)
-  mm_delta <- apply(dist_mat, MARGIN = 1, min) %>% max
-  diag(dist_mat) <- 0
-  return(list(dist_mat = dist_mat, mm_delta = mm_delta))
-}
-
-
-
-#' Performs delta ball approach
-#'
-#' @param data_deep_points data deep points from depth function
-#' @param xy_columns strings for column names of the points (x,y) - default is
-#' actually \code{"lat", "long"} as we are currently using an function from the
-#' \code{TCpredictionbands} package.
-#'
-#' @return
-#' \describe{
-#' \item{structure}{data frame of non-ordered lines of contour}
-#' \item{delta}{optimal delta for covering}
-#' }
-#' @export
-delta_structure <- function(data_deep_points, xy_columns = c("lat", "long")){
-  data_deep_points <- data_deep_points %>%
-    dplyr::select(dplyr::one_of(xy_columns)) %>%
-    dplyr::rename(lat = xy_columns[1], long = xy_columns[2])
-
-  d_out <- get_delta(data_deep_points)
-  delta = d_out$mm_delta
-  structure_df <- TCpredictionbands::delta_ball_wrapper(data_deep_points,
-                                                        remove_duplicates = TRUE)
-
-  names(structure_df)[names(structure_df) == "lat"] <- xy_columns[1]
-  names(structure_df)[names(structure_df) == "long"] <- xy_columns[2]
-
-  out <- list()
-  out[["structure"]] <- structure_df
-  out[["delta"]] <- delta
-  return(out)
-}
-
-
 project_simplex <- function(x) olpsR::projsplx(x, b = 1)
 project_simplex_vec <- function(x) { t(apply(x, 1, project_simplex))}
 
@@ -180,7 +112,6 @@ project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
   df_3d[,column_names] <- df_3d_inner
   return(df_3d)
 }
-
 
 #' assert if observation is inside elipsoid
 #'
@@ -324,29 +255,23 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
     dist_mat <- dist_matrix_innersq(data2d_list,
                                     position = xy_position,
                                     verbose = FALSE)
-    data_deep_points <- TCpredictionbands::depth_curves_to_points(data2d_list,
-                                                        alpha = alpha_level,
-                                                        dist_mat = dist_mat) %>%
-      dplyr::rename(lat = "x", long = "y")
+    data_deep_points <- depth_curves_to_points(data2d_list,
+                                               alpha = alpha_level,
+                                               dist_mat = dist_mat)
 
     delta_info <- delta_structure(data_deep_points)
 
-    structure <- delta_info$structure %>%
-      dplyr::rename(x = "long", y = "lat")
+    structure <- delta_info$structure
 
     delta <- delta_info$delta
 
     inner_df <- dplyr::setdiff(data_deep_points %>%
-                                 dplyr::rename(x = "lat", y = "long") %>%
                                  dplyr::select(x,y),
                                structure %>%
                                  dplyr::select(x,y))
 
     border_points <- structure %>% dplyr::select(x,y)
     inner_points <- inner_df
-
-
-
 
     xrange <- seq(min(border_points$x) - over_delta,
                   max(border_points$x) + over_delta,
