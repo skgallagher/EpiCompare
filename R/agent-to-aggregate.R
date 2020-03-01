@@ -435,8 +435,8 @@ agents_to_aggregate.data.frame <- function(agents,
 
   if (all(rlang::names2(death_col) == "")){
     death_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
-                                                      !!!death_col))
-    death_cols_expr <- dplyr::expr(c(!!!dplyr::syms(death_col_name)))
+                                                      !!death_col))
+    death_cols_expr <- dplyr::expr(c(!!dplyr::syms(death_col_name)))
 
     if (length(death_col_name) != 0){
       death <- death_col_name
@@ -453,8 +453,8 @@ agents_to_aggregate.data.frame <- function(agents,
 
   if (all(rlang::names2(birth_col) == "")){
     birth_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
-                                                     !!!birth_col))
-    birth_cols_expr <- dplyr::expr(c(!!!dplyr::syms(birth_col_name)))
+                                                     !!birth_col))
+    birth_cols_expr <- dplyr::expr(c(!!dplyr::syms(birth_col_name)))
     if (length(birth_col_name) != 0){
       birth <- birth_col_name
     }
