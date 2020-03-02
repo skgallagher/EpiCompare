@@ -491,10 +491,8 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
         dist_mat <- dist_matrix_innersq(data2d_list,
                                         position = xy_position,
                                         verbose = FALSE)
-        data_deep_points <- TCpredictionbands::depth_curves_to_points(
+        data_deep_points <- depth_curves_to_points(
           data2d_list, alpha = alpha_level, dist_mat = dist_mat) %>%
-          dplyr::rename(lat = "x", long = "y") %>%
-          dplyr::rename(x = "lat", y = "long") %>%
           dplyr::select(x,y)
 
         chull_ids <- data_deep_points %>% chull()

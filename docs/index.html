@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">timeternR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -45,6 +45,18 @@
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/getting_started.html">Getting started with timeternR</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -64,48 +76,54 @@
 <a href="#timeternr" class="anchor"></a>timeternR</h1></div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p>The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the developmental version of timeternR from github using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.package("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"shannong19/timeternR"</span>)</code></pre></div>
-<p>Currently we also need you to download a slightly modified version of <code>ggtern</code>, which can be done in the following way (see <a href="#notes-on-ggtern-functions">Notes on <code>ggtern</code> functions</a>)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_git</a></span>(<span class="st">"https://bitbucket.org/benjaminleroy/ggtern"</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/timeternR"</span>)</code></pre></div>
+<p>Currently we are also using some helper functions from 2 github based packages, so for before loading our package please do:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.package("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"Mr8ND/TC-prediction-bands/TCpredictionbands"</span>)
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"ngloe/olpsR"</span>)</code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>Currently there are five small data sets available in <code>timeternR</code></p>
+<p>Currently there are 13 data sets in which to explore the different <code>timeternR</code> functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).</p>
+<p>Details of each can be found with <code>?{data}</code>.</p>
 <ul>
-<li><p><code>hagelloch_raw</code> – One row is an agent. This is imported from the <code>surveillance</code> R package and the variable descriptions are found <a href="https://rdrr.io/rforge/surveillance/man/hagelloch.html">here</a> where it is originally labeled <code>hagelloch.df</code>. We have renamed it here to help distinguish it from the other data sets we derive from it.</p></li>
-<li><p><code>hagelloch_sir</code> – One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$</p></li>
+<li><p><code>agent_sims</code> this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).</p></li>
+<li><p><code>agent_sims_tidy</code> (“Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)”): tidy version of <code>agent_sims</code> (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual’s initial state, and SMax, IMax.</p></li>
+<li><p><code>EpiModel_agg_bd</code> Example output from the <code>EpiModel package</code> for an ICM with birth and death rates. The population $N$ is non-constant.</p></li>
+<li><p><code>EpiModel_det</code> output from the <code>EpiModel</code> package for a deterministic model (aggregate)</p></li>
+<li><p><code>EpiModel_icm</code> Output from the <code>EpiModel</code> package for a stochastic ICM (aggregate)</p></li>
 <li><p><code>hagelloch_agents</code> – One row is a “sufficient” statistic for each agent’s infection. Each agent’s infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T). For the states, 0 = S, 1 = I, 2 = R.</p></li>
-<li><p><code>U_sims</code> this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).</p></li>
-<li><p><code>U_sims_tidy</code> (“Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)”): tidy version of <code>U_sims</code> (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual’s initial state, and SMax, IMax. (<strong>NEEDS CLEANUP</strong>)</p></li>
+<li><p><code>hagelloch_aug_births</code> Like Hagelloch raw but augmented with births (it already had deaths). Five fake people have been added who join the population over time</p></li>
+<li><p><code>hagelloch_raw</code> – One row is an agent. This is imported from the <code>surveillance</code> R package and the variable descriptions are found <a href="https://rdrr.io/rforge/surveillance/man/hagelloch.html">here</a> where it is originally labeled <code>hagelloch.df</code>. We have renamed it here to help distinguish it from the other data sets we derive from it.</p></li>
+<li><p><code>hagelloch_raw2</code> Like Hagelloch raw but with additional, fake people with NA values for <code>tI</code> and <code>tR</code></p></li>
+<li><p><code>hagelloch_sir</code> – One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$</p></li>
+<li><p><code>pomp_arr</code> Example SIR simulation output of class <code>array</code> from the <code>pomp</code> packagee</p></li>
+<li><p><code>pomp_df</code> Example SIR simulation of class <code>data.frame</code> from the <code>pomp</code> package</p></li>
+<li><p><code>pomp_pomp</code> Example SIR simulation output of class <code>pomp</code> from the <code>pomp</code> package</p></li>
+<li><p><code>pomp_sir</code> Example output from the <code>pomp</code> package.</p></li>
 </ul>
-<p>=======</p>
-</div>
-<div id="notes-on-ggtern-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#notes-on-ggtern-functions" class="anchor"></a>Notes on <code>ggtern</code> functions</h2>
-<p>The following can nicely make visuals conditional on grouping, on the flip side it appears to be harder to develop your own stats for <code>ggtern</code> (<a href="https://bitbucket.org/nicholasehamilton/ggtern/issues/8/developing-new-stats-and-geoms">issue</a>).</p>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<pre class="{r}"><code>library(tidyverse)
+<pre class="{r}"><code><a href="https://rdrr.io/r/base/library.html">library(tidyverse)
 library(ggtern)
 library(timeternR)
 hagelloch_raw %&gt;%
    dplyr::filter(SEX %in% c("male", "female")) %&gt;%
    ggplot(aes(y = tI, z = tR, color = SEX)) +
-     stat_sir(data_type = "raw") + 
-     coord_tern() +
-     labs(x = "S", y = "I", z = "R",
-          color = "Gender")</code></pre>
-<p>=======</p>
+       stat_sir(data_type = "raw") + 
+       coord_tern() +
+       labs(x = "S", y = "I", z = "R",
+            color = "Gender")</a></code></pre>
 <p><img src="images/stat_sir_example.png"></p>
 <div id="simulate-sir-data" class="section level3">
 <h3 class="hasAnchor">
@@ -118,27 +136,36 @@ init_SIR &lt;- c(950, 50, 0)
 output_format &lt;- "data.frame"
     
 out &lt;- simulate_SIR_agents(n_sims = n_sims,
-                                 n_time_steps = n_time_steps,
-                                 beta = beta, gamma = gamma,
-                                 init_SIR = init_SIR,
-                                 output_format = output_format)
+                           n_time_steps = n_time_steps,
+                           beta = beta, gamma = gamma,
+                           init_SIR = init_SIR,
+                           output_format = output_format)
                                  
-df_groups &lt;- out %&gt;% dplyr::group_by(sim) %&gt;%  UtoX_SIR_group                       
-
-# check this error / write a test?
-</code></pre>
+df_groups &lt;- out %&gt;% dplyr::group_by(sim) %&gt;%
+    agents_to_aggregate_SIR_group  
+  
+df_groups %&gt;% ggplot(aes(x = S, y = I, z = R, group = sim)) +
+    geom_line(alpha = .1) +
+    coord_tern()</code></pre>
+<p><img src="images/group_simulation_example.png"></p>
 </div>
 </div>
-<div id="on-tidyverse-1-0" class="section level2">
+<div id="notes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#on-tidyverse-1-0" class="anchor"></a>on tidyverse 1.0</h2>
-<p>see: <a href="https://tidyr.tidyverse.org/articles/in-packages.html" class="uri">https://tidyr.tidyverse.org/articles/in-packages.html</a></p>
+<a href="#notes" class="anchor"></a>Notes:</h2>
+<ol>
+<li>For writing code that works with <code>tidyverse</code> 1.0 vs <code>tidyverse</code> &lt;= 0.8.3 see: <a href="https://tidyr.tidyverse.org/articles/in-packages.html" class="uri">https://tidyr.tidyverse.org/articles/in-packages.html</a>, and for doing both with Travis CI (using a matrix), see <a href="https://github.com/tidyverse/design/issues/95" class="uri">https://github.com/tidyverse/design/issues/95</a>. See Wiki for more comments on this.</li>
+<li>For writing your own <code>geom</code>s and <code>stat</code>s that works with <code>ggtern</code> (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
+a. <a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups" class="uri">https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups</a>
+b. <a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479" class="uri">https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479</a>
+c. we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html" class="uri">https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html</a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>)</li>
+</ol>
 </div>
 <div id="contributors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributors" class="anchor"></a>Contributors</h2>
 <ul>
-<li>Shannon Gallagher (<a href="https://github.com/shannong19"><code>shannong19</code></a>)</li>
+<li>Shannon Gallagher (<a href="https://github.com/skgallagher"><code>skgallagher</code></a>)</li>
 <li>Benjamin LeRoy (<a href="https://github.com/benjaminleroy"><code>benjaminleroy</code></a>)</li>
 </ul>
 </div>
@@ -164,7 +191,8 @@ df_groups &lt;- out %&gt;% dplyr::group_by(sim) %&gt;%  UtoX_SIR_group
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/shannong19/timeternR"><img src="https://travis-ci.org/shannong19/timeternR.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://travis-ci.org/skgallagher/timeternR"><img src="https://travis-ci.org/skgallagher/timeternR.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://codecov.io/gh/skgallagher/timeternR"><img src="https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>
 </div>
