@@ -161,7 +161,8 @@ project_onto_simplex <- function(y){
   return(proj_y)
 }
 
-project_simplex_vec <- Vectorize(project_onto_simplex)
+project_simplex_vec <- function(x){t(apply(x, 1, project_onto_simplex))}
+
 #' project onto a standard 3d simplex.
 #'
 #' @param df_3d data frame
