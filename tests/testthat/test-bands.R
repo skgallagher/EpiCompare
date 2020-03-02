@@ -234,3 +234,73 @@ test_that("get_grid_elipsoid_containment tests - arbitary function lists",{
                            dplyr::mutate(included = 1L * (x == 3)))
 
 })
+
+test_that("project_onto_simplex", {
+  visual_check <- FALSE
+  # 2d projection checks (from uniform(0,1))
+  z <- 1
+  for (i in 1:25){
+    x <- runif(2, 0, 1)
+
+    proj_x <- project_onto_simplex(x)
+
+    if (visual_check) {
+      data1 <- data.frame(X = x[1], Y = x[2],
+                          X_proj = proj_x[1],
+                          Y_proj = proj_x[2])
+
+
+      data_simplex <- data.frame(X_low = 0,
+                                 Y_low = z,
+                                 X_high = z,
+                                 Y_high = 0)
+
+      ggplot() + geom_segment(data = data1, aes(x = X, y = Y,
+                                                xend = X_proj,
+                                                yend = Y_proj)) +
+        geom_point(data = data1, aes(x = X, y = Y)) +
+        geom_point(data = data1, aes(x = X_proj, y = Y_proj), color = "blue") +
+        geom_segment(data = data_simplex, aes(x = X_low, y = Y_low,
+                                              xend = X_high,
+                                              yend = Y_high), color = "blue") +
+        coord_fixed()
+    }
+
+    # project onto hyperplane
+    testthat::expect_equal(sum(proj_x), z)
+    # direction orthogonal to hyperplane
+    if (all(proj_x > 0)){
+      testthat::expect_equal((x - proj_x) %*% c(-1,1), matrix(0))
+    }
+    # all coords >= 0
+    testthat::expect_true(all(proj_x >= 0))
+
+  }
+
+
+  # Nd projection checks
+  for (i in 1:100){
+    x <- runif(5, -10, 10)
+
+    proj_x <- project_onto_simplex(x)
+
+    # project onto hyperplane
+    testthat::expect_equal(sum(proj_x), z)
+
+    # if it's in the relative interior...
+    if (all(proj_x > 0)){
+      # direction orthogonal to hyperplane
+      for (idx in 1:length(x)){
+        e_i <- rep(0, length(x))
+        e_i[idx] <- z
+        direction_i <- e_i - rep(z/length(x), length(x))
+        testthat::expect_equal((x - proj_x) %*% direction_i,
+                               matrix(0))
+      }
+
+    }
+    # all coords >= 0
+    testthat::expect_true(all(proj_x >= 0))
+  }
+})
+

@@ -90,48 +90,6 @@ get_closest <- function(border_points, inner_points, delta,
   return(updated_gridpoints)
 }
 
-#' #' project onto simplex
-#' #'
-#' #' Project onto a simplex where observations in the simplex x, follow \eqn{|x|_1
-#' #' = z} - z need not be 1.
-#' #'
-#' #' Cite: https://stanford.edu/~jduchi/projects/DuchiShSiCh08.pdf, figure 1
-#' #' algorithm
-#' #'
-#' #' For some reason this doesn't always correct to the right location
-#' #'
-#' #' \eqn{\text{min } 1/2 ||w-v||^2_2 \quad \text{ s.t. } \quad sum_i w_i = z, w_i
-#' #' \geq 0}
-#' #'
-#' #' @param v
-#' #' @param z
-#' #'
-#' #' @return
-#' #' @export
-#' #'
-#' #' @examples
-#' project_onto_simplex_old <- function(v, z = 1){
-#'   if (z <= 0){
-#'     stop("z must be positive to define a simplex")
-#'   }
-#'
-#'   dim_v <- length(v)
-#'
-#'   mu <- sort(v, decreasing = T)
-#'
-#'   internal_diff <- mu - (cumsum(mu - z))/(1:dim_v)
-#'   above_0 <- (internal_diff > 0)
-#'   rho <- max((1:dim_v)[above_0])
-#'
-#'   theta <- 1/rho*(sum(mu[1:rho]) - z)
-#'
-#'   w <- v - theta
-#'   #w[w <= 0] <- 0
-#'
-#'   return(w)
-#' }
-
-
 #' Project onto a simplex where observations in the unit simplex x
 #'
 #' Minimizes: \eqn{\text{min } 1/2 ||w-v||^2_2 \quad \text{ s.t. } \quad sum_i
