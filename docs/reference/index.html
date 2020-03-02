@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
@@ -124,7 +124,236 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>data</h2>
+          <p class="section-desc"><p>Data included in package</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="pomp_arr.html">pomp_arr</a></code> </p>
+        </td>
+        <td><p>Example SIR simulation output of class 'array' from the <code>pomp</code> package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pomp_df.html">pomp_df</a></code> </p>
+        </td>
+        <td><p>Example SIR simulation output of class ' data.frame' from the <code>pomp</code> package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pomp_pomp.html">pomp_pomp</a></code> </p>
+        </td>
+        <td><p>Example SIR simulation output of class ' pomp' from the <code>pomp</code> package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pomp_sir.html">pomp_sir</a></code> </p>
+        </td>
+        <td><p>pomp_sir Example output from the <code>pomp</code> package.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="EpiModel_agg_bd.html">EpiModel_agg_bd</a></code> </p>
+        </td>
+        <td><p>EpiModel_agg_bd Example output from the <code>EpiModel</code> package for a individual model with birth and death rates.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="EpiModel_det.html">EpiModel_det</a></code> </p>
+        </td>
+        <td><p>EpiModel_det Example output from the <code>EpiModel</code> package for a deterministic model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="EpiModel_icm.html">EpiModel_icm</a></code> </p>
+        </td>
+        <td><p>EpiModel_icm Example output from the <code>EpiModel</code> package for a stochastic ICM</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hagelloch_agents.html">hagelloch_agents</a></code> </p>
+        </td>
+        <td><p>Measles in Hagelloch, Germany, 1861 (agent format)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hagelloch_raw.html">hagelloch_raw</a></code> <code><a href="hagelloch_raw.html">hagelloch_raw2</a></code> <code><a href="hagelloch_raw.html">hagelloch_aug_births</a></code> </p>
+        </td>
+        <td><p>Measles in Hagelloch, Germany, 1861</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hagelloch_sir.html">hagelloch_sir</a></code> </p>
+        </td>
+        <td><p>Measles in Hagelloch, Germany, 1861 (SIR format)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_sims.html">agents_sims</a></code> </p>
+        </td>
+        <td><p>agents_sims Example output from SIR simulations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_sims_tidy.html">agents_sims_tidy</a></code> </p>
+        </td>
+        <td><p>agents_sim_tidy Example output from SIR simulations in a data.frame format</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-fortify" class="hasAnchor"><a href="#section-fortify" class="anchor"></a>fortify</h2>
+          <p class="section-desc"><p>Fortify functions</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="fortify_EpiModel.html">fortify_EpiModel()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the <code>EpiModel</code> package and puts it in aggregate, SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_EpiModel.dcm.html">fortify_EpiModel(<i>&lt;dcm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in the <code>dcm</code> class and puts it in SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_EpiModel.icm.html">fortify_EpiModel(<i>&lt;icm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in <code>icm</code> format and puts it in SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_agents.html">fortify_agents()</a></code> </p>
+        </td>
+        <td><p>Fortify agent data frame with columns when individual stops being susceptible
+and stops being infected (as well as initial state).</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.html">fortify_pomp()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the R pomp package and puts it in SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.data.frame.html">fortify_pomp(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.list.html">fortify_pomp(<i>&lt;list&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.pompList.html">fortify_pomp(<i>&lt;pompList&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_sims.html">fortify_sims()</a></code> </p>
+        </td>
+        <td><p>Transform the array of simulations to a data frame</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-agents-to-aggregate" class="hasAnchor"><a href="#section-agents-to-aggregate" class="anchor"></a>agents to aggregate</h2>
+          <p class="section-desc"><p>Method associated with transforming agents information to aggregations</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate.html">agents_to_aggregate()</a></code> </p>
+        </td>
+        <td><p>generalized method to convert raw agent based data to aggregate data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate.data.frame.html">agents_to_aggregate(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>generalized function to convert raw agent based data to aggregate data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate.grouped_df.html">agents_to_aggregate(<i>&lt;grouped_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>generalized function to convert raw agent based data to aggregate data
+for grouped_data (preforms per group)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate_SIR.html">agents_to_aggregate_SIR()</a></code> </p>
+        </td>
+        <td><p>Method for converting agent information to SIR format. Note this works
+differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate_SIR.data.frame.html">agents_to_aggregate_SIR(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Convert agent information to SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agents_to_aggregate_SIR.grouped_df.html">agents_to_aggregate_SIR(<i>&lt;grouped_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>agents_to_aggregate_SIR for grouped data frames</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-geoms-and-stats" class="hasAnchor"><a href="#section-geoms-and-stats" class="anchor"></a>geoms and stats</h2>
+          <p class="section-desc"><p>Forward facing geoms &amp; stats</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="geom_confidence_band.html">stat_confidence_band()</a></code> <code><a href="geom_confidence_band.html">geom_confidence_band()</a></code> </p>
+        </td>
+        <td><p>The confidenct_band geom/stat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stat_aggregate.html">geom_aggregate()</a></code> <code><a href="stat_aggregate.html">stat_aggregate()</a></code> </p>
+        </td>
+        <td><p>aggregate SIR path visuals from agent data</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-special-functions" class="hasAnchor"><a href="#section-special-functions" class="anchor"></a>special functions</h2>
+          <p class="section-desc"><p>Special functions that make the package work</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="importsHiddenFrom.html">importsHiddenFrom()</a></code> </p>
+        </td>
+        <td><p>import hidden function / variable from other package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tidyr_new_interface.html">tidyr_new_interface()</a></code> </p>
+        </td>
+        <td><p>logic to check if tidyverse (and tidyr specifically is up to version 1.0)</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-everything" class="hasAnchor"><a href="#section-everything" class="anchor"></a>everything</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -594,7 +823,12 @@ and stops being infected (as well as initial state).</p></td>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-data">data</a></li>
+      <li><a href="#section-fortify">fortify</a></li>
+      <li><a href="#section-agents-to-aggregate">agents to aggregate</a></li>
+      <li><a href="#section-geoms-and-stats">geoms and stats</a></li>
+      <li><a href="#section-special-functions">special functions</a></li>
+      <li><a href="#section-everything">everything</a></li>
     </ul>
   </div>
 </div>

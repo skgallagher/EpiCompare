@@ -1,1 +1,35 @@
 destination: docs
+template:
+  params:
+    bootswatch: simplex
+
+reference:
+- title: data
+  desc: Data included in package
+  contents:
+  - starts_with("pomp_")
+  - starts_with("EpiModel_")
+  - starts_with("hagelloch_")
+  - starts_with("agents_sim")
+- title: fortify
+  desc: Fortify functions
+  contents:
+  - starts_with("fortify_")
+- title: agents to aggregate
+  desc: Method associated with transforming agents information to aggregations
+  contents:
+  - matches("agents_to_aggregate")
+- title: geoms and stats
+  desc: Forward facing geoms & stats
+  contents:
+  - starts_with("geom_")
+  - starts_with("stat_")
+- title: special functions
+  desc: Special functions that make the package work
+  contents:
+  - matches("importsHiddenFrom")
+  - matches("tidyr_new_interface")
+- title: everything
+  contents:
+  - render_page
+

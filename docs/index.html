@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>functional based data visualized with ternary plots in the simplex • timeternR</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -76,18 +76,13 @@
 <a href="#timeternr" class="anchor"></a>timeternR</h1></div>
 <!-- badges: start -->
 
-<!-- badges: end -->
 <p>The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the developmental version of timeternR from github using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.package("devtools")</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/timeternR"</span>)</code></pre></div>
-<p>Currently we are also using some helper functions from 2 github based packages, so for before loading our package please do:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.package("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"Mr8ND/TC-prediction-bands/TCpredictionbands"</span>)
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"ngloe/olpsR"</span>)</code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
@@ -97,14 +92,14 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <ul>
 <li><p><code>agent_sims</code> this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).</p></li>
 <li><p><code>agent_sims_tidy</code> (“Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)”): tidy version of <code>agent_sims</code> (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual’s initial state, and SMax, IMax.</p></li>
-<li><p><code>EpiModel_agg_bd</code> Example output from the <code>EpiModel package</code> for an ICM with birth and death rates. The population $N$ is non-constant.</p></li>
+<li><p><code>EpiModel_agg_bd</code> Example output from the <code>EpiModel package</code> for an ICM with birth and death rates. The population <em>N</em> is non-constant.</p></li>
 <li><p><code>EpiModel_det</code> output from the <code>EpiModel</code> package for a deterministic model (aggregate)</p></li>
 <li><p><code>EpiModel_icm</code> Output from the <code>EpiModel</code> package for a stochastic ICM (aggregate)</p></li>
 <li><p><code>hagelloch_agents</code> – One row is a “sufficient” statistic for each agent’s infection. Each agent’s infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T). For the states, 0 = S, 1 = I, 2 = R.</p></li>
 <li><p><code>hagelloch_aug_births</code> Like Hagelloch raw but augmented with births (it already had deaths). Five fake people have been added who join the population over time</p></li>
 <li><p><code>hagelloch_raw</code> – One row is an agent. This is imported from the <code>surveillance</code> R package and the variable descriptions are found <a href="https://rdrr.io/rforge/surveillance/man/hagelloch.html">here</a> where it is originally labeled <code>hagelloch.df</code>. We have renamed it here to help distinguish it from the other data sets we derive from it.</p></li>
 <li><p><code>hagelloch_raw2</code> Like Hagelloch raw but with additional, fake people with NA values for <code>tI</code> and <code>tR</code></p></li>
-<li><p><code>hagelloch_sir</code> – One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$</p></li>
+<li><p><code>hagelloch_sir</code> – One row is a state of (<em>t</em>, <em>s</em><sub><em>t</em></sub>, <em>i</em><sub><em>t</em></sub>, <em>r</em><sub><em>t</em></sub>) where <em>s</em><sub><em>t</em></sub> + <em>i</em><sub><em>t</em></sub> + <em>r</em><sub><em>t</em></sub> = <em>N</em> for <em>t</em> = 0, …, <em>T</em> = 94</p></li>
 <li><p><code>pomp_arr</code> Example SIR simulation output of class <code>array</code> from the <code>pomp</code> packagee</p></li>
 <li><p><code>pomp_df</code> Example SIR simulation of class <code>data.frame</code> from the <code>pomp</code> package</p></li>
 <li><p><code>pomp_pomp</code> Example SIR simulation output of class <code>pomp</code> from the <code>pomp</code> package</p></li>
@@ -114,51 +109,58 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<pre class="{r}"><code><a href="https://rdrr.io/r/base/library.html">library(tidyverse)
-library(ggtern)
-library(timeternR)
-hagelloch_raw %&gt;%
-   dplyr::filter(SEX %in% c("male", "female")) %&gt;%
-   ggplot(aes(y = tI, z = tR, color = SEX)) +
-       stat_sir(data_type = "raw") + 
-       coord_tern() +
-       labs(x = "S", y = "I", z = "R",
-            color = "Gender")</a></code></pre>
-<p><img src="images/stat_sir_example.png"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyverse)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(timeternR)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span>
+<span class="st">   </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(SEX <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> SEX)) <span class="op">+</span>
+<span class="st">       </span><span class="kw"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">       </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span>
+<span class="st">       </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>,
+            <span class="dt">color =</span> <span class="st">"Gender"</span>)</code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 <div id="simulate-sir-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#simulate-sir-data" class="anchor"></a>Simulate SIR data</h3>
-<pre class="{r}"><code>n_sims &lt;- 100
-n_time_steps &lt;- 100
-beta &lt;- .1
-gamma &lt;- .03
-init_SIR &lt;- c(950, 50, 0)
-output_format &lt;- "data.frame"
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_sims &lt;-<span class="st"> </span><span class="dv">100</span>
+n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span>
+beta &lt;-<span class="st"> </span>.<span class="dv">1</span>
+gamma &lt;-<span class="st"> </span>.<span class="dv">03</span>
+init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)
+output_format &lt;-<span class="st"> "data.frame"</span>
     
-out &lt;- simulate_SIR_agents(n_sims = n_sims,
-                           n_time_steps = n_time_steps,
-                           beta = beta, gamma = gamma,
-                           init_SIR = init_SIR,
-                           output_format = output_format)
+out &lt;-<span class="st"> </span><span class="kw"><a href="reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> n_sims,
+                           <span class="dt">n_time_steps =</span> n_time_steps,
+                           <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,
+                           <span class="dt">init_SIR =</span> init_SIR,
+                           <span class="dt">output_format =</span> output_format)
                                  
-df_groups &lt;- out %&gt;% dplyr::group_by(sim) %&gt;%
-    agents_to_aggregate_SIR_group  
+df_groups &lt;-<span class="st"> </span>out <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
+<span class="st">    </span>agents_to_aggregate_SIR  
   
-df_groups %&gt;% ggplot(aes(x = S, y = I, z = R, group = sim)) +
-    geom_line(alpha = .1) +
-    coord_tern()</code></pre>
-<p><img src="images/group_simulation_example.png"></p>
+df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()</code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 </div>
 </div>
 <div id="notes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#notes" class="anchor"></a>Notes:</h2>
 <ol>
-<li>For writing code that works with <code>tidyverse</code> 1.0 vs <code>tidyverse</code> &lt;= 0.8.3 see: <a href="https://tidyr.tidyverse.org/articles/in-packages.html" class="uri">https://tidyr.tidyverse.org/articles/in-packages.html</a>, and for doing both with Travis CI (using a matrix), see <a href="https://github.com/tidyverse/design/issues/95" class="uri">https://github.com/tidyverse/design/issues/95</a>. See Wiki for more comments on this.</li>
+<li>For writing code that works with <code>tidyverse</code> 1.0 vs <code>tidyverse</code> &lt;= 0.8.3 see: <a href="https://tidyr.tidyverse.org/articles/in-packages.html" class="uri">https://tidyr.tidyverse.org/articles/in-packages.html</a>, and for doing both with Travis CI (using a matrix), see <a href="https://github.com/tidyverse/design/issues/95" class="uri">https://github.com/tidyverse/design/issues/95</a>. See Wiki for more comments on this.
+<ol>
+<li>Also <a href="https://principles.tidyverse.org/changes-multivers.html" class="uri">https://principles.tidyverse.org/changes-multivers.html</a> has been being updated to give better approaches as well.</li>
+</ol>
+</li>
 <li>For writing your own <code>geom</code>s and <code>stat</code>s that works with <code>ggtern</code> (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
-a. <a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups" class="uri">https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups</a>
-b. <a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479" class="uri">https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479</a>
-c. we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html" class="uri">https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html</a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>)</li>
+<ol>
+<li><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups" class="uri">https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups</a></li>
+<li><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479" class="uri">https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479</a></li>
+<li>we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html" class="uri">https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html</a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>)</li>
+</ol>
+</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">
