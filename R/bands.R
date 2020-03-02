@@ -2,18 +2,17 @@
 
 ## coordinate transformations ---------------
 
-#' get xy ternary coordinates from xyz based data.frame
+#' get xy ternary coordinates from xyz based data frame
 #'
 #' @description note that this does not need x,y,z to be scaled (but it should).
-#' This is just a data.frame wrapper for ggtern::tlr2xy.
+#'   This is just a data.frame wrapper for ggtern::tlr2xy.
 #'
 #' @param X_SIR data.frame with columns in xyz_col
 #' @param xyz_col string vector (length 3) to match with x, y, and z
 #'
 #' @return X_SIR motified to have columns "x" and "y" with the ternary
-#' coordinates
+#'   coordinates
 #' @export
-#'
 get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
   crd <- ggtern::coord_tern()
   xy_transform <- X_SIR %>% data.frame %>%
@@ -23,7 +22,6 @@ get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
     ggtern::tlr2xy(coord = crd)
   return(xy_transform)
 }
-
 
 #' create a grid of points indicating near border or not (and inside or outside)
 #'
@@ -45,7 +43,6 @@ get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
 #'   closest to an inner_point.
 #'
 #' @export
-#'
 get_closest <- function(border_points, inner_points, delta,
                         xrange = NULL, yrange = NULL, gridbreaks = 100){
   if (is.null(xrange)) {
@@ -93,11 +90,120 @@ get_closest <- function(border_points, inner_points, delta,
   return(updated_gridpoints)
 }
 
+#' #' project onto simplex
+#' #'
+#' #' Project onto a simplex where observations in the simplex x, follow \eqn{|x|_1
+#' #' = z} - z need not be 1.
+#' #'
+#' #' Cite: https://stanford.edu/~jduchi/projects/DuchiShSiCh08.pdf, figure 1
+#' #' algorithm
+#' #'
+#' #' For some reason this doesn't always correct to the right location
+#' #'
+#' #' \eqn{\text{min } 1/2 ||w-v||^2_2 \quad \text{ s.t. } \quad sum_i w_i = z, w_i
+#' #' \geq 0}
+#' #'
+#' #' @param v
+#' #' @param z
+#' #'
+#' #' @return
+#' #' @export
+#' #'
+#' #' @examples
+#' project_onto_simplex_old <- function(v, z = 1){
+#'   if (z <= 0){
+#'     stop("z must be positive to define a simplex")
+#'   }
+#'
+#'   dim_v <- length(v)
+#'
+#'   mu <- sort(v, decreasing = T)
+#'
+#'   internal_diff <- mu - (cumsum(mu - z))/(1:dim_v)
+#'   above_0 <- (internal_diff > 0)
+#'   rho <- max((1:dim_v)[above_0])
+#'
+#'   theta <- 1/rho*(sum(mu[1:rho]) - z)
+#'
+#'   w <- v - theta
+#'   #w[w <= 0] <- 0
+#'
+#'   return(w)
+#' }
 
 
-project_simplex <- function(x) olpsR::projsplx(x, b = 1)
-project_simplex_vec <- function(x) { t(apply(x, 1, project_simplex))}
+#' Project onto a simplex where observations in the unit simplex x
+#'
+#' Minimizes: \eqn{\text{min } 1/2 ||w-v||^2_2 \quad \text{ s.t. } \quad sum_i
+#' w_i = 1, w_i \geq 0}
+#'
+#' @param y n dimensional vector to be projected onto the simplex
+#'
+#' @return proj_y projection of y onto the unit simplex of dimension n
+#' @export
+#'
+#' @examples
+#' library(ggplot2)
+#' x1 <- runif(2, -5, 5)
+#' x2 <- c(.1, 1.6)
+#' x3 <- c(.1, 1.1)
+#' x4 <- c(.1,.1)
+#'
+#' x_vals <- list(x1, x2, x3, x4)
+#'
+#' proj_xs <- lapply(x_vals, project_onto_simplex)
+#'
+#' vis_list <- list()
+#' for (idx in 1:4){
+#'   x <- x_vals[[idx]]
+#'   proj_x <- proj_xs[[idx]]
+#'   data1 <- data.frame(X = x[1], Y = x[2],
+#'                       X_proj = proj_x[1],
+#'                       Y_proj = proj_x[2])
+#'
+#'   data_simplex <- data.frame(X_low = 0,
+#'                              Y_low = 1,
+#'                              X_high = 1,
+#'                              Y_high = 0)
+#'
+#'   vis_list[[idx]] <- ggplot() + geom_segment(data = data1,
+#'                                         aes(x = X, y = Y,
+#'                                             xend = X_proj,
+#'                                             yend = Y_proj)) +
+#'     geom_point(data = data1, aes(x = X, y = Y)) +
+#'     geom_point(data = data1, aes(x = X_proj, y = Y_proj), color = "blue") +
+#'     geom_segment(data = data_simplex, aes(x = X_low, y = Y_low,
+#'                                           xend = X_high,
+#'                                           yend = Y_high), color = "blue") +
+#'     coord_fixed()
+#' }
+#' gridExtra::grid.arrange(grobs = vis_list, nrow = 2)
+project_onto_simplex <- function(y){
+  n <- length(y)
+  bget <- FALSE
 
+  s <- sort(y, decreasing = T)
+  tmpsum <- 0
+
+  for (idx in 1:(n-1)) {
+    tmpsum <- tmpsum + s[idx]
+    tmax <- (tmpsum - 1)/(idx)
+    if (tmax >= s[idx+1]){
+      bget <- TRUE
+      break
+    }
+  }
+
+  if (!bget){
+    tmax <- (tmpsum + s[n] - 1)/n
+  }
+
+  proj_y <- (y - tmax) * ( y - tmax > 0)
+
+  return(proj_y)
+}
+
+project_simplex_vec <- Vectorize(project_onto_simplex)
 #' project onto a standard 3d simplex.
 #'
 #' @param df_3d data frame
