@@ -92,7 +92,7 @@ get_closest <- function(border_points, inner_points, delta,
 
 #' Project onto a simplex where observations in the unit simplex x
 #'
-#' Minimizes: \eqn{\text{min } 1/2 ||w-v||^2_2 \quad \text{ s.t. } \quad sum_i
+#' Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i
 #' w_i = 1, w_i \geq 0}
 #'
 #' @param y n dimensional vector to be projected onto the simplex
