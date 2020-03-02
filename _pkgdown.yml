@@ -3,7 +3,17 @@ template:
   params:
     bootswatch: simplex
 
+authors:
+  Shannon Gallagher:
+    href: "https://skgallagher.github.io/"
+  Benjamin LeRoy:
+    href: "https://benjaminleroy.github.io/"
+
 reference:
+- title: timeternR
+  desc: general package information
+  contents:
+  - matches("timeternR")
 - title: data
   desc: Data included in package
   contents:
