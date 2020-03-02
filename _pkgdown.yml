@@ -27,9 +27,10 @@ reference:
 - title: special functions
   desc: Special functions that make the package work
   contents:
-  - matches("importsHiddenFrom")
+  - matches("imports_hidden_from")
   - matches("tidyr_new_interface")
+  - matches("update_approved_layers")
 - title: everything
   contents:
-  - render_page
+  - matches(".*")
 

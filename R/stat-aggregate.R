@@ -96,7 +96,8 @@ StatSirAggregate <- ggplot2::ggproto("StatSirAggregate", ggplot2::Stat,
 #'@examples
 #' library(ggplot2)
 #' library(dplyr)
-#' library(ggtern)
+#' library(ggtern); timeternR:::update_approved_layers()
+#' #                ^ this generally need not be done
 #'
 #'
 #' # geom_aggregate
@@ -117,7 +118,7 @@ StatSirAggregate <- ggplot2::ggproto("StatSirAggregate", ggplot2::Stat,
 #' timeternR::hagelloch_raw %>% dplyr::filter(SEX %in% c("male", "female")) %>%
 #'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
 #'   stat_aggregate(geom = "path") +
-#'   # note geom = "path" is the default (as is data_type = "raw")
+#'   # note geom = "path" is the default
 #'   coord_tern() +
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender")

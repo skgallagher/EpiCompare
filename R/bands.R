@@ -405,9 +405,9 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
 
         x_dim <- 2
 
-        a <- data2d %>% group_by(t) %>%
-          nest() %>%
-          mutate(n = purrr::map(data, function(df){nrow(df)}),
+        a <- data2d %>% dplyr::group_by(t) %>%
+          tidyr::nest() %>%
+          dplyr::mutate(n = purrr::map(data, function(df){nrow(df)}),
                  mean = purrr::map(data,function(df){df %>%
                      dplyr::select(x,y) %>%
                      sapply(mean)}),
@@ -415,11 +415,11 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
                      dplyr::select(x,y) %>%
                      cov})
           ) %>%
-          mutate(
+          dplyr::mutate(
             bound = purrr::map(n, function(n) {
               return((x_dim * (n-1)) / (n - x_dim) *
                        pf(q = alpha_level, df1 = x_dim, df2 = n - x_dim))})) %>%
-          mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
+          dplyr::mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
                   function(bound, mean, Sigma) {
                     check_inside_elipsoid_func(Sigma, mean, bound,
                                                suppress_warning = TRUE)}))
@@ -635,8 +635,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' @export
 #' @examples
 #' library(ggplot2)
-#' library(ggtern)
 #' library(dplyr)
+#' library(ggtern); timeternR:::update_approved_layers()
+#' #                ^ this doesn't generally need to be done
 #'
 #' vis_data <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%

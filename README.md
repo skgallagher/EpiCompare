@@ -108,7 +108,7 @@ Notes:
 2.  For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
     1.  <https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups>
     2.  <https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479>
-    3.  we've also leveraged ideas from <https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html> in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`)
+    3.  we've also leveraged ideas from <https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html> in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkg-down` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
 
 Contributors
 ------------
