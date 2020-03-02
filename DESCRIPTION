@@ -21,7 +21,6 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
-    olpsR,
     purrr,
     raster,
     rlang,
