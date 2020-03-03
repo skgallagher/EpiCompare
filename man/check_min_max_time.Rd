@@ -25,19 +25,19 @@ death <- "tDEAD"
 birth <- NULL
 min_max_time <- c(0, NA)
 }
-\details{
+\examples{
 b <- agents_to_aggregate(agents, states, death, birth = birth)
-a <- timeternR::hagelloch_raw %>%
-timeternR::fortify_agents() %>%
-timeternR::agents_to_aggregate_SIR() %>%
+a <- timeternR::hagelloch_raw \%>\%
+timeternR::fortify_agents() \%>\%
+timeternR::agents_to_aggregate_SIR() \%>\%
 as.matrix
 
 #look at:
 b[1:(nrow(b)-2),] - a[2:nrow(a),]
 
 # keeping in mind:
-timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
-dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
+timeternR::hagelloch_raw \%>\% dplyr::filter(!is.na(.data$tDEAD)) \%>\%
+dplyr::pull(.data$tDEAD) \%>\% ceiling() \%>\% sort
 
 ### example 2 of code:
 agents <- timeternR::hagelloch_raw
@@ -52,16 +52,17 @@ birth <- "tBIRTH"
 min_max_time <- c(0, NA)
 
 b <- agents_to_aggregate(agents, states, death, birth = birth)
-a <- timeternR::hagelloch_raw %>%
-timeternR::fortify_agents() %>%
-timeternR::agents_to_aggregate_SIR() %>%
+a <- timeternR::hagelloch_raw \%>\%
+timeternR::fortify_agents() \%>\%
+timeternR::agents_to_aggregate_SIR() \%>\%
 as.matrix
 
 b[1:(nrow(b)-2),] - a[2:nrow(a),]
 
-agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
-dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
+agents \%>\% dplyr::filter(!is.na(.data$tBIRTH)) \%>\%
+dplyr::pull(.data$tBIRTH) \%>\% ceiling() \%>\% sort
 min_max_time vector check
 
 this is an internal function
+
 }

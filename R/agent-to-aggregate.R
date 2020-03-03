@@ -11,7 +11,7 @@
 #' death <- "tDEAD"
 #' birth <- NULL
 #' min_max_time <- c(0, NA)
-#'
+#' @examples 
 #' b <- agents_to_aggregate(agents, states, death, birth = birth)
 #' a <- timeternR::hagelloch_raw %>%
 #' timeternR::fortify_agents() %>%

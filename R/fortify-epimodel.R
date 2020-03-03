@@ -5,9 +5,8 @@
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
-#' \item{S}{number of Susceptibles}
-#' \item{I}{number of Infectious}
-#' \item{R}{number of Recovered}
+#' \item{Xk}{where k = 0, ..., K.
+
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
 #' @examples
@@ -16,7 +15,7 @@
 #' head(sir)
 #' class(sir)
 #' @export
-fortify_EpiModel <- function(data){
+fortify_epimodel <- function(data){
 
     UseMethod("fortify_EpiModel")
 
