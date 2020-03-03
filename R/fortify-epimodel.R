@@ -5,7 +5,7 @@
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
-#' \item{Xk}{where k = 0, ..., K.
+#' \item{Xk}{where k = 0, ..., K.}
 
 #' \item{sim}{simulation number (factor variable) (optional column)}
 #' }
