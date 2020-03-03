@@ -1,229 +1,18 @@
 # utility functions ---------
 
-#' Distance/angle between points along path relative to eculidean distance
-#'
-#' @description Calculates the distance and angle between each point of a path
-#'
-#' MAYBE REWRITE - using library(raster)?
-#'
-#' @param data_df (n x 2) data.frame, each row is a pair of values (x,y)
-#'
-#' @return
-#' \item{distance}{vector of distances beween points (n - 1)}
-#' \item{angle}{vector of angle change between points (n - 1) - in radians}
-#' @export
-#'
-dist_along_path <- function(data_df){
-  #MAYBE REWRITE THIS FUNCTION?
-  assertthat::assert_that(assertthat::are_equal(ncol(data_df), 2),
-                          msg = "data_df is expected to have 2 columns")
-  n <- nrow(data_df)
-  output_d <- numeric(n - 1)
-  output_a <- numeric(n - 1)
+## coordinate transformations ---------------
 
-  for (i in 1:(n - 1)) {
-    output_d[i] <- stats::dist(data_df[c(i, i+1),])
-
-    delta_x <- data_df[i+1, 1] - data_df[i, 1]
-    delta_y <- data_df[i+1, 2] - data_df[i, 2]
-    theta_radians <- atan2(delta_y, delta_x)
-    output_a[i] <- theta_radians
-  }
-
-  return(list(distance = output_d, angle = output_a))
-}
-
-
-#' step along path
-#'
-#' @param start_point (x,y) starting point
-#' @param angle angle away from point (in radians)
-#' @param distance distance away from point for the new point
-#'
-#' @return next point along the correct angle and distance
-#' @export
-#'
-step_along <- function(start_point, angle, distance){
-  next_point <- start_point + distance * c(cos(angle), sin(angle))
-  return(next_point)
-}
-
-#' point compression
-#'
-#' Coverts list of point locations to a set of equally spaced points through
-#' linear interpolation.
-#'
-#' @param df 2 column data frame with all points (x,y)
-#' @param num_splits number of points for the path to be represented in
-#'
-#' @return new_13compression data.frame (13 x 2) of points along the path
-#' equally spaced
-#' @export
-#'
-#' @examples
-#' library(dplyr)
-#' my_df <- data.frame(x = 1:20) %>%
-#'   mutate(y = x)
-#' my_df_compression <- equa_dist_points(my_df)
-#' my_df_compression
-equa_dist_points <- function(df, num_splits = 13){
-
-  dist_and_bearing <- dist_along_path(df)
-  dist <- dist_and_bearing[[1]]
-  bearing <- dist_and_bearing[[2]]
-
-  total_dist <- sum(dist)
-  step_all <- total_dist/(num_splits - 1) # n-1 equa-distance points along path
-  cum_steps <- step_all*(1:(num_splits - 2))
-  cum_dist <- cumsum(dist)[c(-length(dist))]
-
-  new_compression <- data.frame(matrix(0, nrow = num_splits, ncol = 2))
-  index <- 2
-  for (step in 1:length(cum_steps)) {
-    step_full_dist <- cum_steps[step]
-    start <- sum(cum_dist <= step_full_dist) + 1
-    start_point <- df[start,]
-    start_bearing <- (bearing[start])
-    if (start != 1) {
-      step_dist <- step_full_dist - cum_dist[start - 1]
-    }else{ # if no points other than the first is correct
-      step_dist <- step_full_dist
-    }
-    new_point <- step_along(start_point, start_bearing, step_dist)
-
-    new_compression[index,] <- new_point
-    index <- index + 1
-  }
-  new_compression[1,] <- df[1,]
-  new_compression[num_splits,] <- df[nrow(df),]
-
-  names(new_compression) <- names(df)
-
-  return(new_compression)
-}
-
-#' List of compressions
-#'
-#' Creates list of same length of compression for each path
-#'
-#' @param list_df list of dfs, where the (x,y) points are in the position
-#' columns
-#' @param position the columns of the data frames that contain the desired
-#' (x,y) coordinates
-#' @param num_splits  number of points for the path to be represented in
-#' @param verbose boolean for having a progress bar
-#'
-#' @return list will the paths with the same length
-#' @export
-equa_dist_points_listable <- function(list_df, position = 1:2,
-                                      num_splits = 13,
-                                      verbose = TRUE){
-  out_list <- list()
-  n_path <- length(list_df)
-
-  if (verbose) {
-    pb <- progress::progress_bar$new(
-      format = "Compressing [:bar] :percent eta: :eta",
-      total = n_path, clear = FALSE, width = 38)
-  }
-
-  if (is.null(names(list_df))) {
-    iterator_names <- 1:length(list_df)
-  } else{
-    iterator_names <- names(list_df)
-  }
-
-  for (path_name in iterator_names) {
-    df_pulled_out <- list_df[[path_name]][,position]
-    out_list[[path_name]] <- equa_dist_points(df_pulled_out, num_splits)
-    if (verbose) {
-      pb$tick()
-    }
-  }
-
-  return(out_list)
-}
-
-#' Calculates the distance matrix between a set of paths (Euclidean based). This
-#' is actually d^2
-#'
-#' @param path_list list of paths (data frames) - need to have the same num rows
-#' @param position column index of (x,y) euclidean coords.
-#' @param verbose boolean logic if should have print outs while computing
-#' distance matrix
-#'
-#' @return distance matrix of dimension n x n
-#' @export
-dist_matrix_innersq <- function(path_list,  position = 3:4,
-                                verbose = FALSE){
-  n_mat <- length(path_list)
-
-  if (verbose) {
-    pb <- progress::progress_bar$new(
-      format = "Creating Distance Matrix [:bar] :percent eta: :eta",
-      total = ((n_mat)*(n_mat + 1))/2, clear = FALSE, width = 51)
-  }
-
-  output_mat <- matrix(0, nrow = n_mat, ncol = n_mat)
-
-  for (i in c(1:n_mat)) {
-    for (j in c(i:n_mat)) {
-      output_mat[i,j] <- sum(raster::pointDistance(path_list[[i]][,position],
-                                                   path_list[[j]][,position],
-                                                   lonlat = FALSE,
-                                                   allpairs=FALSE)^2)
-      output_mat[j,i] <- output_mat[i,j]
-
-      if (verbose) {
-        pb$tick()
-      }
-    }
-  }
-
-  return(output_mat)
-}
-
-#' Distance between points
-#'
-#' @description Calculates the distance between each point of every path.
-#'
-#' @param data_df_p1 (n x 2) data.frame, each row is a pair of values (x, y)
-#' @param data_df_p2 (n x 2) second data.frame to be compared, each row is a
-#' pair of values (x, y)
-#'
-#' @return vector of n distances between each order point in the two data frames
-#' @export
-dist_between_paths <- function(data_df_p1, data_df_p2){
-  # WHY ARE WE USING RASTER HERE?
-  n <- dim(data_df_p1)[1]
-  p <- dim(data_df_p1)[2]
-  assertthat::assert_that(assertthat::are_equal(n, dim(data_df_p2)[1]),
-                          msg = "DFs have different dimension (n)")
-  assertthat::assert_that(assertthat::are_equal(p, dim(data_df_p2)[2]),
-                          msg = "DFs have different dimension (p)")
-  assertthat::assert_that(assertthat::are_equal(p, 2),
-                          msg = "DFs should have ncol = 2")
-
-  output_d <- sapply(1:n, function(i) {
-    stats::dist(rbind(data_df_p1[i,], data_df_p2[i,]))
-  })
-
-  return(output_d)
-}
-
-
-#' get xy ternary coordinates from xyz based data.frame
+#' get xy ternary coordinates from xyz based data frame
 #'
 #' @description note that this does not need x,y,z to be scaled (but it should).
-#' This is just a data.frame wrapper for ggtern::tlr2xy.
+#'   This is just a data.frame wrapper for ggtern::tlr2xy.
 #'
 #' @param X_SIR data.frame with columns in xyz_col
 #' @param xyz_col string vector (length 3) to match with x, y, and z
 #'
 #' @return X_SIR motified to have columns "x" and "y" with the ternary
-#' coordinates
+#'   coordinates
 #' @export
-#'
 get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
   crd <- ggtern::coord_tern()
   xy_transform <- X_SIR %>% data.frame %>%
@@ -234,28 +23,26 @@ get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
   return(xy_transform)
 }
 
-
 #' create a grid of points indicating near border or not (and inside or outside)
 #'
 #' @param border_points data.frame of points from delta ball approach that are
-#' "border points"
+#'   "border points"
 #' @param inner_points data.frame of points from delta ball approach that are
-#' interior points.
+#'   interior points.
 #' @param delta float, size of delta ball radius
 #' @param xrange vector, ordered values to examine in the x dimension (default
-#' is NULL - will then be created using gridbreaks)
+#'   is NULL - will then be created using gridbreaks)
 #' @param yrange vector, ordered values to examine in the y dimension (default
-#' is NULL - will then be created using gridbreaks)
-#' @param gridbreaks int, number of gridpoint in x and y dimensions if xrange
-#' or yrange is not provided
+#'   is NULL - will then be created using gridbreaks)
+#' @param gridbreaks int, number of gridpoint in x and y dimensions if xrange or
+#'   yrange is not provided
 #'
-#' @return data frame, with expand.grid of xrange, yrange in columns x and y
-#' and a column z that indicates if it is: (1) not within delta to border points
-#' or inner_points, (2) if closest to border_points and (3) if closest to an
-#' inner_point.
+#' @return data frame, with \code{expand.grid} of xrange, yrange in columns x
+#'   and y and a column z that indicates if it is: (1) not within delta to
+#'   border points or inner_points, (2) if closest to border_points and (3) if
+#'   closest to an inner_point.
 #'
 #' @export
-#'
 get_closest <- function(border_points, inner_points, delta,
                         xrange = NULL, yrange = NULL, gridbreaks = 100){
   if (is.null(xrange)) {
@@ -303,75 +90,78 @@ get_closest <- function(border_points, inner_points, delta,
   return(updated_gridpoints)
 }
 
-
-
-#' Find delta for covering
+#' Project onto a simplex where observations in the unit simplex x
 #'
-#' @description
-#' Find the minimum distance (delta) such that all points are within delta of at
-#' least one other point
+#' Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i
+#' w_i = 1, w_i \geq 0}
 #'
-#' @details
-#' This function is a simplification and rewrite of a function with the same
-#' name from the \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}
-#' package.
+#' @param y n dimensional vector to be projected onto the simplex
 #'
-#' @param data continuous data frame of individual points (in each row)
-#' @param dist_mat distance matrix, calculated otherwise via euclidean distance
-#'
-#' @return
-#' \describe{
-#' \item{dist_mat}{distance matrix between points}
-#' \item{mm_delta}{the minimum distance (delta)}
-#' }
+#' @return proj_y projection of y onto the unit simplex of dimension n
 #' @export
-get_delta <- function(data = NULL, dist_mat = NULL){
-  if (is.null(dist_mat)) {
-    dist_mat <- as.matrix(stats::dist(data))
+#'
+#' @examples
+#' library(ggplot2)
+#' x1 <- runif(2, -5, 5)
+#' x2 <- c(.1, 1.6)
+#' x3 <- c(.1, 1.1)
+#' x4 <- c(.1,.1)
+#'
+#' x_vals <- list(x1, x2, x3, x4)
+#'
+#' proj_xs <- lapply(x_vals, project_onto_simplex)
+#'
+#' vis_list <- list()
+#' for (idx in 1:4){
+#'   x <- x_vals[[idx]]
+#'   proj_x <- proj_xs[[idx]]
+#'   data1 <- data.frame(X = x[1], Y = x[2],
+#'                       X_proj = proj_x[1],
+#'                       Y_proj = proj_x[2])
+#'
+#'   data_simplex <- data.frame(X_low = 0,
+#'                              Y_low = 1,
+#'                              X_high = 1,
+#'                              Y_high = 0)
+#'
+#'   vis_list[[idx]] <- ggplot() + geom_segment(data = data1,
+#'                                         aes(x = X, y = Y,
+#'                                             xend = X_proj,
+#'                                             yend = Y_proj)) +
+#'     geom_point(data = data1, aes(x = X, y = Y)) +
+#'     geom_point(data = data1, aes(x = X_proj, y = Y_proj), color = "blue") +
+#'     geom_segment(data = data_simplex, aes(x = X_low, y = Y_low,
+#'                                           xend = X_high,
+#'                                           yend = Y_high), color = "blue") +
+#'     coord_fixed()
+#' }
+#' gridExtra::grid.arrange(grobs = vis_list, nrow = 2)
+project_onto_simplex <- function(y){
+  n <- length(y)
+  bget <- FALSE
+
+  s <- sort(y, decreasing = T)
+  tmpsum <- 0
+
+  for (idx in 1:(n-1)) {
+    tmpsum <- tmpsum + s[idx]
+    tmax <- (tmpsum - 1)/(idx)
+    if (tmax >= s[idx+1]){
+      bget <- TRUE
+      break
+    }
   }
-  diag(dist_mat) <- max(dist_mat)
-  mm_delta <- apply(dist_mat, MARGIN = 1, min) %>% max
-  diag(dist_mat) <- 0
-  return(list(dist_mat = dist_mat, mm_delta = mm_delta))
+
+  if (!bget){
+    tmax <- (tmpsum + s[n] - 1)/n
+  }
+
+  proj_y <- (y - tmax) * ( y - tmax > 0)
+
+  return(proj_y)
 }
 
-
-
-#' Performs delta ball approach
-#'
-#' @param data_deep_points data deep points from depth function
-#' @param xy_columns strings for column names of the points (x,y) - default is
-#' actually \code{"lat", "long"} as we are currently using an function from the
-#' \code{TCpredictionbands} package.
-#'
-#' @return
-#' \describe{
-#' \item{structure}{data frame of non-ordered lines of contour}
-#' \item{delta}{optimal delta for covering}
-#' }
-#' @export
-delta_structure <- function(data_deep_points, xy_columns = c("lat", "long")){
-  data_deep_points <- data_deep_points %>%
-    dplyr::select(dplyr::one_of(xy_columns)) %>%
-    dplyr::rename(lat = xy_columns[1], long = xy_columns[2])
-
-  d_out <- get_delta(data_deep_points)
-  delta = d_out$mm_delta
-  structure_df <- TCpredictionbands::delta_ball_wrapper(data_deep_points,
-                                                        remove_duplicates = TRUE)
-
-  names(structure_df)[names(structure_df) == "lat"] <- xy_columns[1]
-  names(structure_df)[names(structure_df) == "long"] <- xy_columns[2]
-
-  out <- list()
-  out[["structure"]] <- structure_df
-  out[["delta"]] <- delta
-  return(out)
-}
-
-
-project_simplex <- function(x) olpsR::projsplx(x, b = 1)
-project_simplex_vec <- function(x) { t(apply(x, 1, project_simplex))}
+project_simplex_vec <- function(x){t(apply(x, 1, project_onto_simplex))}
 
 #' project onto a standard 3d simplex.
 #'
@@ -387,7 +177,6 @@ project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
   df_3d[,column_names] <- df_3d_inner
   return(df_3d)
 }
-
 
 #' assert if observation is inside elipsoid
 #'
@@ -486,12 +275,12 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
 
     xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
     #kde style
-    kde_ci_list <- TCpredictionbands::kde_from_tclist(dflist = data2d_list,
-                                                      grid_size = grid_size,
-                                                      alpha = 1-alpha_level,
-                                                      position = xy_position)
+    kde_ci_list <- kde_from_list(dflist = data2d_list,
+                                 grid_size = grid_size,
+                                 alpha = alpha_level,
+                                 position = xy_position)
 
-    kde_ci_df <- kde_ci_list$contour %>% lapply(as.data.frame) %>%
+    kde_ci_df <- kde_ci_list %>% lapply(as.data.frame) %>%
       dplyr::bind_rows(.id = "kde_poly")
 
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
@@ -505,7 +294,7 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
       project_to_simplex(column_names = c("x","y","z"))
 
     return(kde_ci_df3)            },
-                                    required_aes = c("x", "y", "z", "sim_group"))
+  required_aes = c("x", "y", "z", "sim_group"))
 
 #' stat object for use in delta_ball based stat_confidence_band and
 #' geom_confidence_band
@@ -531,29 +320,23 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
     dist_mat <- dist_matrix_innersq(data2d_list,
                                     position = xy_position,
                                     verbose = FALSE)
-    data_deep_points <- TCpredictionbands::depth_curves_to_points(data2d_list,
-                                                        alpha = alpha_level,
-                                                        dist_mat = dist_mat) %>%
-      dplyr::rename(lat = "x", long = "y")
+    data_deep_points <- depth_curves_to_points(data2d_list,
+                                               alpha = alpha_level,
+                                               dist_mat = dist_mat)
 
     delta_info <- delta_structure(data_deep_points)
 
-    structure <- delta_info$structure %>%
-      dplyr::rename(x = "long", y = "lat")
+    structure <- delta_info$structure
 
     delta <- delta_info$delta
 
     inner_df <- dplyr::setdiff(data_deep_points %>%
-                                 dplyr::rename(x = "lat", y = "long") %>%
                                  dplyr::select(x,y),
                                structure %>%
                                  dplyr::select(x,y))
 
     border_points <- structure %>% dplyr::select(x,y)
     inner_points <- inner_df
-
-
-
 
     xrange <- seq(min(border_points$x) - over_delta,
                   max(border_points$x) + over_delta,
@@ -622,9 +405,9 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
 
         x_dim <- 2
 
-        a <- data2d %>% group_by(t) %>%
-          nest() %>%
-          mutate(n = purrr::map(data, function(df){nrow(df)}),
+        a <- data2d %>% dplyr::group_by(t) %>%
+          tidyr::nest() %>%
+          dplyr::mutate(n = purrr::map(data, function(df){nrow(df)}),
                  mean = purrr::map(data,function(df){df %>%
                      dplyr::select(x,y) %>%
                      sapply(mean)}),
@@ -632,11 +415,11 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
                      dplyr::select(x,y) %>%
                      cov})
           ) %>%
-          mutate(
+          dplyr::mutate(
             bound = purrr::map(n, function(n) {
               return((x_dim * (n-1)) / (n - x_dim) *
                        pf(q = alpha_level, df1 = x_dim, df2 = n - x_dim))})) %>%
-          mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
+          dplyr::mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
                   function(bound, mean, Sigma) {
                     check_inside_elipsoid_func(Sigma, mean, bound,
                                                suppress_warning = TRUE)}))
@@ -709,10 +492,8 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
         dist_mat <- dist_matrix_innersq(data2d_list,
                                         position = xy_position,
                                         verbose = FALSE)
-        data_deep_points <- TCpredictionbands::depth_curves_to_points(
+        data_deep_points <- depth_curves_to_points(
           data2d_list, alpha = alpha_level, dist_mat = dist_mat) %>%
-          dplyr::rename(lat = "x", long = "y") %>%
-          dplyr::rename(x = "lat", y = "long") %>%
           dplyr::select(x,y)
 
         chull_ids <- data_deep_points %>% chull()
@@ -854,8 +635,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' @export
 #' @examples
 #' library(ggplot2)
-#' library(ggtern)
 #' library(dplyr)
+#' library(ggtern); timeternR:::update_approved_layers()
+#' #                ^ this doesn't generally need to be done
 #'
 #' vis_data <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%

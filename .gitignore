@@ -15,4 +15,6 @@ inst/*.png
 inst/*.xcf
 dev/
 shannon_thesis/
+doc
+Meta
 

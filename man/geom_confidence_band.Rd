@@ -131,8 +131,9 @@ Learn more about setting these aesthetics in
 
 \examples{
 library(ggplot2)
-library(ggtern)
 library(dplyr)
+library(ggtern); timeternR:::update_approved_layers()
+#                ^ this doesn't generally need to be done
 
 vis_data <- timeternR::pomp_df \%>\%
   rename(x = "S", y = "I", z = "R") \%>\%

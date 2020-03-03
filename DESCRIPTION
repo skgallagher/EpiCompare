@@ -21,14 +21,17 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
-    olpsR,
     purrr,
     raster,
     rlang,
-    TCpredictionbands,
     tidyr,
+    tidyselect,
     tibble,
-    magrittr
+    magrittr,
+    RANN,
+    rgeos,
+    sp,
+    ks
 Suggests: 
     testthat (>= 2.1.0),
     knitr,

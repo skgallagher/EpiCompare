@@ -2,7 +2,7 @@
 % Please edit documentation in R/bands.R
 \name{get_xy_coord}
 \alias{get_xy_coord}
-\title{get xy ternary coordinates from xyz based data.frame}
+\title{get xy ternary coordinates from xyz based data frame}
 \usage{
 get_xy_coord(X_SIR, xyz_col = c("S", "I", "R"))
 }
@@ -13,9 +13,9 @@ get_xy_coord(X_SIR, xyz_col = c("S", "I", "R"))
 }
 \value{
 X_SIR motified to have columns "x" and "y" with the ternary
-coordinates
+  coordinates
 }
 \description{
 note that this does not need x,y,z to be scaled (but it should).
-This is just a data.frame wrapper for ggtern::tlr2xy.
+  This is just a data.frame wrapper for ggtern::tlr2xy.
 }

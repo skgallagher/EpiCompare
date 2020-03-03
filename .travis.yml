@@ -1,16 +1,21 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
+#before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+#deploy:
+#  provider: script
+#  script: Rscript -e 'pkgdown::deploy_site_github()'
+#  skip_cleanup: true
+
 language: r
 repos:
   CRAN: https://cloud.r-project.org
 
 r_packages:
   - covr
+  - pkgdown
 
 install:
   - R -e 'install.packages("devtools")' -e 'print(utils::packageVersion("tidyr"))'
-  - R -e 'devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
-  - R -e 'devtools::install_github("ngloe/olpsR", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
 
 script:

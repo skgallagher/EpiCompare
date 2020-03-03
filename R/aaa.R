@@ -1,3 +1,12 @@
+# List of new stats
+.newstat = c(sir_aggregate        = "StatSirAggregate",
+             conf_band_kde        = "StatConfBandKDE",
+             conf_band_delta_ball = "StatConfBandDeltaBall",
+             conf_band_spherical  = "StatConfBandSpherical",
+             conf_band_chull      = "StatConfBandConvexHull")
+.newgeom = c(sir       = "GeomSirAggregate",
+             conf_band = "GeomConfBand")
+
 #' import hidden function / variable from other package
 #'
 #' see ?`:::`
@@ -6,7 +15,7 @@
 #' @param name hidden item (function / variable)
 #' @return hidden object or function
 #' @export
-importsHiddenFrom <- function(pkg, name){
+imports_hidden_from <- function(pkg, name){
   pkg <- as.character(substitute(pkg))
   name <- as.character(substitute(name))
   get(name, envir = asNamespace(pkg), inherits = FALSE)
@@ -22,32 +31,19 @@ importsHiddenFrom <- function(pkg, name){
 #'
 #' @import ggtern
 #'
-#' @examples
-#' .newstat = c(sir_raw       = "StatSirRaw",
-#'              sir_fortified = "StatSirFortified")
-#' .newgeom = NULL
-#' #update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
-update_approved_layers <- function(stat_names = NULL, geom_names = NULL){
+update_approved_layers <- function(stat_names = .newstat,
+                                   geom_names = .newgeom){
   requireNamespace("ggtern", quietly = TRUE)
-  approvestatupdate <- c(importsHiddenFrom("ggtern",".approvedstat"),
+  approvestatupdate <- c(imports_hidden_from("ggtern",".approvedstat"),
                          stat_names)
   utils::assignInNamespace(".approvedstat", approvestatupdate,
                            pos = "package:ggtern")
 
-  approvegeomupdate <- c(importsHiddenFrom("ggtern",".approvedgeom"),
+  approvegeomupdate <- c(imports_hidden_from("ggtern",".approvedgeom"),
                          geom_names)
   utils::assignInNamespace(".approvedgeom", approvegeomupdate,
                            pos = "package:ggtern")
 
 }
 
-# List of new stats
-.newstat = c(sir_raw              = "StatSirRaw",
-             sir_fortified        = "StatSirFortified",
-             conf_band_kde        = "StatConfBandKDE",
-             conf_band_delta_ball = "StatConfBandDeltaBall",
-             conf_band_spherical  = "StatConfBandSpherical",
-             conf_band_chull      = "StatConfBandConvexHull")
-.newgeom = c(sir       = "GeomSIR",
-             conf_band = "GeomConfBand")
-update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
+update_approved_layers()

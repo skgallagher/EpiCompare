@@ -4,7 +4,7 @@
 \alias{update_approved_layers}
 \title{Updates approved layers of ggtern}
 \usage{
-update_approved_layers(stat_names = NULL, geom_names = NULL)
+update_approved_layers(stat_names = .newstat, geom_names = .newgeom)
 }
 \arguments{
 \item{stat_names}{named vector of new stats.}
@@ -13,10 +13,4 @@ update_approved_layers(stat_names = NULL, geom_names = NULL)
 }
 \description{
 Updates approved layers of ggtern
-}
-\examples{
-.newstat = c(sir_raw       = "StatSirRaw",
-             sir_fortified = "StatSirFortified")
-.newgeom = NULL
-#update_approved_layers(stat_name = .newstat, geom_name = .newgeom)
 }
