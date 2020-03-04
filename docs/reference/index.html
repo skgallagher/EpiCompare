@@ -234,19 +234,13 @@
       <tr>
         
         <td>
-          <p><code><a href="fortify_EpiModel.html">fortify_EpiModel()</a></code> </p>
-        </td>
-        <td><p>Generic method that takes in data from the <code>EpiModel</code> package and puts it in aggregate, SIR format</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fortify_EpiModel.dcm.html">fortify_EpiModel(<i>&lt;dcm&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_EpiModel.dcm.html">fortify_EpiModel.dcm()</a></code> </p>
         </td>
         <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in the <code>dcm</code> class and puts it in SIR format</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_EpiModel.icm.html">fortify_EpiModel(<i>&lt;icm&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_EpiModel.icm.html">fortify_EpiModel.icm()</a></code> </p>
         </td>
         <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in <code>icm</code> format and puts it in SIR format</p></td>
       </tr><tr>
@@ -259,27 +253,63 @@ and stops being infected (as well as initial state).</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.html">fortify_pomp()</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.html">fortify_aggregate_ext()</a></code> </p>
         </td>
-        <td><p>Generic method that takes in data from the R pomp package and puts it in SIR format</p></td>
+        <td><p>Comments for Ben and Shannon</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.data.frame.html">fortify_pomp(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.data.frame.html">fortify_aggregate_ext(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.dcm.html">fortify_aggregate_ext(<i>&lt;dcm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Take external aggregate data and put it in a format used in this package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.icm.html">fortify_aggregate_ext(<i>&lt;icm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Comments for Ben and Shannon</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.list.html">fortify_aggregate_ext(<i>&lt;list&gt;</i>)</a></code> </p>
         </td>
         <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.list.html">fortify_pomp(<i>&lt;list&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.pompList.html">fortify_aggregate_ext(<i>&lt;pompList&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR</p></td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.pompList.html">fortify_pomp(<i>&lt;pompList&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.pomp_df.html">fortify_aggregate_ext(<i>&lt;pomp_df&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR</p></td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.pomp_list.html">fortify_aggregate_ext(<i>&lt;pomp_list&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_epimodel.html">fortify_epimodel()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the <code>EpiModel</code> package and puts it in aggregate, SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.html">fortify_pomp()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the R pomp package and puts it in SIR format</p></td>
       </tr><tr>
         
         <td>
@@ -529,12 +559,7 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
         <td>
           <p><code><a href="check_min_max_time.html">check_min_max_time()</a></code> </p>
         </td>
-        <td><p>Comments for Shannon:
-# not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
-(difference between the below examples. - this may correspond to comment:
-timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
-is part of the problem...") additionally, this doesn't cost us anything in
-the filament visualization as the data points are the same.</p></td>
+        <td><p>min_max_time vector check</p></td>
       </tr><tr>
         
         <td>
@@ -596,7 +621,7 @@ is actually d^2</p></td>
         <td>
           <p><code><a href="expanding_info.html">expanding_info()</a></code> </p>
         </td>
-        <td><p>add class and time placeholder with zero individuals to data frame</p></td>
+        <td><p>expanding aggregate data to desirable format</p></td>
       </tr><tr>
         
         <td>
@@ -606,25 +631,25 @@ is actually d^2</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="extract_icm_cols.html">extract_icm_cols()</a></code> </p>
+        </td>
+        <td><p>Extract the icm class totals</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="fit_kde_object.html">fit_kde_object()</a></code> </p>
         </td>
         <td><p>Fit kernel density estimator (KDE) object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_EpiModel.html">fortify_EpiModel()</a></code> </p>
-        </td>
-        <td><p>Generic method that takes in data from the <code>EpiModel</code> package and puts it in aggregate, SIR format</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fortify_EpiModel.dcm.html">fortify_EpiModel(<i>&lt;dcm&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_EpiModel.dcm.html">fortify_EpiModel.dcm()</a></code> </p>
         </td>
         <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in the <code>dcm</code> class and puts it in SIR format</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_EpiModel.icm.html">fortify_EpiModel(<i>&lt;icm&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_EpiModel.icm.html">fortify_EpiModel.icm()</a></code> </p>
         </td>
         <td><p>Takes in output from the <code>R</code> <code>EpiModel</code> package in <code>icm</code> format and puts it in SIR format</p></td>
       </tr><tr>
@@ -637,27 +662,63 @@ and stops being infected (as well as initial state).</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.html">fortify_pomp()</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.html">fortify_aggregate_ext()</a></code> </p>
         </td>
-        <td><p>Generic method that takes in data from the R pomp package and puts it in SIR format</p></td>
+        <td><p>Comments for Ben and Shannon</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.data.frame.html">fortify_pomp(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.data.frame.html">fortify_aggregate_ext(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.dcm.html">fortify_aggregate_ext(<i>&lt;dcm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Take external aggregate data and put it in a format used in this package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.icm.html">fortify_aggregate_ext(<i>&lt;icm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Comments for Ben and Shannon</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.list.html">fortify_aggregate_ext(<i>&lt;list&gt;</i>)</a></code> </p>
         </td>
         <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.list.html">fortify_pomp(<i>&lt;list&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.pompList.html">fortify_aggregate_ext(<i>&lt;pompList&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Takes in data from the R pomp package  where the output is array and puts it in SIR format for timeternR</p></td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="fortify_pomp.pompList.html">fortify_pomp(<i>&lt;pompList&gt;</i>)</a></code> </p>
+          <p><code><a href="fortify_aggregate_ext.pomp_df.html">fortify_aggregate_ext(<i>&lt;pomp_df&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Takes in data from the R pomp package  where the output is pomp and puts it in SIR format for timeternR</p></td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_aggregate_ext.pomp_list.html">fortify_aggregate_ext(<i>&lt;pomp_list&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_epimodel.html">fortify_epimodel()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the <code>EpiModel</code> package and puts it in aggregate, SIR format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fortify_pomp.html">fortify_pomp()</a></code> </p>
+        </td>
+        <td><p>Generic method that takes in data from the R pomp package and puts it in SIR format</p></td>
       </tr><tr>
         
         <td>
@@ -682,6 +743,12 @@ and stops being infected (as well as initial state).</p></td>
           <p><code><a href="get_delta.html">get_delta()</a></code> </p>
         </td>
         <td><p>Find delta for covering</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_epimodel_icm_states.html">get_epimodel_icm_states()</a></code> </p>
+        </td>
+        <td><p>Get the viable names for the states from an icm object</p></td>
       </tr><tr>
         
         <td>

@@ -80,14 +80,29 @@ library(tidyverse)
 library(ggtern)
 library(timeternR)
 ```
+The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.
 ```{r}
 hagelloch_raw %>%
-   dplyr::filter(SEX %in% c("male", "female")) %>%
-   ggplot(aes(y = tI, z = tR, color = SEX)) +
+  ggplot(aes(y = tI, z = tR)) +
+    geom_aggregate() + 
+    coord_tern() +
+    labs(x = "S", y = "I", z = "R", title = "Town Analysis")
+```
+
+Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.
+```{r}
+hagelloch_raw %>% 
+  rename(`school grade` = CL) %>%
+  group_by(`school grade`) %>%
+  summarize(`number of students` = n())
+
+hagelloch_raw %>%
+   ggplot(aes(y = tI, z = tR, color = CL)) +
        geom_aggregate() + 
        coord_tern() +
        labs(x = "S", y = "I", z = "R",
-            color = "Gender")
+            color = "School Grade",
+            title = "Town analysis by grade") 
 ```
 
 

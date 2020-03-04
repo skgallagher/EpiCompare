@@ -7,7 +7,7 @@
 check_ordered(df, states, assert_error = TRUE)
 }
 \arguments{
-\item{df}{data frame with individual agent information}
+\item{df}{data frame with individual agent information (n x p)}
 
 \item{states}{time entered state, in expected order}
 
@@ -15,15 +15,35 @@ check_ordered(df, states, assert_error = TRUE)
 is violated.}
 }
 \value{
-depends, see details
+This function returns either
+\itemize{
+  \item TRUE, if the states are ordered,
+  \item an error is observed (when assert_error = TRUE), \strong{or}
+  \item a list of 2 data frames. The first, \code{ordering_df}, an (n x 3)
+  data.frame, contains information per agent on if they violated the
+  assumption ("error" column), and the ordering of their states ("ordering"
+  column). The second, \code{summary_df} (k x 3) data frame contains
+  information on the number of unique ordering ("ordering"), if they caused
+  the assumption to be violated ("error") and the number of agents that had
+  the ordering ("count").
+}
 }
 \description{
-checks if states within data frame are ordered as inputted (<=)
+This function assesses whether agents's time they enter each state is
+correctly order. The assumption is that these would be ordered in increasing
+values, with the allowance of \code{NA} values not effecting this decision.
 }
 \details{
-This function returns either 1) TRUE, if the states are ordered, 2)
-an error is observed (when assert_error = TRUE), or 3) a list of 2 data
-frames, the first containing information for each individual (their observed
-ordering and if they broke the provided ordering), and the second containing
-summarization on the number of individuals in each of the ordering "classes".
+If this important assumption is violated this function either raises an error
+or provides the user with information on what when wrong - to allow the user
+to how to corect the error (see \code{assert_error} to change between these
+states).
+}
+\examples{
+df_not_ordered <- data.frame(group1 = 1:5,
+                             group2 = c(2:5,1))
+output <- check_ordered(df_not_ordered, c("group1", "group2"),
+                        assert_error = F)
+output
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/agent-to-aggregate.R
 \name{expanding_info}
 \alias{expanding_info}
-\title{add class and time placeholder with zero individuals to data frame}
+\title{expanding aggregate data to desirable format}
 \usage{
 expanding_info(df, t_min, t_max, K)
 }
@@ -15,11 +15,21 @@ which provide information on the number of agents that became said
 
 \item{t_max}{maximum integer time}
 
-\item{K}{number of stages - 1 (e.g.: SIR has K = 2)}
+\item{K}{(number of stages - 1) (e.g.: SIR has K = 2)}
 }
 \value{
-expanded data frame
+expanded data frame: a data frame with columns \code{t} and a set of
+  the unique \code{states} as columns. For each row, it contains the number
+  of agents to change to said state at specified time.
 }
 \description{
-this is an internal function (so t_min, t_max, K should be correct)
+This internal function specifically takes a data frame the contains rows that
+provide the an integer time, a state and the number of agents that entered
+that state at that time (this data frame only contains counts > 0).
+}
+\details{
+This function then outputs a "\code{pivot_longer}" data frame, that has 1 row
+per integer time period between (and including) t_min and t_max. Even if 0
+agents change their state at that given time. The columns (beyond \code{t})
+relate to each state.
 }

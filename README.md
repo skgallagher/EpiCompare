@@ -25,48 +25,13 @@ Currently there are 13 data sets in which to explore the different `timeternR` f
 
 Details of each can be found with `?{data}`.
 
-
-   Currently there are 14 data sets in which to explore the different `timeternR` functions.  These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
-   
-   Details of each can be found with `?{data}`.
-   
-  - `agent_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent.  The statistics are (inititial state (0/1/2), SMax, IMax). 
-  
-  - `agent_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `agent_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax.
-  
-  
-  - `EpiModel_agg_bd` Example output from the `EpiModel package` for an ICM with birth and death rates.  The population $N$ is non-constant.
-  
-  - `EpiModel_det` output from the `EpiModel` package for a deterministic model (aggregate)
-  
-  - `EpiModel_icm` Output from the `EpiModel` package for a stochastic ICM (aggregate)
-     
-
-  - `hagelloch_agents` -- One row is a "sufficient" statistic for each agent's infection.  Each agent's infection is uniquely identified by an initial state, max time before infection (or T), and max time before recovery (or T).  For the states, 0 = S, 1 = I, 2 = R.
-   
-  - `hagelloch_aug_births` Like Hagelloch raw but augmented with births (it already had deaths).  Five fake people have been added who join the population over time
-   
-      
-
--   `hagelloch_raw` -- One row is an agent.  This is imported from the `surveillance` R package and the variable descriptions are found [here](https://rdrr.io/rforge/surveillance/man/hagelloch.html) where it is originally labeled `hagelloch.df`.  We have renamed it here to help distinguish it from the other data sets we derive from it.
-   
--   `hagelloch_raw2` Like Hagelloch raw but with additional, fake people with NA values for `tI` and `tR`
-   
-   
--   `hagelloch_sir`  -- One row is a state of $(t, s_t, i_t, r_t)$ where $s_t + i_t + r_t = N$ for $t = 0, \dots, T=94$
-   
--   `pomp_arr` Example SIR simulation output of class `array` from the `pomp` packagee
-  
-- `pomp_df` Example SIR simulation of class `data.frame` from the `pomp` package
-
 -   `agent_sims` this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).
-
 
 -   `agent_sims_tidy` ("Simulations of Measles outbreaks for Hagelloch, Germany, 1861 (Tidy agent format)"): tidy version of `agent_sims` (9400 x 5), each row corresponds to an individual for a single simulation, and contains additional information on the individual's initial state, and SMax, IMax.
 
 -   `EpiModel_agg_bd` Example output from the `EpiModel package` for an ICM with birth and death rates. The population *N* is non-constant.
 
-  -   `EpiModel_det` output from the `EpiModel` package for a deterministic model (aggregate)
+-   `EpiModel_det` output from the `EpiModel` package for a deterministic model (aggregate)
 
 -   `EpiModel_icm` Output from the `EpiModel` package for a stochastic ICM (aggregate)
 
@@ -97,17 +62,42 @@ library(ggtern)
 library(timeternR)
 ```
 
+The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.
+
 ``` r
 hagelloch_raw %>%
-   dplyr::filter(SEX %in% c("male", "female")) %>%
-   ggplot(aes(y = tI, z = tR, color = SEX)) +
-       geom_aggregate() + 
-       coord_tern() +
-       labs(x = "S", y = "I", z = "R",
-            color = "Gender")
+  ggplot(aes(y = tI, z = tR)) +
+    geom_aggregate() + 
+    coord_tern() +
+    labs(x = "S", y = "I", z = "R", title = "Town Analysis")
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.
+
+``` r
+hagelloch_raw %>% 
+  rename(`school grade` = CL) %>%
+  group_by(`school grade`) %>%
+  summarize(`number of students` = n())
+#> # A tibble: 3 x 2
+#>   `school grade` `number of students`
+#>   <fct>                         <int>
+#> 1 preschool                        90
+#> 2 1st class                        30
+#> 3 2nd class                        68
+
+hagelloch_raw %>%
+   ggplot(aes(y = tI, z = tR, color = CL)) +
+       geom_aggregate() + 
+       coord_tern() +
+       labs(x = "S", y = "I", z = "R",
+            color = "School Grade",
+            title = "Town analysis by grade") 
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ### Simulate SIR data
 
@@ -133,7 +123,7 @@ df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
     coord_tern()
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 Notes:
 ------

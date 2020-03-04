@@ -32,15 +32,6 @@ if(!require(timeternR)){
 library(timeternR)
 ```
 
-For this package, we currently use 2 github based packages which you can load in the following manner:
-
-```{r eval=FALSE}
-library(devtools)
-devtools::install_github("Mr8ND/TC-prediction-bands/TCpredictionbands")
-devtools::install_github("ngloe/olpsR")
-```
-
-
 ```{r echo = F, message = F, warning = F}
 # hidden load currently
 library(devtools)
@@ -56,9 +47,9 @@ library(tidyr)
 library(ggtern)
 ```
 
-The below takes a data frame of individuals who have reported infection and recovery times, groups them into male and females, aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
+The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered, information on their school class.
 
-```{r quickstart, fig.width=6, eval=TRUE}
+```{r quickstart, fig.width=6, eval=TRUE, message=F}
 ## Visualizing epidemic progression using timeternR
 library(kableExtra)
 timeternR::hagelloch_raw %>% head() %>%
@@ -69,18 +60,39 @@ timeternR::hagelloch_raw %>% head() %>%
 
 ```
 
+To understand to epidemic we can examine it through an "aggregate" lense (using `geom_aggregate`), which aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
+
 ```{r}
 theme_set(theme_minimal())
 
-timeternR::hagelloch_raw %>%
-   filter(SEX %in% c("male", "female")) %>%
-   ggplot(aes(y = tI, z = tR, color = SEX)) +
-   geom_aggregate() + 
-   geom_point(stat = "SirAggregate") + # or StatSirAggregate
-     coord_tern() +
-     labs(x = "S", y = "I", z = "R",
-          color = "Gender") 
+hagelloch_raw %>%
+  ggplot(aes(y = tI, z = tR)) +
+    geom_aggregate() + 
+    coord_tern() +
+    labs(x = "S", y = "I", z = "R", title = "Town analysis")
 ```
+
+Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.
+
+```{r}
+hagelloch_raw %>% 
+  rename(`school grade` = CL) %>%
+  group_by(`school grade`) %>%
+  summarize(`number of students` = n()) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+```
+
+```{r}
+hagelloch_raw %>%
+   ggplot(aes(y = tI, z = tR, color = CL)) +
+       geom_aggregate() + 
+       coord_tern() +
+       labs(x = "S", y = "I", z = "R",
+            color = "School grade",
+            title = "Town analysis by grade") +
+       scale_color_brewer(type = "qual")
+``` 
 
 
 ## Simulating epidemics with `simulate_SIR_agents`.
