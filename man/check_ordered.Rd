@@ -43,7 +43,7 @@ states).
 df_not_ordered <- data.frame(group1 = 1:5,
                              group2 = c(2:5,1))
 output <- check_ordered(df_not_ordered, c("group1", "group2"),
-                        assert_error = F)
+                        assert_error = FALSE)
 output
 
 }

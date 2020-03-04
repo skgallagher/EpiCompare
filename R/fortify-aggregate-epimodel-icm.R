@@ -13,7 +13,7 @@
 
 #'  Take external aggregate data and put it in a format used in this package
 #'
-#' @param ext_data output from external source package.  See details
+#' @param data output from external source package.  See details
 #' @param states names of states we want aggregate totals of at each time
 #' @param package_source optional argument to include the package from which the output is derived from, which helps with the fortify function when outputs are of generic classes such as list or data.frame
 #' @return a data frame with the following columns
@@ -25,37 +25,36 @@
 #' @export
 #' @examples
 #' ## For icm
-#' sir <- fortify_EpiModel(EpiModel_icm)
-#' head(sir)
-#' class(sir)
-fortify_aggregate_ext.icm <- function(ext_data,
+#' out <- fortify_aggregate(EpiModel_icm)
+#' head(out)
+fortify_aggregate.icm <- function(data,
                               states = NULL,
                               package_source = NULL){
 
 
     ## Grab the state names if not specified
     if(is.null(states)){
-        states <- get_epimodel_icm_states(ext_data)
+        states <- get_epimodel_icm_states(data)
     }
 
     ## Check if all the specified names are there
-    if(!all(c(states) %in% names(ext_data$epi))){
-    stop("The state names are not all in the names of ext_data$epi")
+    if(!all(c(states) %in% names(data$epi))){
+    stop("The state names are not all in the names of data$epi")
     } ## Don't have extra states
 
     ## Actual formatting
-    n_sim <- ext_data$control$nsims
+    n_sim <- data$control$nsims
     n_states <- length(states)
     state_list <- vector(mode = "list", length = n_states)
     for(ii in 1:n_states){
         nm <- states[ii]
-        state_list[[ii]] <- extract_icm_cols(nm, ii-1, ext_data$epi)
+        state_list[[ii]] <- extract_icm_cols(nm, ii-1, data$epi)
     }
 
 
     ## Extract time steps
-    mat <- ext_data$epi[[1]]
-    t <- rep(1:ext_data$control$nsteps, ncol(mat))
+    mat <- data$epi[[1]]
+    t <- rep(1:data$control$nsteps, ncol(mat))
 
 
     ## Put it all together
@@ -98,7 +97,7 @@ extract_icm_cols <- function(nm, ii, epi){
                                    names_to = "sim",
                                    values_to = paste0("X", ii))
      } else{
-         df <- tidyr::gather(as.data.frame(S_mat),
+         df <- tidyr::gather(as.data.frame(mat),
                                key = "sim", value = paste("X", ii))
 
      }

@@ -5,7 +5,7 @@
 
 #' Takes in data from the R pomp package where the output is a data frame and puts it in SIR format for timeternR
 #'
-#' @param ext_data Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}
+#' @param data Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}
 #' @param states vector of state names
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified with the \code{states} argument.  If code{states = NULL}, we will attempt to find all single letter names in POMP and output those.
@@ -16,13 +16,13 @@
 #' \item{Xk}{where k = 0, ..., K}
 #' }
 #' @export
-fortify_aggregate_ext.data.frame <- function(ext_data,
+fortify_aggregate.data.frame <- function(data,
                                            states = NULL,
                                            package_source = NULL){
 
-    if(package_source == "pomp"){
-        class(ext_data) <- c("pomp_df", class(ext_data))
-        out <- fortify_aggregate_ext.pomp_df(ext_data,
+    if(!is.null(package_source) && package_source == "pomp"){
+        class(data) <- c("pomp_df", class(data))
+        out <- fortify_aggregate.pomp_df(data,
                                                states = states)
         return(out)
     }
