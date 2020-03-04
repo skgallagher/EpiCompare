@@ -1,52 +1,51 @@
-#' Comments for Shannon:
-#' # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
-#' (difference between the below examples. - this may correspond to comment:
-#' timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
-#' is part of the problem...") additionally, this doesn't cost us anything in
-#' the filament visualization as the data points are the same.
-#'
-#' # example code:
-#' agents <- timeternR::hagelloch_raw
-#' states <- c("tI", "tR")
-#' death <- "tDEAD"
-#' birth <- NULL
-#' min_max_time <- c(0, NA)
-#' @examples 
-#' b <- agents_to_aggregate(agents, states, death, birth = birth)
-#' a <- timeternR::hagelloch_raw %>%
-#' timeternR::fortify_agents() %>%
-#' timeternR::agents_to_aggregate_SIR() %>%
-#' as.matrix
-#'
-#' #look at:
-#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#'
-#' # keeping in mind:
-#' timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
-#' dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
-#'
-#' ### example 2 of code:
-#' agents <- timeternR::hagelloch_raw
-#' # making babies
-#' set.seed(5)
-#' babies <- sample(nrow(agents),size = 5)
-#' agents$tBIRTH <- NA
-#' agents$tBIRTH[babies] <- agents$tI[babies] - 5
-#' states <- c("tI", "tR")
-#' death <- NULL
-#' birth <- "tBIRTH"
-#' min_max_time <- c(0, NA)
-#'
-#' b <- agents_to_aggregate(agents, states, death, birth = birth)
-#' a <- timeternR::hagelloch_raw %>%
-#' timeternR::fortify_agents() %>%
-#' timeternR::agents_to_aggregate_SIR() %>%
-#' as.matrix
-#'
-#' b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#'
-#' agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
-#' dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
+# Comments for Shannon:
+# # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
+# (difference between the below examples. - this may correspond to comment:
+# timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
+# is part of the problem...") additionally, this doesn't cost us anything in
+# the filament visualization as the data points are the same.
+#
+# # example code:
+# agents <- timeternR::hagelloch_raw
+# states <- c("tI", "tR")
+# death <- "tDEAD"
+# birth <- NULL
+# min_max_time <- c(0, NA)
+# b <- agents_to_aggregate(agents, states, death, birth = birth)
+# a <- timeternR::hagelloch_raw %>%
+# timeternR::fortify_agents() %>%
+# timeternR::agents_to_aggregate_SIR() %>%
+# as.matrix
+#
+# #look at:
+# b[1:(nrow(b)-2),] - a[2:nrow(a),]
+#
+# # keeping in mind:
+# timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
+# dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
+#
+# ### example 2 of code:
+# agents <- timeternR::hagelloch_raw
+# # making babies
+# set.seed(5)
+# babies <- sample(nrow(agents),size = 5)
+# agents$tBIRTH <- NA
+# agents$tBIRTH[babies] <- agents$tI[babies] - 5
+# states <- c("tI", "tR")
+# death <- NULL
+# birth <- "tBIRTH"
+# min_max_time <- c(0, NA)
+#
+# b <- agents_to_aggregate(agents, states, death, birth = birth)
+# a <- timeternR::hagelloch_raw %>%
+# timeternR::fortify_agents() %>%
+# timeternR::agents_to_aggregate_SIR() %>%
+# as.matrix
+#
+# b[1:(nrow(b)-2),] - a[2:nrow(a),]
+#
+# agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
+# dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
 
 
 
@@ -73,18 +72,40 @@ check_min_max_time <- function(min_max_time){
 
 #' checks if states within data frame are ordered as inputted (<=)
 #'
-#' @details This function returns either 1) TRUE, if the states are ordered, 2)
-#' an error is observed (when assert_error = TRUE), or 3) a list of 2 data
-#' frames, the first containing information for each individual (their observed
-#' ordering and if they broke the provided ordering), and the second containing
-#' summarization on the number of individuals in each of the ordering "classes".
+#' This function assesses whether agents's time they enter each state is
+#' correctly order. The assumption is that these would be ordered in increasing
+#' values, with the allowance of \code{NA} values not effecting this decision.
 #'
-#' @param df data frame with individual agent information
+#' If this important assumption is violated this function either raises an error
+#' or provides the user with information on what when wrong - to allow the user
+#' to how to corect the error (see \code{assert_error} to change between these
+#' states).
+#'
+#' @param df data frame with individual agent information (n x p)
 #' @param states time entered state, in expected order
 #' @param assert_error boolean if we should raise error if ordering assumption
 #' is violated.
 #'
-#' @return depends, see details
+#' @return This function returns either
+#' \itemize{
+#'   \item TRUE, if the states are ordered,
+#'   \item an error is observed (when assert_error = TRUE), \strong{or}
+#'   \item a list of 2 data frames. The first, \code{ordering_df}, an (n x 3)
+#'   data.frame, contains information per agent on if they violated the
+#'   assumption ("error" column), and the ordering of their states ("ordering"
+#'   column). The second, \code{summary_df} (k x 3) data frame contains
+#'   information on the number of unique ordering ("ordering"), if they caused
+#'   the assumption to be violated ("error") and the number of agents that had
+#'   the ordering ("count").
+#' }
+#'
+#' @examples
+#' df_not_ordered <- data.frame(group1 = 1:5,
+#'                              group2 = c(2:5,1))
+#' output <- check_ordered(df_not_ordered, c("group1", "group2"),
+#'                         assert_error = F)
+#' output
+#'
 #' @export
 check_ordered <- function(df, states, assert_error = TRUE){
   df_select <- df[, states]
@@ -112,12 +133,15 @@ check_ordered <- function(df, states, assert_error = TRUE){
 
   if (assert_error){
     assertthat::assert_that(sum(logic_out) == 0,
-                            msg = paste("provided states order isn't correct /",
-                                        "met, use",
-                                        "'check_ordered' function with",
+                            msg = paste("provided 'states' values are not",
+                                        "ordered (some agents have times they",
+                                        "enter each state in a different order",
+                                        "than the 'state' parameter suggests).",
+                                        "Use the 'check_ordered' function with",
                                         "'assert_error = FALSE' to get info",
-                                        "on which rows made this assumption",
-                                        "incorrect"))
+                                        "on which rows made the assumption",
+                                        "that states are ordered correctly",
+                                        "violated."))
   }
 
   if (sum(logic_out) != 0) {
@@ -140,33 +164,59 @@ check_ordered <- function(df, states, assert_error = TRUE){
 }
 
 
-#' add class and time placeholder with zero individuals to data frame
+#' expanding aggregate data to desirable format
 #'
-#' this is an internal function (so t_min, t_max, K should be correct)
+#' This internal function specifically takes a data frame the contains rows that
+#' provide the an integer time, a state and the number of agents that entered
+#' that state at that time (this data frame only contains counts > 0).
+#'
+#' This function then outputs a "\code{pivot_longer}" data frame, that has 1 row
+#' per integer time period between (and including) t_min and t_max. Even if 0
+#' agents change their state at that given time. The columns (beyond \code{t})
+#' relate to each state.
 #'
 #' @param df data frame with \code{state}, \code{t} and \code{count} columns
-#' which provide information on the number of agents that became said
-#' \code{state} at time \code{t}.
+#'   which provide information on the number of agents that became said
+#'   \code{state} at time \code{t}.
 #' @param t_min minimum integer time
 #' @param t_max maximum integer time
-#' @param K number of stages - 1 (e.g.: SIR has K = 2)
+#' @param K (number of stages - 1) (e.g.: SIR has K = 2)
 #'
-#' @return expanded data frame
+#' @return expanded data frame: a data frame with columns \code{t} and a set of
+#'   the unique \code{states} as columns. For each row, it contains the number
+#'   of agents to change to said state at specified time.
 expanding_info <- function(df, t_min, t_max, K){
   if (tidyr_new_interface()){
-    ## just running
+    ## The below code uses tidyr's "spec" approach (which allows for specs to
+    # be provided to alter the outcome of "pivot").
+    #
+    # In this example, in tidyr <= 8.3 we'd do:
     # ```
-    #  %>% tidyr::pivot_wider(names_from = .data$t, values_from = .data$count,
+    # df %>% dplyr::mutate(t = factor(.data$t, levels = t_min:t_max)) %>%
+    #   tidyr::spread(key = .data$t,
+    #                 value = .data$count,
+    #                 drop = FALSE, fill = 0)
+    # ```
+    # which expands the t value sto get all integers between t_min:t_max in the
+    # t column.
+    #
+    # In the new tidyr (1.0.0) pivot_wider doesn't include a "drop = FALSE"
+    # parameter, and if we do the following:
+    # ```
+    # df %>% tidyr::pivot_wider(names_from = .data$t, values_from = .data$count,
     #                        values_fill = list(count = 0))
     # ```
-    # would loose the desire to have all values of t - even if no changes for
-    # that t. specifically it would have a `spec`` like:
+    # we would loose the desire to have all values of t - even if no changes for
+    # that t (aka the original data frame never saw certain values of t).
+    #
+    # Trying to understanding tidyr's new "spec" approach, I would encourage you
+    # to run the following code.
     # ```
     # spec <- new %>% tidyr::build_wider_spec(names_from = .data$t,
     #                                 values_from = .data$count)
     # ```
-    # so instead - we make our own `spec`:
-
+    # this is the associated spec with the pivot_wider that dropped the `t`s we
+    # wanted to keep. We really want a spec as defined below in `my_spec`:
     my_spec <- tibble::tibble(.name = as.character(t_min:t_max),
                               .value = "count",
                               t = as.integer(t_min:t_max))
@@ -417,7 +467,7 @@ agents_to_aggregate.data.frame <- function(agents,
   # columns states - converting to strings ------------
   # this code mirrors tidyr::nest's code
 
-  # states ---
+  # states ---------
   state_cols <- dplyr::enquos(states)
   if (any(rlang::names2(state_cols) == "")) {
     state_col_names <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
@@ -425,7 +475,7 @@ agents_to_aggregate.data.frame <- function(agents,
     state_cols_expr <- dplyr::expr(c(!!!dplyr::syms(state_col_names)))
     states <- state_col_names
   }
-  # death ---
+  # death ----------
   death_col <- dplyr::enquo(death)
   death_col2 <- dplyr::enquos(death)
 
@@ -443,8 +493,7 @@ agents_to_aggregate.data.frame <- function(agents,
     }
   }
 
-  #browser()
-  # birth ---
+  # birth -------------
   birth_col <- dplyr::enquo(birth)
   birth_col2 <- dplyr::enquos(birth)
   if (length(birth_col2) != 1){
@@ -459,6 +508,7 @@ agents_to_aggregate.data.frame <- function(agents,
       birth <- birth_col_name
     }
   }
+
 
   # parameter check -----------------------------------
   check_min_max_time(min_max_time)
