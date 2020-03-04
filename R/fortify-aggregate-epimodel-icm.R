@@ -98,8 +98,8 @@ extract_icm_cols <- function(nm, ii, epi){
                                    values_to = paste0("X", ii))
      } else{
          df <- tidyr::gather(as.data.frame(mat),
-                               key = "sim", value = paste("X", ii))
-
+                             key = "sim") %>%
+             dplyr::rename(!!paste0("X", ii) := value) 
      }
     return(df)
 

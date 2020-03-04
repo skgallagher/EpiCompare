@@ -4,14 +4,7 @@
 \alias{simulate_SIR_agents}
 \title{Simulate SIR data according to a chain Binomial}
 \usage{
-simulate_SIR_agents(
-  n_sims,
-  n_time_steps,
-  beta,
-  gamma,
-  init_SIR,
-  output_format = "data.frame"
-)
+simulate_SIR_agents(n_sims, n_time_steps, beta, gamma, init_SIR)
 }
 \arguments{
 \item{n_sims}{number of times to run simulation}
@@ -26,13 +19,11 @@ simulate_SIR_agents(
 \item{init_SIR}{vector of (S0, I0, R0) the number of agents initially in the
 Susceptible, Infected, and Recovered state, respectively.  The sum of this
 will be used as the number of agents}
-
-\item{output_format}{one of either "array" or "data.frame"}
 }
 \value{
 The the output is a data.frame with
-columns agent_id, init_state, I_max, R_max, sim_num.  The size is (n_agents
-x n_sims) x 5.
+columns agent_id, init_state, sim_num, tI, tR.  The size is (n_agents
+x n_sims) x 4.
 }
 \description{
 Simulate SIR data according to a chain Binomial
@@ -46,16 +37,14 @@ time t) will update according to the following where the states are denoted
 \textnormal{Bernoulli} \left ( p_{t-1}\right ) & \textnormal{ if }
 A_{t-1,k} = 0 \\ 1 + Bernoulli(\gamma) & \textnormal{ if } A_{t-1,k} = 1
 \\2 & \textnormal{ otherwise}  \end{array} \right . }
-
-The 3 pieces that make up the agents statistic are (init_state (0/1/2), max time
-susceptible, max time infectious.)  If the agent never became infectious or
-was infectious at time \eqn{t=0} then \eqn{s_max = n_time_steps -1}.
-Similarly, if the agent never recovers or is recovered from time 0 on then
-\eqn{i_max = n_time_steps -1}.
+If the agent  was infectious at time \eqn{t=0} then \eqn{tI  <= 0 }.
+If the agent never becomes infectious then  \eqn{tI = NA}.
+If the agent never recovers or is recovered from time 0 on then
+\eqn{tR = NA}.
+Otherwise we assume the agent is susceptible.
 }
 \examples{
 sims_data <- simulate_SIR_agents(n_sims = 2, n_time_steps = 5,
-                                 beta = .5, gamma = .1, init_SIR = c(9,1,0),
-output_format = "data.frame")
+                                 beta = .5, gamma = .1, init_SIR = c(9,1,0))
 dim(sims_data)
 }
