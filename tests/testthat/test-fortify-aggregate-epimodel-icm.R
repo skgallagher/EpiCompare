@@ -40,9 +40,11 @@ test_that("extract_icm_cols", {
 
     ## Testing out the gather function
     mat <- EpiModel_icm$epi[[1]]
+    ii <- 0
     df <- tidyr::gather(as.data.frame(mat),
                              key = "sim") %>%
         dplyr::rename(!!paste0("X", ii) := value)
     expect_equal(dim(df), dim(out))
 })
+
 

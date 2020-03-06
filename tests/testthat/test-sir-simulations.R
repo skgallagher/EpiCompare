@@ -94,9 +94,10 @@ test_that("simulate_SIR_agents",{
   #############################
 
   ## Make sure max_time_S <= max_time_I
-  out <- simulate_SIR_agents(n_sims = n_sims,
-                             n_time_steps = n_time_steps,
-                             beta = beta, gamma = gamma,
+  init_SIR <-  c(9,1,0)
+  out <- simulate_SIR_agents(n_sims = 1,
+                             n_time_steps = 10,
+                             beta = .5,  gamma = .1,
                              init_SIR = init_SIR)
   diffs <- out$tR - out$tI
   expect_true(all((diffs >= 0)|(is.na(diffs))))
@@ -111,7 +112,7 @@ test_that("simulate_SIR_agents",{
 test_that("sir sims and agents_to_aggregate", {
 
 
-    n_sims <- 1
+  n_sims <- 1
   n_time_steps <- 50
   beta <- .1
   gamma <- .03
@@ -124,12 +125,12 @@ test_that("sir sims and agents_to_aggregate", {
                              init_SIR = init_SIR)
 
   
-  out2 <- agents_to_aggregate(agents, states = c(tI, tR))
+  out2 <- agents_to_aggregate(head(agents) %>% filter(sim == 1), states = c(tI, tR))
 
   expect_true("X0" %in% colnames(out2))
 #############################################
 ### as data frame
-  df <- out %>% as.data.frame()
+  df <- agents %>% dplyr::filter(sim == 1) %>% as.data.frame()
   out2 <- agents_to_aggregate(df, states = c(tI, tR))
   expect_true("X0" %in% colnames(out2))
 
@@ -142,7 +143,7 @@ test_that("sir sims and agents_to_aggregate", {
   init_SIR <- c(90, 10, 0)
   
 
-  agents <- simulate_SIR_agents(n_sims = n_sims,
+  agents <- simulate_SIR_agents(n_sims = 5,
                              n_time_steps = n_time_steps,
                              beta = beta, gamma = gamma,
                              init_SIR = init_SIR)

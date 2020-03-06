@@ -108,6 +108,7 @@ check_min_max_time <- function(min_max_time){
 #'
 #' @export
 check_ordered <- function(df, states, assert_error = TRUE){
+   
   df_select <- df[, states]
   K <- length(states)
 

@@ -91,15 +91,17 @@ get_epimodel_icm_states <- function(data){
 #' @return a tibble
 extract_icm_cols <- function(nm, ii, epi){
     mat <- epi[[nm]]
+    nm <- paste0("X", ii)
      if(tidyr_new_interface()){
          df <- tidyr::pivot_longer(as.data.frame(mat),
                                    cols = tidyr::everything(),
                                    names_to = "sim",
-                                   values_to = paste0("X", ii))
+                                   values_to = "X") %>%
+             dplyr::rename(!!nm := X)
      } else{
          df <- tidyr::gather(as.data.frame(mat),
                              key = "sim") %>%
-             dplyr::rename(!!paste0("X", ii) := value) 
+             dplyr::rename(!!nm := value) 
      }
     return(df)
 
