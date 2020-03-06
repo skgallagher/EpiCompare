@@ -115,11 +115,11 @@ check_ordered <- function(df, states, assert_error = TRUE){
 
     info_only_int_na <- df_select[, states]
 
-    for (i in (K):2) {
+    for (i in K:2) {
       if (sum(is.na(info_only_int_na[,i-1])) > 0) {
         info_only_int_na[,i-1][
           is.na(info_only_int_na[,i-1])
-          ] <- info_only_int_na[,i][is.na(info_only_int_na[,i-1])]
+          ] <- as.matrix(info_only_int_na)[,i][is.na(info_only_int_na[,i-1])]
       }
     }
 
@@ -132,7 +132,7 @@ check_ordered <- function(df, states, assert_error = TRUE){
   }
 
   if (assert_error){
-    assertthat::assert_that(sum(logic_out) == 0,
+    assertthat::assert_that(sum(logic_out, na.rm = T) == 0,
                             msg = paste("provided 'states' values are not",
                                         "ordered (some agents have times they",
                                         "enter each state in a different order",
@@ -144,7 +144,7 @@ check_ordered <- function(df, states, assert_error = TRUE){
                                         "violated."))
   }
 
-  if (sum(logic_out) != 0) {
+  if (sum(logic_out, na.rm = T) != 0) {
     ordering <- df[, states] %>% apply(1, function(x){
       paste(states[order(x)], collapse = " <= ")})
     row_logic <- logic_out %>% apply(1, function(x){sum(x) != 0})
@@ -406,7 +406,7 @@ agents_to_aggregate <- function(agents,
 #' based).
 #'
 #' @details note that all parameters related to name columns can also be in a
-#'   string format. More details can be found in \code{agent_to_aggregate}'s
+#'   string format. More details can be found in \code{agents_to_aggregate}'s
 #'   documentation.
 #'
 #' @param agents data frame with individual agent information
@@ -726,7 +726,7 @@ agents_to_aggregate.data.frame <- function(agents,
 #' provides the columns associated with the grouping.
 #'
 #' @details note that all parameters related to name columns can also be in a
-#'   string format. More details can be found in \code{agent_to_aggregate}'s
+#'   string format. More details can be found in \code{agents_to_aggregate}'s
 #'   documentation.
 #'
 #' @param agents grouped data.frame with individual agent information

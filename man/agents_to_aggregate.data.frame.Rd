@@ -44,7 +44,7 @@ based).
 }
 \details{
 note that all parameters related to name columns can also be in a
-  string format. More details can be found in \code{agent_to_aggregate}'s
+  string format. More details can be found in \code{agents_to_aggregate}'s
   documentation.
 }
 \examples{

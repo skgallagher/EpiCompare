@@ -47,6 +47,35 @@ test_that("check_ordered", {
 
 })
 
+
+test_that(paste("check_ordered works with NAs in tibbles,",
+                "data.frames and grouped_df"),{
+          test_df <- data.frame(agent_id = factor(1:5),
+                                sim = 1,
+                                tI = c(19, 18, NA, NA, NA),
+                                tR = c(35, 27, NA, NA, NA))
+          testthat::expect_true(check_ordered(test_df, c("tI", "tR")))
+
+
+          ## tbl_df version
+          test_df <- data.frame(agent_id = factor(1:5),
+                                sim = 1,
+                                tI = c(19, 18, NA, NA, NA),
+                                tR = c(35, 27, NA, NA, NA))
+          test_tbl <- dplyr::tbl_df(test_df)
+          testthat::expect_true(check_ordered(test_tbl, c("tI", "tR")))
+
+
+          ## grouped_df version
+          test_df <- data.frame(agent_id = factor(1:5),
+                                sim = rep(factor(c(1:2)), each = 5),
+                                tI = c(19, 18, NA, NA, NA),
+                                tR = c(35, 27, NA, NA, NA))
+          test_tbl <- dplyr::tbl_df(test_df) %>% dplyr::group_by(sim)
+          testthat::expect_true(check_ordered(test_tbl, c("tI", "tR")))
+
+                })
+
 test_that("expanding_info", {
   # standard case
   df <- data.frame(state = rep(1:3, each = 2),
