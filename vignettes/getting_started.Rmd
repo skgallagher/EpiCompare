@@ -17,7 +17,7 @@ devtools::load_all()
 ```
 
 <left>
-![](../../man/figures/logo.png){width=100px}
+![](../man/figures/logo.png){width=100px}
 </left>
 
 # Installation
@@ -111,7 +111,8 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
               
-df_ave <- out %>% agents_to_aggregate() %>%
+df_ave <- out %>% agents_to_aggregate(states = c(tI, tR)) %>%
+  rename(S = "X0", I = "X1", R = "X2") %>% 
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
                    
@@ -167,7 +168,10 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
 We then use the `agents_to_aggregate` function to do the same thing (note that it preforms different for `grouped_df`s and standard `data.frame`s - as it's a method):
 
 ```{r}
-df_group <- out %>% group_by(sim) %>% agents_to_aggregate_SIR()
+df_group <- out %>% group_by(sim) %>% 
+  agents_to_aggregate(states = c("tI", "tR")) %>%
+  rename(S = "X0", I = "X1", R = "X2") 
+
 
 ggplot(df_group, aes(x = S, y = I, z = R, group = sim)) +
   geom_path(alpha = .1) +

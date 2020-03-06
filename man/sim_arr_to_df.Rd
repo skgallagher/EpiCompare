@@ -7,7 +7,10 @@
 sim_arr_to_df(arr)
 }
 \arguments{
-\item{arr}{array of dimension \eqn{\# agents \times \# sims \times 3} where agent ijk is the ith agent in simulation j, and looking at the kth column where 1 is the initial state, 1 is the time of infection, and 2 is the time of recovery}
+\item{arr}{array of dimension \eqn{\# agents \times \# sims \times 3} where
+agent ijk is the ith agent in simulation j, and looking at the kth column
+where 1 is the initial state, 1 is the time of infection, and 2 is the time
+of recovery}
 }
 \value{
 data.frame of dimension (n_agents x n_sims) x 4 where the columns are

@@ -2,12 +2,14 @@
 % Please edit documentation in R/fortify-aggregate-pomp-pompList.R
 \name{fortify_aggregate.pompList}
 \alias{fortify_aggregate.pompList}
-\title{Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR}
+\title{Takes in data from the R pomp package  where the output is a data frame and
+puts it in SIR format for timeternR}
 \usage{
 \method{fortify_aggregate}{pompList}(data, states = NULL, package_source = NULL)
 }
 \arguments{
-\item{data}{Output from a pomp simulation where the output is a data frame, \code{pomp::simulate()}}
+\item{data}{Output from a pomp simulation where the output is a data frame,
+\code{pomp::simulate()}}
 
 \item{states}{vector of state names}
 
@@ -22,10 +24,13 @@ data frame with the following columns
 }
 }
 \description{
-Takes in data from the R pomp package  where the output is a data frame and puts it in SIR format for timeternR
+Takes in data from the R pomp package  where the output is a data frame and
+puts it in SIR format for timeternR
 }
 \details{
-The default variables that are retained are SIR, but can be modified with the \code{states} argument.  If code{states = NULL}, we will attempt to find all single letter names in POMP and output those.
+The default variables that are retained are SIR, but can be modified
+  with the \code{states} argument.  If code{states = NULL}, we will attempt
+  to find all single letter names in POMP and output those.
 }
 \examples{
 out <- fortify_aggregate(pomp_arr, package_source = "pomp",

@@ -1,11 +1,11 @@
 ## March 3, 2020
-
-#' Comments for Ben and Shannon
-#' 
-#' This is the start of a reformat of fortify_epimodel and fortify_pomp into one function
-#' "fortify_aggregate".  This will take in aggregate level data from external sources (currently pomp and
-#' epimodel) and output, if possible, output a data.frame  with the columns t, X0, .., XK where Xk are the
-#' state names and the values in Xk are the numbers in state k at time t.
+# Comments for Ben and Shannon
+#
+# This is the start of a reformat of fortify_epimodel and fortify_pomp into one
+# function "fortify_aggregate".  This will take in aggregate level data from
+# external sources (currently pomp and epimodel) and output, if possible,
+# output a data.frame  with the columns t, X0, .., XK where Xk are the state
+# names and the values in Xk are the numbers in state k at time t.
 
 
 
@@ -15,13 +15,17 @@
 #'
 #' @param data output from external source package.  See details
 #' @param states names of states we want aggregate totals of at each time
-#' @param package_source optional argument to include the package from which the output is derived from, which helps with the fortify function when outputs are of generic classes such as list or data.frame
+#' @param package_source optional argument to include the package from which the
+#'   output is derived from, which helps with the fortify function when outputs
+#'   are of generic classes such as list or data.frame
 #' @return a data frame with the following columns
 #' \describe{
 #' \item{t}{time}
 #' \item{Xk}{columns X0, ..., X_K. which are numeric}
 #' }
-#' @details This function converts external data sources (we currently support output from the EpiModel and pomp R packages), which is already aggregated and puts it in a format that can be used by our exploring functions.
+#' @details This function converts external data sources (we currently support
+#'   output from the EpiModel and pomp R packages), which is already aggregated
+#'   and puts it in a format that can be used by our exploring functions.
 #' @export
 #' @examples
 #' ## For icm
@@ -65,7 +69,7 @@ fortify_aggregate.icm <- function(data,
     agg_df$t <- t
     agg_df <- agg_df %>%
         dplyr::select(.data$t, dplyr::everything())
-    
+
     return(agg_df)
 }
 
@@ -96,12 +100,12 @@ extract_icm_cols <- function(nm, ii, epi){
          df <- tidyr::pivot_longer(as.data.frame(mat),
                                    cols = tidyr::everything(),
                                    names_to = "sim",
-                                   values_to = "X") %>%
-             dplyr::rename(!!nm := X)
+                                   values_to = "X")
+         names(df)[names(df) == "X"] <- nm
      } else{
          df <- tidyr::gather(as.data.frame(mat),
-                             key = "sim") %>%
-             dplyr::rename(!!nm := value) 
+                             key = "sim")
+         names(df)[names(df) == "X"] <- nm
      }
     return(df)
 
