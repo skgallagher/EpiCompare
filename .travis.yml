@@ -16,7 +16,7 @@ r_packages:
 
 install:
   - R -e 'install.packages("devtools")' -e 'print(utils::packageVersion("tidyr"))'
-  - R -e 'devtools::install_version("ggplot2", version = "3.2.0", repos = "http://cran.us.r-project.org")' -e 'print(utils::packageVersion("tidyr"))'
+  - R -e 'devtools::install_version("ggplot2", version = "3.2.0", repos = "http://cran.us.r-project.org", upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
   - R -e 'devtools::install_deps(dep = T, upgrade = "never")' -e 'print(utils::packageVersion("tidyr"))'
 
 script:
