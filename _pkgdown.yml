@@ -1,7 +1,7 @@
 destination: docs
 template:
   params:
-    bootswatch: simplex
+    bootswatch: cerulean
 
 authors:
   Shannon Gallagher:
