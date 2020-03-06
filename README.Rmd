@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# timeternR <img src="man/figures/logo.png" align="right" alt="" width="120" />
+# EpiCompare <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR)
@@ -109,7 +109,7 @@ hagelloch_raw %>%
 ### Simulate SIR data
 
 
-```{r}
+```{r eval = F}
 n_sims <- 100
 n_time_steps <- 100
 beta <- .1

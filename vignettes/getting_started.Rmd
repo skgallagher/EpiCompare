@@ -17,7 +17,7 @@ devtools::load_all()
 ```
 
 <left>
-![](timeternRhex.png){width=100px}
+![](../../man/figures/logo.png){width=100px}
 </left>
 
 # Installation
@@ -113,7 +113,7 @@ out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  init_SIR = init_SIR,
                                  output_format = output_format)
               
-df_ave <- out %>% agents_to_aggregate_SIR() %>%
+df_ave <- out %>% agents_to_aggregate() %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
                    

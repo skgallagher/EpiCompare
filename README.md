@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-timeternR <img src="man/figures/logo.png" align="right" alt="" width="120" />
-=============================================================================
+EpiCompare <img src="man/figures/logo.png" align="right" alt="" width="120" />
+==============================================================================
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR) [![codecov](https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR) <!-- badges: end -->
@@ -122,8 +122,6 @@ df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
     geom_line(alpha = .1) +
     coord_tern()
 ```
-
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 Notes:
 ------
