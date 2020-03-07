@@ -20,12 +20,11 @@ fortify_aggregate.data.frame <- function(data,
                                            package_source = NULL){
 
     if(!is.null(package_source) && package_source == "pomp"){
-        class(data) <- c("pomp_df", class(data))
-        out <- fortify_aggregate.pomp_df(data,
-                                               states = states)
+        out <- fortify_aggregate.pomp_df(data, states = states)
         return(out)
     }
-    stop("We currently do not support fortifying an object of class 'data.frame' if 'package_source' is not 'pomp'")
+    stop(paste("We currently do not support fortifying an object of class",
+               "'data.frame' if 'package_source' is not 'pomp'"))
 
 }
 

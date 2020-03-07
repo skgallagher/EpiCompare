@@ -84,9 +84,7 @@ fortify_agents <- function(data, time_col = c("tI","tR"),
 
   }
 
-
   fortified_df <- cbind(raw_df, agents)
-  class(fortified_df) <- c("agents_df", class(fortified_df))
 
   return(fortified_df)
 }

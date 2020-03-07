@@ -25,7 +25,6 @@ fortify_aggregate.pompList <- function(data,
                                            package_source = NULL){
     pomp_output <- data
     df <- as.data.frame(pomp_output)
-    class(df) <- c("pomp_df", class(df))
     out <- fortify_aggregate.pomp_df(df, states = states)
 
 

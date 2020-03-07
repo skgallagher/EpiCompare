@@ -108,7 +108,7 @@ check_min_max_time <- function(min_max_time){
 #'
 #' @export
 check_ordered <- function(df, states, assert_error = TRUE){
-   
+
   df_select <- df[, states]
   K <- length(states)
 
@@ -706,8 +706,6 @@ agents_to_aggregate.data.frame <- function(agents,
     final_state_count <- final_state_count %>%
       dplyr::select(-dplyr::one_of(paste0("X", K)))
   }
-
-  class(final_state_count) <- c("aggregate", class(final_state_count))
 
   return(final_state_count)
 }

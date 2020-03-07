@@ -20,12 +20,12 @@ fortify_aggregate.list <- function(data,
                                            package_source = NULL){
 
     if(!is.null(package_source) & package_source == "pomp"){
-        class(data) <- c("pomp_list", class(data))
         out <- fortify_aggregate.pomp_list(data,
                                                states = states)
         return(out)
     }
-    stop("We currently do not support fortifying an object of class 'list' if 'package_source' is not 'pomp'")
+    stop(paste("We currently do not support fortifying an object of class",
+               "'list' if 'package_source' is not 'pomp'"))
 
 }
 
