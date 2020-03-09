@@ -62,8 +62,6 @@ hagelloch_agents <- data.frame(init_state = factor(A0),
 hagelloch_agents[union(initial_inf, initial_rec),"max_time_S"] <- NA
 hagelloch_agents[initial_rec,"max_time_I"] <- NA
 
-class(hagelloch_agents) <- append("agents_df", class(hagelloch_agents))
-
 
 hagelloch_sir <- agents_to_aggregate_SIR(hagelloch_agents, max_time = max_time)
 
