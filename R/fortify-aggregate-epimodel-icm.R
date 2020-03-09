@@ -96,7 +96,7 @@ get_epimodel_icm_states <- function(data){
 extract_icm_cols <- function(nm, ii, epi){
     mat <- epi[[nm]]
     nm <- paste0("X", ii)
-     if(tidyr_new_interface()){
+    if(tidyr_new_interface()){
          df <- tidyr::pivot_longer(as.data.frame(mat),
                                    cols = tidyr::everything(),
                                    names_to = "sim",
@@ -105,7 +105,7 @@ extract_icm_cols <- function(nm, ii, epi){
      } else{
          df <- tidyr::gather(as.data.frame(mat),
                              key = "sim")
-         names(df)[names(df) == "X"] <- nm
+         names(df)[names(df) == "value"] <- nm
      }
     return(df)
 
