@@ -338,7 +338,7 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
       <tr>
         <th colspan="2">
           <h2 id="section-geoms-and-stats" class="hasAnchor"><a href="#section-geoms-and-stats" class="anchor"></a>geoms and stats</h2>
-          <p class="section-desc"><p>Forward facing geoms &amp; stats</p></p>
+          <p class="section-desc"><p>forward facing geoms &amp; stats</p></p>
         </th>
       </tr>
       <tr>
@@ -353,6 +353,107 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
           <p><code><a href="stat_aggregate.html">geom_aggregate()</a></code> <code><a href="stat_aggregate.html">stat_aggregate()</a></code> </p>
         </td>
         <td><p>aggregate SIR path visuals from agent data</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-geometry-structure-depth" class="hasAnchor"><a href="#section-geometry-structure-depth" class="anchor"></a>geometry structure &amp; depth</h2>
+          <p class="section-desc"><p>internal and semi-internal</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="distance_depth_function.html">distance_depth_function()</a></code> </p>
+        </td>
+        <td><p>Geenens &amp; Nieto-Reyes functional distance-based depth</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_along_path_angle.html">dist_along_path_angle()</a></code> </p>
+        </td>
+        <td><p>Distance/angle between points along path relative to eculidean distance (2d
+path)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_along_path_direction.html">dist_along_path_direction()</a></code> </p>
+        </td>
+        <td><p>Distance/direction between points along path relative to eculidean distance</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_between_paths.html">dist_between_paths()</a></code> </p>
+        </td>
+        <td><p>Distance between points</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_matrix_innersq_2d.html">dist_matrix_innersq_2d()</a></code> <code><a href="dist_matrix_innersq_2d.html">dist_matrix_innersq_angle()</a></code> </p>
+        </td>
+        <td><p>Calculates the distance matrix between a set of paths (Euclidean based). This
+is actually d^2 (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_matrix_innersq_direction.html">dist_matrix_innersq_direction()</a></code> </p>
+        </td>
+        <td><p>Calculates the distance matrix between a set of paths (Euclidean based). This
+is actually d^2</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_angle.html">equa_dist_points_angle()</a></code> </p>
+        </td>
+        <td><p>point compression (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_direction.html">equa_dist_points_direction()</a></code> </p>
+        </td>
+        <td><p>point compression</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_listable_angle.html">equa_dist_points_listable_angle()</a></code> </p>
+        </td>
+        <td><p>List of compressions (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_listable_direction.html">equa_dist_points_listable_direction()</a></code> </p>
+        </td>
+        <td><p>List of compressions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="step_along_angle.html">step_along_angle()</a></code> </p>
+        </td>
+        <td><p>step along 2d path with angle</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="step_along_direction.html">step_along_direction()</a></code> </p>
+        </td>
+        <td><p>step along path with direction</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="steps_along_2d_line.html">steps_along_2d_line()</a></code> </p>
+        </td>
+        <td><p>Create n equidistance points</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="project_onto_simplex.html">project_onto_simplex()</a></code> </p>
+        </td>
+        <td><p>Project onto a simplex where observations in the unit simplex x</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="project_to_simplex.html">project_to_simplex()</a></code> </p>
+        </td>
+        <td><p>project onto a standard 3d simplex.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -536,7 +637,7 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
         <td>
           <p><code><a href="delta_structure.html">delta_structure()</a></code> </p>
         </td>
-        <td><p>Performs delta ball approach</p></td>
+        <td><p>Performs delta ball approach (2d approach)</p></td>
       </tr><tr>
         
         <td>
@@ -547,9 +648,16 @@ pulling out data points from curves that are the most deep</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="dist_along_path.html">dist_along_path()</a></code> </p>
+          <p><code><a href="dist_along_path_angle.html">dist_along_path_angle()</a></code> </p>
         </td>
-        <td><p>Distance/angle between points along path relative to eculidean distance</p></td>
+        <td><p>Distance/angle between points along path relative to eculidean distance (2d
+path)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_along_path_direction.html">dist_along_path_direction()</a></code> </p>
+        </td>
+        <td><p>Distance/direction between points along path relative to eculidean distance</p></td>
       </tr><tr>
         
         <td>
@@ -559,7 +667,14 @@ pulling out data points from curves that are the most deep</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="dist_matrix_innersq.html">dist_matrix_innersq()</a></code> </p>
+          <p><code><a href="dist_matrix_innersq_2d.html">dist_matrix_innersq_2d()</a></code> <code><a href="dist_matrix_innersq_2d.html">dist_matrix_innersq_angle()</a></code> </p>
+        </td>
+        <td><p>Calculates the distance matrix between a set of paths (Euclidean based). This
+is actually d^2 (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dist_matrix_innersq_direction.html">dist_matrix_innersq_direction()</a></code> </p>
         </td>
         <td><p>Calculates the distance matrix between a set of paths (Euclidean based). This
 is actually d^2</p></td>
@@ -572,13 +687,25 @@ is actually d^2</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="equa_dist_points.html">equa_dist_points()</a></code> </p>
+          <p><code><a href="equa_dist_points_angle.html">equa_dist_points_angle()</a></code> </p>
+        </td>
+        <td><p>point compression (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_direction.html">equa_dist_points_direction()</a></code> </p>
         </td>
         <td><p>point compression</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="equa_dist_points_listable.html">equa_dist_points_listable()</a></code> </p>
+          <p><code><a href="equa_dist_points_listable_angle.html">equa_dist_points_listable_angle()</a></code> </p>
+        </td>
+        <td><p>List of compressions (2d)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="equa_dist_points_listable_direction.html">equa_dist_points_listable_direction()</a></code> </p>
         </td>
         <td><p>List of compressions</p></td>
       </tr><tr>
@@ -824,9 +951,15 @@ puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="step_along.html">step_along()</a></code> </p>
+          <p><code><a href="step_along_angle.html">step_along_angle()</a></code> </p>
         </td>
-        <td><p>step along path</p></td>
+        <td><p>step along 2d path with angle</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="step_along_direction.html">step_along_direction()</a></code> </p>
+        </td>
+        <td><p>step along path with direction</p></td>
       </tr><tr>
         
         <td>
@@ -870,6 +1003,7 @@ puts it in SIR format for timeternR</p></td>
       <li><a href="#section-fortify">fortify</a></li>
       <li><a href="#section-agents-to-aggregate">agents to aggregate</a></li>
       <li><a href="#section-geoms-and-stats">geoms and stats</a></li>
+      <li><a href="#section-geometry-structure-depth">geometry structure &amp; depth</a></li>
       <li><a href="#section-special-functions">special functions</a></li>
       <li><a href="#section-everything">everything</a></li>
     </ul>

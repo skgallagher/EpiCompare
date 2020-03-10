@@ -30,10 +30,20 @@ reference:
   contents:
   - matches("agents_to_aggregate")
 - title: geoms and stats
-  desc: Forward facing geoms & stats
+  desc: forward facing geoms & stats
   contents:
   - starts_with("geom_")
   - starts_with("stat_")
+- title: Convex hull and delta ball tools
+  desc: forward facing function associated with convex hull and delta-ball
+    covering relative to creating a confidence/prediction band
+- title: geometry structure & depth
+  desc: internal and semi-internal
+  contents:
+  - starts_with("distance_depth")
+  - matches(".*dist.*")
+  - starts_with("step")
+  - starts_with("project")
 - title: special functions
   desc: Special functions that make the package work
   contents:

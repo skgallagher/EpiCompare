@@ -10,6 +10,9 @@ language: r
 repos:
   CRAN: https://cloud.r-project.org
 
+cache:
+  packages: true
+
 r_packages:
   - covr
   - pkgdown
