@@ -133,13 +133,11 @@ df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
 
 
 ## Notes:
-1. For writing code that works with `tidyverse` 1.0 vs `tidyverse` <= 0.8.3 see:
-https://tidyr.tidyverse.org/articles/in-packages.html, and for doing both with Travis CI (using a matrix), see https://github.com/tidyverse/design/issues/95. See Wiki for more comments on this.
-    a. Also https://principles.tidyverse.org/changes-multivers.html has been being updated to give better approaches as well.
+1. For writing code that works with `tidyverse` 1.0 vs `tidyverse` <= 0.8.3. We followed ideas found in [tidyr: in-packages](https://tidyr.tidyverse.org/articles/in-packages.html), for the code, and - when working with Travis CI (using a matrix for multiple builds) - we leverage ideas in [tidyverse travis on github](https://github.com/tidyverse/design/issues/95) and [tidyverse principles](https://principles.tidyverse.org/changes-multivers.html).
 2. For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
-    a. https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups
-    b. https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479
-    c. we've also leveraged ideas from https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkg-down` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
+    a. [stack-exchange: personal code idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
+    b. [stack-exchange: being able to access ggtern's element write away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
+    c. Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkg-down` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
 
 
 ## Contributors
