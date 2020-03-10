@@ -22,7 +22,7 @@
 #' random_data_list <- lapply(1:5, function(x){data.frame(matrix(rnorm(10),
 #'                                                               ncol = 2))})
 #'
-#' dist_mat <- dist_matrix_innersq(random_data_list,
+#' dist_mat <- dist_matrix_innersq_direction(random_data_list,
 #'                                 position = 1:2,
 #'                                 verbose = FALSE)
 #'

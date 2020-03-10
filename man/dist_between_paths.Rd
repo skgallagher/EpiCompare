@@ -7,14 +7,17 @@
 dist_between_paths(data_df_p1, data_df_p2)
 }
 \arguments{
-\item{data_df_p1}{(n x 2) data.frame, each row is a pair of values (x, y)}
+\item{data_df_p1}{(n x p) data.frame, each row is a point}
 
-\item{data_df_p2}{(n x 2) second data.frame to be compared, each row is a
-pair of values (x, y)}
+\item{data_df_p2}{(n x p) second data.frame to be compared, each row is a
+point}
 }
 \value{
 vector of n distances between each order point in the two data frames
 }
 \description{
 Calculates the distance between each point of every path.
+}
+\details{
+\strong{Is this used?}
 }

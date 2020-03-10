@@ -2,7 +2,7 @@
 % Please edit documentation in R/delta-ball.R
 \name{delta_structure}
 \alias{delta_structure}
-\title{Performs delta ball approach}
+\title{Performs delta ball approach (2d approach)}
 \usage{
 delta_structure(data_deep_points, xy_columns = c("x", "y"))
 }
@@ -18,5 +18,5 @@ delta_structure(data_deep_points, xy_columns = c("x", "y"))
 }
 }
 \description{
-Performs delta ball approach
+Performs delta ball approach (2d approach)
 }

@@ -31,7 +31,7 @@ get_delta <- function(data = NULL, dist_mat = NULL){
   return(list(dist_mat = dist_mat, mm_delta = mm_delta))
 }
 
-#' Performs delta ball approach
+#' Performs delta ball approach (2d approach)
 #'
 #' @param data_deep_points data deep points from depth function
 #' @param xy_columns strings for column names of the points (x,y)
@@ -45,7 +45,7 @@ get_delta <- function(data = NULL, dist_mat = NULL){
 delta_structure <- function(data_deep_points, xy_columns = c("x", "y")){
   data_deep_points <- data_deep_points %>%
     dplyr::select(dplyr::one_of(xy_columns)) %>%
-    dplyr::rename(lat = xy_columns[1], long = xy_columns[2])
+    dplyr::rename(x = xy_columns[1], y = xy_columns[2])
 
   d_out <- get_delta(data_deep_points)
   delta = d_out$mm_delta
