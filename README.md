@@ -107,21 +107,22 @@ n_time_steps <- 100
 beta <- .1
 gamma <- .03
 init_SIR <- c(950, 50, 0)
-output_format <- "data.frame"
     
 out <- simulate_SIR_agents(n_sims = n_sims,
                            n_time_steps = n_time_steps,
                            beta = beta, gamma = gamma,
-                           init_SIR = init_SIR,
-                           output_format = output_format)
+                           init_SIR = init_SIR)
                                  
 df_groups <- out %>% dplyr::group_by(sim) %>%
-    agents_to_aggregate_SIR  
+    agents_to_aggregate(states = c(tI, tR)) %>%
+    rename(S = X0, I = X1, R = X2)
   
 df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
     geom_line(alpha = .1) +
     coord_tern()
 ```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 Notes:
 ------

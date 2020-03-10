@@ -317,7 +317,7 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
     data2d_list <- split(x = data2d, f = data2d$sim_group)
     xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
 
-    dist_mat <- dist_matrix_innersq(data2d_list,
+    dist_mat <- dist_matrix_innersq_direction(data2d_list,
                                     position = xy_position,
                                     verbose = FALSE)
     data_deep_points <- depth_curves_to_points(data2d_list,
@@ -489,7 +489,7 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
         data2d_list <- split(x = data2d, f = data2d$sim_group)
         xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
 
-        dist_mat <- dist_matrix_innersq(data2d_list,
+        dist_mat <- dist_matrix_innersq_direction(data2d_list,
                                         position = xy_position,
                                         verbose = FALSE)
         data_deep_points <- depth_curves_to_points(
