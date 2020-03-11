@@ -37,6 +37,10 @@ reference:
 - title: Convex hull and delta ball tools
   desc: forward facing function associated with convex hull and delta-ball
     covering relative to creating a confidence/prediction band
+  contents:
+  - starts_with("contained")
+  - matches("create.*structure")
+  - matches("grab_top_depth_filaments")
 - title: geometry structure & depth
   desc: internal and semi-internal
   contents:

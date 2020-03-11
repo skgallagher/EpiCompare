@@ -357,6 +357,39 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
     </tbody><tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-convex-hull-and-delta-ball-tools" class="hasAnchor"><a href="#section-convex-hull-and-delta-ball-tools" class="anchor"></a>Convex hull and delta ball tools</h2>
+          <p class="section-desc"><p>forward facing function associated with convex hull and delta-ball covering relative to creating a confidence/prediction band</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="contained.html">contained()</a></code> </p>
+        </td>
+        <td><p>Method to check if a filament is completely contained in a set (relative to
+discrete representation)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_convex_hull_structure.html">create_convex_hull_structure()</a></code> </p>
+        </td>
+        <td><p>create the convex hull associated with points</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_delta_ball_structure.html">create_delta_ball_structure()</a></code> </p>
+        </td>
+        <td><p>create the delta ball associated with points</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="grab_top_depth_filaments.html">grab_top_depth_filaments()</a></code> </p>
+        </td>
+        <td><p>Select a proportion of the top / most deep filaments</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-geometry-structure-depth" class="hasAnchor"><a href="#section-geometry-structure-depth" class="anchor"></a>geometry structure &amp; depth</h2>
           <p class="section-desc"><p>internal and semi-internal</p></p>
         </th>
@@ -424,6 +457,18 @@ is actually d^2</p></td>
           <p><code><a href="equa_dist_points_listable_direction.html">equa_dist_points_listable_direction()</a></code> </p>
         </td>
         <td><p>List of compressions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="filament_distance_depth.html">filament_distance_depth()</a></code> </p>
+        </td>
+        <td><p>Calculate filament depth (relative to distance depth)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hausdorff_dist.html">hausdorff_dist()</a></code> </p>
+        </td>
+        <td><p>Calculates the Hausdorff distance between 2 sets</p></td>
       </tr><tr>
         
         <td>
@@ -635,6 +680,25 @@ differently on <code>data.frame</code> and <code>grouped_df</code> objects.</p><
       </tr><tr>
         
         <td>
+          <p><code><a href="contained.html">contained()</a></code> </p>
+        </td>
+        <td><p>Method to check if a filament is completely contained in a set (relative to
+discrete representation)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_convex_hull_structure.html">create_convex_hull_structure()</a></code> </p>
+        </td>
+        <td><p>create the convex hull associated with points</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_delta_ball_structure.html">create_delta_ball_structure()</a></code> </p>
+        </td>
+        <td><p>create the delta ball associated with points</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="delta_structure.html">delta_structure()</a></code> </p>
         </td>
         <td><p>Performs delta ball approach (2d approach)</p></td>
@@ -726,6 +790,19 @@ is actually d^2</p></td>
           <p><code><a href="extract_icm_cols.html">extract_icm_cols()</a></code> </p>
         </td>
         <td><p>Extract the icm class totals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="filament_compression.html">filament_compression()</a></code> </p>
+        </td>
+        <td><p>Compress filaments to filaments with the same number of points (equally
+linearly space compared to original filament definition)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="filament_distance_depth.html">filament_distance_depth()</a></code> </p>
+        </td>
+        <td><p>Calculate filament depth (relative to distance depth)</p></td>
       </tr><tr>
         
         <td>
@@ -843,6 +920,12 @@ puts it in SIR format for timeternR</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="grab_top_depth_filaments.html">grab_top_depth_filaments()</a></code> </p>
+        </td>
+        <td><p>Select a proportion of the top / most deep filaments</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="hagelloch_agents.html">hagelloch_agents</a></code> </p>
         </td>
         <td><p>Measles in Hagelloch, Germany, 1861 (agent format)</p></td>
@@ -858,6 +941,12 @@ puts it in SIR format for timeternR</p></td>
           <p><code><a href="hagelloch_sir.html">hagelloch_sir</a></code> </p>
         </td>
         <td><p>Measles in Hagelloch, Germany, 1861 (SIR format)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hausdorff_dist.html">hausdorff_dist()</a></code> </p>
+        </td>
+        <td><p>Calculates the Hausdorff distance between 2 sets</p></td>
       </tr><tr>
         
         <td>
@@ -1003,6 +1092,7 @@ puts it in SIR format for timeternR</p></td>
       <li><a href="#section-fortify">fortify</a></li>
       <li><a href="#section-agents-to-aggregate">agents to aggregate</a></li>
       <li><a href="#section-geoms-and-stats">geoms and stats</a></li>
+      <li><a href="#section-convex-hull-and-delta-ball-tools">Convex hull and delta ball tools</a></li>
       <li><a href="#section-geometry-structure-depth">geometry structure &amp; depth</a></li>
       <li><a href="#section-special-functions">special functions</a></li>
       <li><a href="#section-everything">everything</a></li>

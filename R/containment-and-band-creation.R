@@ -31,9 +31,9 @@
 #'   filament_compression(data_columns = c("S","I","R"), number_points = 9)
 filament_compression <- function(grouped_df, data_columns = NULL,
                                  number_points = 13){
+  group_columns <- names(attr(grouped_df, "groups"))[names(attr(grouped_df, "groups")) != ".rows"]
   if (is.null(data_columns)){ # use all columns except the grouped columns
     data_columns <- names(grouped_df)
-    group_columns <- names(attr(grouped_df, "groups"))[names(attr(grouped_df, "groups")) != ".rows"]
     data_columns <- data_columns[!(data_columns %in% group_columns)]
   }
 
@@ -46,13 +46,24 @@ filament_compression <- function(grouped_df, data_columns = NULL,
                                    df[, data_columns],num_splits = number_points)})) %>%
       tidyr::unnest(cols = c(.data$data))
   } else {
+
     compression_df <- grouped_df %>%
       tidyr::nest() %>%
       dplyr::mutate(data =
                       purrr::map(.data$data,
                                  function(df) {equa_dist_points_direction(
-                                   df[, data_columns],num_splits = number_points)})) %>%
+                                   df[, data_columns], num_splits = number_points)})) %>%
       tidyr::unnest()
+
+    if (length(group_columns) == 1) {
+      group_sym <- dplyr::sym(group_columns)
+      compression_df <- compression_df %>% dplyr::group_by(!!group_sym)
+    }
+    if (length(group_columns) > 1) {
+      group_sym <- dplyr::syms(group_columns)
+      compression_df <- compression_df %>% dplyr::group_by(!!!group_sym)
+    }
+
   }
 
 
