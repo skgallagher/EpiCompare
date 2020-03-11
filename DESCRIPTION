@@ -20,31 +20,32 @@ Depends:
 Imports:
     assertthat,
     dplyr,
+    geometry,
     ggplot2 (<= 3.2.0),
+    ks,
+    magrittr,
     purrr,
+    RANN,
     raster,
+    rdist,
+    rgeos,
     rlang,
     tidyr,
     tidyselect,
     tibble,
-    magrittr,
-    RANN,
-    rgeos,
-    sp,
-    ks,
-    rdist,
-    geometry
+    sp
 Suggests: 
-    testthat (>= 2.1.0),
+    devtools,
+    EpiModel,
+    gridExtra,
+    kableExtra,
     knitr,
-    rmarkdown,
     outbreaks,
+    plotly,
     pomp,
     progress,
-    EpiModel,
-    kableExtra,
-    devtools,
-    gridExtra
+    rmarkdown,
+    testthat (>= 2.1.0)
 RoxygenNote: 7.0.2
 VignetteBuilder: 
     knitr,

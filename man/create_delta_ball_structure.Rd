@@ -4,13 +4,21 @@
 \alias{create_delta_ball_structure}
 \title{create the delta ball associated with points}
 \usage{
-create_delta_ball_structure(data_points, data_columns = NULL)
+create_delta_ball_structure(
+  data_points,
+  data_columns = NULL,
+  .lower_simplex_project = TRUE
+)
 }
 \arguments{
 \item{data_points}{points to create the delta ball structure from}
 
 \item{data_columns}{columns (currently strings) of data.frame that relate to
 the point's coordinates in euclidean space.}
+
+\item{.lower_simplex_project}{boolean, if data points should be projected to a simplex
+and then to the lower dimensional simplex (for this package, this should
+always be done)}
 }
 \value{
 a \code{delta_ball_structure} object, that is a data frame similar to
@@ -29,5 +37,5 @@ delta_ball_cb <- timeternR::pomp_df \%>\%
   select(-time, -H, -cases) \%>\%
   group_by(.id) \%>\%
   grab_top_depth_filaments(alpha_level = .9) \%>\%
-  create_delta_ball_structure()
+  create_delta_ball_structure() #data_columns = c("S","I","R")
 }

@@ -41,9 +41,12 @@ reference:
   - starts_with("contained")
   - matches("create.*structure")
   - matches("grab_top_depth_filaments")
+  - matches("print.*")
 - title: geometry structure & depth
   desc: internal and semi-internal
   contents:
+  - matches("simplex_project_mat")
+  - matches("to_lower_simplex")
   - starts_with("distance_depth")
   - matches(".*dist.*")
   - starts_with("step")

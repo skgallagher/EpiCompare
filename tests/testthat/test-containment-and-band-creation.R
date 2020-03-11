@@ -110,18 +110,29 @@ test_that("filament_distance_depth correct depth",{
 
 })
 
-test_that("test grab_top_depth_filaments", {
+test_that("test grab_top_depth_filaments (.remove_group = both)", {
   top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>%
+    grab_top_depth_filaments(data_columns =c("S","I","R"),
+                             alpha_level = .5,
+                             .remove_group = FALSE)
+
+  testthat::expect_equal(length(unique(top_filaments$.id)), 5)
+
+  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
                              alpha_level = .5)
 
-  testthat::expect_equal(length(unique(top_filaments$.id)), 5)
+  testthat::expect_equivalent(top_filaments_points,
+                              top_filaments %>% select(-.id))
+
 
   all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c("S","I","R"),
-                             alpha_level = 0)
+                             alpha_level = 0,
+                             .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
@@ -134,32 +145,66 @@ test_that("test grab_top_depth_filaments", {
 
 })
 
-test_that("test create_delta_ball_structure (little because it's a wrapper)", {
+test_that(paste("test create_delta_ball_structure",
+                "- little test because it's a wrapper",
+                "(.lower_simplex_project = FALSE)"), {
   set.seed(1)
   data_points <- data.frame(matrix(rnorm(100), ncol = 4))
 
   db_structure <- data_points %>%
-    create_delta_ball_structure(data_columns = paste0("X",1:4))
+    create_delta_ball_structure(data_columns = paste0("X",1:4),
+                                .lower_simplex_project = FALSE)
   expected_delta <- get_delta(db_structure)$mm_delta
 
   testthat::expect_equal(attr(db_structure, "delta"), expected_delta)
 
+  testthat::expect_equal(attr(db_structure, "A"), diag(4))
+
   # repeat points (shouldn't do anything)
   data_double <- rbind(data_points, data_points)
   db_structure2 <- data_double %>%
-    create_delta_ball_structure(data_columns = paste0("X",1:4))
+    create_delta_ball_structure(data_columns = paste0("X",1:4),
+                                .lower_simplex_project = FALSE)
 
   testthat::expect_equal(db_structure2, db_structure)
-
 })
 
-test_that("test create_convex_hull_structure", {
+test_that(paste("test create_delta_ball_structure",
+                "- little test because it's a wrapper",
+                "(.lower_simplex_project = TRUE)"), {
+            set.seed(1)
+            data_points <- data.frame(matrix(rnorm(100)^2, ncol = 4))
+
+            db_structure <- data_points %>%
+              create_delta_ball_structure(data_columns = paste0("X",1:4))
+            expected_delta <- get_delta(db_structure)$mm_delta
+
+            testthat::expect_equal(attr(db_structure, "delta"),
+                                   expected_delta)
+            testthat::expect_equal(attr(db_structure, "A"),
+                                   simplex_project_mat(4))
+            # repeat points (shouldn't do anything)
+            data_double <- rbind(data_points, data_points)
+            db_structure2 <- data_double %>%
+              create_delta_ball_structure(data_columns = paste0("X",1:4))
+
+            testthat::expect_equal(db_structure2, db_structure)
+                })
+
+test_that(paste("test create_convex_hull_structure",
+                "(.lower_simplex_project = FALSE)"), {
   box_data <- data.frame(x = c(0,0,1,1,.5),
                          y = c(0,1,0,1,.5))
-  just_box1 <- create_convex_hull_structure(box_data)
+  just_box1 <- create_convex_hull_structure(box_data,
+                                            .lower_simplex_project = FALSE)
+  testthat::expect_equal(attr(just_box1, "A"), diag(2))
+
+  # error associated with simplex projection if .lower_simplex_project = TRUE
+  testthat::expect_error(create_convex_hull_structure(box_data))
 
   just_box2 <- create_convex_hull_structure(box_data,
-                                            data_columns = c("x", "y"))
+                                            data_columns = c("x", "y"),
+                                            .lower_simplex_project = FALSE)
 
   testthat::expect_equivalent(just_box1, just_box2)
   testthat::expect_equivalent(just_box1 %>% arrange(x,y),
@@ -167,12 +212,57 @@ test_that("test create_convex_hull_structure", {
 
 })
 
-test_that("test hausdorff_dist", {
+test_that(paste("test create_convex_hull_structure",
+                "(.lower_simplex_project = TRUE)"), {
+          cubish_data <- data.frame(x = c(0,1,1,0,0,1,1,.5),
+                                  y = c(1,0,1,0,1,0,1,.5),
+                                  z = c(0,0,0,1,1,1,1,.5))
+          cubish_ch <- create_convex_hull_structure(cubish_data)
+
+          # dimension of projected space correct
+          testthat::expect_equal(ncol(cubish_ch), 2)
+
+          # should be the full triangle:
+          tri_data <- data.frame(x = c(1,0,0),
+                                 y = c(0,1,0),
+                                 z = c(0,0,1))
+          tri_ch <- create_convex_hull_structure(tri_data)
+          testthat::expect_equivalent(cubish_ch, tri_ch)
+
+          # A correct
+          testthat::expect_equal(attr(cubish_ch, "A"), simplex_project_mat(3))
+
+          # with data_columns specified
+          cubish_ch2 <- create_convex_hull_structure(cubish_data,
+                                       data_columns = c("x", "y", "z"))
+
+          testthat::expect_equivalent(cubish_ch, cubish_ch2)
+
+          ## new example (baby triangle)
+          baby_tri_data <- data.frame(x = c(1,0,0),
+                                      y = c(0,1,0),
+                                      z = c(0,0,1)) * .5
+          baby_tri_ch <- create_convex_hull_structure(baby_tri_data)
+          testthat::expect_equivalent(baby_tri_ch, tri_ch)
+
+          ## smart baby tri
+          smart_baby_tri <- data.frame(x = c(.5, .5, 0),
+                                       y = c(.5, 0, .5),
+                                       z = c(0, .5, .5))
+
+          smart_baby_tri_ch <- create_convex_hull_structure(smart_baby_tri)
+
+          testthat::expect_equal(length(unique(dist(smart_baby_tri_ch))), 1)
+          })
+
+test_that("test hausdorff_dist (.lower_simplex_project = FALSE)", {
   # erroring (different structures)
   box_data <- data.frame(x = c(0,0,1,1,.5),
                          y = c(0,1,0,1,.5))
-  ch_box <- create_convex_hull_structure(box_data)
-  db_box <- create_delta_ball_structure(box_data[-5,])
+  ch_box <- create_convex_hull_structure(box_data,
+                                         .lower_simplex_project = FALSE)
+  db_box <- create_delta_ball_structure(box_data[-5,],
+                                        .lower_simplex_project = FALSE)
 
   testthat::expect_error(hausdorff_dist(ch_box, db_box))
 
@@ -207,43 +297,135 @@ test_that("test hausdorff_dist", {
 
   # 2 ch boxes
   box2 <- box_data + c(.1,.1)
-  ch_box2 <- box2 %>% create_convex_hull_structure()
+  ch_box2 <- box2 %>%
+    create_convex_hull_structure(.lower_simplex_project = FALSE)
   testthat::expect_true(all.equal(hausdorff_dist(ch_box2, ch_box),
                                   sqrt(.1^2+.1^2)))
   # 2 db boxes
   box2 <- box_data[-5,] + c(3,3)
-  db_box2 <- box2 %>% create_delta_ball_structure()
+  db_box2 <- box2 %>%
+    create_delta_ball_structure(.lower_simplex_project = FALSE)
   testthat::expect_true(all.equal(hausdorff_dist(db_box2, db_box),
                                   sqrt(3^2+3^2) - attr(db_box,"delta")))
 })
 
-test_that("test contained.delta_ball_structure", {
+test_that("test hausdorff_dist (.lower_simplex_project = TRUE)", {
+  # erroring (different structures)
+  smart_baby_tri <- data.frame(x = c(.5, .5, 0),
+                               y = c(.5, 0, .5),
+                               z = c(0, .5, .5))
+  ch_tri <- create_convex_hull_structure(smart_baby_tri)
+  db_tri <- create_delta_ball_structure(smart_baby_tri)
+
+  testthat::expect_error(hausdorff_dist(ch_box, db_box))
+
+
+  # point "inside" - not distance won't be zero since ch_points
+  # isn't actually the extreme points of the convex hovering of the points
+
+  ch_points <- rbind(data.frame(V1 = 0, V2 = 0), # center
+                     ch_tri)
+  class(ch_points) <- c("convex_hull_structure", class(ch_points))
+
+  db_points <- rbind(data.frame(V1 = 0, V2 = 0), # center
+                     db_tri)
+  class(db_points) <- c("delta_ball_structure", class(db_points))
+  attr(db_points, "delta") <- 0
+
+  testthat::expect_equal(hausdorff_dist(ch_points, ch_tri), .5)
+  testthat::expect_equal(hausdorff_dist(db_points, db_tri), .5)
+
+  attr(db_points, "delta") <- attr(db_tri,"delta")
+  testthat::expect_equal(hausdorff_dist(db_points, db_tri), 0)
+
+})
+
+test_that(paste("test contained.delta_ball_structure",
+                "(.lower_simplex_project = FALSE)"), {
   box_data <- data.frame(x = c(0,0,1,1,.5),
                          y = c(0,1,0,1,.5))
-  db_box <- create_delta_ball_structure(box_data)
+  db_box <- create_delta_ball_structure(box_data,
+                                        .lower_simplex_project = FALSE)
   # point outside
   point <- data.frame(x = c(0), y = c(2))
 
-  testthat::expect_false(contained(db_box, point))
+  testthat::expect_false(contained(db_box, point,
+                                   .lower_simplex_project = FALSE))
 
   # point inside
   point <- data.frame(x = 0, y = .5)
-  testthat::expect_true(contained(db_box, point))
+  testthat::expect_true(contained(db_box, point,
+                                  .lower_simplex_project = FALSE))
 })
 
-test_that("test contained.convex_hull_structure", {
+test_that(paste("test contained.delta_ball_structure",
+                "(.lower_simplex_project = TRUE)"),{
+            smart_baby_tri <- data.frame(x = c(.5, .5, 0),
+                                         y = c(.5, 0, .5),
+                                         z = c(0, .5, .5))
+            db_tri <- create_delta_ball_structure(smart_baby_tri)
+            # point inside
+            point <- data.frame(x = c(0), y = c(0))
+
+            testthat::expect_true(contained(db_tri, point,
+                                             .lower_simplex_project = FALSE))
+
+            point3d <- data.frame(x = 1, y = 1, z = 1)
+            testthat::expect_true(contained(db_tri, point3d))
+
+            # point inside (just barely)
+            point <- data.frame(x = 0, y = 1, z = 0)
+            testthat::expect_true(contained(db_tri, point))
+
+            # point outside
+            point <- data.frame(x = 0, y = 1, z = 0)
+            p_baby_tri <- data.frame(x = c(1, 1, .9),
+                                     y = c(1, .9, 1),
+                                     z = c(.9, 1, 1))
+            p_db_tri <- create_delta_ball_structure(p_baby_tri)
+
+            testthat::expect_false(contained(p_db_tri, point))
+                })
+
+test_that(paste("test contained.convex_hull_structure",
+          "(.lower_simplex_project = FALSE)"), {
   box_data <- data.frame(x = c(0,0,1,1),
                          y = c(0,1,0,1))
-  ch_box <- create_convex_hull_structure(box_data)
+  ch_box <- create_convex_hull_structure(box_data,
+                                         .lower_simplex_project = FALSE)
   # point outside
   point <- data.frame(x = c(0), y = c(2))
 
-  testthat::expect_false(contained(ch_box, point))
+  testthat::expect_false(contained(ch_box, point,
+                                   .lower_simplex_project = FALSE))
 
   # point inside
   point <- data.frame(x = .5, y = .5)
-  testthat::expect_true(contained(ch_box, point))
+  testthat::expect_true(contained(ch_box, point,
+                                  .lower_simplex_project = FALSE))
 })
+
+test_that(paste("test contained.convex_hull_structure",
+                "(.lower_simplex_project = TRUE)"), {
+            smart_baby_tri <- data.frame(x = c(.5, .5, 0),
+                                         y = c(.5, 0, .5),
+                                         z = c(0, .5, .5))
+            ch_tri <- create_convex_hull_structure(smart_baby_tri)
+
+            # point inside
+            point <- data.frame(x = c(0), y = c(0))
+
+            testthat::expect_true(contained(ch_tri, point,
+                                            .lower_simplex_project = FALSE))
+
+            point_3d <- data.frame(x = 1, y = 1, z = 1)
+            testthat::expect_true(contained(ch_tri, point_3d))
+
+            # point outside
+            point <- data.frame(x = 0, y = 1, z = 0)
+            testthat::expect_false(contained(ch_tri, point))
+          })
+
 
 test_that("test simplex_proj_mat (dim in [3, 20])", {
   A4 <- simplex_project_mat(4)
@@ -264,4 +446,40 @@ test_that("test simplex_proj_mat (dim in [3, 20])", {
     testthat::expect_equal(t(Ap) %*% (Ap) + diag(-p/(p-1), nrow = p, ncol = p),
                            matrix(- 1/(p-1), nrow = p, ncol = p))
   }
+})
+
+test_that("test to_lower_simplex", {
+  # just getting the same thing back
+  for (. in 1:5){
+    dim <- sample(3:20, size = 1)
+
+    df <- diag(dim)
+    df_project <- to_lower_simplex(df)
+    testthat::expect_equivalent(df_project %>% t,
+                                simplex_project_mat(ncol(df)))
+  }
+
+  # just scale (with a fake A)
+  df <- data.frame(matrix(rnorm(100)^2, ncol = 4))
+  names(df) <- paste("V", 1:4)
+  A_fake <- diag(4)
+  df_scale <- to_lower_simplex(df, A_fake)
+
+  testthat::expect_equivalent(df_scale, df / rowSums(df))
+
+  # error
+  df <- rbind(x = -1, y = 0, z = 0, w = 0)
+  testthat::expect_error(to_lower_simplex(df, A_fake))
+})
+
+test_that("print for delta_ball_structure and convex_hull_structure",{
+  smart_baby_tri <- data.frame(x = c(.5, .5, 0),
+                               y = c(.5, 0, .5),
+                               z = c(0, .5, .5))
+  ch_tri <- create_convex_hull_structure(smart_baby_tri)
+  db_tri <- create_delta_ball_structure(smart_baby_tri)
+
+  testthat::expect_output(print(ch_tri))
+  testthat::expect_output(print(db_tri))
+
 })

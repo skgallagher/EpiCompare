@@ -131,6 +131,7 @@ filament_distance_depth <- function(grouped_df,
 #' Select a proportion of the top / most deep filaments
 #'
 #' similar to \code{depth_curves_to_points.grouped_df}
+#'
 #' @param grouped_df grouped_df data.frame object (assumed rows per filament are
 #'   ordered) - grouped per each filament
 #' @param data_columns  columns (currently strings) of data.frame that relate to
@@ -139,6 +140,8 @@ filament_distance_depth <- function(grouped_df,
 #'   filaments in the \code{grouped_df}. Will take in \code{data_columns}
 #'   parameter as well
 #' @param alpha_level proportion of filaments to keep
+#' @param .remove_group boolean (default true). Should the output keep the
+#' grouping columns or just havd data points?
 #'
 #' @return updated \code{grouped_df} with only the top depth filaments
 #' @export
@@ -155,9 +158,10 @@ filament_distance_depth <- function(grouped_df,
 #'   filter(.id <= 10) %>%
 #'   grab_top_depth_filaments(data_columns = c("S","I","R"),
 #'                            alpha_level = 0)
-grab_top_depth_filaments <- function(grouped_df, data_columns=NULL,
+grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
                                      filament_depth_function = filament_distance_depth,
-                                     alpha_level = .95){
+                                     alpha_level = .95,
+                                     .remove_group = TRUE){
   depth_vector <- grouped_df %>%
     filament_depth_function(data_columns = data_columns)
 
@@ -172,16 +176,32 @@ grab_top_depth_filaments <- function(grouped_df, data_columns=NULL,
       dplyr::ungroup() %>%
       dplyr::mutate(depth = depth_vector) %>%
       dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = alpha_level)) %>%
-      dplyr::select(-.data$depth) %>%
-      tidyr::unnest(cols = dplyr::everything())
+                      stats::quantile(depth_vector, probs = alpha_level))
+
+    if (.remove_group){
+      updated_df <- updated_df %>%
+        dplyr::select(.data$data) %>%
+        tidyr::unnest(cols = dplyr::everything())
+    } else {
+      updated_df <- updated_df %>%
+        dplyr::select(-.data$depth) %>%
+        tidyr::unnest(cols = dplyr::everything())
+    }
   } else {
     updated_df <- grouped_df %>% tidyr::nest() %>%
       dplyr::mutate(depth = depth_vector) %>%
       dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = alpha_level)) %>%
-      dplyr::select(-.data$depth) %>%
-      tidyr::unnest()
+                      stats::quantile(depth_vector, probs = alpha_level))
+
+    if (.remove_group){
+      updated_df <- updated_df %>%
+        dplyr::select(.data$data) %>%
+        tidyr::unnest()
+    } else {
+      updated_df <- updated_df %>%
+        dplyr::select(-.data$depth) %>%
+        tidyr::unnest()
+    }
   }
   return(updated_df)
 }
@@ -193,6 +213,9 @@ grab_top_depth_filaments <- function(grouped_df, data_columns=NULL,
 #' @param data_points points to create the delta ball structure from
 #' @param data_columns  columns (currently strings) of data.frame that relate to
 #'   the point's coordinates in euclidean space.
+#' @param .lower_simplex_project boolean, if data points should be projected to a simplex
+#'   and then to the lower dimensional simplex (for this package, this should
+#'   always be done)
 #'
 #' @return a \code{delta_ball_structure} object, that is a data frame similar to
 #' data_points (but with out \code{data_columns} columns) and distinct points.
@@ -209,8 +232,9 @@ grab_top_depth_filaments <- function(grouped_df, data_columns=NULL,
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
 #'   grab_top_depth_filaments(alpha_level = .9) %>%
-#'   create_delta_ball_structure()
-create_delta_ball_structure <- function(data_points, data_columns=NULL){
+#'   create_delta_ball_structure() #data_columns = c("S","I","R")
+create_delta_ball_structure <- function(data_points, data_columns=NULL,
+                                        .lower_simplex_project = TRUE){
   if (!is.null(data_columns)){
     delta_ball_info <- data_points %>%
       dplyr::select(dplyr::one_of(data_columns))
@@ -218,12 +242,24 @@ create_delta_ball_structure <- function(data_points, data_columns=NULL){
 
   delta_ball_info <- data_points %>% dplyr::distinct()
 
-  a <- get_delta(data = delta_ball_info)
-  delta <- a[[2]]
+  if (.lower_simplex_project){
+    # projecting to lower structure to simplex
+    A <- simplex_project_mat(ncol(delta_ball_info))
+    delta_ball_info <- to_lower_simplex(delta_ball_info, A)
+  }
 
-  attr(delta_ball_info, "delta") <- delta
+  # delta_ball approach
+  delta_info <- get_delta(data = delta_ball_info)
+  delta <- delta_info[[2]]
 
+  # class info
   class(delta_ball_info) <- c("delta_ball_structure", class(delta_ball_info))
+  attr(delta_ball_info, "delta") <- delta
+  if (.lower_simplex_project){
+    attr(delta_ball_info, "A") <- A
+  } else {
+    attr(delta_ball_info, "A") <- diag(ncol(data_points))
+  }
 
   return(delta_ball_info)
 }
@@ -236,6 +272,9 @@ create_delta_ball_structure <- function(data_points, data_columns=NULL){
 #' @param data_points points to create the convex hull structure from
 #' @param data_columns columns (currently strings) of data.frame that relate to
 #'   the point's coordinates in euclidean space.
+#' @param .lower_simplex_project boolean, if data points should be projected to a simplex
+#'   and then to the lower dimensional simplex (for this package, this should
+#'   always be done)
 #'
 #' @return a \code{convex_hull_structure} object, that is a data frame similar
 #'   to data_points (but with out \code{data_columns} columns) and only points
@@ -247,17 +286,17 @@ create_delta_ball_structure <- function(data_points, data_columns=NULL){
 #'
 #' @examples
 #' library(dplyr)
-#' # actually needs to reduce dimension first :/
-#' if (FALSE){
+#' # this will look like a 2d data frame (but this is becuase pomp_df info is
+#' # on the 3d simplex)
 #' convex_hull_cb <- timeternR::pomp_df %>%
 #'   filter(.id <= 10) %>%
 #'   arrange(time) %>% # just to be safe
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
 #'   grab_top_depth_filaments(alpha_level = .9) %>%
-#'   create_convex_hull_structure()
-#'   }
-create_convex_hull_structure <- function(data_points, data_columns = NULL){
+#'   create_convex_hull_structure() #data_columns = c("S","I","R")
+create_convex_hull_structure <- function(data_points, data_columns = NULL,
+                                         .lower_simplex_project = TRUE){
   # return object of data_points[chull_idx, data_columns]
   if (is.null(data_columns)){
     data_columns = names(data_points)
@@ -265,14 +304,27 @@ create_convex_hull_structure <- function(data_points, data_columns = NULL){
 
   inner_data <- data_points %>%
     dplyr::select(dplyr::one_of(data_columns)) %>% dplyr::distinct()
-
+  if (.lower_simplex_project){
+    # projecting to lower structure to simplex
+    A <- simplex_project_mat(ncol(inner_data))
+    inner_data <- to_lower_simplex(inner_data, A)
+  }
+  # convex hull
   chulln <- geometry::convhulln(inner_data,
                                 output.options = "n")
-  points_on_hull <- data_points[unique(matrix(chulln$hull)),]
+  points_on_hull <- inner_data[unique(matrix(chulln$hull)),]
 
+
+  # class structure
   class(points_on_hull) <- c("convex_hull_structure", class(points_on_hull))
-
   attr(points_on_hull, "normals") <- chulln$normals
+
+  if (.lower_simplex_project){
+    attr(points_on_hull, "A") <- A
+  } else {
+    attr(points_on_hull, "A") <- diag(ncol(data_points))
+  }
+
 
   return(points_on_hull)
 }
@@ -323,23 +375,33 @@ hausdorff_dist <- function(a,b){
 #' Method to check if a filament is completely contained in a set (relative to
 #' discrete representation)
 #'
-#' uniform containment
+#' Completely contained should be thought of as "uniform" containment.
+#'
 #'
 #' @param x assumed to either \code{convex_hull_structure} or
 #'   \code{delta_ball_structure} objects
 #' @param y data.frame with filament represented in it
+#' @param .lower_simplex_project boolean, if y should be projected to a simplex
+#'   and then to the lower dimensional simplex (that x probably was). For this
+#'   package, this should always be done.
 #'
 #' @return boolean if y is contained in x
 #' @export
 #'
-contained <- function(x, y){
+contained <- function(x, y, .lower_simplex_project = TRUE){
   UseMethod("contained")
 }
 
 #' @rdname contained
-contained.delta_ball_structure <- function(x, y){
-  # uniform containment
-  dist_mat <- rdist::cdist(x, y, metric = "euclidean")
+contained.delta_ball_structure <- function(x, y,
+                                           .lower_simplex_project = TRUE){
+  if (.lower_simplex_project){
+    y_inner <- to_lower_simplex(y, attr(x, "A"))
+  } else {
+    y_inner <- y
+  }
+
+  dist_mat <- rdist::cdist(x, y_inner, metric = "euclidean")
   delta <- attr(x, "delta")
 
   interior_dist <- dist_mat %>% apply(2, min) %>% max
@@ -348,14 +410,20 @@ contained.delta_ball_structure <- function(x, y){
 }
 
 #' @rdname contained
-contained.convex_hull_structure <- function(x, y){
+contained.convex_hull_structure <- function(x, y,
+                                            .lower_simplex_project = TRUE){
+  if (.lower_simplex_project){
+    y_inner <- to_lower_simplex(y, attr(x, "A"))
+  } else {
+    y_inner <- y
+  }
   normals <- attr(x, "normals")
   A <- normals[, -ncol(normals)]
   b <- normals[, ncol(normals)]
 
   contained_vec <- rep(F, nrow(y))
-  for (y_idx in 1:nrow(y)){
-    contained_vec[y_idx] <- all(-A %*% t(y[y_idx,]) >= b)
+  for (y_idx in 1:nrow(y_inner)){
+    contained_vec[y_idx] <- all(-A %*% t(y_inner[y_idx,]) >= b)
   }
   return(all(contained_vec))
 }
@@ -381,7 +449,31 @@ contained.convex_hull_structure <- function(x, y){
 #'                         -1/3,-sqrt(2)/3, sqrt(2/3),
 #'                         -1/3, -sqrt(2)/3, -sqrt(2/3)),
 #'                       ncol = 4)
-#' A4 == A4_expected
+#' all.equal(A4, A4_expected) # minor numerical inconsistencies
+#'
+#' library(dplyr)
+#'
+#' if (interactive()){
+#'   # visualizing this 4d projection
+#'   s4in3 <- simplex_project_mat(4) %>% t %>% data.frame %>%
+#'     rbind(., data.frame(X1 = 0, X2 = 0, X3 = 0)) %>%
+#'     mutate(color = factor(c(rep(1,4), 2)))#center
+#'
+#'
+#'   library(plotly)
+#'   plot_ly(s4in3,
+#'           type = "scatter3d",
+#'           mode = "markers", x = ~X1, y = ~X2, z = ~X3,
+#'           color = ~color)
+#' }
+#' # visualizing a 3d projection
+#' s3in2 <- simplex_project_mat(3) %>% t %>% data.frame %>%
+#'  rbind(., data.frame(X1 = 0, X2 = 0)) %>%
+#'  mutate(color = factor(c(rep(1,3), 2))) #center
+#'
+#' library(ggplot2)
+#' ggplot(s3in2) +
+#'   geom_point(aes(x = X1, y = X2, color = color))
 simplex_project_mat <- function(p){
   # https://en.wikipedia.org/wiki/Simplex#Cartesian_coordinates_for_regular_n-dimensional_simplex_in_Rn
   # Iteratively create:
@@ -433,5 +525,71 @@ simplex_project_mat <- function(p){
 
   return(A)
 }
+
+
+#' move df to simplex representation
+#'
+#' This function takes a data.frame, moves it to unit simplex representation and
+#' then projects the points onto a lower representation space (using \code{A}).
+#'
+#' @param df an n x p data.frame
+#' @param A default is \code{NULL}, if so, we create A from
+#'   \code{simplex_project_mat}
+#'
+#' @return updated dat.frame (n x k), where k should be p-1, but that's assuming
+#'   A is made from \code{simplex_project_mat}
+#' @export
+#'
+#' @examples
+#' center <- data.frame(x = 1, y = 1, z = 1)
+#' to_lower_simplex(center) # 0,0 # center
+#'
+#' side <- data.frame(x = 1, y = 0, z =0)
+#' to_lower_simplex(side) #(1,0)
+to_lower_simplex <- function(df, A = NULL){
+  # first get to simplex
+  assertthat::assert_that(all(df >= 0),
+                          msg = paste("data values should all be greater or",
+                                      "equal to 0 to meet expectations of",
+                                      "'simplex' potential data"))
+  row_sum <- rowSums(df)
+  df_simplex <- as.matrix(df / row_sum)
+
+  if (is.null(A)){
+    A <- simplex_project_mat(ncol(df))
+  }
+  df_lower <- as.data.frame(df_simplex %*% t(A))
+
+  return(df_lower)
+}
+
+print.convex_hull_structure <- function(x){
+  A <- attr(x, "A")
+  p <- nrow(A)
+  q <- ncol(A)
+  n <- nrow(x)
+  cat(sprintf(paste("Convex hull structure object,",
+                    "for data projected from %i to %i dimensional space,",
+                    "defined by %i vertices.",
+                    "Below are the vertices in the projected space.\n"),
+              q, p, n))
+  print.data.frame(x)
+}
+
+print.delta_ball_structure <- function(x){
+  A <- attr(x, "A")
+  p <- nrow(A)
+  q <- ncol(A)
+  n <- nrow(x)
+  cat(sprintf(paste("Delta ball structure object,",
+                    "for data projected from %i to %i dimensional space,",
+                    "defined by %i points.",
+                    "Below are the points in the projected space.\n"),
+              q, p, n))
+  print.data.frame(x)
+}
+
+
+
 
 

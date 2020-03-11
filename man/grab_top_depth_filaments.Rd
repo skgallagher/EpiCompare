@@ -8,7 +8,8 @@ grab_top_depth_filaments(
   grouped_df,
   data_columns = NULL,
   filament_depth_function = filament_distance_depth,
-  alpha_level = 0.95
+  alpha_level = 0.95,
+  .remove_group = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ filaments in the \code{grouped_df}. Will take in \code{data_columns}
 parameter as well}
 
 \item{alpha_level}{proportion of filaments to keep}
+
+\item{.remove_group}{boolean (default true). Should the output keep the
+grouping columns or just havd data points?}
 }
 \value{
 updated \code{grouped_df} with only the top depth filaments

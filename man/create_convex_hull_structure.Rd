@@ -4,13 +4,21 @@
 \alias{create_convex_hull_structure}
 \title{create the convex hull associated with points}
 \usage{
-create_convex_hull_structure(data_points, data_columns = NULL)
+create_convex_hull_structure(
+  data_points,
+  data_columns = NULL,
+  .lower_simplex_project = TRUE
+)
 }
 \arguments{
 \item{data_points}{points to create the convex hull structure from}
 
 \item{data_columns}{columns (currently strings) of data.frame that relate to
 the point's coordinates in euclidean space.}
+
+\item{.lower_simplex_project}{boolean, if data points should be projected to a simplex
+and then to the lower dimensional simplex (for this package, this should
+always be done)}
 }
 \value{
 a \code{convex_hull_structure} object, that is a data frame similar
@@ -25,14 +33,13 @@ dimensional space
 }
 \examples{
 library(dplyr)
-# actually needs to reduce dimension first :/
-if (FALSE){
+# this will look like a 2d data frame (but this is becuase pomp_df info is
+# on the 3d simplex)
 convex_hull_cb <- timeternR::pomp_df \%>\%
   filter(.id <= 10) \%>\%
   arrange(time) \%>\% # just to be safe
   select(-time, -H, -cases) \%>\%
   group_by(.id) \%>\%
   grab_top_depth_filaments(alpha_level = .9) \%>\%
-  create_convex_hull_structure()
-  }
+  create_convex_hull_structure() #data_columns = c("S","I","R")
 }

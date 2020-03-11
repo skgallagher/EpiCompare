@@ -7,21 +7,25 @@
 \title{Method to check if a filament is completely contained in a set (relative to
 discrete representation)}
 \usage{
-contained(x, y)
+contained(x, y, .lower_simplex_project = TRUE)
 
-\method{contained}{delta_ball_structure}(x, y)
+\method{contained}{delta_ball_structure}(x, y, .lower_simplex_project = TRUE)
 
-\method{contained}{convex_hull_structure}(x, y)
+\method{contained}{convex_hull_structure}(x, y, .lower_simplex_project = TRUE)
 }
 \arguments{
 \item{x}{assumed to either \code{convex_hull_structure} or
 \code{delta_ball_structure} objects}
 
 \item{y}{data.frame with filament represented in it}
+
+\item{.lower_simplex_project}{boolean, if y should be projected to a simplex
+and then to the lower dimensional simplex (that x probably was). For this
+package, this should always be done.}
 }
 \value{
 boolean if y is contained in x
 }
 \description{
-uniform containment
+Completely contained should be thought of as "uniform" containment.
 }
