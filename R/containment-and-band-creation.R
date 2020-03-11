@@ -360,3 +360,78 @@ contained.convex_hull_structure <- function(x, y){
   return(all(contained_vec))
 }
 
+
+#' Create linear map to move simplex with p vertices to p-1 dimensional space
+#'
+#' This approach comes for
+#' \url{https://en.wikipedia.org/wiki/Simplex#Cartesian_coordinates_for_regular_n-dimensional_simplex_in_Rn}
+#' and centers the projected points at 0.
+#'
+#' @param p number of vertices
+#'
+#' @return A matrix that transforms each vertices (column) to (p-1) dimensional
+#'   space
+#' @export
+#'
+#' @examples
+#' A4 <- simplex_project_mat(4)
+#' # expected for dim 4 (for examples on wikipedia)
+#' A4_expected <- matrix(c(1,0,0,
+#'                         -1/3, sqrt(8)/3,0,
+#'                         -1/3,-sqrt(2)/3, sqrt(2/3),
+#'                         -1/3, -sqrt(2)/3, -sqrt(2/3)),
+#'                       ncol = 4)
+#' A4 == A4_expected
+simplex_project_mat <- function(p){
+  # https://en.wikipedia.org/wiki/Simplex#Cartesian_coordinates_for_regular_n-dimensional_simplex_in_Rn
+  # Iteratively create:
+  # For a regular simplex, the distances of its vertices to its center are equal (in both spaces, in the projected space - center = 0).
+  # The angle subtended by any two vertices of an n-dimensional simplex through its center is \arccos \left({\tfrac {-1}{n))\right)
+  # aka <a,b> = -1/n (where n is the dimension of the new space -- also defined as p-1)
+  #
+  # In terms of coding this really means:
+  # 1. Initial setup
+  # A = (p-1) x p matrix
+  # A[,1] = e_1
+  # A[lower_diag] = 0
+  #
+  # Iterative process:
+  # J:
+  # J.0: A[(j+1):(p-1), j] = 0 # technically not needed if set A = 0 initially
+  # J.1: Solve: t(x[1:(j-1)]) %*% A[1:(j-1), 1:(j-1)] = (-1/(p-1)) * rep(1, j-1)
+  # Set A[1:(j-1),j] = x
+  # J.2: a_j_star = ||x||^2
+  # Set A[j,j] = sqrt(1-a_j_star)
+  #
+  # For J = p
+  # only do J.1
+
+  assertthat::assert_that(p >= 3 & floor(p) == p,
+                          msg = "p should be an integer 3 or higher")
+
+  # initial set up
+  A <- matrix(0, nrow = p - 1, ncol = p)
+  # first column:
+  A[,1] <- c(1, rep(0, p-2))
+
+  # j = 2:(p-1)
+  for (j in 2:(p-1)) {
+    A_pre_j <- A[1:(j-1), 1:(j-1)]
+    diff_constant <- (-1/(p-1)) * rep(1, j-1)
+
+    x <- solve(t(A_pre_j), diff_constant)
+    A[1:(j-1),j] <- x
+    A[j,j] <- sqrt(1-sum(x^2))
+  }
+
+  # for j = p
+  j = p
+  A_pre_j <- A[1:(j-1), 1:(j-1)]
+  diff_constant <- (-1/(p-1)) * rep(1, j-1)
+  A[,j] <- solve(t(A_pre_j), diff_constant)
+
+
+  return(A)
+}
+
+

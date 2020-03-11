@@ -244,3 +244,24 @@ test_that("test contained.convex_hull_structure", {
   point <- data.frame(x = .5, y = .5)
   testthat::expect_true(contained(ch_box, point))
 })
+
+test_that("test simplex_proj_mat (dim in [3, 20])", {
+  A4 <- simplex_project_mat(4)
+  # expected for dim 4 (for examples on wikipedia)
+  A4_expected <- matrix(c(1,0,0,
+                          -1/3, sqrt(8)/3,0,
+                          -1/3,-sqrt(2)/3, sqrt(2/3),
+                          -1/3, -sqrt(2)/3, -sqrt(2/3)),
+                        ncol = 4)
+
+  testthat::expect_equal(A4, A4_expected)
+
+  # checks for any dim:
+  for (. in 1:5){
+    p <- sample(3:20, size = 1)
+    Ap <- simplex_project_mat(p)
+    testthat::expect_equal(diag(t(Ap) %*% (Ap)), rep(1,p))
+    testthat::expect_equal(t(Ap) %*% (Ap) + diag(-p/(p-1), nrow = p, ncol = p),
+                           matrix(- 1/(p-1), nrow = p, ncol = p))
+  }
+})
