@@ -36,7 +36,6 @@ test_that("delta_structure tests", {
   testthat::expect_true(all(line_info))
 })
 
-
 test_that("get_delta basic tests", {
   # static
   data <- data.frame(x = c(0,1), y = c(0,1))
