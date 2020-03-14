@@ -3,4 +3,5 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   getting_started: getting_started.html
+  high-dimensional-bands-and-containment: high-dimensional-bands-and-containment.html
 

@@ -10,3 +10,4 @@
 ^doc$
 ^Meta$
 ^README\.Rmd$
+^vignettes/high-dimensional-bands-and-containment\.Rmd$

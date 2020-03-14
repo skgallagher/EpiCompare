@@ -1,0 +1,253 @@
+---
+title: "High Dimensional Bands and Containment"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{High Dimensional Bands and Containment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+devtools::load_all()
+```
+
+<left>
+![](../man/figures/logo.png){width=100px}
+
+```{r eval = FALSE}
+if(!require(timeternR)){
+  library(devtools)
+  devtools::install_github("shannong19/timeternR")
+}
+library(timeternR)
+library(tidyverse)
+theme_set(theme_minimal())
+```
+
+```{r echo = F, message = F, warning = F}
+# hidden load currently
+library(devtools)
+library(timeternR)
+library(tidyverse)
+theme_set(theme_minimal())
+devtools::load_all()
+```
+
+# Overview
+
+This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.
+
+To  motivate these tools we're actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we've generated a `pretend_actual_data`set and a set of simulations. 
+
+Look at this beautify pretend data. A good peak. We're able to use `geom_aggregate` on our data (though we also could have used `agents_to_aggregate` + `geom_path`).
+
+```{r}
+set.seed(1)
+pretend_actual_data <- timeternR::simulate_SIR_agents(
+                          n_sims = 1,
+                          n_time_steps = 1000,
+                          beta = .0099, gamma = .0029,
+                          init_SIR = c(950, 50, 0))
+
+
+
+pretend_actual_data %>% ggplot() +
+  geom_aggregate(aes(y = tI, z = tR),
+                 color = "blue") +
+  coord_tern() # "what does 'rows containing non-finite values' mean?"
+```
+```{r}
+# another approach for the same visual
+df_single <- pretend_actual_data %>% 
+  agents_to_aggregate(states = c("tI", "tR")) %>%
+  rename(S = "X0", I = "X1", R = "X2") 
+```
+```{r eval = F}
+ggplot(df_single, aes(x = S, y = I, z = R)) +
+  geom_path(color = "blue") +
+  coord_tern()
+```
+
+Now, suppose, without having read our paper, you don't have a proof of \@Shannon's at the top of your head, but you still think the following model fits decently well for the above data.
+
+```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
+n_sims <- 100 
+n_time_steps <- 100
+beta <- .1
+gamma <- .03
+init_SIR <- c(950, 50, 0)
+
+    
+sim100 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+                                 n_time_steps = n_time_steps,
+                                 beta = beta, gamma = gamma,
+                                 init_SIR = init_SIR)
+
+df_group <- sim100 %>% group_by(sim) %>% 
+  agents_to_aggregate(states = c("tI", "tR"), 
+                      min_max_time = c(0,100)) %>% # REMOVE THIS LINE
+  rename(S = "X0", I = "X1", R = "X2") 
+```
+
+
+```{r}
+ggplot() +
+  geom_aggregate(data = sim100, aes(y = tI, z = tR, group = sim),
+                 alpha = .1) +
+  geom_aggregate(data = pretend_actual_data,
+                 aes(y = tI, z = tR), color = "blue") +
+  coord_tern()
+```
+
+```{r eval = F}
+# again, aggregate version:
+ggplot(df_group) +
+  geom_path(aes(x = S, y = I, z = R, group = sim),
+            alpha = .1) +
+  geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
+  coord_tern()
+```
+
+## How close is this model? 
+
+Great! The visualization looks like you made a good estimate of the SIR model parameters. But how good? Would a 90\% prediction interval contain the true epidemic?
+
+We propose to assess this question with containment of the epidemic with a band using 90\% of the simulations - specifically the top 90\% most *globally* deep filaments of simulations. (*since this looks like a 'single mode' style distribution - global depth isn't that bad.*)
+
+We define:
+```{r}
+delta_ball_cb <- df_group %>%
+  arrange(t) %>% # just to be safe
+  select(-t) %>%
+  group_by(sim) %>%
+  grab_top_depth_filaments(alpha_level = .4) %>%
+  create_delta_ball_structure()
+```
+
+Which is just a data version (not exactly, but close) to this:
+```{r}
+b <- ggplot() +
+  geom_confidence_band(data = df_group, 
+                       aes(x = S, y = I, z = R, 
+                           sim_group = as.numeric(sim)),
+                       alpha_level = .9, cb_type = "delta_ball") +
+  geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
+  coord_tern()
+```
+
+```{r}
+a <- ggplot() +
+  geom_confidence_band(data = df_group, 
+                       aes(x = S, y = I, z = R, 
+                           sim_group = as.numeric(sim)),
+                       alpha_level = .1, cb_type = "delta_ball") +
+  geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
+  coord_tern()
+
+testthat::expect_equal(a,b) # this is really bad (shouldn't be equal)...
+```
+
+
+Is it contained in the above delta ball?
+
+```{r}
+contained(delta_ball_cb, 
+         df_single %>% select(-t)) # aggregate version
+```
+```{r}
+delta_ball_cb1 <- df_group %>%
+  arrange(t) %>% # just to be safe
+  select(-t) %>%
+  group_by(sim) %>%
+  grab_top_depth_filaments(alpha_level = .1) %>%
+  create_delta_ball_structure()
+```
+
+```{r}
+contained(delta_ball_cb1, 
+         df_single %>% select(-t)) # aggregate version
+```
+
+# Comparing another simulation
+
+Suppose your lab has seen an epidemic that has similar characteristics as the current epidemic, and had already build simulations below for such thing:
+
+```{r}
+beta <- .15
+gamma <- .05
+
+out2 <- timeternR::simulate_SIR_agents(n_sims = 100,
+                                      n_time_steps = 100,
+                                      beta = beta, gamma = gamma,
+                                      init_SIR = c(950, 50, 0))
+
+df_group2 <- out2 %>% group_by(sim) %>% 
+  agents_to_aggregate(states = c("tI", "tR"),
+                      min_max_time = c(0,100)) %>%
+  rename(S = "X0", I = "X1", R = "X2")
+```
+
+## possible visuals {.tabset}
+
+### First
+```{r}
+ggplot() +
+  geom_confidence_band(data = df_group, 
+                       aes(x = S, y = I, z = R, 
+                           sim_group = as.numeric(sim)),
+                       color = "blue",
+                       fill = "blue", alpha = .5,
+                       alpha_level = .1, cb_type = "delta_ball") +
+  geom_confidence_band(data = df_group2, 
+                       aes(x = S, y = I, z = R, 
+                           sim_group = as.numeric(sim)),
+                       color = "red",
+                       fill = "red", alpha = .5,
+                       alpha_level = .1, cb_type = "delta_ball") +
+  coord_tern()
+```
+### Second (Error)
+```{r}
+df_all <- rbind( df_group %>% mutate(epi_model = "first"),
+                df_group2 %>% mutate(epi_model = "second"))
+ggplot() +
+  geom_confidence_band(data = df_all, 
+                       aes(x = S, y = I, z = R, fill = epi_model,
+                           sim_group = as.numeric(sim)), alpha = .5,
+                       alpha_level = .1, cb_type = "delta_ball")  +
+  coord_tern()
+```
+### Third (Error 2)
+```{r}
+df_all <- rbind( df_group %>% mutate(epi_model = "first"),
+                df_group2 %>% mutate(epi_model = "second"))
+ggplot() +
+  geom_path(data = df_all, 
+            aes(x = S, y = I, z = R, color = epi_model,
+                group = as.numeric(sim)), alpha = .1)  +
+  coord_tern()
+```
+
+## Numerical Comparison
+
+*Define hausdorff distance*... tell story...
+
+```{r}
+delta_ball_cb_group2 <- df_group2 %>%
+  arrange(t) %>% # just to be safe
+  select(-t) %>%
+  group_by(sim) %>%
+  grab_top_depth_filaments(alpha_level = .1) %>%
+  create_delta_ball_structure()
+```
+
+
+```{r}
+hausdorff_dist(delta_ball_cb1, delta_ball_cb_group2)
+```
+
