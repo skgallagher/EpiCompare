@@ -7,8 +7,10 @@
 #'
 #' @param grouped_df grouped_df data.frame object (assumed rows per filament are
 #'   ordered) - grouped per each filament
-#' @param data_columns columns (currently strings) of data.frame that relate to
-#'   the filament's coordinates in euclidean space.
+#' @param data_columns columns of data.frame that relate to
+#'   the filament's coordinates in euclidean space. The input should look like
+#' something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+#' \code{NULL} this function will treat this like all non-group columns.
 #' @param number_points integer number of points for each filament to be
 #'   compressed to
 #'
@@ -31,8 +33,12 @@
 #'   filament_compression(data_columns = c("S","I","R"), number_points = 9)
 filament_compression <- function(grouped_df, data_columns = NULL,
                                  number_points = 13){
+  #quos
+  data_columns_q <- dplyr::enquos(data_columns)
+  data_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(grouped_df),
+                                                 !!!data_columns_q))
   group_columns <- names(attr(grouped_df, "groups"))[names(attr(grouped_df, "groups")) != ".rows"]
-  if (is.null(data_columns)){ # use all columns except the grouped columns
+  if (length(data_columns) == 0){ # use all columns except the grouped columns
     data_columns <- names(grouped_df)
     data_columns <- data_columns[!(data_columns %in% group_columns)]
   }
@@ -74,8 +80,10 @@ filament_compression <- function(grouped_df, data_columns = NULL,
 #'
 #' @param grouped_df grouped_df data.frame object (assumed rows per filament are
 #'   ordered) - grouped per each filament
-#' @param data_columns  columns (currently strings) of data.frame that relate to
-#'   the filament's coordinates in euclidean space.
+#' @param data_columns columns of data.frame that relate to
+#'   the filament's coordinates in euclidean space. The input should look like
+#' something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+#' \code{NULL} this function will treat this like all non-group columns.
 #' @param dist_list_func function to calculate distance between each filament.
 #'   The default is "auto", which is selects either
 #'   \code{dist_matrix_innersq_direction} if all filaments are the same length
@@ -91,7 +99,12 @@ filament_distance_depth <- function(grouped_df,
                                     dist_list_func = "auto",
                                     depth_func = distance_depth_function){
 
-  if (is.null(data_columns)){ # use all columns except the grouped columns
+  #quos
+  data_columns_q <- dplyr::enquos(data_columns)
+  data_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(grouped_df),
+                                                 !!!data_columns_q))
+
+  if (length(data_columns) == 0){ # use all columns except the grouped columns
     data_columns <- names(grouped_df)
     group_columns <- names(attr(grouped_df, "groups"))[names(attr(grouped_df, "groups")) != ".rows"]
     data_columns <- data_columns[!(data_columns %in% group_columns)]
@@ -134,8 +147,10 @@ filament_distance_depth <- function(grouped_df,
 #'
 #' @param grouped_df grouped_df data.frame object (assumed rows per filament are
 #'   ordered) - grouped per each filament
-#' @param data_columns  columns (currently strings) of data.frame that relate to
-#'   the filament's coordinates in euclidean space.
+#' @param data_columns columns of data.frame that relate to
+#'   the filament's coordinates in euclidean space. The input should look like
+#' something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+#' \code{NULL} this function will treat this like all non-group columns.
 #' @param filament_depth_function function to calculate depth relative to the
 #'   filaments in the \code{grouped_df}. Will take in \code{data_columns}
 #'   parameter as well
@@ -162,6 +177,13 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
                                      filament_depth_function = filament_distance_depth,
                                      alpha_level = .95,
                                      .remove_group = TRUE){
+  #quos
+  data_columns_q <- dplyr::enquos(data_columns)
+  data_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(grouped_df),
+                                                 !!!data_columns_q))
+  if (length(data_columns) == 0){
+    data_columns <- NULL
+  }
   depth_vector <- grouped_df %>%
     filament_depth_function(data_columns = data_columns)
 
@@ -211,8 +233,12 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
 #' create the delta ball associated with points
 #'
 #' @param data_points points to create the delta ball structure from
-#' @param data_columns  columns (currently strings) of data.frame that relate to
-#'   the point's coordinates in euclidean space.
+#' @param data_columns columns of data.frame that relate to the point's
+#' coordinates in euclidean space. This should be at least 3 columns (else it
+#' doesn't really make sense to use this function). The input should look like
+#' something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+#' \code{NULL} this function will treat this like
+#' \code{\link[dplyr:everything]{dplyr::everything()}}.
 #' @param .lower_simplex_project boolean, if data points should be projected to a simplex
 #'   and then to the lower dimensional simplex (for this package, this should
 #'   always be done)
@@ -232,9 +258,14 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
 #'   grab_top_depth_filaments(alpha_level = .9) %>%
-#'   create_delta_ball_structure() #data_columns = c("S","I","R")
-create_delta_ball_structure <- function(data_points, data_columns=NULL,
+#'   create_delta_ball_structure() #data_columns = c(S,I,R)
+create_delta_ball_structure <- function(data_points, data_columns = NULL,
                                         .lower_simplex_project = TRUE){
+  #quos
+  data_columns_q <- dplyr::enquos(data_columns)
+  data_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(data_points),
+                                           !!!data_columns_q))
+
   if (!is.null(data_columns)){
     delta_ball_info <- data_points %>%
       dplyr::select(dplyr::one_of(data_columns))
@@ -270,8 +301,12 @@ create_delta_ball_structure <- function(data_points, data_columns=NULL,
 #' dimensional space
 #'
 #' @param data_points points to create the convex hull structure from
-#' @param data_columns columns (currently strings) of data.frame that relate to
-#'   the point's coordinates in euclidean space.
+#' @param data_columns columns of data.frame that relate to the point's
+#' coordinates in euclidean space. This should be at least 3 columns (else it
+#' doesn't really make sense to use this function). The input should look like
+#' something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+#' \code{NULL} this function will treat this like
+#' \code{\link[dplyr:everything]{dplyr::everything()}}.
 #' @param .lower_simplex_project boolean, if data points should be projected to a simplex
 #'   and then to the lower dimensional simplex (for this package, this should
 #'   always be done)
@@ -294,11 +329,15 @@ create_delta_ball_structure <- function(data_points, data_columns=NULL,
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
 #'   grab_top_depth_filaments(alpha_level = .9) %>%
-#'   create_convex_hull_structure() #data_columns = c("S","I","R")
+#'   create_convex_hull_structure() #data_columns = c(S,I,R)
 create_convex_hull_structure <- function(data_points, data_columns = NULL,
                                          .lower_simplex_project = TRUE){
-  # return object of data_points[chull_idx, data_columns]
-  if (is.null(data_columns)){
+  #quos
+  data_columns_q <- dplyr::enquos(data_columns)
+  data_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(data_points),
+                                                 !!!data_columns_q))
+
+  if (length(data_columns) == 0){
     data_columns = names(data_points)
   }
 
@@ -532,7 +571,7 @@ simplex_project_mat <- function(p){
 #' This function takes a data.frame, moves it to unit simplex representation and
 #' then projects the points onto a lower representation space (using \code{A}).
 #'
-#' @param df an n x p data.frame
+#' @param df an n x p data.frame, all scalar columns
 #' @param A default is \code{NULL}, if so, we create A from
 #'   \code{simplex_project_mat}
 #'

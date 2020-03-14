@@ -9,7 +9,8 @@ project_to_simplex(df_3d, column_names = c("x", "y", "z"))
 \arguments{
 \item{df_3d}{data frame}
 
-\item{column_names}{names of columns for the 3 dimensions.}
+\item{column_names}{names of columns for the 3 dimensions. Can be in the
+form \code{c(x,y,z)} or \code{c("x","y","z")}.}
 }
 \value{
 an updated version of \code{df_3d} with points projected onto

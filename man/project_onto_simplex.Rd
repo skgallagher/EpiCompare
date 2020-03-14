@@ -13,8 +13,14 @@ project_onto_simplex(y)
 proj_y projection of y onto the unit simplex of dimension n
 }
 \description{
-Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i
-w_i = 1, w_i \geq 0}
+Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i w_i = 1, w_i \geq 0}
+}
+\details{
+This code replicates a solution referenced on
+\href{https://math.stackexchange.com/questions/2402504/orthogonal-projection-onto-the-unit-simplex}{stackexchange},
+which linked to following
+\href{https://github.com/RoyiAvital/StackExchangeCodes/blob/master/Mathematics/Q2327504/ProjectSimplex.m}{Matlab
+code}.
 }
 \examples{
 library(ggplot2)

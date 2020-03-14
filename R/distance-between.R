@@ -12,7 +12,6 @@
 #' \item{distance}{vector of distances beween points (n - 1)}
 #' \item{angle}{vector of angle change between points (n - 1) - in radians}
 #' @export
-#'
 dist_along_path_angle <- function(data_df){
   assertthat::assert_that(assertthat::are_equal(ncol(data_df), 2),
                           msg = "data_df is expected to have 2 columns")
@@ -66,7 +65,6 @@ dist_along_path_direction <- function(data_df){
 #'
 #' @return next point along the correct angle and distance
 #' @export
-#'
 step_along_angle <- function(start_point, angle, distance){
   next_point <- start_point + distance * c(cos(angle), sin(angle))
   return(next_point)
@@ -81,7 +79,6 @@ step_along_angle <- function(start_point, angle, distance){
 #'
 #' @return next point along the correct angle and distance
 #' @export
-#'
 step_along_direction <- function(start_point, direction, distance){
   direction_distance <- sqrt(sum(direction^2))
   next_point <- start_point + distance/direction_distance * direction

@@ -15,8 +15,10 @@ filament_distance_depth(
 \item{grouped_df}{grouped_df data.frame object (assumed rows per filament are
 ordered) - grouped per each filament}
 
-\item{data_columns}{columns (currently strings) of data.frame that relate to
-the filament's coordinates in euclidean space.}
+\item{data_columns}{columns of data.frame that relate to
+  the filament's coordinates in euclidean space. The input should look like
+something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+\code{NULL} this function will treat this like all non-group columns.}
 
 \item{dist_list_func}{function to calculate distance between each filament.
 The default is "auto", which is selects either

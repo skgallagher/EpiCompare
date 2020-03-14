@@ -32,11 +32,11 @@ is NULL - will then be created using gridbreaks)}
 yrange is not provided}
 }
 \value{
-data frame, with \code{expand.grid} of xrange, yrange in columns x
-  and y and a column z that indicates if it is: (1) not within delta to
-  border points or inner_points, (2) if closest to border_points and (3) if
-  closest to an inner_point.
+data frame, with \code{expand.grid} of xrange, yrange in columns
+  \code{x} and \code{y} and a column \code{z} that indicates if it is: (1)
+  not within delta to border points or inner_points, (2) if closest to
+  border_points and (3) if closest to an inner_point.
 }
 \description{
-create a grid of points indicating near border or not (and inside or outside)
+This is internal code
 }

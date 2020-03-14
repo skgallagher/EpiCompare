@@ -9,7 +9,8 @@ get_xy_coord(X_SIR, xyz_col = c("S", "I", "R"))
 \arguments{
 \item{X_SIR}{data.frame with columns in xyz_col}
 
-\item{xyz_col}{string vector (length 3) to match with x, y, and z}
+\item{xyz_col}{string vector (length 3) to match with x, y, and z. The example
+is c(S,I,R) or c("S", "I", "R"). Both styles work}
 }
 \value{
 X_SIR motified to have columns "x" and "y" with the ternary

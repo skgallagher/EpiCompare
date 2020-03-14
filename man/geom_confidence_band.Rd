@@ -37,25 +37,26 @@ geom_confidence_band(
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by
-\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. If specified
-and \code{inherit.aes = TRUE} (the
-default), it is combined with the default mapping at the top level of the
-plot. You must supply mapping if there is no plot mapping}
+\code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. If specified and
+\code{inherit.aes = TRUE} (the default), it is combined with the default
+mapping at the top level of the plot. You must supply mapping if there is
+no plot mapping}
 
 \item{data}{The data to be displayed in this layer. There are three options:
-If \code{NULL}, the default, the data is inherited from the plot data as
-specified in the call to \code{\link[ggplot2]{ggplot}}.
+  If \code{NULL}, the default, the data is inherited from the plot data as
+  specified in the call to \code{\link[ggplot2]{ggplot}}.
 
-A \code{data.frame}, or other object, will override the plot data. All
-objects will be fortified to produce a data frame. See
-\code{\link[ggplot2]{fortify}} for which variables will be created.
+  A \code{data.frame}, or other object, will override the plot data. All
+  objects will be fortified to produce a data frame. See
+  \code{\link[ggplot2]{fortify}} for which variables will be created.
 
-A \code{function} will be called with a single argument, the plot data. The
-return value must be a \code{data.frame}, and will be used as the layer data.
-A function can be created from a formula (e.g. \code{~ head(.x, 10)}).}
+  A \code{function} will be called with a single argument, the plot data. The
+  return value must be a \code{data.frame}, and will be used as the layer
+  data. A function can be created from a formula (e.g. \code{~ head(.x,
+  10)}).}
 
-\item{geom}{string associated with desired geom. \code{stat} is
-otherwise controlled by the \code{cb_type} parameter.}
+\item{geom}{string associated with desired geom. \code{stat} is otherwise
+controlled by the \code{cb_type} parameter.}
 
 \item{position}{Position adjustment, either as a string, or the result of a
 call to a position adjustment function.}
@@ -84,49 +85,74 @@ speed-up computation.}
 \item{alpha_level}{confidence level for confidence band. Creates a
 \code{1-alpha_level} level confidence band.}
 
-\item{...}{Other arguments passed on to \code{\link[ggplot2]{layer}}. These are
-often aesthetics, used to set an aesthetic to a fixed value,
-like \code{colour = "red"} or \code{size = 3}. They may also be parameters to
+\item{...}{Other arguments passed on to \code{\link[ggplot2]{layer}}. These
+are often aesthetics, used to set an aesthetic to a fixed value, like
+\code{colour = "red"} or \code{size = 3}. They may also be parameters to
 the paired \code{geom}/\code{stat}.}
 
-\item{stat}{string associated with desired stat \code{geom} is
-otherwise controlled by the \code{cb_type} parameter.}
+\item{stat}{string associated with desired stat \code{geom} is otherwise
+controlled by the \code{cb_type} parameter.}
 }
 \description{
 The confidenct_band geom/stat
 }
 \details{
-I SHOULD PUT INFORMATION ON THE DIFFERENT TYPES OF CONFIDENCE BANDS...
+This stat/geom can create 1 of 4 confidence band structures. These approaches
+can be broken into 2 subgroups, "pointwise" and "uniform" confidence bands.
+The rational for these splits relate to containment properties and the
+'original' ideas are discussed more here:
+\href{https://arxiv.org/abs/1906.08832}{Arvix: 1906.08832}
+
+\strong{Pointwise}:
+
+\itemize{
+\item \code{spherical_ball}: This confidence band is defined
+relative to the time points that paths take. For each time point, we take a
+ellipsoid defined by the confidence region that would contain
+\code{alpha_level} probability mass if the distribution of points were a
+multivariate gaussian. We then take a union of all these ellipsoids to create
+the full confidence band.
+\item \code{kde}: This confidence band is defined as the kde level contour
+for \code{alpha_level} relative to all points.
+}
+
+\strong{Uniform}:
+
+These approaches focus on containing the paths/curves/filaments in
+uniformity. This approach uses depth (specifically a distance-based depth
+developed by Geenens & Nieto-Reyes, 2017), to select to top
+\code{alpha_level} curves and then creates a geometric representation of
+where the curves lie.
+
+\itemize{
+\item \code{delta_ball}: relative to all the points in the top
+\code{alpha_level} curves, we find the minimum delta such all of these
+points are contained in at least 1 ball around another point with radius delta.
+This can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i, x_j)}.
+Then we take the union of delta-balls surround all the points as the
+confidence band.
+
+\item \code{convex_hull}: with to all the points in the top
+\code{alpha_level} curves we just create a convex hull and define our
+confidence band as such.
+}
 }
 \section{Aesthetics}{
+ \code{stat_confidence_band}/\code{geom_confidence_band}
+ understands the following aesthetics (required aesthetics are in bold):
 
-\code{stat_confidence_band} understands the following aesthetics (required
-aesthetics are in bold):
+  \itemize{ \item \strong{\code{x}} \item \strong{\code{y}} \item
+  \strong{\code{z}} \item \strong{\code{sim_group}} - note: this cannot be a
+  factor \item \code{alpha} \item \code{colour} \item \code{group} \item
+  \code{linetype} \item \code{size} \item \code{weight} }
 
-\itemize{
-  \item \strong{\code{x}}
-  \item \strong{\code{y}}
-  \item \strong{\code{z}}
-  \item \strong{\code{sim_group}} - note: this cannot be a factor
-  \item \code{alpha}
-  \item \code{colour}
-  \item \code{group}
-  \item \code{linetype}
-  \item \code{size}
-  \item \code{weight}
-}
+  For confidence band types = "kde", "delta_ball": \itemize{ \item
+  \strong{\code{sim_group}} - note: this cannot be a factor } For confidence
+  band type = "spherical_balls": \itemize{ \item \strong{\code{t}} - note:
+  this cannot be a factor }
 
-For confidence band types = "kde", "delta_ball":
-\itemize{
-  \item \strong{\code{sim_group}} - note: this cannot be a factor
-}
-For confidence band type = "spherical_balls":
-\itemize{
-  \item \strong{\code{t}} - note: this cannot be a factor
-}
-
-Learn more about setting these aesthetics in
-\code{vignette("ggplot2-specs")}.
+  Learn more about setting these aesthetics in
+  \code{vignette("ggplot2-specs")}.
 }
 
 \examples{

@@ -7,20 +7,17 @@
 SEIR_to_XYZ(data, var_order = c("S", "E", "I", "R"), time_name = "t")
 }
 \arguments{
-\item{data}{data frame with the following columns
-\describe{
-\item{time}{time step}
-\item{S}{Number of people in S}
-\item{E}{Number of people in E}
-\item{I}{Number of people in I}
-\item{R}{Number of people in R}
-}}
+\item{data}{data frame with the following columns \describe{ \item{time}{time
+step} \item{S}{Number of people in S} \item{E}{Number of people in E}
+\item{I}{Number of people in I} \item{R}{Number of people in R} }}
 
 \item{var_order}{vector of column names corresponding to the different axes
 of the tetrahedron-based coordinate system:  (t, l, r, f) which stands for
-top, left, right, front.}
+top, left, right, front. Can be of the form \code{c("t", "l", "r", "f")} or
+\code{c(t,l,r,f)}.}
 
-\item{time_name}{string for column name that is associated with the time step}
+\item{time_name}{column name that is associated with the time step. Can
+either be a string or a promisary symbol}
 }
 \value{
 original data frame along with columns x, y, and z

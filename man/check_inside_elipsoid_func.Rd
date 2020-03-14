@@ -17,7 +17,7 @@ check_inside_elipsoid_func(Sigma, center, bound, suppress_warning = FALSE)
 relative to non PSD Sigma or bound <= 0.}
 }
 \value{
-check_inside_elipsoid_function, that takes in \code{data}
+check_inside_elipsoid_function, that takes in \code{data} only
 }
 \description{
 create a function assert if observations are inside elipsoid

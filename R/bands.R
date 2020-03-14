@@ -8,12 +8,20 @@
 #'   This is just a data.frame wrapper for ggtern::tlr2xy.
 #'
 #' @param X_SIR data.frame with columns in xyz_col
-#' @param xyz_col string vector (length 3) to match with x, y, and z
+#' @param xyz_col string vector (length 3) to match with x, y, and z. The example
+#' is c(S,I,R) or c("S", "I", "R"). Both styles work
 #'
 #' @return X_SIR motified to have columns "x" and "y" with the ternary
 #'   coordinates
 #' @export
 get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
+
+  # quos style
+  xyz_col_q <- dplyr::enquos(xyz_col)
+  xyz_col <- unname(tidyselect::vars_select(dplyr::tbl_vars(X_SIR),
+                                            !!!xyz_col_q))
+
+
   crd <- ggtern::coord_tern()
   xy_transform <- X_SIR %>% data.frame %>%
     dplyr::rename(x = xyz_col[1],
@@ -24,6 +32,8 @@ get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
 }
 
 #' create a grid of points indicating near border or not (and inside or outside)
+#'
+#' This is internal code
 #'
 #' @param border_points data.frame of points from delta ball approach that are
 #'   "border points"
@@ -37,12 +47,10 @@ get_xy_coord <- function(X_SIR, xyz_col = c("S","I","R")){
 #' @param gridbreaks int, number of gridpoint in x and y dimensions if xrange or
 #'   yrange is not provided
 #'
-#' @return data frame, with \code{expand.grid} of xrange, yrange in columns x
-#'   and y and a column z that indicates if it is: (1) not within delta to
-#'   border points or inner_points, (2) if closest to border_points and (3) if
-#'   closest to an inner_point.
-#'
-#' @export
+#' @return data frame, with \code{expand.grid} of xrange, yrange in columns
+#'   \code{x} and \code{y} and a column \code{z} that indicates if it is: (1)
+#'   not within delta to border points or inner_points, (2) if closest to
+#'   border_points and (3) if closest to an inner_point.
 get_closest <- function(border_points, inner_points, delta,
                         xrange = NULL, yrange = NULL, gridbreaks = 100){
   if (is.null(xrange)) {
@@ -92,12 +100,17 @@ get_closest <- function(border_points, inner_points, delta,
 
 #' Project onto a simplex where observations in the unit simplex x
 #'
-#' Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i
-#' w_i = 1, w_i \geq 0}
+#' Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i w_i = 1, w_i \geq 0}
 #'
 #' @param y n dimensional vector to be projected onto the simplex
 #'
 #' @return proj_y projection of y onto the unit simplex of dimension n
+#'
+#' @details This code replicates a solution referenced on
+#' \href{https://math.stackexchange.com/questions/2402504/orthogonal-projection-onto-the-unit-simplex}{stackexchange},
+#' which linked to following
+#' \href{https://github.com/RoyiAvital/StackExchangeCodes/blob/master/Mathematics/Q2327504/ProjectSimplex.m}{Matlab
+#' code}.
 #' @export
 #'
 #' @examples
@@ -166,12 +179,18 @@ project_simplex_vec <- function(x){t(apply(x, 1, project_onto_simplex))}
 #' project onto a standard 3d simplex.
 #'
 #' @param df_3d data frame
-#' @param column_names names of columns for the 3 dimensions.
+#' @param column_names names of columns for the 3 dimensions. Can be in the
+#' form \code{c(x,y,z)} or \code{c("x","y","z")}.
 #'
 #' @return an updated version of \code{df_3d} with points projected onto
 #' simplex.
 #' @export
 project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
+  # quos style
+  column_names_q <- dplyr::enquos(column_names)
+  column_names <- unname(tidyselect::vars_select(dplyr::tbl_vars(df_3d),
+                                                 !!!column_names_q))
+
   df_3d_inner <- df_3d %>% dplyr::select(dplyr::one_of(column_names))
   df_3d_inner <- project_simplex_vec(df_3d_inner)
   df_3d[,column_names] <- df_3d_inner
@@ -180,17 +199,20 @@ project_to_simplex <- function(df_3d, column_names = c("x","y","z") ){
 
 #' assert if observation is inside elipsoid
 #'
-#' See https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
+#' See
+#' https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
 #' for details.
 #'
-#' @param data data.frame or matrix of data (row is observation), ncol = p
+#' @param data data.frame or matrix of data (row is observation), ncol = p,
+#'   scalar columns
 #' @param Sigma covariance matrix (p x p)
 #' @param center center of elipsoid (vector length p)
 #' @param bound contraint for equation of ellipsoid
-#' @param suppress_warning logic to suppress warning if just returning all false
-#' relative to non PSD Sigma or bound <= 0.
+#' @param suppress_warning logic to suppress warning if just returning all
+#'   \code{FALSE} relative to non PSD Sigma or bound <= 0.
 #'
-#' @return all false if Sigma not PSD
+#' @return boolean vector if data is contained in ellipsoid. All \code{FALSE} if
+#'   Sigma not PSD
 #' @export
 check_inside_elipsoid <- function(data, Sigma, center, bound,
                                   suppress_warning = FALSE){
@@ -201,7 +223,9 @@ check_inside_elipsoid <- function(data, Sigma, center, bound,
     return(rep(FALSE, nrow(data)))
   }
   m_data <- as.matrix(data)
-  m_dist <- stats::mahalanobis(x = m_data,center = center,cov = Sigma)
+  m_dist <- stats::mahalanobis(x = m_data,
+                               center = center,
+                               cov = Sigma)
   return(m_dist <= bound)
 }
 
@@ -213,8 +237,7 @@ check_inside_elipsoid <- function(data, Sigma, center, bound,
 #' @param suppress_warning logic to suppress warning if just returning all false
 #' relative to non PSD Sigma or bound <= 0.
 #'
-#' @return check_inside_elipsoid_function, that takes in \code{data}
-#' @export
+#' @return check_inside_elipsoid_function, that takes in \code{data} only
 check_inside_elipsoid_func <- function(Sigma, center, bound,
                                        suppress_warning = FALSE){
   check_inside_elipsoid_function <- function(data){
@@ -225,19 +248,18 @@ check_inside_elipsoid_func <- function(Sigma, center, bound,
 }
 
 
-#' create a grid of points indicating whether in a set of elipsoids
+#' create a grid of points indicating whether in a set of 2d elipsoids
 #'
 #' @details See \code{check_inside_elipsoid} for functional idea
 #'
-#' @param inside_func_list list of functions that assess if observation is
-#' in elipsoid (technically just need T/F function here...)
+#' @param inside_func_list list of functions that assess if observation is in
+#'   elipsoid (technically just need a function that takes in 2d
+#'   \code{data.frame}s and returns boolean values for each row )
 #' @param xrange vector, ordered values to examine in the x dimension
 #' @param yrange vector, ordered values to examine in the y dimension
 #'
 #' @return updated_gridpoints (defined by yrange, xrange) with indication column
-#' \code{included} if gridpoint is contained.
-#' @export
-#'
+#'   \code{included} if gridpoint is contained.
 get_grid_elipsoid_containment <- function(inside_func_list,
                                           xrange, yrange){
 
@@ -555,82 +577,108 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'
 #'
 #' @param mapping Set of aesthetic mappings created by
-#' \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. If specified
-#' and \code{inherit.aes = TRUE} (the
-#' default), it is combined with the default mapping at the top level of the
-#' plot. You must supply mapping if there is no plot mapping
+#'   \code{\link[ggplot2]{aes}} or \code{\link[ggplot2]{aes_}}. If specified and
+#'   \code{inherit.aes = TRUE} (the default), it is combined with the default
+#'   mapping at the top level of the plot. You must supply mapping if there is
+#'   no plot mapping
 #' @param data The data to be displayed in this layer. There are three options:
-#' If \code{NULL}, the default, the data is inherited from the plot data as
-#' specified in the call to \code{\link[ggplot2]{ggplot}}.
+#'   If \code{NULL}, the default, the data is inherited from the plot data as
+#'   specified in the call to \code{\link[ggplot2]{ggplot}}.
 #'
-#' A \code{data.frame}, or other object, will override the plot data. All
-#' objects will be fortified to produce a data frame. See
-#' \code{\link[ggplot2]{fortify}} for which variables will be created.
+#'   A \code{data.frame}, or other object, will override the plot data. All
+#'   objects will be fortified to produce a data frame. See
+#'   \code{\link[ggplot2]{fortify}} for which variables will be created.
 #'
-#' A \code{function} will be called with a single argument, the plot data. The
-#' return value must be a \code{data.frame}, and will be used as the layer data.
-#' A function can be created from a formula (e.g. \code{~ head(.x, 10)}).
-#' @param geom string associated with desired geom. \code{stat} is
-#' otherwise controlled by the \code{cb_type} parameter.
-#' @param stat string associated with desired stat \code{geom} is
-#' otherwise controlled by the \code{cb_type} parameter.
+#'   A \code{function} will be called with a single argument, the plot data. The
+#'   return value must be a \code{data.frame}, and will be used as the layer
+#'   data. A function can be created from a formula (e.g. \code{~ head(.x,
+#'   10)}).
+#' @param geom string associated with desired geom. \code{stat} is otherwise
+#'   controlled by the \code{cb_type} parameter.
+#' @param stat string associated with desired stat \code{geom} is otherwise
+#'   controlled by the \code{cb_type} parameter.
 #' @param position Position adjustment, either as a string, or the result of a
-#' call to a position adjustment function.
+#'   call to a position adjustment function.
 #' @param na.rm If \code{FALSE}, the default, missing values are removed with a
-#' warning. If \code{TRUE}, missing values are silently removed.
+#'   warning. If \code{TRUE}, missing values are silently removed.
 #' @param show.legend logical. Should this layer be included in the legends?
-#' \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
-#' never includes, and \code{TRUE} always includes. It can also be a named
-#' logical vector to finely select the aesthetics to display.
+#'   \code{NA}, the default, includes if any aesthetics are mapped. \code{FALSE}
+#'   never includes, and \code{TRUE} always includes. It can also be a named
+#'   logical vector to finely select the aesthetics to display.
 #' @param inherit.aes If \code{FALSE}, overrides the default aesthetics, rather
-#' than combining with them. This is most useful for helper functions that
-#' define both data and aesthetics and shouldn't inherit behaviour from the
-#' default plot specification, e.g. \code{\link[ggplot2]{borders}}.
+#'   than combining with them. This is most useful for helper functions that
+#'   define both data and aesthetics and shouldn't inherit behaviour from the
+#'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
 #' @param cb_type String indicating which confidence band type to use. Currently
-#' only \code{"kde"} and \code{"delta_ball"} inputs are expected. See details
-#' for more information.
+#'   only \code{"kde"} and \code{"delta_ball"} inputs are expected. See details
+#'   for more information.
 #' @param grid_size integer vector, length 2. Size of the grid which is going to
-#' be used to approximate confidence band (if needed). Can be reduced to
-#' speed-up computation.
+#'   be used to approximate confidence band (if needed). Can be reduced to
+#'   speed-up computation.
 #' @param alpha_level confidence level for confidence band. Creates a
-#' \code{1-alpha_level} level confidence band.
-#' @param ... Other arguments passed on to \code{\link[ggplot2]{layer}}. These are
-#' often aesthetics, used to set an aesthetic to a fixed value,
-#' like \code{colour = "red"} or \code{size = 3}. They may also be parameters to
-#' the paired \code{geom}/\code{stat}.
+#'   \code{1-alpha_level} level confidence band.
+#' @param ... Other arguments passed on to \code{\link[ggplot2]{layer}}. These
+#'   are often aesthetics, used to set an aesthetic to a fixed value, like
+#'   \code{colour = "red"} or \code{size = 3}. They may also be parameters to
+#'   the paired \code{geom}/\code{stat}.
 #'
 #' @details
 #'
-#' I SHOULD PUT INFORMATION ON THE DIFFERENT TYPES OF CONFIDENCE BANDS...
+#' This stat/geom can create 1 of 4 confidence band structures. These approaches
+#' can be broken into 2 subgroups, "pointwise" and "uniform" confidence bands.
+#' The rational for these splits relate to containment properties and the
+#' 'original' ideas are discussed more here:
+#' \href{https://arxiv.org/abs/1906.08832}{Arvix: 1906.08832}
 #'
-#' @section Aesthetics:
-#' \code{stat_confidence_band} understands the following aesthetics (required
-#' aesthetics are in bold):
+#' \strong{Pointwise}:
 #'
 #' \itemize{
-#'   \item \strong{\code{x}}
-#'   \item \strong{\code{y}}
-#'   \item \strong{\code{z}}
-#'   \item \strong{\code{sim_group}} - note: this cannot be a factor
-#'   \item \code{alpha}
-#'   \item \code{colour}
-#'   \item \code{group}
-#'   \item \code{linetype}
-#'   \item \code{size}
-#'   \item \code{weight}
+#' \item \code{spherical_ball}: This confidence band is defined
+#' relative to the time points that paths take. For each time point, we take a
+#' ellipsoid defined by the confidence region that would contain
+#' \code{alpha_level} probability mass if the distribution of points were a
+#' multivariate gaussian. We then take a union of all these ellipsoids to create
+#' the full confidence band.
+#' \item \code{kde}: This confidence band is defined as the kde level contour
+#' for \code{alpha_level} relative to all points.
 #' }
 #'
-#' For confidence band types = "kde", "delta_ball":
+#' \strong{Uniform}:
+#'
+#' These approaches focus on containing the paths/curves/filaments in
+#' uniformity. This approach uses depth (specifically a distance-based depth
+#' developed by Geenens & Nieto-Reyes, 2017), to select to top
+#' \code{alpha_level} curves and then creates a geometric representation of
+#' where the curves lie.
+#'
 #' \itemize{
-#'   \item \strong{\code{sim_group}} - note: this cannot be a factor
-#' }
-#' For confidence band type = "spherical_balls":
-#' \itemize{
-#'   \item \strong{\code{t}} - note: this cannot be a factor
+#' \item \code{delta_ball}: relative to all the points in the top
+#' \code{alpha_level} curves, we find the minimum delta such all of these
+#' points are contained in at least 1 ball around another point with radius delta.
+#' This can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i, x_j)}.
+#' Then we take the union of delta-balls surround all the points as the
+#' confidence band.
+#'
+#' \item \code{convex_hull}: with to all the points in the top
+#' \code{alpha_level} curves we just create a convex hull and define our
+#' confidence band as such.
 #' }
 #'
-#' Learn more about setting these aesthetics in
-#' \code{vignette("ggplot2-specs")}.
+#' @section Aesthetics: \code{stat_confidence_band}/\code{geom_confidence_band}
+#'  understands the following aesthetics (required aesthetics are in bold):
+#'
+#'   \itemize{ \item \strong{\code{x}} \item \strong{\code{y}} \item
+#'   \strong{\code{z}} \item \strong{\code{sim_group}} - note: this cannot be a
+#'   factor \item \code{alpha} \item \code{colour} \item \code{group} \item
+#'   \code{linetype} \item \code{size} \item \code{weight} }
+#'
+#'   For confidence band types = "kde", "delta_ball": \itemize{ \item
+#'   \strong{\code{sim_group}} - note: this cannot be a factor } For confidence
+#'   band type = "spherical_balls": \itemize{ \item \strong{\code{t}} - note:
+#'   this cannot be a factor }
+#'
+#'   Learn more about setting these aesthetics in
+#'   \code{vignette("ggplot2-specs")}.
 #'
 #' @export
 #' @examples

@@ -3,7 +3,4 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   getting_started: getting_started.html
-urls:
-  reference: https://benjaminleroy.github.io/EpiCompare//reference
-  article: https://benjaminleroy.github.io/EpiCompare//articles
 

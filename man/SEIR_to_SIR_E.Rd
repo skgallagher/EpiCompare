@@ -7,21 +7,21 @@
 SEIR_to_SIR_E(data, ternary_vars = c("S", "I", "R"), group_var = "E")
 }
 \arguments{
-\item{data}{data frame with the following columns
-\describe{
-\item{t}{time step}
-\item{S}{Number of people in S}
-\item{E}{Number of people in E}
-\item{I}{Number of people in I}
-\item{R}{Number of people in R}
-}}
+\item{data}{data frame with the following columns \describe{ \item{t}{time
+step} \item{S}{Number of people in S} \item{E}{Number of people in E}
+\item{I}{Number of people in I} \item{R}{Number of people in R} }}
 
-\item{ternary_vars}{named vector of the three variables to use as the sides of the ternary plot}
+\item{ternary_vars}{named vector of the three variables to use as the sides
+of the ternary plot. Can be of the form \code{c("t", "l", "r", "f")} or
+\code{c(t,l,r,f)}.}
 
-\item{group_var}{name of the variable to use as the color/feature/grouping vector}
+\item{group_var}{name of the variable to use as the color/feature/grouping
+vector. column name that is associated with the time step. Can either be a
+string or a promisary symbol}
 }
 \value{
-data frame with the transformed variables SEIR -> s, i, r, group variables
+data frame with the transformed variables SEIR -> s, i, r, group
+  variables
 }
 \description{
 Convert SEIR to XYZ coordinates fixed in a tetrahedron

@@ -7,7 +7,7 @@
 to_lower_simplex(df, A = NULL)
 }
 \arguments{
-\item{df}{an n x p data.frame}
+\item{df}{an n x p data.frame, all scalar columns}
 
 \item{A}{default is \code{NULL}, if so, we create A from
 \code{simplex_project_mat}}

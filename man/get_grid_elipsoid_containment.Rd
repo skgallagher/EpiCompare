@@ -2,13 +2,14 @@
 % Please edit documentation in R/bands.R
 \name{get_grid_elipsoid_containment}
 \alias{get_grid_elipsoid_containment}
-\title{create a grid of points indicating whether in a set of elipsoids}
+\title{create a grid of points indicating whether in a set of 2d elipsoids}
 \usage{
 get_grid_elipsoid_containment(inside_func_list, xrange, yrange)
 }
 \arguments{
-\item{inside_func_list}{list of functions that assess if observation is
-in elipsoid (technically just need T/F function here...)}
+\item{inside_func_list}{list of functions that assess if observation is in
+elipsoid (technically just need a function that takes in 2d
+\code{data.frame}s and returns boolean values for each row )}
 
 \item{xrange}{vector, ordered values to examine in the x dimension}
 
@@ -16,10 +17,10 @@ in elipsoid (technically just need T/F function here...)}
 }
 \value{
 updated_gridpoints (defined by yrange, xrange) with indication column
-\code{included} if gridpoint is contained.
+  \code{included} if gridpoint is contained.
 }
 \description{
-create a grid of points indicating whether in a set of elipsoids
+create a grid of points indicating whether in a set of 2d elipsoids
 }
 \details{
 See \code{check_inside_elipsoid} for functional idea

@@ -13,8 +13,12 @@ create_delta_ball_structure(
 \arguments{
 \item{data_points}{points to create the delta ball structure from}
 
-\item{data_columns}{columns (currently strings) of data.frame that relate to
-the point's coordinates in euclidean space.}
+\item{data_columns}{columns of data.frame that relate to the point's
+coordinates in euclidean space. This should be at least 3 columns (else it
+doesn't really make sense to use this function). The input should look like
+something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
+\code{NULL} this function will treat this like
+\code{\link[dplyr:everything]{dplyr::everything()}}.}
 
 \item{.lower_simplex_project}{boolean, if data points should be projected to a simplex
 and then to the lower dimensional simplex (for this package, this should
@@ -37,5 +41,5 @@ delta_ball_cb <- timeternR::pomp_df \%>\%
   select(-time, -H, -cases) \%>\%
   group_by(.id) \%>\%
   grab_top_depth_filaments(alpha_level = .9) \%>\%
-  create_delta_ball_structure() #data_columns = c("S","I","R")
+  create_delta_ball_structure() #data_columns = c(S,I,R)
 }

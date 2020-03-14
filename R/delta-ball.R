@@ -34,7 +34,9 @@ get_delta <- function(data = NULL, dist_mat = NULL){
 #' Performs delta ball approach (2d approach)
 #'
 #' @param data_deep_points data deep points from depth function
-#' @param xy_columns strings for column names of the points (x,y)
+#' @param xy_columns columns of data.frame that relate to
+#'   the points's coordinates in euclidean space. The input should look like
+#' something like \code{c(x,y)} or \code{c("x","y")}.
 #'
 #' @return
 #' \describe{
@@ -43,6 +45,12 @@ get_delta <- function(data = NULL, dist_mat = NULL){
 #' }
 #' @export
 delta_structure <- function(data_deep_points, xy_columns = c("x", "y")){
+
+  #quos
+  xy_columns_q <- dplyr::enquos(xy_columns)
+  xy_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(data_deep_points),
+                                               !!!xy_columns_q))
+
   data_deep_points <- data_deep_points %>%
     dplyr::select(dplyr::one_of(xy_columns)) %>%
     dplyr::rename(x = xy_columns[1], y = xy_columns[2])
@@ -80,19 +88,29 @@ delta_structure <- function(data_deep_points, xy_columns = c("x", "y")){
 #' @param data_raw data frame with center points of balls
 #' @param n_steps number of equidistance points along the line, past delta on
 #'   both sides, that will be checked to approximate all points along the line
+#' @param xy_columns columns of data.frame that relate to
+#'   the points's coordinates in euclidean space. The input should look like
+#' something like \code{c(x,y)} or \code{c("x","y")}.
 #' @param remove_duplicates boolean if need to remove duplicates in data_raw
 #'
 #' @return data frame of exterior lines (not ordered)
 #' @export
-inner_delta_ball_wrapper <- function(data_raw, n_steps = 100,
+inner_delta_ball_wrapper <- function(data_raw, xy_columns = c("x", "y"),
+                                     n_steps = 100,
                                      remove_duplicates = F){
 
+  #quos
+  xy_columns_q <- dplyr::enquos(xy_columns)
+  xy_columns <- unname(tidyselect::vars_select(dplyr::tbl_vars(data_raw),
+                                               !!!xy_columns_q))
+
+  data <- data_raw %>% dplyr::select(dplyr::one_of(xy_columns))
+
   if (remove_duplicates) {
-    data_raw <- data_raw %>% dplyr::distinct()
+    data <- data %>% dplyr::distinct()
   }
 
-  data <- data_raw[,1:2]
-  sp::coordinates(data) <- names(data_raw)[1:2]
+  sp::coordinates(data) <- xy_columns
 
   # get delta value --------------------
   d <- get_delta(data_raw)
@@ -159,6 +177,9 @@ inner_delta_ball_wrapper <- function(data_raw, n_steps = 100,
                      dplyr::left_join(index_mapping, by = c("id" = "nt")))$dl
 
   output_lines <- desired_lines %>% dplyr::filter(.data$idx %in% select_lines)
+
+  names(output_lines)[names(output_lines) %in% c("x", "y")] <- xy_columns
+
   return(output_lines)
 }
 
@@ -221,7 +242,6 @@ remove_incomplete_tri <- function(tuples_of_tri, removed_mat){
 #' n triangles
 #'
 #' @return a matrix (n x 3) with strings of locations of 3 points in triangle
-#' @export
 get_tri_matrix <- function(dtri_data_tri){
   # makes a matrix with string points of triangle (n x 3)
   num_tri <- length(dtri_data_tri@polygons)

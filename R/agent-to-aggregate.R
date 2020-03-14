@@ -466,48 +466,37 @@ agents_to_aggregate.data.frame <- function(agents,
                                            min_max_time = c(0, NA)
                                            ){
   # columns states - converting to strings ------------
-  # this code mirrors tidyr::nest's code
+  # this code mirrors tidyr::nest's and tidyr::pivot_wider code
 
   # states ---------
   state_cols <- dplyr::enquos(states)
-  if (any(rlang::names2(state_cols) == "")) {
-    state_col_names <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
-                                                !!!state_cols))
-    state_cols_expr <- dplyr::expr(c(!!!dplyr::syms(state_col_names)))
-    states <- state_col_names
-  }
+  states <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                                    !!!state_cols))
   # death ----------
   death_col <- dplyr::enquo(death)
-  death_col2 <- dplyr::enquos(death)
 
-  if (length(death_col2) !=  1){
-    stop("death should be a single column or NULL")
-  }
+  death_cols <- dplyr::enquos(death)
+  assertthat::assert_that(length(death_cols) == 1,
+                          msg = "death should be a single column or NULL")
 
-  if (all(rlang::names2(death_col) == "")){
-    death_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
-                                                      !!death_col))
-    death_cols_expr <- dplyr::expr(c(!!dplyr::syms(death_col_name)))
-
-    if (length(death_col_name) != 0){
-      death <- death_col_name
-    }
+  if (!rlang::quo_is_null(death_col)){
+    death <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                   !!death_col))
+  } else {
+    death <- NULL
   }
 
   # birth -------------
   birth_col <- dplyr::enquo(birth)
-  birth_col2 <- dplyr::enquos(birth)
-  if (length(birth_col2) != 1){
-    stop("birth should be a single column or NULL")
-  }
+  birth_cols <- dplyr::enquos(birth)
+  assertthat::assert_that(length(birth_cols) == 1,
+                          msg = "birth should be a single column or NULL")
 
-  if (all(rlang::names2(birth_col) == "")){
-    birth_col_name <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
-                                                     !!birth_col))
-    birth_cols_expr <- dplyr::expr(c(!!dplyr::syms(birth_col_name)))
-    if (length(birth_col_name) != 0){
-      birth <- birth_col_name
-    }
+  if (!rlang::quo_is_null(birth_col)){
+    birth <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                                !!birth_col))
+  } else {
+    birth <- NULL
   }
 
 

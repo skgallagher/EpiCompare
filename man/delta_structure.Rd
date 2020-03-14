@@ -9,7 +9,9 @@ delta_structure(data_deep_points, xy_columns = c("x", "y"))
 \arguments{
 \item{data_deep_points}{data deep points from depth function}
 
-\item{xy_columns}{strings for column names of the points (x,y)}
+\item{xy_columns}{columns of data.frame that relate to
+  the points's coordinates in euclidean space. The input should look like
+something like \code{c(x,y)} or \code{c("x","y")}.}
 }
 \value{
 \describe{

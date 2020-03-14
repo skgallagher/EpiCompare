@@ -1,6 +1,6 @@
 context("containment and band creation tests")
 
-test_that("test filament_compression", {
+test_that("test filament_compression, no data_columns", {
   # basic check:
   t13compression <- timeternR::pomp_sir %>%
     arrange(time) %>%
@@ -67,7 +67,184 @@ test_that("test filament_compression", {
 
 })
 
-test_that("filament_distance_depth correct depth",{
+test_that("test filament_compression, data_columns string", {
+  # basic check:
+  t13compression <- timeternR::pomp_sir %>%
+    arrange(time) %>%
+    select(-H, -cases, -time) %>%
+    filter(.id <= 5) %>%
+    group_by(.id) %>%
+    filament_compression(data_columns = c("S", "I","R"))
+
+  # correct number of rows
+  testthat::expect_equal(nrow(t13compression), 13*5)
+
+  testthat::expect_is(t13compression, "grouped_df")
+
+  # cleaner check
+  first_group <- data.frame(t = 0:16,
+                            x = 0:16,
+                            y = 0:16,
+                            z = 0:16,
+                            .id = 1)
+  second_group <- data.frame(t = 0:16,
+                             x = 0:16,
+                             y = rep(0,17),
+                             z = rep(0,17),
+                             .id = 2)
+  third_group <- data.frame(t = 0:16,
+                            x = 0:16,
+                            y = c(0:8,7:0),
+                            z = rep(0,17),
+                            .id = 3)
+
+  grouped_df <- rbind(first_group, second_group, third_group) %>%
+    group_by(.id)
+
+  test_compression <- grouped_df %>% arrange(t) %>%
+    select(-t) %>%
+    group_by(.id) %>%
+    filament_compression(number_points = 9,
+                         data_columns = c("x","y","z"))
+
+  unique_values_per <- test_compression %>%
+    summarize(count = n()) %>% pull(count) %>% unique
+
+  testthat::expect_equal(unique_values_per, 9)
+  # group1:
+
+  still_linear <- test_compression %>% filter(.id == 1) %>%
+    ungroup(.id) %>% select(-.id) %>%
+    apply(1, function(row) length(unique(row)) == 1)
+  testthat::expect_equal(still_linear, rep(TRUE, 9))
+
+  # group2:
+  xx2 <- test_compression %>% filter(.id == 2) %>%
+    ungroup(.id) %>%
+    pull(x)
+  testthat::expect_equal(xx2, (0:8)*2)
+
+  # group3:
+  xx3 <- test_compression %>% filter(.id == 3) %>%
+    ungroup(.id) %>% pull(x)
+  yy3 <- test_compression %>% filter(.id == 3) %>%
+    ungroup(.id) %>% pull(y)
+
+  testthat::expect_equal(xx2, xx3)
+  testthat::expect_equal(yy3, c((0:4)*2,(3:0)*2))
+
+})
+
+test_that("test filament_compression, data_columns tidified", {
+  # basic check:
+  t13compression <- timeternR::pomp_sir %>%
+    arrange(time) %>%
+    select(-H, -cases, -time) %>%
+    filter(.id <= 5) %>%
+    group_by(.id) %>%
+    filament_compression(data_columns = c(S,I,R))
+
+  # correct number of rows
+  testthat::expect_equal(nrow(t13compression), 13*5)
+
+  testthat::expect_is(t13compression, "grouped_df")
+
+  # cleaner check
+  first_group <- data.frame(t = 0:16,
+                            x = 0:16,
+                            y = 0:16,
+                            z = 0:16,
+                            .id = 1)
+  second_group <- data.frame(t = 0:16,
+                             x = 0:16,
+                             y = rep(0,17),
+                             z = rep(0,17),
+                             .id = 2)
+  third_group <- data.frame(t = 0:16,
+                            x = 0:16,
+                            y = c(0:8,7:0),
+                            z = rep(0,17),
+                            .id = 3)
+
+  grouped_df <- rbind(first_group, second_group, third_group) %>%
+    group_by(.id)
+
+  test_compression <- grouped_df %>% arrange(t) %>%
+    select(-t) %>%
+    group_by(.id) %>%
+    filament_compression(number_points = 9,
+                         data_columns = c(x,y,z))
+
+  unique_values_per <- test_compression %>%
+    summarize(count = n()) %>% pull(count) %>% unique
+
+  testthat::expect_equal(unique_values_per, 9)
+  # group1:
+
+  still_linear <- test_compression %>% filter(.id == 1) %>%
+    ungroup(.id) %>% select(-.id) %>%
+    apply(1, function(row) length(unique(row)) == 1)
+  testthat::expect_equal(still_linear, rep(TRUE, 9))
+
+  # group2:
+  xx2 <- test_compression %>% filter(.id == 2) %>%
+    ungroup(.id) %>%
+    pull(x)
+  testthat::expect_equal(xx2, (0:8)*2)
+
+  # group3:
+  xx3 <- test_compression %>% filter(.id == 3) %>%
+    ungroup(.id) %>% pull(x)
+  yy3 <- test_compression %>% filter(.id == 3) %>%
+    ungroup(.id) %>% pull(y)
+
+  testthat::expect_equal(xx2, xx3)
+  testthat::expect_equal(yy3, c((0:4)*2,(3:0)*2))
+
+})
+
+test_that("filament_distance_depth correct depth, no data_columns",{
+  dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+    filament_distance_depth()
+
+  testthat::expect_equal(length(dd_pomp_df),
+                         10)
+
+
+  # different lengths:
+  first_group <- data.frame(t = 0:15,
+                            x = 0:15,
+                            y = 0:15,
+                            z = 0:15,
+                            .id = 1)
+  second_group <- data.frame(t = 0:16,
+                             x = 0:16,
+                             y = rep(0,17),
+                             z = rep(0,17),
+                             .id = 2)
+  third_group <- data.frame(t = 0:8,
+                            x = 0:8,
+                            y = 0:8,
+                            z = rep(0,9),
+                            .id = 3)
+
+  grouped_df <- rbind(first_group, second_group, third_group) %>%
+    group_by(.id)
+
+  testthat::expect_message(grouped_df %>% select(-t) %>%
+                             filament_distance_depth())
+
+  depth_3 <- suppressMessages(grouped_df %>% select(-t) %>%
+                                filament_distance_depth())
+
+  # global distance-depth expectation:
+  testthat::expect_equal(depth_3 %in% c(0,1), rep(TRUE, 3))
+  testthat::expect_equal(sum(depth_3), 1)
+
+})
+
+test_that("filament_distance_depth correct depth, string",{
   dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     filament_distance_depth(data_columns =c("S","I","R"))
@@ -110,7 +287,82 @@ test_that("filament_distance_depth correct depth",{
 
 })
 
-test_that("test grab_top_depth_filaments (.remove_group = both)", {
+test_that("filament_distance_depth correct depth, tidified",{
+  dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>%
+    filament_distance_depth(data_columns =c(S,I,R))
+
+  testthat::expect_equal(length(dd_pomp_df),
+                         10)
+
+
+  # different lengths:
+  first_group <- data.frame(t = 0:15,
+                            x = 0:15,
+                            y = 0:15,
+                            z = 0:15,
+                            .id = 1)
+  second_group <- data.frame(t = 0:16,
+                             x = 0:16,
+                             y = rep(0,17),
+                             z = rep(0,17),
+                             .id = 2)
+  third_group <- data.frame(t = 0:8,
+                            x = 0:8,
+                            y = 0:8,
+                            z = rep(0,9),
+                            .id = 3)
+
+  grouped_df <- rbind(first_group, second_group, third_group) %>%
+    group_by(.id)
+
+  testthat::expect_message(grouped_df %>%
+                             filament_distance_depth(
+                               data_columns =c(x,y,z)))
+
+  depth_3 <- suppressMessages(grouped_df %>%
+                                filament_distance_depth(
+                                  data_columns =c(x,y,z)))
+
+  # global distance-depth expectation:
+  testthat::expect_equal(depth_3 %in% c(0,1), rep(TRUE, 3))
+  testthat::expect_equal(sum(depth_3), 1)
+
+})
+
+test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
+          "no data_columns)"), {
+  top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+    grab_top_depth_filaments(alpha_level = .5,
+                             .remove_group = FALSE)
+
+  testthat::expect_equal(length(unique(top_filaments$.id)), 5)
+
+  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+    grab_top_depth_filaments(alpha_level = .5)
+
+  testthat::expect_equivalent(top_filaments_points,
+                              top_filaments %>% select(-.id))
+
+
+  all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+    grab_top_depth_filaments(alpha_level = 0,
+                             .remove_group = FALSE)
+
+  testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
+                         8)
+
+  testthat::expect_error(timeternR::pomp_df %>% group_by(.id) %>%
+                           filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                           grab_top_depth_filaments(alpha_level = 1))
+
+})
+
+test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
+          ", string)"), {
   top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
@@ -145,9 +397,67 @@ test_that("test grab_top_depth_filaments (.remove_group = both)", {
 
 })
 
+test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
+                ", tidified)"), {
+  top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>%
+    grab_top_depth_filaments(data_columns =c(S,I,R),
+                             alpha_level = .5,
+                             .remove_group = FALSE)
+
+  testthat::expect_equal(length(unique(top_filaments$.id)), 5)
+
+  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>%
+    grab_top_depth_filaments(data_columns =c(S,I,R),
+                             alpha_level = .5)
+
+  testthat::expect_equivalent(top_filaments_points,
+                              top_filaments %>% select(-.id))
+
+
+  all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+    filter(.id <= 10) %>%
+    grab_top_depth_filaments(data_columns = c(S,I,R),
+                             alpha_level = 0,
+                             .remove_group = FALSE)
+
+  testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
+                         8)
+
+  testthat::expect_error(timeternR::pomp_df %>% group_by(.id) %>%
+                           filter(.id <= 10) %>%
+                           grab_top_depth_filaments(
+                             data_columns =c(S,I,R),
+                             alpha_level = 1))
+
+})
+
 test_that(paste("test create_delta_ball_structure",
                 "- little test because it's a wrapper",
-                "(.lower_simplex_project = FALSE)"), {
+                "(.lower_simplex_project = FALSE, no data_columns)"), {
+                  set.seed(1)
+                  data_points <- data.frame(matrix(rnorm(100), ncol = 4))
+
+                  db_structure <- data_points %>%
+                    create_delta_ball_structure(.lower_simplex_project = FALSE)
+                  expected_delta <- get_delta(db_structure)$mm_delta
+
+                  testthat::expect_equal(attr(db_structure, "delta"), expected_delta)
+
+                  testthat::expect_equal(attr(db_structure, "A"), diag(4))
+
+                  # repeat points (shouldn't do anything)
+                  data_double <- rbind(data_points, data_points)
+                  db_structure2 <- data_double %>%
+                    create_delta_ball_structure(.lower_simplex_project = FALSE)
+
+                  testthat::expect_equal(db_structure2, db_structure)
+                })
+
+test_that(paste("test create_delta_ball_structure",
+                "- little test because it's a wrapper",
+                "(.lower_simplex_project = FALSE, string)"), {
   set.seed(1)
   data_points <- data.frame(matrix(rnorm(100), ncol = 4))
 
@@ -171,6 +481,30 @@ test_that(paste("test create_delta_ball_structure",
 
 test_that(paste("test create_delta_ball_structure",
                 "- little test because it's a wrapper",
+                "(.lower_simplex_project = FALSE, tidyified)"), {
+                  set.seed(1)
+                  data_points <- data.frame(matrix(rnorm(100), ncol = 4))
+
+                  db_structure <- data_points %>%
+                    create_delta_ball_structure(data_columns = c(X1, X2, X3, X4),
+                                                .lower_simplex_project = FALSE)
+                  expected_delta <- get_delta(db_structure)$mm_delta
+
+                  testthat::expect_equal(attr(db_structure, "delta"), expected_delta)
+
+                  testthat::expect_equal(attr(db_structure, "A"), diag(4))
+
+                  # repeat points (shouldn't do anything)
+                  data_double <- rbind(data_points, data_points)
+                  db_structure2 <- data_double %>%
+                    create_delta_ball_structure(data_columns = c(X1, X2, X3, X4),
+                                                .lower_simplex_project = FALSE)
+
+                  testthat::expect_equal(db_structure2, db_structure)
+                })
+
+test_that(paste("test create_delta_ball_structure",
+                "- little test because it's a wrapper",
                 "(.lower_simplex_project = TRUE)"), {
             set.seed(1)
             data_points <- data.frame(matrix(rnorm(100)^2, ncol = 4))
@@ -191,26 +525,94 @@ test_that(paste("test create_delta_ball_structure",
             testthat::expect_equal(db_structure2, db_structure)
                 })
 
+test_that(paste("test create_delta_ball_structure",
+                "- little test because it's a wrapper",
+                "(.lower_simplex_project = TRUE, tidyified)"), {
+                  set.seed(1)
+                  data_points <- data.frame(matrix(rnorm(100)^2, ncol = 4))
+
+                  db_structure <- data_points %>%
+                    create_delta_ball_structure(data_columns = c(X1,X2,X3,X4))
+                  expected_delta <- get_delta(db_structure)$mm_delta
+
+                  testthat::expect_equal(attr(db_structure, "delta"),
+                                         expected_delta)
+                  testthat::expect_equal(attr(db_structure, "A"),
+                                         simplex_project_mat(4))
+                  # repeat points (shouldn't do anything)
+                  data_double <- rbind(data_points, data_points)
+                  db_structure2 <- data_double %>%
+                    create_delta_ball_structure(data_columns = c(X1,X2,X3,X4))
+
+                  testthat::expect_equal(db_structure2, db_structure)
+                })
+
 test_that(paste("test create_convex_hull_structure",
-                "(.lower_simplex_project = FALSE)"), {
-  box_data <- data.frame(x = c(0,0,1,1,.5),
-                         y = c(0,1,0,1,.5))
-  just_box1 <- create_convex_hull_structure(box_data,
-                                            .lower_simplex_project = FALSE)
-  testthat::expect_equal(attr(just_box1, "A"), diag(2))
+                "(.lower_simplex_project = FALSE, no data_column)"), {
+                  box_data <- data.frame(x = c(0,0,1,1,.5),
+                                         y = c(0,1,0,1,.5))
+                  just_box1 <- create_convex_hull_structure(box_data,
+                                                            .lower_simplex_project = FALSE)
+                  testthat::expect_equal(attr(just_box1, "A"), diag(2))
 
-  # error associated with simplex projection if .lower_simplex_project = TRUE
-  testthat::expect_error(create_convex_hull_structure(box_data))
+                  # error associated with simplex projection if .lower_simplex_project = TRUE
+                  testthat::expect_error(create_convex_hull_structure(box_data))
 
-  just_box2 <- create_convex_hull_structure(box_data,
-                                            data_columns = c("x", "y"),
-                                            .lower_simplex_project = FALSE)
+                  just_box2 <- create_convex_hull_structure(box_data,
+                                                            .lower_simplex_project = FALSE)
 
-  testthat::expect_equivalent(just_box1, just_box2)
-  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
-                              box_data[-5,] %>% arrange(x,y))
+                  testthat::expect_equivalent(just_box1, just_box2)
+                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
+                                              box_data[-5,] %>% arrange(x,y))
 
-})
+                })
+
+test_that(paste("test create_convex_hull_structure",
+                "(.lower_simplex_project = FALSE, string)"), {
+                  box_data <- data.frame(x = c(0,0,1,1,.5),
+                                         y = c(0,1,0,1,.5))
+                  just_box1 <- create_convex_hull_structure(box_data,
+                                                            data_columns = c("x","y"),
+                                                            .lower_simplex_project = FALSE)
+                  testthat::expect_equal(attr(just_box1, "A"), diag(2))
+
+                  # error associated with simplex projection if .lower_simplex_project = TRUE
+                  testthat::expect_error(create_convex_hull_structure(box_data))
+
+                  just_box2 <- create_convex_hull_structure(box_data,
+                                                            data_columns = c("x", "y"),
+                                                            .lower_simplex_project = FALSE)
+
+                  testthat::expect_equivalent(just_box1, just_box2)
+                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
+                                              box_data[-5,] %>% arrange(x,y))
+
+                })
+
+test_that(paste("test create_convex_hull_structure",
+                "(.lower_simplex_project = FALSE, tidyify)"), {
+                  box_data <- data.frame(x = c(0,0,1,1,.5),
+                                         y = c(0,1,0,1,.5))
+                  just_box1 <- create_convex_hull_structure(box_data,
+                                                            data_columns = c(x,y),
+                                                            .lower_simplex_project = FALSE)
+                  testthat::expect_equal(attr(just_box1, "A"), diag(2))
+
+                  # error associated with simplex projection if .lower_simplex_project = TRUE
+                  testthat::expect_error(create_convex_hull_structure(box_data))
+
+                  just_box2 <- create_convex_hull_structure(box_data,
+                                                            data_columns = c(x,y),
+                                                            .lower_simplex_project = FALSE)
+
+                  testthat::expect_equivalent(just_box1, just_box2)
+                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
+                                              box_data[-5,] %>% arrange(x,y))
+
+                })
+
+
+
 
 test_that(paste("test create_convex_hull_structure",
                 "(.lower_simplex_project = TRUE)"), {

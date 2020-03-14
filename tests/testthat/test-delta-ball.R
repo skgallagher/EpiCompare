@@ -1,10 +1,46 @@
 context("delta ball internal functions")
 
-test_that("delta_structure tests", {
+test_that("delta_structure tests, strings", {
   data_deep_points <- data.frame(x = c(0,1,1),
                                  y = c(0,0,1))
 
   out_list <- delta_structure(data_deep_points,xy_columns = c("x","y"))
+  structure_out_list <- out_list$structure
+  line_numbers <- structure_out_list %>% dplyr::pull(idx) %>% unique
+
+  expected_min_delta <- 1
+  expected_structure <- list(first = data.frame(x = c(0,1),
+                                                y = c(0,0),
+                                                extra = 1:2),
+                             second = data.frame(x = c(1, 1),
+                                                 y = c(0, 1),
+                                                 extra = 1:2))
+
+  line_info <- c()
+  for (line in expected_structure) {
+    in_the_match <- FALSE
+    for (line_num in line_numbers) {
+      d_structure <- structure_out_list %>%
+        dplyr::filter(idx == line_num)
+
+      combined_info <- d_structure %>%
+        dplyr::left_join(line, by = c("x", "y"))
+
+      if (sum(is.na(combined_info)) == 0){
+        in_the_match  <- TRUE
+      }
+    }
+    line_info <- c(line_info, in_the_match)
+
+  }
+  testthat::expect_true(all(line_info))
+})
+
+test_that("delta_structure tests, tidyify", {
+  data_deep_points <- data.frame(x = c(0,1,1),
+                                 y = c(0,0,1))
+
+  out_list <- delta_structure(data_deep_points,xy_columns = c(x,y))
   structure_out_list <- out_list$structure
   line_numbers <- structure_out_list %>% dplyr::pull(idx) %>% unique
 
@@ -96,6 +132,74 @@ test_that("test inner_delta_ball_wrapper - basic", {
   testthat::expect_true(all(sums_pairs != 2)) #no lines across the center
 
 })
+
+test_that("test inner_delta_ball_wrapper - basic, string", {
+  #square - no center ----------------
+  data <- data.frame(x = c(0,0,1,1),
+                     z = c(0,1,0,1))
+
+  out_delta_ball <- inner_delta_ball_wrapper(data,xy_columns = c("x","z"))
+  # just looking for outer square (no inner lines)
+
+  testthat::expect_equal(dim(out_delta_ball), c(8,3)) #4 lines
+
+  # by construction the sums of pairs = 1 or 3, not 2
+  sums_pairs <- out_delta_ball[,c("x","z")] %>% split(out_delta_ball$idx) %>%
+    sapply(sum)
+
+  testthat::expect_true(all(sums_pairs != 2)) #no lines across the center
+
+  # single triangle - no diag -------------
+  data <- data.frame(x = c(0,0,1),
+                     z = c(0,1,1))
+
+  out_delta_ball <- inner_delta_ball_wrapper(data, xy_columns = c("x","z"))
+  # just looking for outer square (no inner lines)
+
+  testthat::expect_equal(dim(out_delta_ball), c(4,3)) #2 lines
+
+  # by construction the sums of pairs = 1 or 3, not 2
+  sums_pairs <- out_delta_ball[,c("x","z")] %>% split(out_delta_ball$idx) %>%
+    sapply(sum)
+
+  testthat::expect_true(all(sums_pairs != 2)) #no lines across the center
+
+})
+
+
+test_that("test inner_delta_ball_wrapper - basic, tidyify", {
+  #square - no center ----------------
+  data <- data.frame(x = c(0,0,1,1),
+                     z = c(0,1,0,1))
+
+  out_delta_ball <- inner_delta_ball_wrapper(data,xy_columns = c(x,z))
+  # just looking for outer square (no inner lines)
+
+  testthat::expect_equal(dim(out_delta_ball), c(8,3)) #4 lines
+
+  # by construction the sums of pairs = 1 or 3, not 2
+  sums_pairs <- out_delta_ball[,c("x","z")] %>% split(out_delta_ball$idx) %>%
+    sapply(sum)
+
+  testthat::expect_true(all(sums_pairs != 2)) #no lines across the center
+
+  # single triangle - no diag -------------
+  data <- data.frame(x = c(0,0,1),
+                     z = c(0,1,1))
+
+  out_delta_ball <- inner_delta_ball_wrapper(data, xy_columns = c(x,z))
+  # just looking for outer square (no inner lines)
+
+  testthat::expect_equal(dim(out_delta_ball), c(4,3)) #2 lines
+
+  # by construction the sums of pairs = 1 or 3, not 2
+  sums_pairs <- out_delta_ball[,c("x","z")] %>% split(out_delta_ball$idx) %>%
+    sapply(sum)
+
+  testthat::expect_true(all(sums_pairs != 2)) #no lines across the center
+
+})
+
 
 test_that("test remove_incomplete_tri", {
   n_steps = 100

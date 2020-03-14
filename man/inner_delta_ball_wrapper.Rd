@@ -4,10 +4,19 @@
 \alias{inner_delta_ball_wrapper}
 \title{Run delta ball analysis}
 \usage{
-inner_delta_ball_wrapper(data_raw, n_steps = 100, remove_duplicates = F)
+inner_delta_ball_wrapper(
+  data_raw,
+  xy_columns = c("x", "y"),
+  n_steps = 100,
+  remove_duplicates = F
+)
 }
 \arguments{
 \item{data_raw}{data frame with center points of balls}
+
+\item{xy_columns}{columns of data.frame that relate to
+  the points's coordinates in euclidean space. The input should look like
+something like \code{c(x,y)} or \code{c("x","y")}.}
 
 \item{n_steps}{number of equidistance points along the line, past delta on
 both sides, that will be checked to approximate all points along the line}

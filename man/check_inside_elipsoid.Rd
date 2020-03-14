@@ -7,7 +7,8 @@
 check_inside_elipsoid(data, Sigma, center, bound, suppress_warning = FALSE)
 }
 \arguments{
-\item{data}{data.frame or matrix of data (row is observation), ncol = p}
+\item{data}{data.frame or matrix of data (row is observation), ncol = p,
+scalar columns}
 
 \item{Sigma}{covariance matrix (p x p)}
 
@@ -15,13 +16,15 @@ check_inside_elipsoid(data, Sigma, center, bound, suppress_warning = FALSE)
 
 \item{bound}{contraint for equation of ellipsoid}
 
-\item{suppress_warning}{logic to suppress warning if just returning all false
-relative to non PSD Sigma or bound <= 0.}
+\item{suppress_warning}{logic to suppress warning if just returning all
+\code{FALSE} relative to non PSD Sigma or bound <= 0.}
 }
 \value{
-all false if Sigma not PSD
+boolean vector if data is contained in ellipsoid. All \code{FALSE} if
+  Sigma not PSD
 }
 \description{
-See https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
+See
+https://stats.stackexchange.com/questions/29860/confidence-interval-of-multivariate-gaussian-distribution
 for details.
 }

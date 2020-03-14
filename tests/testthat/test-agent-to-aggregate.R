@@ -1,4 +1,4 @@
-context("tests for agent_to_aggregate")
+context("tests for agents_to_aggregate")
 
 test_that("check_min_max_time", {
   # correct formats
