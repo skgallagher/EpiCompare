@@ -36,8 +36,13 @@ fortify_aggregate.icm <- function(data,
                               package_source = NULL){
 
 
+    browser()
+    # states ---------
+    state_cols <- dplyr::enquos(states)
+    states <- unname(tidyselect::vars_select(dplyr::tbl_vars(data),
+                                             !!!state_cols))
     ## Grab the state names if not specified
-    if(is.null(states)){
+    if(!null(states)){
         states <- get_epimodel_icm_states(data)
     }
 
