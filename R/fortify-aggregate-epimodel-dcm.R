@@ -23,7 +23,7 @@ fortify_aggregate.dcm <- function(data,
                                   states = NULL,
                                   package_source = NULL){
 
-    out <- fortify_aggregate.icm(data, states)
+    out <- fortify_aggregate.icm(data)
     return(out)
 
 }
