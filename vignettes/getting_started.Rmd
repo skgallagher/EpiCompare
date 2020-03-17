@@ -28,7 +28,7 @@ To install `EpiCompare`, run the folllowing code.
 ```{r eval = FALSE}
 if(!require(EpiCompare)){
   library(devtools)
-  devtools::install_github("shannong19/EpiCompare")
+  devtools::install_github("skgallagher/EpiCompare")
 }
 library(EpiCompare)
 ```
