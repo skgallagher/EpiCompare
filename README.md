@@ -4,7 +4,7 @@ EpiCompare <img src="man/figures/logo.png" align="right" alt="" width="120" />
 ==============================================================================
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR) [![codecov](https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR) <!-- badges: end -->
+[![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare) <!-- badges: end -->
 
 The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.
 
@@ -135,6 +135,7 @@ Notes:
     1.  [stack-exchange: personal code idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
     2.  [stack-exchange: being able to access ggtern's element write away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
     3.  Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
+3.  `geom_prediction_band` required not just `compute_group` but `compute_layer` - there is very little documentation on how to approach this correctly. Basically - there are problems when the `compute_group` wants to make multiple `pieces`/`groups` - and it is similar to the problem that if you do something like `aes(color= var1, group =var2)` you may actually want to do `aes(color= var1, group =paste(var1, var2)`, if there are the same `var2` values across different `var1` values but they don't mean they should be grouped together.
 
 Contributors
 ------------
