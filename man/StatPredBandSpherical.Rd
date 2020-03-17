@@ -5,7 +5,7 @@
 \alias{StatPredBandSpherical}
 \title{stat object for use in spherical ball based stat_prediction_band and
 geom_prediction_band}
-\format{An object of class \code{StatPredBandSpherical} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.}
+\format{An object of class \code{StatPredBandSpherical} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.}
 \usage{
 StatPredBandSpherical
 }

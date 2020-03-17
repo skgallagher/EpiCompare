@@ -1,5 +1,24 @@
 context("tests for prediction band visuals")
 
+library(sp)
+library(ggplot2)
+library(dplyr)
+library(ggtern); update_approved_layers()
+
+# internal function to calculate area of contour(s) ---------------
+get_area <- function(x) {
+  if (!("piece" %in% names(x)) | length(unique(x$piece)) == 1) {
+    data_inner <- x[,c("x", "y")]
+    data_inner <- rbind(data_inner, data_inner[1,])
+    sp::coordinates(data_inner) <- c("x","y")
+    data_sp <- sp::Polygon(data_inner)
+    return(data_sp@area)
+  } else {
+    areas <- sapply(dplyr::group_split(dplyr::group_by(x, .data$piece)), get_area)
+    return(sum(areas))
+  }
+}
+
 test_that("get_closest static tests",{
   # single point:
   border_points <- data.frame(x = 0, y = 0)
@@ -329,25 +348,6 @@ df_group <- sim10 %>% group_by(sim) %>%
 test_that(paste("geom_prediction_band correctly deals with conf_level,",
                 "(uniform bands, kde)"),
         {
-          library(sp)
-          library(ggplot2)
-          library(dplyr)
-          library(ggtern); update_approved_layers()
-
-          # internal function to calculate area of contour(s) ---------------
-          get_area <- function(x) {
-            if (!("piece" %in% names(x)) | length(unique(x$piece)) == 1) {
-              data_inner <- x[,c("x", "y")]
-              data_inner <- rbind(data_inner, data_inner[1,])
-              sp::coordinates(data_inner) <- c("x","y")
-              data_sp <- sp::Polygon(data_inner)
-              return(data_sp@area)
-            } else {
-              areas <- sapply(dplyr::group_split(dplyr::group_by(x, .data$piece)), get_area)
-              return(sum(area))
-            }
-          }
-
           # different conf_level
           for (pb_type in c("kde", "delta_ball", "convex_hull")){
             vis_pred_level.9 <- ggtern() + #ggplot() +
@@ -371,15 +371,15 @@ test_that(paste("geom_prediction_band correctly deals with conf_level,",
               coord_tern()
 
             data.1 <- ggtern::layer_data(vis_pred_level.1)
-            #data.1.area <- data.1 %>% get_area()
-            #data.9.area <- data.9 %>% get_area()
+            data.1.area <- data.1 %>% get_area()
+            data.9.area <- data.9 %>% get_area()
 
-            #testthat::expect_lt(data.1.area, data.9.area)
+            testthat::expect_lt(data.1.area, data.9.area)
           }
 
           })
 
-if (FALSE) {
+
 test_that(paste("geom_prediction_band correctly deals with grid_size,",
                 "(kde, delta_ball)"),
          {
@@ -602,7 +602,6 @@ test_that(paste("stat_prediction_band correctly deals with grid_size,",
             }
           })
 
-
 # multiple colors ------------------
 
 df_group_two <- df_group %>% mutate(class_type = as.numeric(.data$sim) > 5)
@@ -645,10 +644,9 @@ test_that(paste("geom_prediction_band correctly deals with multiple groups,",
             }
 })
 
-test_that("delta_ball correctly seperates subsections", {
-  # should write some test for kde and spherical ... but how...
-  new_data <- df_group_two %>% filter(t < 40 | t > 65)
-  for (pb_type in c("delta_ball")) {
+test_that("delta_ball, kde correctly seperates subsections", {
+  new_data <- df_group %>% filter(t < 40 | t > 65)
+  for (pb_type in c("delta_ball", "kde")) {
     vis_pred_level.1 <- ggplot() +
       geom_prediction_band(data = new_data,
                            aes(x = S, y = I, z = R,
@@ -658,20 +656,50 @@ test_that("delta_ball correctly seperates subsections", {
 
     data.1 <- ggtern::layer_data(vis_pred_level.1)
 
-    for (piece_v in unique(data.1$piece)){
-      d_mat <- dist(data.1[data.1$piece == piece_v, c("x", "y", "z")]) %>%
+    for (group_v in unique(data.1$group)){
+      d_mat <- dist(data.1[data.1$group == group_v, c("x", "y", "z")]) %>%
         as.matrix()
 
       # grab off diagonal
       id_delta <- row(d_mat) - col(d_mat)
 
-      delta <- get_delta(data.1[data.1$piece == piece_v, c("x", "y", "z")])$mm_delta
+      delta <- get_delta(data.1[data.1$group == group_v, c("x", "y", "z")])$mm_delta
 
       testthat::expect_equal(sum(d_mat[id_delta == 1] > delta * 10),0)
     }
   }
+})
 
-          })
+test_that(paste("spherical_ball correctly seperates subsections,",
+                "only looking at the 2 biggest parts"), {
+  new_data <- df_group %>% filter(t < 40 | t > 65)
+  for (pb_type in c("spherical_ball")) {
+    vis_pred_level.1 <- ggplot() +
+      geom_prediction_band(data = new_data,
+                           aes(x = S, y = I, z = R,
+                               t = as.numeric(t)),
+                           conf_level = .9, pb_type = pb_type) +
+      coord_tern()
+
+    data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+    big_group_id <- data.1 %>% group_by(group) %>% summarize(n = n()) %>%
+      arrange(desc(n)) %>% top_n(2) %>% pull(group)
+
+    for (group_v in big_group_id){
+      d_mat <- dist(data.1[data.1$group == group_v, c("x", "y", "z")]) %>%
+        as.matrix()
+
+      # grab off diagonal
+      id_delta <- row(d_mat) - col(d_mat)
+
+      delta <- get_delta(data.1[data.1$group == group_v, c("x", "y", "z")])$mm_delta
+
+      testthat::expect_equal(sum(d_mat[id_delta == 1] > delta * 10),0)
+    }
+  }
+})
+
 
 test_that(paste("geom_prediction_band correctly deals with multiple groups,",
                 "(spherical)"),
@@ -693,4 +721,8 @@ test_that(paste("geom_prediction_band correctly deals with multiple groups,",
               testthat::expect_equal(number_groups, 2)
             }
           })
-}
+
+
+
+
+

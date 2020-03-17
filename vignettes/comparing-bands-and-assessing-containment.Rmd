@@ -44,7 +44,7 @@ devtools::load_all()
 
 This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.
 
-To  motivate these tools we're actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we've generated a `pretend_actual_data`set and a set of simulations. 
+To  motivate these tools we're actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we've generated a `pretend_actual_data`-set and a set of simulations. 
 
 Look at this beautify pretend data. A good peak. We're able to use `geom_aggregate` on our data (though we also could have used `agents_to_aggregate` + `geom_path`).
 
@@ -61,7 +61,7 @@ pretend_actual_data <- EpiCompare::simulate_SIR_agents(
 pretend_actual_data %>% ggplot() +
   geom_aggregate(aes(y = tI, z = tR),
                  color = "blue") +
-  coord_tern() # "what does 'rows containing non-finite values' mean?"
+  coord_tern() 
 ```
 ```{r}
 # another approach for the same visual
@@ -78,19 +78,23 @@ ggplot(df_single, aes(x = S, y = I, z = R)) +
 Now, suppose, without having read our paper, you don't have a proof of \@Shannon's at the top of your head, but you still think the following model fits decently well for the above data.
 
 ```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
-n_sims <- 100 
+n_sims <- 50 
 n_time_steps <- 100
 beta <- .1
 gamma <- .03
 init_SIR <- c(950, 50, 0)
 
     
+<<<<<<< HEAD
 sim100 <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
+=======
+sim50 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+>>>>>>> bb3770c213058f23122f9ef5c716f78dc3b45956
                                  n_time_steps = n_time_steps,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
 
-df_group <- sim100 %>% group_by(sim) %>% 
+df_group <- sim50 %>% group_by(sim) %>% 
   agents_to_aggregate(states = c("tI", "tR")) %>% 
                       #min_max_time = c(0,100)) %>% 
   rename(S = "X0", I = "X1", R = "X2") 
@@ -99,7 +103,7 @@ df_group <- sim100 %>% group_by(sim) %>%
 
 ```{r}
 ggplot() +
-  geom_aggregate(data = sim100, aes(y = tI, z = tR, group = sim),
+  geom_aggregate(data = sim50, aes(y = tI, z = tR, group = sim),
                  alpha = .1) +
   geom_aggregate(data = pretend_actual_data,
                  aes(y = tI, z = tR), color = "blue") +
@@ -137,21 +141,10 @@ b <- ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
-                       conf_level = .9, pb_type = "delta_ball") +
+                       conf_level = .4, pb_type = "delta_ball") +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern()
 ```
-
-```{r}
-a <- ggplot() +
-  geom_prediction_band(data = df_group, 
-                       aes(x = S, y = I, z = R, 
-                           sim_group = as.numeric(sim)),
-                       conf_level = .1, pb_type = "delta_ball") +
-  geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
-  coord_tern() 
-```
-
 
 Is it contained in the above delta ball?
 
@@ -159,6 +152,9 @@ Is it contained in the above delta ball?
 contained(delta_ball_cb, 
          df_single %>% select(-t)) # aggregate version
 ```
+
+What about a less strigent ruling? 
+
 ```{r}
 delta_ball_cb1 <- df_group %>%
   arrange(t) %>% # just to be safe
@@ -181,12 +177,19 @@ Suppose your lab has seen an epidemic that has similar characteristics as the cu
 beta <- .15
 gamma <- .05
 
+
 out2 <- EpiCompare::simulate_SIR_agents(n_sims = 100,
                                       n_time_steps = 100,
                                       beta = beta, gamma = gamma,
                                       init_SIR = c(950, 50, 0))
 
-df_group2 <- out2 %>% group_by(sim) %>% 
+sim50_2 <- timeternR::simulate_SIR_agents(n_sims = 50,
+                                       n_time_steps = 100,
+                                       beta = beta, gamma = gamma,
+                                       init_SIR = c(950, 50, 0))
+
+
+df_group2 <- sim50_2 %>% group_by(sim) %>% 
   agents_to_aggregate(states = c("tI", "tR")) %>%
   rename(S = "X0", I = "X1", R = "X2")
 ```
@@ -194,39 +197,51 @@ df_group2 <- out2 %>% group_by(sim) %>%
 ## Possible visuals {.tabset}
 
 ### First
-```{r}
+
+```{r eval = F}
+df_all <- rbind( df_group %>% ungroup() %>% mutate(sim = as.character(sim),
+                                                   epi_model = "first"),
+                df_group2 %>% ungroup() %>% mutate(sim = as.character(sim),
+                                                   epi_model = "second"))
+ggplot() +
+  geom_prediction_band(data = df_all, 
+                       aes(x = S, y = I, z = R, fill = epi_model,
+                           sim_group = as.numeric(sim)), alpha = .5,
+                       conf_level = .9, pb_type = "delta_ball",
+                       grid_size = rep(50, 2))  +
+  coord_tern()
+```
+
+### Second 
+```{r eval = F}
 ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
                        color = "blue",
                        fill = "blue", alpha = .5,
-                       conf_level = .9, pb_type = "delta_ball") +
+                       conf_level = .9, pb_type = "delta_ball",
+                       grid_size = rep(50, 2)) +
   geom_prediction_band(data = df_group2, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
                        color = "red",
                        fill = "red", alpha = .5,
-                       conf_level = .9, pb_type = "delta_ball") +
+                       conf_level = .9, pb_type = "delta_ball",
+                       grid_size = rep(50, 2)) +
   coord_tern()
 ```
 
-### Second 
-```{r}
-df_all <- rbind( df_group %>% mutate(epi_model = "first"),
-                df_group2 %>% mutate(epi_model = "second"))
-ggplot() +
-  geom_prediction_band(data = df_all, 
-                       aes(x = S, y = I, z = R, fill = epi_model,
-                           sim_group = as.numeric(sim)), alpha = .5,
-                       conf_level = .9, pb_type = "delta_ball")  +
-  coord_tern()
-```
+
 
 ### Third
-```{r}
-df_all <- rbind( df_group %>% mutate(epi_model = "first"),
-                df_group2 %>% mutate(epi_model = "second"))
+```{r eval = F}
+df_all <- rbind(df_group %>% ungroup() %>% 
+                  mutate(sim = as.numeric(as.character(sim)),
+                         epi_model = "first"),
+                df_group2 %>% ungroup() %>% 
+                  mutate(sim = as.numeric(as.character(sim)),
+                         epi_model = "second"))
 ggplot() +
   geom_path(data = df_all, 
             aes(x = S, y = I, z = R, color = epi_model,
@@ -237,8 +252,8 @@ ggplot() +
 
 ```{r eval = F}
 # this would also work
-df_all_agg <- rbind(sim100 %>% mutate(epi_model = "first"),
-                out2 %>% mutate(epi_model = "second"))
+df_all_agg <- rbind(sim50 %>% mutate(epi_model = "first"),
+                sim50_2 %>% mutate(epi_model = "second"))
 
 ggplot() +
   geom_aggregate(data = df_all_agg, 

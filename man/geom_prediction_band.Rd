@@ -171,53 +171,55 @@ library(dplyr)
 library(ggtern); EpiCompare:::update_approved_layers()
 #                ^ this doesn't generally need to be done
 
-vis_data <- EpiCompare::pomp_df \%>\%
-  rename(x = "S", y = "I", z = "R") \%>\%
-  ggplot(aes(x = x, y =y, z = z, group = .id)) +
-  geom_path(alpha = .03) +
-  coord_tern() +
-  labs(title = "Actually data paths")
+# for speed purposes
+smaller_pomp_df <- timeternR::pomp_df \%>\% filter(.id < 10)
 
-vis_spherical <- EpiCompare::pomp_df \%>\%
-  rename(x = "S", y = "I", z = "R", t = "time") \%>\%
-  ggplot(aes(x = x, y = y, z = z, t = t)) +
-  geom_prediction_band(pb_type = "spherical_ball",
-                       grid_size = rep(300,2),
-                       conf_level = .95) +
-  coord_tern() +
-  labs(title = "Spherical CB")
+vis_data <- smaller_pomp_df \%>\%
+ rename(x = "S", y = "I", z = "R") \%>\%
+ ggplot(aes(x = x, y =y, z = z, group = .id)) +
+ geom_path(alpha = .3) +
+ coord_tern() +
+ labs(title = "Actually data paths")
 
-vis_delta_ball <- EpiCompare::pomp_df \%>\%
-  rename(x = "S", y = "I", z = "R") \%>\%
-  mutate(.id = as.numeric(.id)) \%>\%
-  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_prediction_band(pb_type = "delta_ball",
-                       grid_size = rep(300,2),
-                       conf_level = .95) +
-  coord_tern() +
-  labs(title = "Delta-ball CB")
+vis_spherical <- smaller_pomp_df \%>\%
+ rename(x = "S", y = "I", z = "R", t = "time") \%>\%
+ ggplot(aes(x = x, y = y, z = z, t = t)) +
+ geom_prediction_band(pb_type = "spherical_ball",
+                      grid_size = rep(100,2),
+                      conf_level = .95) +
+ coord_tern() +
+ labs(title = "Spherical CB")
 
-vis_kde <- EpiCompare::pomp_df \%>\%
-  rename(x = "S", y = "I", z = "R") \%>\%
-  mutate(.id = as.numeric(.id)) \%>\%
-  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_prediction_band(pb_type = "kde",
-                       grid_size = rep(300,2),
-                       conf_level = .95) +
-  coord_tern() +
-  labs(title = "KDE CB")
+vis_delta_ball <- smaller_pomp_df \%>\%
+ rename(x = "S", y = "I", z = "R") \%>\%
+ mutate(.id = as.numeric(.id)) \%>\%
+ ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+ geom_prediction_band(pb_type = "delta_ball",
+                      grid_size = rep(100,2),
+                      conf_level = .95) +
+ coord_tern() +
+ labs(title = "Delta-ball CB")
 
-vis_convex_hull <- EpiCompare::pomp_df \%>\%
-  rename(x = "S", y = "I", z = "R") \%>\%
-  mutate(.id = as.numeric(.id)) \%>\%
-  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_prediction_band(pb_type = "convex_hull",
-                       conf_level = .95) +
-  coord_tern() +
-  labs(title = "Convex hull CB")
+vis_kde <- smaller_pomp_df \%>\%
+ rename(x = "S", y = "I", z = "R") \%>\%
+ mutate(.id = as.numeric(.id)) \%>\%
+ ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+ geom_prediction_band(pb_type = "kde",
+                      grid_size = rep(100,2),
+                      conf_level = .95) +
+ coord_tern() +
+ labs(title = "KDE CB")
+
+vis_convex_hull <- smaller_pomp_df \%>\%
+ rename(x = "S", y = "I", z = "R") \%>\%
+ mutate(.id = as.numeric(.id)) \%>\%
+ ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+ geom_prediction_band(pb_type = "convex_hull",
+                      conf_level = .95) +
+ coord_tern() +
+ labs(title = "Convex hull CB")
 
 grid.arrange(vis_data, vis_spherical,
-             vis_delta_ball, vis_kde,
-             vis_convex_hull, nrow = 2)
-
+            vis_delta_ball, vis_kde,
+            vis_convex_hull, nrow = 2)
 }

@@ -282,24 +282,34 @@ get_grid_elipsoid_containment <- function(inside_func_list,
 #' stat object for use in kde based stat_prediction_band and
 #' geom_prediction_band
 #' @export
-StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
-                                    ggplot2::Stat,
-                                    compute_group =
-  function(data, scales, params,
-           pb_type = NULL,
-           #^ needed to match same format as stat/geom_prediction_band
-           grid_size = rep(100,2),
-           conf_level = .9, over_delta = NULL){
 
+StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
+  ggplot2::Stat,
+  compute_layer = function(self, data, params, layout){
+    # first run the regular layer calculation to infer densities
+    data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
+
+    # required piece and group to be cleaned up
+    data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+                                       group_old = .data$group,
+                                       piece = as.numeric(
+                                         factor(paste(.data$PANEL,
+                                                      .data$piece_old,
+                                                      .data$group_old,
+                                                      sep = "*"))),
+                                       group = piece)
+
+    return(data_cleaned_up)
+  },
+  compute_group = function(data, scales, params,
+                           pb_type = NULL,
+                           #^ needed to match same format as stat/geom_prediction_band
+                           grid_size = rep(100,2),
+                           conf_level = .9, over_delta = NULL){
     assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
-    info_inner <- data[, c("PANEL", "group")] %>%
-      sapply(unique)
-
-    if (info_inner[1] == 1 & info_inner[2] <= 1){
-      .number_contours <<- 1
-    }
+    info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
 
     data <- data %>% mutate(sim_group = factor(sim_group))
 
@@ -317,30 +327,43 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
     kde_ci_df <- kde_ci_list %>% lapply(as.data.frame) %>%
       dplyr::bind_rows(.id = "kde_poly")
 
-    # COME HERE hack to get the correct number of contours...
-    .number_contours <<- max(c(.number_contours,length(unique(kde_ci_df$kde_poly))))
-
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
                                    select(-kde_poly, -level),
                                  coord = ggtern::coord_tern()) %>%
-      cbind(kde_poly = kde_ci_df$kde_poly, .) %>%
+      cbind(., piece = as.integer(kde_ci_df$kde_poly)) %>%
       dplyr::mutate(PANEL = info_inner[1],
-                    piece = as.integer(kde_poly),
-                    group = .number_contours * info_inner[2] + # hack is here too
-                      as.numeric(as.integer(kde_poly))
-      ) %>%
+                    group = info_inner[2]) %>%
       # ^this seems like an odd approach
       project_to_simplex(column_names = c("x","y","z"))
 
-    return(kde_ci_df3)            },
+    return(kde_ci_df3)
+  },
   required_aes = c("x", "y", "z", "sim_group"))
+
 
 #' stat object for use in delta_ball based stat_prediction_band and
 #' geom_prediction_band
 #' @export
 StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
-                                          ggplot2::Stat,
-                                          compute_group =
+  ggplot2::Stat,
+  compute_layer =
+    function(self, data, params, layout){
+      # first run the regular layer calculation to infer densities
+      data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
+
+      # required piece and group to be cleaned up
+      data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+                                         group_old = .data$group,
+                                         piece = as.numeric(
+                                           factor(paste(.data$PANEL,
+                                                        .data$piece_old,
+                                                        .data$group_old,
+                                                        sep = "*"))),
+                                         group = piece)
+
+      return(data_cleaned_up)
+  },
+  compute_group =
   function(data, scales, params,
            pb_type = NULL,
            #^ needed to match same format as stat/geom_prediction_band
@@ -350,12 +373,7 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
                             msg = paste("'sim_group' cannot be a factor"))
 
     info_inner <- data[, c("PANEL", "group")] %>%
-      sapply(unique)
-
-    # hack:
-    if (info_inner[1] == 1 & info_inner[2] == 1){
-      .number_contours <<- 1
-    }
+      sapply(unique) %>% unname
 
     data2d <- data %>% as.data.frame() %>%
       get_xy_coord(xyz_col = c("x", "y", "z"))
@@ -420,19 +438,14 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
     ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
     pieces <- rep(seq_along(cl), lengths)
 
-    # COME HERE hack to get the correct number of contours...
-    .number_contours <<- max(c(.number_contours,length(unique(pieces))))
-
 
     vis_df <- data.frame(
       x = xs,
       y = ys,
       piece = pieces,
-      group = pieces
+      group = info_inner[2],
+      PANEL = info_inner[1]
     ) %>%
-      dplyr::mutate(PANEL = info_inner[1],
-                    group = .number_contours * info_inner[2] + # hack is here too
-                      as.numeric(as.integer(piece))) %>%
       ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
       project_to_simplex(column_names = c("x","y","z"))
 
@@ -447,18 +460,35 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
 #' @export
 StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
    ggplot2::Stat,
+   compute_layer =
+     function(self, data, params, layout){
+       # first run the regular layer calculation to infer densities
+       data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
+
+       #browser()
+       # required piece and group to be cleaned up
+       data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+                                          group_old = .data$group,
+                                          piece = as.numeric(
+                                            factor(paste(.data$PANEL,
+                                                         .data$piece_old,
+                                                         .data$group_old,
+                                                         sep = "*"))),
+                                          group = piece)
+
+       return(data_cleaned_up)
+     },
    compute_group =
-     function(data, scales, pb_type = NULL, grid_size = rep(100,2),
+     function(data, scales, params,
+              pb_type = NULL,
+              #^ needed to match same format as stat/geom_prediction_band
+              grid_size = rep(100,2),
               conf_level = .9, over_delta = .1){
         assertthat::assert_that(!is.factor(data$t),
                                 msg = paste("'t' cannot be a factor"))
 
-        info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
-
-        # hack:
-        if (info_inner[1] == 1 & info_inner[2] == 1){
-          .number_contours <<- 1
-        }
+        info_inner <- data[, c("PANEL", "group")] %>%
+          sapply(unique) %>% unname()
 
         data2d <- data %>% as.data.frame() %>%
           get_xy_coord(xyz_col = c("x", "y", "z"))
@@ -518,19 +548,13 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
         ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
         pieces <- rep(seq_along(cl), lengths)
 
-        # COME HERE hack to get the correct number of contours...
-        .number_contours <<- max(c(.number_contours,length(unique(pieces))))
-
-
         vis_df <- data.frame(
           x = xs,
           y = ys,
           piece = pieces,
-          group = pieces
+          group = info_inner[2],
+          PANEL = info_inner[1]
         ) %>%
-          dplyr::mutate(PANEL = info_inner[1],
-                        group = .number_contours * info_inner[2] + # hack is here too
-                          as.numeric(as.integer(piece))) %>%
         ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
           project_to_simplex(column_names = c("x","y","z"))
 
@@ -746,55 +770,58 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' library(ggtern); EpiCompare:::update_approved_layers()
 #' #                ^ this doesn't generally need to be done
 #'
-#' vis_data <- EpiCompare::pomp_df %>%
-#'   rename(x = "S", y = "I", z = "R") %>%
-#'   ggplot(aes(x = x, y =y, z = z, group = .id)) +
-#'   geom_path(alpha = .03) +
-#'   coord_tern() +
-#'   labs(title = "Actually data paths")
+
+#' # for speed purposes
+#' smaller_pomp_df <- timeternR::pomp_df %>% filter(.id < 10)
 #'
-#' vis_spherical <- EpiCompare::pomp_df %>%
-#'   rename(x = "S", y = "I", z = "R", t = "time") %>%
-#'   ggplot(aes(x = x, y = y, z = z, t = t)) +
-#'   geom_prediction_band(pb_type = "spherical_ball",
-#'                        grid_size = rep(300,2),
-#'                        conf_level = .95) +
-#'   coord_tern() +
-#'   labs(title = "Spherical CB")
+#' vis_data <- smaller_pomp_df %>%
+#'  rename(x = "S", y = "I", z = "R") %>%
+#'  ggplot(aes(x = x, y =y, z = z, group = .id)) +
+#'  geom_path(alpha = .3) +
+#'  coord_tern() +
+#'  labs(title = "Actually data paths")
 #'
-#' vis_delta_ball <- EpiCompare::pomp_df %>%
-#'   rename(x = "S", y = "I", z = "R") %>%
-#'   mutate(.id = as.numeric(.id)) %>%
-#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_prediction_band(pb_type = "delta_ball",
-#'                        grid_size = rep(300,2),
-#'                        conf_level = .95) +
-#'   coord_tern() +
-#'   labs(title = "Delta-ball CB")
+#'vis_spherical <- smaller_pomp_df %>%
+#'  rename(x = "S", y = "I", z = "R", t = "time") %>%
+#'  ggplot(aes(x = x, y = y, z = z, t = t)) +
+#'  geom_prediction_band(pb_type = "spherical_ball",
+#'                       grid_size = rep(100,2),
+#'                       conf_level = .95) +
+#'  coord_tern() +
+#'  labs(title = "Spherical CB")
 #'
-#' vis_kde <- EpiCompare::pomp_df %>%
-#'   rename(x = "S", y = "I", z = "R") %>%
-#'   mutate(.id = as.numeric(.id)) %>%
-#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_prediction_band(pb_type = "kde",
-#'                        grid_size = rep(300,2),
-#'                        conf_level = .95) +
-#'   coord_tern() +
-#'   labs(title = "KDE CB")
+#'vis_delta_ball <- smaller_pomp_df %>%
+#'  rename(x = "S", y = "I", z = "R") %>%
+#'  mutate(.id = as.numeric(.id)) %>%
+#'  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'  geom_prediction_band(pb_type = "delta_ball",
+#'                       grid_size = rep(100,2),
+#'                       conf_level = .95) +
+#'  coord_tern() +
+#'  labs(title = "Delta-ball CB")
 #'
-#' vis_convex_hull <- EpiCompare::pomp_df %>%
-#'   rename(x = "S", y = "I", z = "R") %>%
-#'   mutate(.id = as.numeric(.id)) %>%
-#'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_prediction_band(pb_type = "convex_hull",
-#'                        conf_level = .95) +
-#'   coord_tern() +
-#'   labs(title = "Convex hull CB")
+#'vis_kde <- smaller_pomp_df %>%
+#'  rename(x = "S", y = "I", z = "R") %>%
+#'  mutate(.id = as.numeric(.id)) %>%
+#'  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'  geom_prediction_band(pb_type = "kde",
+#'                       grid_size = rep(100,2),
+#'                       conf_level = .95) +
+#'  coord_tern() +
+#'  labs(title = "KDE CB")
 #'
-#' grid.arrange(vis_data, vis_spherical,
-#'              vis_delta_ball, vis_kde,
-#'              vis_convex_hull, nrow = 2)
+#'vis_convex_hull <- smaller_pomp_df %>%
+#'  rename(x = "S", y = "I", z = "R") %>%
+#'  mutate(.id = as.numeric(.id)) %>%
+#'  ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
+#'  geom_prediction_band(pb_type = "convex_hull",
+#'                       conf_level = .95) +
+#'  coord_tern() +
+#'  labs(title = "Convex hull CB")
 #'
+#'grid.arrange(vis_data, vis_spherical,
+#'             vis_delta_ball, vis_kde,
+#'             vis_convex_hull, nrow = 2)
 geom_prediction_band <- function(mapping = NULL, data = NULL,
                                  stat = list("PredBandKDE",
                                              "PredBandDeltaBall",
@@ -842,6 +869,5 @@ GeomPredBand <- ggplot2::ggproto("GeomPredBand", ggplot2::GeomPolygon,
                                                    linetype = 1, alpha = NA,
                                                    subgroup = NULL)
 )
-
 
 

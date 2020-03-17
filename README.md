@@ -4,6 +4,10 @@
 # EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/figures/logo.png" align="right" alt="" width="120" /></a>
 
 <!-- badges: start -->
+<<<<<<< HEAD
+=======
+[![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare) <!-- badges: end -->
+>>>>>>> bb3770c213058f23122f9ef5c716f78dc3b45956
 
 [![Travis build
 status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare)
@@ -164,6 +168,7 @@ df_groups %>% ggplot() +
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
+<<<<<<< HEAD
 ## Notes:
 
 1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` \<=
@@ -193,3 +198,20 @@ df_groups %>% ggplot() +
 
   - Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
   - Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
+=======
+Notes:
+------
+
+1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` &lt;= 0.8.3. We followed ideas found in [tidyr: in-packages](https://tidyr.tidyverse.org/articles/in-packages.html), for the code, and - when working with Travis CI (using a matrix for multiple builds) - we leverage ideas in [tidyverse travis on github](https://github.com/tidyverse/design/issues/95) and [tidyverse principles](https://principles.tidyverse.org/changes-multivers.html).
+2.  For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
+    1.  [stack-exchange: personal code idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
+    2.  [stack-exchange: being able to access ggtern's element write away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
+    3.  Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
+3.  `geom_prediction_band` required not just `compute_group` but `compute_layer` - there is very little documentation on how to approach this correctly. Basically - there are problems when the `compute_group` wants to make multiple `pieces`/`groups` - and it is similar to the problem that if you do something like `aes(color= var1, group =var2)` you may actually want to do `aes(color= var1, group =paste(var1, var2)`, if there are the same `var2` values across different `var1` values but they don't mean they should be grouped together.
+
+Contributors
+------------
+
+-   Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
+-   Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
+>>>>>>> bb3770c213058f23122f9ef5c716f78dc3b45956
