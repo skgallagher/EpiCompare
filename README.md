@@ -4,24 +4,24 @@ EpiCompare <img src="man/figures/logo.png" align="right" alt="" width="120" />
 ==============================================================================
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/skgallagher/timeternR.svg?branch=master)](https://travis-ci.org/skgallagher/timeternR) [![codecov](https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/timeternR) <!-- badges: end -->
+[![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare) <!-- badges: end -->
 
-The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.
+The goal of EpiCompare is to develop functional based visualization and statistics that focus on use in ternary plots.
 
 Installation
 ------------
 
-You can install the developmental version of timeternR from github using:
+You can install the developmental version of EpiCompare from github using:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("skgallagher/timeternR")
+devtools::install_github("skgallagher/EpiCompare")
 ```
 
 Data
 ----
 
-Currently there are 13 data sets in which to explore the different `timeternR` functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
+Currently there are 13 data sets in which to explore the different `EpiCompare` functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).
 
 Details of each can be found with `?{data}`.
 
@@ -59,7 +59,7 @@ Example
 ``` r
 library(tidyverse)
 library(ggtern)
-library(timeternR)
+library(EpiCompare)
 ```
 
 The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.
@@ -134,7 +134,7 @@ Notes:
 2.  For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
     1.  [stack-exchange: personal code idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
     2.  [stack-exchange: being able to access ggtern's element write away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
-    3.  Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); timeternR:::update_approved_layers()`
+    3.  Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); EpiCompare:::update_approved_layers()`
 
 Contributors
 ------------

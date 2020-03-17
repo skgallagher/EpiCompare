@@ -29,14 +29,14 @@ linearly space compared to original filament definition)
 }
 \examples{
 library(dplyr)
-t13compression <- timeternR::pomp_sir \%>\%
+t13compression <- EpiCompare::pomp_sir \%>\%
   arrange(time) \%>\% # just to be safe
   select(-H, -cases, -time) \%>\%
   filter(.id <= 5) \%>\%
   group_by(.id) \%>\%
   filament_compression()
 
-t9compression <- timeternR::pomp_sir \%>\%
+t9compression <- EpiCompare::pomp_sir \%>\%
   filter(.id <= 5) \%>\%
   group_by(.id) \%>\%
   filament_compression(data_columns = c("S","I","R"), number_points = 9)

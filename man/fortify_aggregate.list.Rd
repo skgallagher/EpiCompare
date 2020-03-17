@@ -3,7 +3,7 @@
 \name{fortify_aggregate.list}
 \alias{fortify_aggregate.list}
 \title{Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for timeternR}
+puts it in SIR format for EpiCompare}
 \usage{
 \method{fortify_aggregate}{list}(data, states = NULL, package_source = NULL)
 }
@@ -25,7 +25,7 @@ data frame with the following columns
 }
 \description{
 Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for timeternR
+puts it in SIR format for EpiCompare
 }
 \details{
 The default variables that are retained are SIR, but can be modified

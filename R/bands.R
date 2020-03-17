@@ -743,17 +743,17 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' @examples
 #' library(ggplot2)
 #' library(dplyr)
-#' library(ggtern); timeternR:::update_approved_layers()
+#' library(ggtern); EpiCompare:::update_approved_layers()
 #' #                ^ this doesn't generally need to be done
 #'
-#' vis_data <- timeternR::pomp_df %>%
+#' vis_data <- EpiCompare::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   ggplot(aes(x = x, y =y, z = z, group = .id)) +
 #'   geom_path(alpha = .03) +
 #'   coord_tern() +
 #'   labs(title = "Actually data paths")
 #'
-#' vis_spherical <- timeternR::pomp_df %>%
+#' vis_spherical <- EpiCompare::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R", t = "time") %>%
 #'   ggplot(aes(x = x, y = y, z = z, t = t)) +
 #'   geom_prediction_band(pb_type = "spherical_ball",
@@ -762,7 +762,7 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   coord_tern() +
 #'   labs(title = "Spherical CB")
 #'
-#' vis_delta_ball <- timeternR::pomp_df %>%
+#' vis_delta_ball <- EpiCompare::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
@@ -772,7 +772,7 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   coord_tern() +
 #'   labs(title = "Delta-ball CB")
 #'
-#' vis_kde <- timeternR::pomp_df %>%
+#' vis_kde <- EpiCompare::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
@@ -782,7 +782,7 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   coord_tern() +
 #'   labs(title = "KDE CB")
 #'
-#' vis_convex_hull <- timeternR::pomp_df %>%
+#' vis_convex_hull <- EpiCompare::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +

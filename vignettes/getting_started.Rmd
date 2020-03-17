@@ -1,8 +1,8 @@
 ---
-title: "Getting started with timeternR"
+title: "Getting started with EpiCompare"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with timeternR}
+  %\VignetteIndexEntry{Getting started with EpiCompare}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,14 +23,14 @@ devtools::load_all()
 
 # Installation
 
-To install `timeternR`, run the folllowing code.
+To install `EpiCompare`, run the folllowing code.
 
 ```{r eval = FALSE}
-if(!require(timeternR)){
+if(!require(EpiCompare)){
   library(devtools)
-  devtools::install_github("shannong19/timeternR")
+  devtools::install_github("shannong19/EpiCompare")
 }
-library(timeternR)
+library(EpiCompare)
 ```
 
 # Quickstart
@@ -45,9 +45,9 @@ library(ggtern)
 The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered, information on their school class.
 
 ```{r quickstart, fig.width=6, eval=TRUE, message=F}
-## Visualizing epidemic progression using timeternR
+## Visualizing epidemic progression using EpiCompare
 library(kableExtra)
-timeternR::hagelloch_raw %>% head() %>%
+EpiCompare::hagelloch_raw %>% head() %>%
   select(PN, NAME, AGE, SEX,
          tPRO, tERU, tI, tR) %>%
   knitr::kable() %>%
@@ -101,7 +101,7 @@ beta <- .1
 gamma <- .03
 init_SIR <- c(950, 50, 0)
     
-out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+out <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
                                  n_time_steps = n_time_steps,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
@@ -153,7 +153,7 @@ gamma <- .03
 init_SIR <- c(950, 50, 0)
 
     
-out <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+out <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
                                  n_time_steps = n_time_steps,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
@@ -201,14 +201,14 @@ ggplot() +
 
 Here's a demo of all current prediction bands:
 ```{r fig.width = 7}
-vis_data <- timeternR::pomp_df %>%
+vis_data <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   ggplot(aes(x = x, y =y, z = z, group = .id)) +
   geom_path(alpha = .03) +
   coord_tern() +
   labs(title = "Actually data paths")
 
-vis_spherical <- timeternR::pomp_df %>%
+vis_spherical <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R", t = "time") %>%
   ggplot(aes(x = x, y = y, z = z, t = t)) +
   geom_prediction_band(pb_type = "spherical_ball",
@@ -217,7 +217,7 @@ vis_spherical <- timeternR::pomp_df %>%
   coord_tern() +
   labs(title = "Spherical CB")
 
-vis_delta_ball <- timeternR::pomp_df %>%
+vis_delta_ball <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
@@ -227,7 +227,7 @@ vis_delta_ball <- timeternR::pomp_df %>%
   coord_tern() +
   labs(title = "Delta-ball CB")
 
-vis_kde <- timeternR::pomp_df %>%
+vis_kde <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
@@ -237,7 +237,7 @@ vis_kde <- timeternR::pomp_df %>%
   coord_tern() +
   labs(title = "KDE CB")
 
-vis_convex_hull <- timeternR::pomp_df %>%
+vis_convex_hull <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +

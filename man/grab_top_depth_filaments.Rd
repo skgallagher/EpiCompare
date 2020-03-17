@@ -38,13 +38,13 @@ similar to \code{depth_curves_to_points.grouped_df}
 }
 \examples{
 library(dplyr)
-top_filaments <- timeternR::pomp_df \%>\% group_by(.id) \%>\%
+top_filaments <- EpiCompare::pomp_df \%>\% group_by(.id) \%>\%
   filter(.id <= 10) \%>\%
   grab_top_depth_filaments(data_columns =c("S","I","R"),
                            alpha_level = .5)
 
 # note that the below doesn't contain all filaments - as some have 0 depth
-all_but_extreme_filaments <- timeternR::pomp_df \%>\% group_by(.id) \%>\%
+all_but_extreme_filaments <- EpiCompare::pomp_df \%>\% group_by(.id) \%>\%
   filter(.id <= 10) \%>\%
   grab_top_depth_filaments(data_columns = c("S","I","R"),
                            alpha_level = 0)

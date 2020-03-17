@@ -26,7 +26,7 @@ test_that("check geom_aggregate for raw works correctly with groups", {
                         label = paste("*S should always be decreasing*:",
                                       "all(diff(sir_out$S) <= -1)"))
   # multiple groups:
-  vis <- timeternR::hagelloch_raw %>%
+  vis <- EpiCompare::hagelloch_raw %>%
     dplyr::filter(SEX %in% c("male", "female")) %>%
     ggplot(., aes(y = tI, z = tR, color = SEX)) +
     geom_path(stat = StatSirAggregate) + ggtern::coord_tern() +
@@ -45,7 +45,7 @@ test_that("check geom_aggregate for raw works correctly with groups", {
 test_that("check geom_aggregate for raw works correctly with NAs", {
   library(ggplot2)
   set.seed(1)
-  pretend_actual_data <- timeternR::simulate_SIR_agents(
+  pretend_actual_data <- EpiCompare::simulate_SIR_agents(
     n_sims = 1,
     n_time_steps = 1000,
     beta = .0099, gamma = .0029,

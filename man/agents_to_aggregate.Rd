@@ -98,7 +98,7 @@ desired time steps. A transformation of the output's \code{t} column by
 # for standard data.frame objects (agents_to_aggregate.grouped_df)
 ###
 library(dplyr)
-agents <- timeternR::hagelloch_raw
+agents <- EpiCompare::hagelloch_raw
 # making babies
 set.seed(5)
 babies <- sample(nrow(agents),size = 5)

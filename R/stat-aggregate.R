@@ -106,12 +106,12 @@ StatSirAggregate <- ggplot2::ggproto("StatSirAggregate",
 #'@examples
 #' library(ggplot2)
 #' library(dplyr)
-#' library(ggtern); timeternR:::update_approved_layers()
+#' library(ggtern); EpiCompare:::update_approved_layers()
 #' #                ^ this generally need not be done
 #'
 #'
 #' # geom_aggregate
-#' timeternR::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
+#' EpiCompare::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
 #'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
 #'   geom_aggregate() + coord_tern() +
 #'   labs(x = "S", y = "I", z = "R",
@@ -119,13 +119,13 @@ StatSirAggregate <- ggplot2::ggproto("StatSirAggregate",
 #'
 #'
 #' # stat_aggregate
-#' timeternR::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
+#' EpiCompare::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
 #'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
 #'   geom_path(stat = StatSirAggregate) + coord_tern() +
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender")
 #'
-#' timeternR::hagelloch_raw %>% dplyr::filter(SEX %in% c("male", "female")) %>%
+#' EpiCompare::hagelloch_raw %>% dplyr::filter(SEX %in% c("male", "female")) %>%
 #'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
 #'   stat_aggregate(geom = "path") +
 #'   # note geom = "path" is the default

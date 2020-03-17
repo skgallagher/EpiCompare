@@ -1,6 +1,6 @@
-#' timeternR: Ternary plot visualization for SIR curves (UPDATE)
+#' EpiCompare: Ternary plot visualization for SIR curves (UPDATE)
 #'
-#' The goal of timeternR is to develop functional based visualization and
+#' The goal of EpiCompare is to develop functional based visualization and
 #' statistics that focus on use in ternary plots. (UPDATE)
 #'
 #' This package attempts to:
@@ -35,5 +35,5 @@
 #' @importFrom rlang .data
 #'
 #' @docType package
-#' @name timeternR
+#' @name EpiCompare
 NULL

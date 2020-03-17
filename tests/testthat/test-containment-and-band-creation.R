@@ -2,7 +2,7 @@ context("containment and band creation tests")
 
 test_that("test filament_compression, no data_columns", {
   # basic check:
-  t13compression <- timeternR::pomp_sir %>%
+  t13compression <- EpiCompare::pomp_sir %>%
     arrange(time) %>%
     select(-H, -cases, -time) %>%
     filter(.id <= 5) %>%
@@ -69,7 +69,7 @@ test_that("test filament_compression, no data_columns", {
 
 test_that("test filament_compression, data_columns string", {
   # basic check:
-  t13compression <- timeternR::pomp_sir %>%
+  t13compression <- EpiCompare::pomp_sir %>%
     arrange(time) %>%
     select(-H, -cases, -time) %>%
     filter(.id <= 5) %>%
@@ -137,7 +137,7 @@ test_that("test filament_compression, data_columns string", {
 
 test_that("test filament_compression, data_columns tidified", {
   # basic check:
-  t13compression <- timeternR::pomp_sir %>%
+  t13compression <- EpiCompare::pomp_sir %>%
     arrange(time) %>%
     select(-H, -cases, -time) %>%
     filter(.id <= 5) %>%
@@ -204,7 +204,7 @@ test_that("test filament_compression, data_columns tidified", {
 })
 
 test_that("filament_distance_depth correct depth, no data_columns",{
-  dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
     filament_distance_depth()
 
@@ -245,7 +245,7 @@ test_that("filament_distance_depth correct depth, no data_columns",{
 })
 
 test_that("filament_distance_depth correct depth, string",{
-  dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     filament_distance_depth(data_columns =c("S","I","R"))
 
@@ -288,7 +288,7 @@ test_that("filament_distance_depth correct depth, string",{
 })
 
 test_that("filament_distance_depth correct depth, tidified",{
-  dd_pomp_df <-  timeternR::pomp_df %>% group_by(.id) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     filament_distance_depth(data_columns =c(S,I,R))
 
@@ -332,14 +332,14 @@ test_that("filament_distance_depth correct depth, tidified",{
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
           ", no data_columns)"), {
-  top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
     grab_top_depth_filaments(alpha_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
     grab_top_depth_filaments(alpha_level = .5)
 
@@ -347,7 +347,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                               top_filaments %>% select(-.id))
 
 
-  all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
     grab_top_depth_filaments(alpha_level = 0,
                              .remove_group = FALSE)
@@ -355,7 +355,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(timeternR::pomp_df %>% group_by(.id) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
                            filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                            grab_top_depth_filaments(alpha_level = 1))
 
@@ -363,7 +363,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
           ", string)"), {
-  top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
                              alpha_level = .5,
@@ -371,7 +371,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
                              alpha_level = .5)
@@ -380,7 +380,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                               top_filaments %>% select(-.id))
 
 
-  all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c("S","I","R"),
                              alpha_level = 0,
@@ -389,7 +389,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(timeternR::pomp_df %>% group_by(.id) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
                            filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c("S","I","R"),
@@ -399,7 +399,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                 ", tidified)"), {
-  top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
                              alpha_level = .5,
@@ -407,7 +407,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- timeternR::pomp_df %>% group_by(.id) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
                              alpha_level = .5)
@@ -416,7 +416,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                               top_filaments %>% select(-.id))
 
 
-  all_but_exteme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c(S,I,R),
                              alpha_level = 0,
@@ -425,7 +425,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(timeternR::pomp_df %>% group_by(.id) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
                            filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c(S,I,R),
@@ -438,21 +438,21 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                  "all column options), error when none returned."), {
                    # no column names
                    testthat::expect_error(
-                     top_filaments <- timeternR::pomp_df %>%
+                     top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1,
                                                 .remove_group = FALSE))
 
                    testthat::expect_error(
-                     top_filaments_points <- timeternR::pomp_df %>%
+                     top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1))
 
                    # string column names
                    testthat::expect_error(
-                     top_filaments <- timeternR::pomp_df %>%
+                     top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1,
@@ -461,14 +461,14 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                                                 ))
 
                    testthat::expect_error(
-                     top_filaments_points <- timeternR::pomp_df %>%
+                     top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1,
                                                 data_columns = c("S","I","R")))
                    # promise column names
                    testthat::expect_error(
-                     top_filaments <- timeternR::pomp_df %>%
+                     top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1,
@@ -477,7 +477,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                        ))
 
                    testthat::expect_error(
-                     top_filaments_points <- timeternR::pomp_df %>%
+                     top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(alpha_level = 1,

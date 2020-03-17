@@ -20,14 +20,14 @@
 #'
 #' @examples
 #' library(dplyr)
-#' t13compression <- timeternR::pomp_sir %>%
+#' t13compression <- EpiCompare::pomp_sir %>%
 #'   arrange(time) %>% # just to be safe
 #'   select(-H, -cases, -time) %>%
 #'   filter(.id <= 5) %>%
 #'   group_by(.id) %>%
 #'   filament_compression()
 #'
-#' t9compression <- timeternR::pomp_sir %>%
+#' t9compression <- EpiCompare::pomp_sir %>%
 #'   filter(.id <= 5) %>%
 #'   group_by(.id) %>%
 #'   filament_compression(data_columns = c("S","I","R"), number_points = 9)
@@ -163,13 +163,13 @@ filament_distance_depth <- function(grouped_df,
 #'
 #' @examples
 #' library(dplyr)
-#' top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+#' top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
 #'   filter(.id <= 10) %>%
 #'   grab_top_depth_filaments(data_columns =c("S","I","R"),
 #'                            alpha_level = .5)
 #'
 #' # note that the below doesn't contain all filaments - as some have 0 depth
-#' all_but_extreme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
+#' all_but_extreme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
 #'   filter(.id <= 10) %>%
 #'   grab_top_depth_filaments(data_columns = c("S","I","R"),
 #'                            alpha_level = 0)
@@ -252,7 +252,7 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
 #'
 #' @examples
 #' library(dplyr)
-#' delta_ball_cb <- timeternR::pomp_df %>%
+#' delta_ball_cb <- EpiCompare::pomp_df %>%
 #'   filter(.id <= 10) %>%
 #'   arrange(time) %>% # just to be safe
 #'   select(-time, -H, -cases) %>%
@@ -323,7 +323,7 @@ create_delta_ball_structure <- function(data_points, data_columns = NULL,
 #' library(dplyr)
 #' # this will look like a 2d data frame (but this is becuase pomp_df info is
 #' # on the 3d simplex)
-#' convex_hull_cb <- timeternR::pomp_df %>%
+#' convex_hull_cb <- EpiCompare::pomp_df %>%
 #'   filter(.id <= 10) %>%
 #'   arrange(time) %>% # just to be safe
 #'   select(-time, -H, -cases) %>%

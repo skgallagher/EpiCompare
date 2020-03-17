@@ -1,5 +1,5 @@
 #' Takes in data from the R pomp package where the output is a data frame and
-#' puts it in SIR format for timeternR
+#' puts it in SIR format for EpiCompare
 #'
 #' @param data Output from a pomp simulation where the output is a data frame,
 #'   \code{pomp::simulate()}

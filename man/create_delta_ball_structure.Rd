@@ -35,7 +35,7 @@ create the delta ball associated with points
 }
 \examples{
 library(dplyr)
-delta_ball_cb <- timeternR::pomp_df \%>\%
+delta_ball_cb <- EpiCompare::pomp_df \%>\%
   filter(.id <= 10) \%>\%
   arrange(time) \%>\% # just to be safe
   select(-time, -H, -cases) \%>\%

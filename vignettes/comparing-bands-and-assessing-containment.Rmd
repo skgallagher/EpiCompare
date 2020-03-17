@@ -20,11 +20,11 @@ devtools::load_all()
 ![](../man/figures/logo.png){width=100px}
 
 ```{r eval = FALSE}
-if(!require(timeternR)){
+if(!require(EpiCompare)){
   library(devtools)
-  devtools::install_github("shannong19/timeternR")
+  devtools::install_github("shannong19/EpiCompare")
 }
-library(timeternR)
+library(EpiCompare)
 library(dplyr)
 library(tidyr)
 theme_set(theme_minimal())
@@ -33,7 +33,7 @@ theme_set(theme_minimal())
 ```{r echo = F, message = F, warning = F}
 # hidden load currently
 library(devtools)
-library(timeternR)
+library(EpiCompare)
 library(dplyr)
 library(tidyr)
 theme_set(theme_minimal())
@@ -50,7 +50,7 @@ Look at this beautify pretend data. A good peak. We're able to use `geom_aggrega
 
 ```{r}
 set.seed(1)
-pretend_actual_data <- timeternR::simulate_SIR_agents(
+pretend_actual_data <- EpiCompare::simulate_SIR_agents(
                           n_sims = 1,
                           n_time_steps = 1000,
                           beta = .0099, gamma = .0029,
@@ -85,7 +85,7 @@ gamma <- .03
 init_SIR <- c(950, 50, 0)
 
     
-sim100 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+sim100 <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
                                  n_time_steps = n_time_steps,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
@@ -181,7 +181,7 @@ Suppose your lab has seen an epidemic that has similar characteristics as the cu
 beta <- .15
 gamma <- .05
 
-out2 <- timeternR::simulate_SIR_agents(n_sims = 100,
+out2 <- EpiCompare::simulate_SIR_agents(n_sims = 100,
                                       n_time_steps = 100,
                                       beta = beta, gamma = gamma,
                                       init_SIR = c(950, 50, 0))

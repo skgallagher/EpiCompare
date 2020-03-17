@@ -49,7 +49,7 @@ note that all parameters related to name columns can also be in a
 }
 \examples{
 library(dplyr)
-agents <- timeternR::hagelloch_raw
+agents <- EpiCompare::hagelloch_raw
 # making babies
 set.seed(5)
 babies <- sample(nrow(agents),size = 5)

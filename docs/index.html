@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>functional based data visualized with ternary plots in the simplex • timeternR</title>
+<title>functional based data visualized with ternary plots in the simplex • EpiCompare</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -38,7 +38,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">timeternR</a>
+        <a class="navbar-link" href="index.html">EpiCompare</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
@@ -62,7 +62,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/getting_started.html">Getting started with timeternR</a>
+      <a href="articles/getting_started.html">Getting started with EpiCompare</a>
     </li>
     <li>
       <a href="articles/high-dimensional-bands-and-containment.html">High Dimensional Bands and Containment</a>
@@ -88,18 +88,18 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
+<p>The goal of EpiCompare is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the developmental version of timeternR from github using:</p>
+<p>You can install the developmental version of EpiCompare from github using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/timeternR"</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/EpiCompare"</span>)</code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>Currently there are 13 data sets in which to explore the different <code>timeternR</code> functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).</p>
+<p>Currently there are 13 data sets in which to explore the different <code>EpiCompare</code> functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).</p>
 <p>Details of each can be found with <code>?{data}</code>.</p>
 <ul>
 <li><p><code>agent_sims</code> this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).</p></li>
@@ -123,7 +123,7 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <a href="#example" class="anchor"></a>Example</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyverse)
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(timeternR)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)</code></pre></div>
 <p>The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR)) <span class="op">+</span>
@@ -184,7 +184,7 @@ df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
 <ol>
 <li><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></li>
 <li><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></li>
-<li>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); timeternR:::update_approved_layers()</a></code>
+<li>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); EpiCompare:::update_approved_layers()</a></code>
 </li>
 </ol>
 </li>
@@ -222,8 +222,8 @@ df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/skgallagher/timeternR"><img src="https://travis-ci.org/skgallagher/timeternR.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://codecov.io/gh/skgallagher/timeternR"><img src="https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://travis-ci.org/skgallagher/EpiCompare"><img src="https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://codecov.io/gh/skgallagher/EpiCompare"><img src="https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>
 </div>

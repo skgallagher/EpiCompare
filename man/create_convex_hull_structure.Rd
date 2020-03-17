@@ -39,7 +39,7 @@ dimensional space
 library(dplyr)
 # this will look like a 2d data frame (but this is becuase pomp_df info is
 # on the 3d simplex)
-convex_hull_cb <- timeternR::pomp_df \%>\%
+convex_hull_cb <- EpiCompare::pomp_df \%>\%
   filter(.id <= 10) \%>\%
   arrange(time) \%>\% # just to be safe
   select(-time, -H, -cases) \%>\%
