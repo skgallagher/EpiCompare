@@ -110,8 +110,8 @@ fit_kde_object = function(df, h_band = NULL, position = 1:2,
 #' }
 #' @export
 extract_contour <- function(kde_obj, alpha) {
-  # contour lines actually does 1-alpha
-  alpha <- round((1-alpha)*100)
+  # contour lines actually does alpha
+  alpha <- round(alpha*100)
 
   cont_level <- paste0(as.character(alpha), "%")
   cont <- with(kde_obj, contourLines(x = eval.points[[1]],y = eval.points[[2]],

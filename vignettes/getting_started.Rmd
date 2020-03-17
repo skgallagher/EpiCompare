@@ -7,12 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include = FALSE, warning = F}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.align = "center"
 )
+library(devtools)
 devtools::load_all()
 ```
 
@@ -30,12 +31,6 @@ if(!require(timeternR)){
   devtools::install_github("shannong19/timeternR")
 }
 library(timeternR)
-```
-
-```{r echo = F, message = F, warning = F}
-# hidden load currently
-library(devtools)
-devtools::load_all()
 ```
 
 # Quickstart
@@ -188,23 +183,23 @@ ggplot() +
   coord_tern() 
 ```
 
-How extreme is the first simulation compared to the rest? Let's create a empirical 95% confidence band from the later simulations.
+How extreme is the first simulation compared to the rest? Let's create a empirical 95% prediction band from the later simulations.
 
 ```{r}
 ggplot() + 
-  geom_confidence_band(data = df_group, 
+  geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R,
                            sim_group = as.numeric(as.character(sim))),
                        fill = "blue", color = NA, alpha = .2,
-                       alpha_level = .05, grid_size = rep(100, 2),
-                       cb_type = "delta_ball"
+                       conf_level = .05, grid_size = rep(100, 2),
+                       pb_type = "delta_ball"
                        ) +
   geom_path(data = df_ave, aes(x = S, y = I, z = R)) +
   coord_tern() 
 # note: the error message actually comes from the geom_path
 ```
 
-Here's a demo of all current confidence bands:
+Here's a demo of all current prediction bands:
 ```{r fig.width = 7}
 vis_data <- timeternR::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
@@ -216,9 +211,9 @@ vis_data <- timeternR::pomp_df %>%
 vis_spherical <- timeternR::pomp_df %>%
   rename(x = "S", y = "I", z = "R", t = "time") %>%
   ggplot(aes(x = x, y = y, z = z, t = t)) +
-  geom_confidence_band(cb_type = "spherical_ball",
-                       grid_size = rep(300,2),
-                       alpha_level = .95) +
+  geom_prediction_band(pb_type = "spherical_ball",
+                       grid_size = rep(100,2),
+                       conf_level = .95) +
   coord_tern() +
   labs(title = "Spherical CB")
 
@@ -226,9 +221,9 @@ vis_delta_ball <- timeternR::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_confidence_band(cb_type = "delta_ball",
-                       grid_size = rep(300,2),
-                       alpha_level = .95) +
+  geom_prediction_band(pb_type = "delta_ball",
+                       grid_size = rep(100,2),
+                       conf_level = .95) +
   coord_tern() +
   labs(title = "Delta-ball CB")
 
@@ -236,9 +231,9 @@ vis_kde <- timeternR::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_confidence_band(cb_type = "kde",
-                       grid_size = rep(300,2),
-                       alpha_level = .95) +
+  geom_prediction_band(pb_type = "kde",
+                       grid_size = rep(100,2),
+                       conf_level = .95) +
   coord_tern() +
   labs(title = "KDE CB")
 
@@ -246,8 +241,8 @@ vis_convex_hull <- timeternR::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   mutate(.id = as.numeric(.id)) %>%
   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-  geom_path(stat = StatConfBandConvexHull,
-            alpha_level = .95) +
+  geom_prediction_band(pb_type = "convex_hull",
+            conf_level = .95) +
   coord_tern() +
  labs(title = "Convex hull CB")
 

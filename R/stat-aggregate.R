@@ -4,25 +4,35 @@
 #' @format NULL
 #' @usage NULL
 #' @export
-StatSirAggregate <- ggplot2::ggproto("StatSirAggregate", ggplot2::Stat,
-                                     setup_data = function(data, params){
-                                       data  # This is so ggplot does NOT remove NA rows
-                                     },
-                                     compute_group = function(data, scales){
-                                       # saving panel and group info
-                                       info_inner <- data[, c("PANEL", "group")] %>%
-                                         sapply(unique)
+StatSirAggregate <- ggplot2::ggproto("StatSirAggregate",
+                      ggplot2::Stat,
+                      setup_data = function(data, params){
+                        # This is so ggplot does NOT remove NA rows
+                         inner_data <- data
+                         inner_data$missing_y <- data$y
+                         inner_data$missing_z <- data$z
+                         inner_data$y <- 100
+                         inner_data$z <- 100
 
-                                       out <- agents_to_aggregate(data,
-                                                                  states = c(.data$y,.data$z))
+                         return(inner_data)
+                       },
+                      compute_group = function(data, scales){
+                         # saving panel and group info
+                         info_inner <- data[, c("PANEL", "group")] %>%
+                           sapply(unique)
 
-                                       out <- out %>% dplyr::mutate(PANEL = info_inner[1],
-                                                                    group = info_inner[2])
-                                       names(out)[names(out) %in% c("X0","X1","X2")] <-
-                                         c("x", "y", "z")
-                                       return(out)
-                                     },
-                                     required_aes = c("y", "z"))
+                         out <- agents_to_aggregate(data,
+                                   states = c(.data$missing_y,
+                                              .data$missing_z))
+
+                         out <- out %>% dplyr::mutate(PANEL = info_inner[1],
+                                                      piece = info_inner[2],
+                                                      group = info_inner[2])
+                         names(out)[names(out) %in% c("X0","X1","X2")] <-
+                           c("x", "y", "z")
+                         return(out)
+                       },
+                      required_aes = c("y", "z"))
 
 
 #'aggregate SIR path visuals from agent data

@@ -1,8 +1,8 @@
 ---
-title: "High Dimensional Bands and Containment"
+title: "Comparing bands and assessing containment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{High Dimensional Bands and Containment}
+  %\VignetteIndexEntry{Comparing bands and assessing containment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,7 +25,8 @@ if(!require(timeternR)){
   devtools::install_github("shannong19/timeternR")
 }
 library(timeternR)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 theme_set(theme_minimal())
 ```
 
@@ -33,7 +34,8 @@ theme_set(theme_minimal())
 # hidden load currently
 library(devtools)
 library(timeternR)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 theme_set(theme_minimal())
 devtools::load_all()
 ```
@@ -89,8 +91,8 @@ sim100 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
                                  init_SIR = init_SIR)
 
 df_group <- sim100 %>% group_by(sim) %>% 
-  agents_to_aggregate(states = c("tI", "tR"), 
-                      min_max_time = c(0,100)) %>% # REMOVE THIS LINE
+  agents_to_aggregate(states = c("tI", "tR")) %>% 
+                      #min_max_time = c(0,100)) %>% 
   rename(S = "X0", I = "X1", R = "X2") 
 ```
 
@@ -132,24 +134,22 @@ delta_ball_cb <- df_group %>%
 Which is just a data version (not exactly, but close) to this:
 ```{r}
 b <- ggplot() +
-  geom_confidence_band(data = df_group, 
+  geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
-                       alpha_level = .9, cb_type = "delta_ball") +
+                       conf_level = .9, pb_type = "delta_ball") +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern()
 ```
 
 ```{r}
 a <- ggplot() +
-  geom_confidence_band(data = df_group, 
+  geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
-                       alpha_level = .1, cb_type = "delta_ball") +
+                       conf_level = .1, pb_type = "delta_ball") +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
-  coord_tern()
-
-testthat::expect_equal(a,b) # this is really bad (shouldn't be equal)...
+  coord_tern() 
 ```
 
 
@@ -187,53 +187,69 @@ out2 <- timeternR::simulate_SIR_agents(n_sims = 100,
                                       init_SIR = c(950, 50, 0))
 
 df_group2 <- out2 %>% group_by(sim) %>% 
-  agents_to_aggregate(states = c("tI", "tR"),
-                      min_max_time = c(0,100)) %>%
+  agents_to_aggregate(states = c("tI", "tR")) %>%
   rename(S = "X0", I = "X1", R = "X2")
 ```
 
-## possible visuals {.tabset}
+## Possible visuals {.tabset}
 
 ### First
 ```{r}
 ggplot() +
-  geom_confidence_band(data = df_group, 
+  geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
                        color = "blue",
                        fill = "blue", alpha = .5,
-                       alpha_level = .1, cb_type = "delta_ball") +
-  geom_confidence_band(data = df_group2, 
+                       conf_level = .9, pb_type = "delta_ball") +
+  geom_prediction_band(data = df_group2, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
                        color = "red",
                        fill = "red", alpha = .5,
-                       alpha_level = .1, cb_type = "delta_ball") +
+                       conf_level = .9, pb_type = "delta_ball") +
   coord_tern()
 ```
-### Second (Error)
+
+### Second 
 ```{r}
 df_all <- rbind( df_group %>% mutate(epi_model = "first"),
                 df_group2 %>% mutate(epi_model = "second"))
 ggplot() +
-  geom_confidence_band(data = df_all, 
+  geom_prediction_band(data = df_all, 
                        aes(x = S, y = I, z = R, fill = epi_model,
                            sim_group = as.numeric(sim)), alpha = .5,
-                       alpha_level = .1, cb_type = "delta_ball")  +
+                       conf_level = .9, pb_type = "delta_ball")  +
   coord_tern()
 ```
-### Third (Error 2)
+
+### Third
 ```{r}
 df_all <- rbind( df_group %>% mutate(epi_model = "first"),
                 df_group2 %>% mutate(epi_model = "second"))
 ggplot() +
   geom_path(data = df_all, 
             aes(x = S, y = I, z = R, color = epi_model,
-                group = as.numeric(sim)), alpha = .1)  +
+                group = factor(paste(epi_model,sim))), 
+                alpha = .1)  +
   coord_tern()
 ```
 
-## Numerical Comparison
+```{r eval = F}
+# this would also work
+df_all_agg <- rbind(sim100 %>% mutate(epi_model = "first"),
+                out2 %>% mutate(epi_model = "second"))
+
+ggplot() +
+  geom_aggregate(data = df_all_agg, 
+            aes(y = tI, z = tR, color = epi_model,
+                group = factor(paste(epi_model,sim))), 
+                alpha = .1)  +
+  coord_tern()
+```
+
+
+## Numerical comparison
 
 *Define hausdorff distance*... tell story...
 

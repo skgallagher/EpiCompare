@@ -693,4 +693,96 @@ test_that("agents_to_aggregate.group_df -string passes basic checks", {
                          sir_group_1 %>% ungroup %>% select(t, X0, X1, X2))
 })
 
+test_that("agents_to_aggregate.group_df, max_t = NA basic checks", {
+  suppressWarnings(
+    suppressPackageStartupMessages(
+      library(dplyr, quietly = TRUE)
+    ))
+  # similar test as in the example string
+  new_raw <- hagelloch_raw %>%
+    mutate(AGE2 = as.numeric(cut(AGE,3)))
+  agents_g <- new_raw %>% group_by(AGE2)
 
+  max_time_each <- agents_g %>% summarize(nmax = ceiling(max(tR)))
+
+  max_time <- max_time_each %>% pull(nmax) %>% max()
+
+  sir_group <- agents_to_aggregate(agents_g, states = c(tI, tR),
+                                   min_max_time = c(0, NA))
+
+  # should all share max value if min_max_time[2] = NA
+  testthat::expect_equal(sum((sir_group %>% summarize(maxt = max(t)) %>%
+                           pull(maxt)) == max_time), 3)
+
+  for (age2_value in 1:3){
+    agents <- agents_g %>%
+      filter(AGE2 == age2_value) %>% ungroup()
+    sir_group_sub_id <- agents_to_aggregate(agents, states = c(tI, tR),
+                                            min_max_time = c(0, NA))
+    sir_group_sub_g <- sir_group %>% filter(AGE2 == age2_value)
+
+    individual_max_t <- max_time_each$nmax[max_time_each$AGE2 == age2_value]
+    testthat::expect_equal(sir_group_sub_id %>% pull(t) %>% max,
+                           individual_max_t)
+
+    testthat::expect_equal(sir_group_sub_id,
+                           sir_group_sub_g %>% ungroup %>%
+                             select(t, X0, X1, X2) %>%
+                             filter(t <= individual_max_t))
+
+    if (individual_max_t < max_time){
+      unique_rows_after_max <- sir_group_sub_g %>% ungroup %>%
+        filter(t > individual_max_t) %>%
+        select(X0, X1, X2)  %>% distinct() %>% nrow()
+      testthat::expect_equal(unique_rows_after_max, 1)
+    }
+  }
+
+})
+
+test_that("agents_to_aggregate.group_df, max_t = NA basic checks, strings", {
+  suppressWarnings(
+    suppressPackageStartupMessages(
+      library(dplyr, quietly = TRUE)
+    ))
+  # similar test as in the example string
+  new_raw <- hagelloch_raw %>%
+    mutate(AGE2 = as.numeric(cut(AGE,3)))
+  agents_g <- new_raw %>% group_by(AGE2)
+
+  max_time_each <- agents_g %>% summarize(nmax = ceiling(max(tR)))
+
+  max_time <- max_time_each %>% pull(nmax) %>% max()
+
+  sir_group <- agents_to_aggregate(agents_g, states = c("tI", "tR"),
+                                   min_max_time = c(0, NA))
+
+  # should all share max value if min_max_time[2] = NA
+  testthat::expect_equal(sum((sir_group %>% summarize(maxt = max(t)) %>%
+                                pull(maxt)) == max_time), 3)
+
+  for (age2_value in 1:3){
+    agents <- agents_g %>%
+      filter(AGE2 == age2_value) %>% ungroup()
+    sir_group_sub_id <- agents_to_aggregate(agents, states = c("tI", "tR"),
+                                            min_max_time = c(0, NA))
+    sir_group_sub_g <- sir_group %>% filter(AGE2 == age2_value)
+
+    individual_max_t <- max_time_each$nmax[max_time_each$AGE2 == age2_value]
+    testthat::expect_equal(sir_group_sub_id %>% pull(t) %>% max,
+                           individual_max_t)
+
+    testthat::expect_equal(sir_group_sub_id,
+                           sir_group_sub_g %>% ungroup %>%
+                             select(t, X0, X1, X2) %>%
+                             filter(t <= individual_max_t))
+
+    if (individual_max_t < max_time){
+      unique_rows_after_max <- sir_group_sub_g %>% ungroup %>%
+        filter(t > individual_max_t) %>%
+        select(X0, X1, X2)  %>% distinct() %>% nrow()
+      testthat::expect_equal(unique_rows_after_max, 1)
+    }
+  }
+
+})

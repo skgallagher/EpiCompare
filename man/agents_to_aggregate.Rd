@@ -30,7 +30,9 @@ infected and recovered (respectively), we want "\code{states = c("tI",
 
 \item{min_max_time}{vector (length 2) of minimum and maximum integer time,
 the second value can be \code{NA} - and if so, we estimate maximum time
-from the data.}
+from the data. Note that if this is done relative to a \code{grouped_df}
+then \code{NA} means we take the maximum from all groups and give that to
+each subgroup.}
 }
 \value{
 dataset with aggregated information, we label classes \code{X\{i\}}

@@ -1,5 +1,7 @@
 # utility functions ---------
 
+.number_contours <- 1
+
 ## coordinate transformations ---------------
 
 #' get xy ternary coordinates from xyz based data frame
@@ -274,20 +276,30 @@ get_grid_elipsoid_containment <- function(inside_func_list,
 }
 
 
+
 # stats and geoms -------------------------
 
-#' stat object for use in kde based stat_confidence_band and
-#' geom_confidence_band
+#' stat object for use in kde based stat_prediction_band and
+#' geom_prediction_band
 #' @export
-StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
+StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
                                     ggplot2::Stat,
                                     compute_group =
-  function(data, scales, grid_size = rep(300,2), alpha_level = .9){
+  function(data, scales, params,
+           pb_type = NULL,
+           #^ needed to match same format as stat/geom_prediction_band
+           grid_size = rep(100,2),
+           conf_level = .9, over_delta = NULL){
+
     assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
     info_inner <- data[, c("PANEL", "group")] %>%
       sapply(unique)
+
+    if (info_inner[1] == 1 & info_inner[2] <= 1){
+      .number_contours <<- 1
+    }
 
     data <- data %>% mutate(sim_group = factor(sim_group))
 
@@ -299,11 +311,14 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
     #kde style
     kde_ci_list <- kde_from_list(dflist = data2d_list,
                                  grid_size = grid_size,
-                                 alpha = alpha_level,
+                                 alpha = 1 - conf_level, # switch from alpha to conf_level
                                  position = xy_position)
 
     kde_ci_df <- kde_ci_list %>% lapply(as.data.frame) %>%
       dplyr::bind_rows(.id = "kde_poly")
+
+    # COME HERE hack to get the correct number of contours...
+    .number_contours <<- max(c(.number_contours,length(unique(kde_ci_df$kde_poly))))
 
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
                                    select(-kde_poly, -level),
@@ -311,27 +326,36 @@ StatConfBandKDE <- ggplot2::ggproto("StatConfBandKDE",
       cbind(kde_poly = kde_ci_df$kde_poly, .) %>%
       dplyr::mutate(PANEL = info_inner[1],
                     piece = as.integer(kde_poly),
-                    group = as.integer(kde_poly)) %>%
+                    group = .number_contours * info_inner[2] + # hack is here too
+                      as.numeric(as.integer(kde_poly))
+      ) %>%
       # ^this seems like an odd approach
       project_to_simplex(column_names = c("x","y","z"))
 
     return(kde_ci_df3)            },
   required_aes = c("x", "y", "z", "sim_group"))
 
-#' stat object for use in delta_ball based stat_confidence_band and
-#' geom_confidence_band
+#' stat object for use in delta_ball based stat_prediction_band and
+#' geom_prediction_band
 #' @export
-StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
+StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
                                           ggplot2::Stat,
                                           compute_group =
-  function(data, scales, grid_size = rep(100,2), over_delta = .1,
-           alpha_level = .9){
-
+  function(data, scales, params,
+           pb_type = NULL,
+           #^ needed to match same format as stat/geom_prediction_band
+           grid_size = rep(100,2),
+           conf_level = .9, over_delta = .1){
     assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
+    info_inner <- data[, c("PANEL", "group")] %>%
+      sapply(unique)
 
-    info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
+    # hack:
+    if (info_inner[1] == 1 & info_inner[2] == 1){
+      .number_contours <<- 1
+    }
 
     data2d <- data %>% as.data.frame() %>%
       get_xy_coord(xyz_col = c("x", "y", "z"))
@@ -343,7 +367,7 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
                                     position = xy_position,
                                     verbose = FALSE)
     data_deep_points <- depth_curves_to_points(data2d_list,
-                                               alpha = alpha_level,
+                                               alpha = 1 - conf_level, # switch from alpha to conf_level
                                                dist_mat = dist_mat)
 
     delta_info <- delta_structure(data_deep_points)
@@ -396,31 +420,45 @@ StatConfBandDeltaBall <- ggplot2::ggproto("StatConfBandDeltaBall",
     ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
     pieces <- rep(seq_along(cl), lengths)
 
+    # COME HERE hack to get the correct number of contours...
+    .number_contours <<- max(c(.number_contours,length(unique(pieces))))
+
+
     vis_df <- data.frame(
       x = xs,
       y = ys,
       piece = pieces,
       group = pieces
-    ) %>% ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
+    ) %>%
+      dplyr::mutate(PANEL = info_inner[1],
+                    group = .number_contours * info_inner[2] + # hack is here too
+                      as.numeric(as.integer(piece))) %>%
+      ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
       project_to_simplex(column_names = c("x","y","z"))
 
     return(vis_df)
 
-  }, required_aes = c("x", "y", "z", "sim_group"))
+  },
+  required_aes = c("x", "y", "z", "sim_group"))
 
 
-#' stat object for use in spherical ball based stat_confidence_band and
-#' geom_confidence_band
+#' stat object for use in spherical ball based stat_prediction_band and
+#' geom_prediction_band
 #' @export
-StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
+StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
    ggplot2::Stat,
    compute_group =
-     function(data, scales, grid_size = rep(100,2), over_delta = .1,
-              alpha_level = .9){
+     function(data, scales, pb_type = NULL, grid_size = rep(100,2),
+              conf_level = .9, over_delta = .1){
         assertthat::assert_that(!is.factor(data$t),
                                 msg = paste("'t' cannot be a factor"))
 
         info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
+
+        # hack:
+        if (info_inner[1] == 1 & info_inner[2] == 1){
+          .number_contours <<- 1
+        }
 
         data2d <- data %>% as.data.frame() %>%
           get_xy_coord(xyz_col = c("x", "y", "z"))
@@ -440,7 +478,8 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
           dplyr::mutate(
             bound = purrr::map(n, function(n) {
               return((x_dim * (n-1)) / (n - x_dim) *
-                       pf(q = alpha_level, df1 = x_dim, df2 = n - x_dim))})) %>%
+                       pf(q = conf_level, # switch from alpha to conf_level
+                          df1 = x_dim, df2 = n - x_dim))})) %>%
           dplyr::mutate(inside_func = purrr::pmap(list(bound, mean, Sigma),
                   function(bound, mean, Sigma) {
                     check_inside_elipsoid_func(Sigma, mean, bound,
@@ -479,26 +518,36 @@ StatConfBandSpherical <- ggplot2::ggproto("StatConfBandSpherical",
         ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
         pieces <- rep(seq_along(cl), lengths)
 
+        # COME HERE hack to get the correct number of contours...
+        .number_contours <<- max(c(.number_contours,length(unique(pieces))))
+
+
         vis_df <- data.frame(
           x = xs,
           y = ys,
           piece = pieces,
           group = pieces
-        ) %>% ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
+        ) %>%
+          dplyr::mutate(PANEL = info_inner[1],
+                        group = .number_contours * info_inner[2] + # hack is here too
+                          as.numeric(as.integer(piece))) %>%
+        ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
           project_to_simplex(column_names = c("x","y","z"))
 
         return(vis_df)
 
-      }, required_aes = c("x", "y", "z", "t"))
+      },
+   required_aes = c("x", "y", "z", "t"))
 
 
-#' stat object for use in convex hull based stat_confidence_band and
-#' geom_confidence_band
+#' stat object for use in convex hull based stat_prediction_band and
+#' geom_prediction_band
 #' @export
-StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
+StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
     ggplot2::Stat,
     compute_group =
-      function(data, scales, grid_size = NULL, alpha_level = .9){
+      function(data, scales, pb_type = NULL, grid_size = NULL,
+               conf_level = .9, over_delta = NULL){
         assertthat::assert_that(!is.factor(data$sim_group),
                                 msg = paste("'sim_group' cannot be a factor"))
 
@@ -515,7 +564,8 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
                                         position = xy_position,
                                         verbose = FALSE)
         data_deep_points <- depth_curves_to_points(
-          data2d_list, alpha = alpha_level, dist_mat = dist_mat) %>%
+          data2d_list, alpha = 1 - conf_level, # switch from alpha to conf_level
+          dist_mat = dist_mat) %>%
           dplyr::select(x,y)
 
         chull_ids <- data_deep_points %>% chull()
@@ -528,7 +578,7 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
           dplyr::mutate(PANEL = info_inner[1],
                         piece = info_inner[2],
                         group = info_inner[2]) %>%
-          # ^this seems like an odd approach
+          # ^this seems like an odd approach, but needed...
           project_to_simplex(column_names = c("x","y","z"))
 
         return(chull_ci_df3)            },
@@ -536,44 +586,46 @@ StatConfBandConvexHull <- ggplot2::ggproto("StatConfBandConvexHull",
 
 
 #' @export
-#' @rdname geom_confidence_band
-stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
+#' @rdname geom_prediction_band
+stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  position = "identity", na.rm = FALSE,
                                  show.legend = NA, inherit.aes = TRUE,
-                                 cb_type = c("kde", "delta_ball",
+                                 pb_type = c("kde", "delta_ball",
                                              "spherical_ball",
                                              "convex_hull"),
                                  grid_size = rep(100, 2),
-                                 alpha_level = .9,
+                                 conf_level = .9,
+                                 over_delta = .1,
                                  ...) {
 
-  if (length(cb_type) > 1){
-    cb_type <- cb_type[1]
+  if (length(pb_type) > 1){
+    pb_type <- pb_type[1]
   }
 
-  assertthat::assert_that(cb_type %in% c("kde", "delta_ball",
+  assertthat::assert_that(pb_type %in% c("kde", "delta_ball",
                                          "spherical_ball", "convex_hull"),
                           msg = paste("bc_type needs to either be 'kde' or",
                                       "'delta_ball' or 'spherical_ball' or",
                                       "'convex_hull'."))
 
   ggplot2::layer(
-    stat = list(StatConfBandKDE,
-                StatConfBandDeltaBall,
-                StatConfBandSpherical)[
+    stat = list(StatPredBandKDE,
+                StatPredBandDeltaBall,
+                StatPredBandSpherical,
+                StatPredBandConvexHull)[
                   which(c("kde", "delta_ball",
-                          "spherical_ball", "convex_hull") == cb_type)
+                          "spherical_ball", "convex_hull") == pb_type)
                   ][[1]],
     data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, alpha_level = alpha_level,
+    params = list(na.rm = na.rm, conf_level = conf_level,
                   grid_size = grid_size, ...)
   )
 }
 
 
-#' The confidenct_band geom/stat
+#' The prediction_band geom/stat
 #'
 #'
 #' @param mapping Set of aesthetic mappings created by
@@ -594,9 +646,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   data. A function can be created from a formula (e.g. \code{~ head(.x,
 #'   10)}).
 #' @param geom string associated with desired geom. \code{stat} is otherwise
-#'   controlled by the \code{cb_type} parameter.
+#'   controlled by the \code{pb_type} parameter.
 #' @param stat string associated with desired stat \code{geom} is otherwise
-#'   controlled by the \code{cb_type} parameter.
+#'   controlled by the \code{pb_type} parameter.
 #' @param position Position adjustment, either as a string, or the result of a
 #'   call to a position adjustment function.
 #' @param na.rm If \code{FALSE}, the default, missing values are removed with a
@@ -609,23 +661,25 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   than combining with them. This is most useful for helper functions that
 #'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification, e.g. \code{\link[ggplot2]{borders}}.
-#' @param cb_type String indicating which confidence band type to use. Currently
+#' @param pb_type String indicating which prediction band type to use. Currently
 #'   only \code{"kde"} and \code{"delta_ball"} inputs are expected. See details
 #'   for more information.
 #' @param grid_size integer vector, length 2. Size of the grid which is going to
-#'   be used to approximate confidence band (if needed). Can be reduced to
+#'   be used to approximate prediction band (if needed). Can be reduced to
 #'   speed-up computation.
-#' @param alpha_level confidence level for confidence band. Creates a
-#'   \code{1-alpha_level} level confidence band.
+#' @param conf_level confidence level for prediction band. Aka, with \code{alpha
+#'   = 1-conf_level}, it creates a \code{1 - alpha} level prediction band.
 #' @param ... Other arguments passed on to \code{\link[ggplot2]{layer}}. These
 #'   are often aesthetics, used to set an aesthetic to a fixed value, like
 #'   \code{colour = "red"} or \code{size = 3}. They may also be parameters to
 #'   the paired \code{geom}/\code{stat}.
+#' @param over_delta defines small extension of box around actual points to define
+#' contour.
 #'
 #' @details
 #'
-#' This stat/geom can create 1 of 4 confidence band structures. These approaches
-#' can be broken into 2 subgroups, "pointwise" and "uniform" confidence bands.
+#' This stat/geom can create 1 of 4 prediction band structures. These approaches
+#' can be broken into 2 subgroups, "pointwise" and "uniform" prediction bands.
 #' The rational for these splits relate to containment properties and the
 #' 'original' ideas are discussed more here:
 #' \href{https://arxiv.org/abs/1906.08832}{Arvix: 1906.08832}
@@ -633,14 +687,14 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' \strong{Pointwise}:
 #'
 #' \itemize{
-#' \item \code{spherical_ball}: This confidence band is defined
+#' \item \code{spherical_ball}: This prediction band is defined
 #' relative to the time points that paths take. For each time point, we take a
-#' ellipsoid defined by the confidence region that would contain
-#' \code{alpha_level} probability mass if the distribution of points were a
+#' ellipsoid defined by the prediction region that would contain
+#' \code{conf_level} probability mass if the distribution of points were a
 #' multivariate gaussian. We then take a union of all these ellipsoids to create
-#' the full confidence band.
-#' \item \code{kde}: This confidence band is defined as the kde level contour
-#' for \code{alpha_level} relative to all points.
+#' the full prediction band.
+#' \item \code{kde}: This prediction band is defined as the kde level contour
+#' for \code{conf_level} relative to all points.
 #' }
 #'
 #' \strong{Uniform}:
@@ -648,32 +702,37 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' These approaches focus on containing the paths/curves/filaments in
 #' uniformity. This approach uses depth (specifically a distance-based depth
 #' developed by Geenens & Nieto-Reyes, 2017), to select to top
-#' \code{alpha_level} curves and then creates a geometric representation of
+#' \code{conf_level} curves and then creates a geometric representation of
 #' where the curves lie.
 #'
 #' \itemize{
 #' \item \code{delta_ball}: relative to all the points in the top
-#' \code{alpha_level} curves, we find the minimum delta such all of these
+#' \code{conf_level} curves, we find the minimum delta such all of these
 #' points are contained in at least 1 ball around another point with radius delta.
 #' This can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i, x_j)}.
 #' Then we take the union of delta-balls surround all the points as the
-#' confidence band.
+#' prediction band.
 #'
 #' \item \code{convex_hull}: with to all the points in the top
-#' \code{alpha_level} curves we just create a convex hull and define our
-#' confidence band as such.
+#' \code{conf_level} curves we just create a convex hull and define our
+#' prediction band as such.
 #' }
 #'
-#' @section Aesthetics: \code{stat_confidence_band}/\code{geom_confidence_band}
+#' @section Aesthetics: \code{stat_prediction_band}/\code{geom_prediction_band}
 #'  understands the following aesthetics (required aesthetics are in bold):
 #'
-#'   \itemize{ \item \strong{\code{x}} \item \strong{\code{y}} \item
-#'   \strong{\code{z}} \item \strong{\code{sim_group}} - note: this cannot be a
-#'   factor \item \code{alpha} \item \code{colour} \item \code{group} \item
-#'   \code{linetype} \item \code{size} \item \code{weight} }
+#'   \itemize{
+#'   \item \strong{\code{x}}
+#'   \item \strong{\code{y}}
+#'   \item \strong{\code{z}}
+#'   \item \code{alpha}
+#'   \item \code{colour}
+#'   \item \code{group}
+#'   \item \code{linetype}
+#'   \item \code{size}}
 #'
-#'   For confidence band types = "kde", "delta_ball": \itemize{ \item
-#'   \strong{\code{sim_group}} - note: this cannot be a factor } For confidence
+#'   For prediction band types = "kde", "delta_ball": \itemize{ \item
+#'   \strong{\code{sim_group}} - note: this cannot be a factor } For prediction
 #'   band type = "spherical_balls": \itemize{ \item \strong{\code{t}} - note:
 #'   this cannot be a factor }
 #'
@@ -697,9 +756,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' vis_spherical <- timeternR::pomp_df %>%
 #'   rename(x = "S", y = "I", z = "R", t = "time") %>%
 #'   ggplot(aes(x = x, y = y, z = z, t = t)) +
-#'   geom_confidence_band(cb_type = "spherical_ball",
+#'   geom_prediction_band(pb_type = "spherical_ball",
 #'                        grid_size = rep(300,2),
-#'                        alpha_level = .95) +
+#'                        conf_level = .95) +
 #'   coord_tern() +
 #'   labs(title = "Spherical CB")
 #'
@@ -707,9 +766,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_confidence_band(cb_type = "delta_ball",
+#'   geom_prediction_band(pb_type = "delta_ball",
 #'                        grid_size = rep(300,2),
-#'                        alpha_level = .95) +
+#'                        conf_level = .95) +
 #'   coord_tern() +
 #'   labs(title = "Delta-ball CB")
 #'
@@ -717,9 +776,9 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_confidence_band(cb_type = "kde",
+#'   geom_prediction_band(pb_type = "kde",
 #'                        grid_size = rep(300,2),
-#'                        alpha_level = .95) +
+#'                        conf_level = .95) +
 #'   coord_tern() +
 #'   labs(title = "KDE CB")
 #'
@@ -727,8 +786,8 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   rename(x = "S", y = "I", z = "R") %>%
 #'   mutate(.id = as.numeric(.id)) %>%
 #'   ggplot(aes(x = x, y = y, z = z, sim_group = .id)) +
-#'   geom_path(stat = StatConfBandConvexHull,
-#'             alpha_level = .95) +
+#'   geom_prediction_band(pb_type = "convex_hull",
+#'                        conf_level = .95) +
 #'   coord_tern() +
 #'   labs(title = "Convex hull CB")
 #'
@@ -736,46 +795,48 @@ stat_confidence_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'              vis_delta_ball, vis_kde,
 #'              vis_convex_hull, nrow = 2)
 #'
-geom_confidence_band <- function(mapping = NULL, data = NULL,
-                                 stat = list("ConfBandKDE",
-                                             "ConfBandDeltaBall",
-                                             "ConfBandSpherical",
-                                             "ConfBandConvexHull")[
+geom_prediction_band <- function(mapping = NULL, data = NULL,
+                                 stat = list("PredBandKDE",
+                                             "PredBandDeltaBall",
+                                             "PredBandSpherical",
+                                             "PredBandConvexHull")[
                                                c("kde", "delta_ball",
                                                  "spherical_ball",
-                                                 "convex_hull") == cb_type
+                                                 "convex_hull") == pb_type
                                                ][[1]],
                                  position = "identity",
-                                 ...,
                                  na.rm = FALSE,
                                  show.legend = NA,
                                  inherit.aes = TRUE,
-                                 cb_type = c("kde", "delta_ball",
+                                 pb_type = c("kde", "delta_ball",
                                              "spherical_ball",
                                              "convex_hull"),
                                  grid_size = rep(100, 2),
-                                 alpha_level = .9) {
+                                 conf_level = .9,
+                                 over_delta = .1,
+                                 ...) {
   ggplot2::layer(
     data = data,
     mapping = mapping,
     stat = stat,
-    geom = GeomConfBand,
+    geom = GeomPredBand,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
-      na.rm = na.rm,
+      na.rm = na.rm, grid_size = grid_size, conf_level = conf_level ,
+      over_delta = over_delta,
       ...
     )
   )
 }
 
-#' GeomConfBand
-#' @rdname GeomConfBand
+#' GeomPredBand
+#' @rdname GeomPredBand
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomConfBand <- ggplot2::ggproto("GeomConfBand", ggplot2::GeomPolygon,
+GeomPredBand <- ggplot2::ggproto("GeomPredBand", ggplot2::GeomPolygon,
                         default_aes = ggplot2::aes(colour = "black",
                                                    fill = "NA", size = 0.5,
                                                    linetype = 1, alpha = NA,

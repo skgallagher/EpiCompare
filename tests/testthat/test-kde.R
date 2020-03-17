@@ -58,10 +58,8 @@ test_that("test extract_contour - basic static example", {
   cont_2 <- extract_contour(kde_object, .2)
 
   # note that kde objects store the values relative to an increasing value
-  expect_equal(cont_05[[1]]$level, as.numeric(kde_object$cont["95%"]))
-  expect_equal(cont_1[[1]]$level, as.numeric(kde_object$cont["90%"]))
-  expect_equal(cont_2[[1]]$level, as.numeric(kde_object$cont["80%"]))
-
-
+  expect_equal(cont_05[[1]]$level, as.numeric(kde_object$cont["5%"]))
+  expect_equal(cont_1[[1]]$level, as.numeric(kde_object$cont["10%"]))
+  expect_equal(cont_2[[1]]$level, as.numeric(kde_object$cont["20%"]))
 })
 

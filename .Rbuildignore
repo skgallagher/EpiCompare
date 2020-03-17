@@ -11,3 +11,5 @@
 ^Meta$
 ^README\.Rmd$
 ^vignettes/high-dimensional-bands-and-containment\.Rmd$
+^dev/.*
+^shannon_thesis/.*

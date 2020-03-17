@@ -1,4 +1,4 @@
-context("tests for band visuals")
+context("tests for prediction band visuals")
 
 test_that("get_closest static tests",{
   # single point:
@@ -304,3 +304,393 @@ test_that("project_onto_simplex", {
   }
 })
 
+# simulation for geom_prediction_band testing --------------------
+
+set.seed(1)
+n_sims <- 10
+n_time_steps <- 100
+beta <- .1
+gamma <- .03
+init_SIR <- c(950, 50, 0)
+
+
+sim10 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+                                        n_time_steps = n_time_steps,
+                                        beta = beta, gamma = gamma,
+                                        init_SIR = init_SIR)
+
+df_group <- sim10 %>% group_by(sim) %>%
+  agents_to_aggregate(states = c("tI", "tR")) %>%
+  rename(S = "X0", I = "X1", R = "X2")
+
+## uniform + kde (sim_group)
+
+
+test_that(paste("geom_prediction_band correctly deals with conf_level,",
+                "(uniform bands, kde)"),
+        {
+          library(sp)
+          library(ggplot2)
+          library(dplyr)
+          library(ggtern); update_approved_layers()
+
+          # internal function to calculate area of contour(s) ---------------
+          get_area <- function(x) {
+            if (!("piece" %in% names(x)) | length(unique(x$piece)) == 1) {
+              data_inner <- x[,c("x", "y")]
+              data_inner <- rbind(data_inner, data_inner[1,])
+              sp::coordinates(data_inner) <- c("x","y")
+              data_sp <- sp::Polygon(data_inner)
+              return(data_sp@area)
+            } else {
+              areas <- sapply(dplyr::group_split(dplyr::group_by(x, .data$piece)), get_area)
+              return(sum(area))
+            }
+          }
+
+          # different conf_level
+          for (pb_type in c("kde", "delta_ball", "convex_hull")){
+            vis_pred_level.9 <- ggtern() + #ggplot() +
+              geom_prediction_band(data = df_group,
+                                   aes(x = S, y = I, z = R,
+                                       sim_group = as.numeric(sim)),
+                                   conf_level = .9, pb_type = pb_type)
+
+            data.9 <- ggtern::layer_data(vis_pred_level.9)
+            testthat::expect_is(data.9, "data.frame")
+
+            label <- paste0(pb_type,
+                           paste0(names(data.9),collapse = "*_*"))
+            testthat::expect_true(all(c("x", "y") %in% names(data.9)),
+                                  label = label)
+            vis_pred_level.1 <- ggplot() +
+              geom_prediction_band(data = df_group,
+                                   aes(x = S, y = I, z = R,
+                                       sim_group = as.numeric(sim)),
+                                   conf_level = .1, pb_type = pb_type) +
+              coord_tern()
+
+            data.1 <- ggtern::layer_data(vis_pred_level.1)
+            #data.1.area <- data.1 %>% get_area()
+            #data.9.area <- data.9 %>% get_area()
+
+            #testthat::expect_lt(data.1.area, data.9.area)
+          }
+
+          })
+
+if (FALSE) {
+test_that(paste("geom_prediction_band correctly deals with grid_size,",
+                "(kde, delta_ball)"),
+         {
+
+  for (pb_type in c("kde", "delta_ball")){
+    #^ not convex hull doesn't really take grid_size
+
+    # dealing with different grids:
+    suppressWarnings(vis_pred_level.9.1 <- ggplot() +
+                       geom_prediction_band(data = df_group,
+                                            aes(x = S, y = I, z = R,
+                                                sim_group = as.numeric(sim)),
+                                            grid_size = rep(10,2),
+                                            conf_level = .9, pb_type = pb_type) +
+                       coord_tern())
+
+    data.9.1 <- ggtern::layer_data(vis_pred_level.9.1)
+
+    suppressWarnings(vis_pred_level.1 <- ggplot() +
+                       geom_prediction_band(data = df_group,
+                                            aes(x = S, y = I, z = R,
+                                                sim_group = as.numeric(sim)),
+                                            conf_level = .9, pb_type = pb_type) +
+                       coord_tern())
+
+    data.9 <- ggtern::layer_data(vis_pred_level.1)
+
+    testthat::expect_lt(nrow(data.9.1), nrow(data.9))
+  }
+
+})
+
+test_that(paste("stat_prediction_band correctly deals with conf_level,",
+                "(uniform bands, kde)"),
+          {
+
+  # different conf_level
+  for (pb_type in c("kde", "delta_ball", "convex_hull")){
+    vis_pred_level.9 <- ggplot() +
+      stat_prediction_band(data = df_group,
+                           aes(x = S, y = I, z = R,
+                               sim_group = as.numeric(sim)),
+                           conf_level = .9, pb_type = pb_type) +
+      coord_tern()
+
+    data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+    vis_pred_level.1 <- ggplot() +
+      stat_prediction_band(data = df_group,
+                           aes(x = S, y = I, z = R,
+                               sim_group = as.numeric(sim)),
+                           conf_level = .1, pb_type = pb_type) +
+      coord_tern()
+
+    data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+    data.1.area <- data.1 %>% get_area()
+    data.9.area <- data.9 %>% get_area()
+
+    testthat::expect_lt(data.1.area, data.9.area)
+  }
+
+})
+
+test_that(paste("stat_prediction_band correctly deals with grid_size,",
+                "(kde, delta_ball)"),
+          {
+            #^ not convex hull doesn't really take grid_size
+  for (pb_type in c("kde", "delta_ball")){
+    # dealing with different grids:
+    suppressWarnings(vis_pred_level.9.1 <- ggplot() +
+                       stat_prediction_band(data = df_group,
+                                            aes(x = S, y = I, z = R,
+                                                sim_group = as.numeric(sim)),
+                                            grid_size = rep(10,2),
+                                            conf_level = .9, pb_type = pb_type) +
+                       coord_tern())
+
+    data.9.1 <- ggtern::layer_data(vis_pred_level.9.1)
+
+    suppressWarnings(vis_pred_level.9 <- ggplot() +
+                       stat_prediction_band(data = df_group,
+                                            aes(x = S, y = I, z = R,
+                                                sim_group = as.numeric(sim)),
+                                            conf_level = .9, pb_type = pb_type) +
+                       coord_tern())
+
+    data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+  testthat::expect_lt(nrow(data.9.1), nrow(data.9))
+}
+})
+
+# TODO make checks to show kde doesn't really need the sim_group?
+
+## spherical (uses t) --------------
+
+test_that(paste("geom_prediction_band correctly deals with conf_level,",
+                "(spherical bands)"),
+          {
+            # different conf_level
+            for (pb_type in c("spherical_ball")){
+              vis_pred_level.9 <- ggplot() +
+                geom_prediction_band(data = df_group,
+                                     aes(x = S, y = I, z = R,
+                                         t = as.numeric(t)),
+                                     conf_level = .9, pb_type = pb_type) +
+                coord_tern()
+
+              data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+              vis_pred_level.1 <- ggplot() +
+                geom_prediction_band(data = df_group,
+                                     aes(x = S, y = I, z = R,
+                                         t = as.numeric(t)),
+                                     conf_level = .1, pb_type = pb_type) +
+                coord_tern()
+
+              data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+              data.1.area <- data.1 %>% get_area()
+              data.9.area <- data.9 %>% get_area()
+
+              testthat::expect_lt(data.1.area, data.9.area)
+            }
+
+          })
+
+test_that(paste("geom_prediction_band correctly deals with grid_size,",
+                "(spherical bands)"),
+          {
+
+            for (pb_type in c("spherical_ball")){
+
+              # dealing with different grids:
+              vis_pred_level.9.1 <- ggplot() +
+                                 geom_prediction_band(data = df_group,
+                                                      aes(x = S, y = I, z = R,
+                                                          t = as.numeric(t)),
+                                                      grid_size = rep(10,2),
+                                                      conf_level = .9,
+                                                      pb_type = pb_type) +
+                                 coord_tern()
+
+              data.9.1 <- ggtern::layer_data(vis_pred_level.9.1)
+
+              vis_pred_level.9 <- ggplot() +
+                                 geom_prediction_band(data = df_group,
+                                                      aes(x = S, y = I, z = R,
+                                                          t = as.numeric(t)),
+                                                      conf_level = .9,
+                                                      pb_type = pb_type) +
+                                 coord_tern()
+
+              data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+              testthat::expect_lt(nrow(data.9.1), nrow(data.9))
+            }
+
+          })
+
+test_that(paste("stat_prediction_band correctly deals with conf_level,",
+                "(spherical bands)"),
+          {
+            # different conf_level
+            for (pb_type in c("spherical_ball")){
+              vis_pred_level.9 <- ggplot() +
+                stat_prediction_band(data = df_group,
+                                     aes(x = S, y = I, z = R,
+                                         t = as.numeric(t)),
+                                     conf_level = .9,
+                                     pb_type = pb_type) +
+                coord_tern()
+
+              data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+              vis_pred_level.1 <- ggplot() +
+                stat_prediction_band(data = df_group,
+                                     aes(x = S, y = I, z = R,
+                                         t = as.numeric(t)),
+                                     conf_level = .1, pb_type = pb_type) +
+                coord_tern()
+
+              data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+              data.1.area <- data.1 %>% get_area()
+              data.9.area <- data.9 %>% get_area()
+
+              testthat::expect_lt(data.1.area, data.9.area)
+            }
+
+          })
+
+test_that(paste("stat_prediction_band correctly deals with grid_size,",
+                "(spherical bands)"),
+          {
+            for (pb_type in c("spherical_ball")){
+              # dealing with different grids:
+              suppressWarnings(vis_pred_level.9.1 <- ggplot() +
+                                 stat_prediction_band(data = df_group,
+                                                      aes(x = S, y = I, z = R,
+                                                          t = as.numeric(t)),
+                                                      grid_size = rep(10,2),
+                                                      conf_level = .9,
+                                                      pb_type = pb_type) +
+                                 coord_tern())
+
+              data.9.1 <- ggtern::layer_data(vis_pred_level.9.1)
+
+              suppressWarnings(vis_pred_level.1 <- ggplot() +
+                                 stat_prediction_band(data = df_group,
+                                                      aes(x = S, y = I, z = R,
+                                                          t = as.numeric(t)),
+                                                      conf_level = .9, pb_type = pb_type) +
+                                 coord_tern())
+
+              data.9 <- ggtern::layer_data(vis_pred_level.1)
+
+              testthat::expect_lt(nrow(data.9.1), nrow(data.9))
+            }
+          })
+
+
+# multiple colors ------------------
+
+df_group_two <- df_group %>% mutate(class_type = as.numeric(.data$sim) > 5)
+
+test_that(paste("geom_prediction_band correctly deals with multiple groups,",
+                "(uniform bands, kde)"),
+          {
+            # standard
+            for (pb_type in c("kde", "delta_ball", "convex_hull")){
+              vis_pred_level.1 <- ggplot() +
+                geom_prediction_band(data = df_group_two,
+                                     aes(x = S, y = I, z = R,
+                                         sim_group = as.numeric(sim),
+                                         color = class_type),
+                                     conf_level = .5, pb_type = pb_type) +
+                coord_tern()
+
+              data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+              number_groups <- data.1 %>% pull(colour) %>% unique() %>% length()
+
+              testthat::expect_equal(number_groups, 2)
+            }
+
+            # split
+            for (pb_type in c("kde", "delta_ball", "convex_hull")){
+              vis_pred_level.1 <- ggplot() +
+                geom_prediction_band(data = df_group_two %>% filter(t < 40 | t > 65),
+                                     aes(x = S, y = I, z = R,
+                                         sim_group = as.numeric(sim),
+                                         color = class_type),
+                                     conf_level = .1, pb_type = pb_type) +
+                coord_tern()
+
+              data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+              number_groups <- data.1 %>% pull(colour) %>% unique() %>% length()
+
+              testthat::expect_equal(number_groups, 2)
+            }
+})
+
+test_that("delta_ball correctly seperates subsections", {
+  # should write some test for kde and spherical ... but how...
+  new_data <- df_group_two %>% filter(t < 40 | t > 65)
+  for (pb_type in c("delta_ball")) {
+    vis_pred_level.1 <- ggplot() +
+      geom_prediction_band(data = new_data,
+                           aes(x = S, y = I, z = R,
+                               sim_group = as.numeric(sim)),
+                           conf_level = .9, pb_type = pb_type) +
+      coord_tern()
+
+    data.1 <- ggtern::layer_data(vis_pred_level.1)
+
+    for (piece_v in unique(data.1$piece)){
+      d_mat <- dist(data.1[data.1$piece == piece_v, c("x", "y", "z")]) %>%
+        as.matrix()
+
+      # grab off diagonal
+      id_delta <- row(d_mat) - col(d_mat)
+
+      delta <- get_delta(data.1[data.1$piece == piece_v, c("x", "y", "z")])$mm_delta
+
+      testthat::expect_equal(sum(d_mat[id_delta == 1] > delta * 10),0)
+    }
+  }
+
+          })
+
+test_that(paste("geom_prediction_band correctly deals with multiple groups,",
+                "(spherical)"),
+          {
+            # different conf_level
+            for (pb_type in c("spherical_ball")){
+              vis_pred_level.9 <- ggplot() +
+                geom_prediction_band(data = df_group_two,
+                                     aes(x = S, y = I, z = R,
+                                         t = as.numeric(t),
+                                         color = class_type),
+                                     conf_level = .9, pb_type = pb_type) +
+                coord_tern()
+
+              data.9 <- ggtern::layer_data(vis_pred_level.9)
+
+              number_groups <- data.9 %>% pull(colour) %>% unique() %>% length()
+
+              testthat::expect_equal(number_groups, 2)
+            }
+          })
+}

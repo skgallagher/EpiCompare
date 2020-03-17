@@ -29,5 +29,4 @@ geom_aggregate <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 GeomSirAggregate <- ggplot2::ggproto("GeomSirAggregate",
-                                     ggplot2::GeomPath,
-                                     handle_na = function(data, params){data})
+                                     ggplot2::GeomPath)

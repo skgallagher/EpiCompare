@@ -41,3 +41,23 @@ test_that("check geom_aggregate for raw works correctly with groups", {
   testthat::expect_true(all(data_vis[,c("x", "y", "z")] >= 0))
 
 })
+
+test_that("check geom_aggregate for raw works correctly with NAs", {
+  library(ggplot2)
+  set.seed(1)
+  pretend_actual_data <- timeternR::simulate_SIR_agents(
+    n_sims = 1,
+    n_time_steps = 1000,
+    beta = .0099, gamma = .0029,
+    init_SIR = c(950, 50, 0))
+
+  # just making sure it has NA values...
+  testthat::expect_true(sum(is.na(pretend_actual_data[, c("tI", "tR")])) > 0)
+
+  geom_agg_vis_with_na <- pretend_actual_data %>%
+    ggplot() +
+    geom_aggregate(aes(y = tI, z = tR)) +
+    coord_tern()
+  # tells us below if there are removals (which there shouldn't be...)
+  testthat::expect_silent(layer_data(geom_agg_vis_with_na))
+})

@@ -1,11 +1,11 @@
 # List of new stats
 .newstat = c(sir_aggregate        = "StatSirAggregate",
-             conf_band_kde        = "StatConfBandKDE",
-             conf_band_delta_ball = "StatConfBandDeltaBall",
-             conf_band_spherical  = "StatConfBandSpherical",
-             conf_band_chull      = "StatConfBandConvexHull")
+             conf_band_kde        = "StatPredBandKDE",
+             conf_band_delta_ball = "StatPredBandDeltaBall",
+             conf_band_spherical  = "StatPredBandSpherical",
+             conf_band_chull      = "StatPredBandConvexHull")
 .newgeom = c(sir       = "GeomSirAggregate",
-             conf_band = "GeomConfBand")
+             conf_band = "GeomPredBand")
 
 #' import hidden function / variable from other package
 #'

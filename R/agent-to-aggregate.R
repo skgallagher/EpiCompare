@@ -283,7 +283,9 @@ expanding_info <- function(df, t_min, t_max, K){
 #'   \code{NULL})
 #' @param min_max_time vector (length 2) of minimum and maximum integer time,
 #'   the second value can be \code{NA} - and if so, we estimate maximum time
-#'   from the data.
+#'   from the data. Note that if this is done relative to a \code{grouped_df}
+#'   then \code{NA} means we take the maximum from all groups and give that to
+#'   each subgroup.
 #'
 #' @return dataset with aggregated information, we label classes \code{X\{i\}}
 #'   for i in \code{0:(length(states))}. Potentially calculated per group of a
@@ -759,11 +761,45 @@ agents_to_aggregate.grouped_df <- function(agents,
                                            birth = NULL,
                                            min_max_time = c(0, NA)
                                            ){
+
+  # states ---------
+  state_cols <- dplyr::enquos(states)
+  states <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                           !!!state_cols))
+  # death ----------
+  death_col <- dplyr::enquo(death)
+
+  death_cols <- dplyr::enquos(death)
+  assertthat::assert_that(length(death_cols) == 1,
+                          msg = "death should be a single column or NULL")
+
+  if (!rlang::quo_is_null(death_col)){
+    death <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                            !!death_col))
+  } else {
+    death <- NULL
+  }
+
+  # birth -------------
+  birth_col <- dplyr::enquo(birth)
+  birth_cols <- dplyr::enquos(birth)
+  assertthat::assert_that(length(birth_cols) == 1,
+                          msg = "birth should be a single column or NULL")
+
+  if (!rlang::quo_is_null(birth_col)){
+    birth <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
+                                            !!birth_col))
+  } else {
+    birth <- NULL
+  }
+
+
+  # parameter check -----------------------------------
   check_min_max_time(min_max_time)
   t_min <- min_max_time[1]
   t_max <- min_max_time[2]
 
-  if (is.null(t_max)) {
+  if (is.na(t_max)) {
     t_max <- max(ceiling(agents[,states]), na.rm = TRUE)
   }
 

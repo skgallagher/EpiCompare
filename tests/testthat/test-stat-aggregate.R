@@ -43,7 +43,6 @@ test_that("check StatSirAggregate works correctly with groups", {
 
 # stat_aggregate testing ----------------------
 
-
 test_that("check stat_aggregate works correctly with groups", {
   library(ggplot2)
   # a single group
@@ -76,3 +75,22 @@ test_that("check stat_aggregate works correctly with groups", {
 
 })
 
+test_that("check stat_aggregate for raw works correctly with NAs", {
+  library(ggplot2)
+  set.seed(1)
+  pretend_actual_data <- timeternR::simulate_SIR_agents(
+    n_sims = 1,
+    n_time_steps = 1000,
+    beta = .0099, gamma = .0029,
+    init_SIR = c(950, 50, 0))
+
+  # just making sure it has NA values...
+  testthat::expect_true(sum(is.na(pretend_actual_data[, c("tI", "tR")])) > 0)
+
+  stat_agg_vis_with_na <- pretend_actual_data %>%
+    ggplot() +
+    stat_aggregate(aes(y = tI, z = tR)) +
+    coord_tern()
+  # tells us below if there are removals (which there shouldn't be...)
+  testthat::expect_silent(layer_data(stat_agg_vis_with_na))
+})

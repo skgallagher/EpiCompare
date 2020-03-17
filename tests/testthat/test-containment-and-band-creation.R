@@ -331,7 +331,7 @@ test_that("filament_distance_depth correct depth, tidified",{
 })
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
-          "no data_columns)"), {
+          ", no data_columns)"), {
   top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
     grab_top_depth_filaments(alpha_level = .5,
@@ -432,6 +432,58 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                              alpha_level = 1))
 
 })
+
+
+test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
+                 "all column options), error when none returned."), {
+                   # no column names
+                   testthat::expect_error(
+                     top_filaments <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1,
+                                                .remove_group = FALSE))
+
+                   testthat::expect_error(
+                     top_filaments_points <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1))
+
+                   # string column names
+                   testthat::expect_error(
+                     top_filaments <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1,
+                                                .remove_group = FALSE,
+                                                data_columns = c("S","I","R")
+                                                ))
+
+                   testthat::expect_error(
+                     top_filaments_points <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1,
+                                                data_columns = c("S","I","R")))
+                   # promise column names
+                   testthat::expect_error(
+                     top_filaments <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1,
+                                                .remove_group = FALSE,
+                                                data_columns = c(S,I,R)
+                       ))
+
+                   testthat::expect_error(
+                     top_filaments_points <- timeternR::pomp_df %>%
+                       group_by(.id) %>%
+                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       grab_top_depth_filaments(alpha_level = 1,
+                                                data_columns = c(S,I,R)))
+                 })
+
 
 test_that(paste("test create_delta_ball_structure",
                 "- little test because it's a wrapper",
@@ -610,9 +662,6 @@ test_that(paste("test create_convex_hull_structure",
                                               box_data[-5,] %>% arrange(x,y))
 
                 })
-
-
-
 
 test_that(paste("test create_convex_hull_structure",
                 "(.lower_simplex_project = TRUE)"), {

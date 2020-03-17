@@ -126,8 +126,10 @@ df_groups <- out %>% dplyr::group_by(sim) %>%
     agents_to_aggregate(states = c(tI, tR)) %>%
     rename(S = X0, I = X1, R = X2)
   
-df_groups %>% ggplot(aes(x = S, y = I, z = R, group = sim)) +
-    geom_line(alpha = .1) +
+df_groups %>% ggplot() +
+    geom_prediction_band(aes(x = S, y = I, z = R, sim_group = as.numeric(sim)),
+                         alpha = .2, fill = "blue", color = "blue") +
+    geom_line(aes(x = S, y = I, z = R, group = sim), alpha = .1) +
     coord_tern()
 ```
 
