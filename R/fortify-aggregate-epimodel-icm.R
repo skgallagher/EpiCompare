@@ -35,7 +35,7 @@ fortify_aggregate.icm <- function(data,
                               states = NULL,
                               package_source = NULL){
 
-
+  #  states <- enquo(states)
 
     ## Grab the state names if not specified
     if(!is.null(states)){
