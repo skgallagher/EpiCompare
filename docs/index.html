@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>functional based data visualized with ternary plots in the simplex • timeternR</title>
+<title>functional based data visualized with ternary plots in the simplex • EpiCompare</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -16,8 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="functional based data visualized with ternary plots in the simplex">
+<script src="pkgdown.js"></script><meta property="og:title" content="functional based data visualized with ternary plots in the simplex">
 <meta property="og:description" content="functional based data visualized with ternary plots in the simplex.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -38,7 +37,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">timeternR</a>
+        <a class="navbar-link" href="index.html">EpiCompare</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
@@ -62,10 +61,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/getting_started.html">Getting started with timeternR</a>
+      <a href="articles/comparing-bands-and-assessing-containment.html">Comparing bands and assessing containment</a>
     </li>
     <li>
-      <a href="articles/high-dimensional-bands-and-containment.html">High Dimensional Bands and Containment</a>
+      <a href="articles/getting_started.html">Getting started with EpiCompare</a>
     </li>
   </ul>
 </li>
@@ -82,24 +81,24 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="epicompare" class="section level1">
+<div id="epicompare-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#epicompare" class="anchor"></a>EpiCompare <img src="reference/figures/logo.png" align="right" alt="" width="120">
+<a href="#epicompare-" class="anchor"></a>EpiCompare <img src="reference/figures/logo.png" align="right" alt="" width="120">
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of timeternR is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
+<p>The goal of EpiCompare is to develop functional based visualization and statistics that focus on use in ternary plots.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the developmental version of timeternR from github using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/timeternR"</span>)</code></pre></div>
+<p>You can install the developmental version of EpiCompare from github using:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/EpiCompare"</span>)</span></code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>Currently there are 13 data sets in which to explore the different <code>timeternR</code> functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).</p>
+<p>Currently there are 13 data sets in which to explore the different <code>EpiCompare</code> functions. These correspond to different sources of raw data along, agent vs. aggregate format, and emphases of different processes such as vital dynamics (e.g. birth and).</p>
 <p>Details of each can be found with <code>?{data}</code>.</p>
 <ul>
 <li><p><code>agent_sims</code> this is 50 x 3 x 188 array where entry (i,j,k) looks at the ith simulation, the jth statistic, and the kth agent. The statistics are (inititial state (0/1/2), SMax, IMax).</p></li>
@@ -121,57 +120,60 @@ devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyverse)
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(timeternR)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)</span></code></pre></div>
 <p>The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>, <span class="dt">title =</span> <span class="st">"Town Analysis"</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>hagelloch_raw <span class="op">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR)) <span class="op">+</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">    </span><span class="kw">geom_aggregate</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>, <span class="dt">title =</span> <span class="st">"Town Analysis"</span>)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 <p>Previous work has suggested that the class (<code>CL</code>) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">rename</span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span> =<span class="st"> </span>CL) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="st">`</span><span class="dt">number of students</span><span class="st">`</span> =<span class="st"> </span><span class="kw">n</span>())
-<span class="co">#&gt; # A tibble: 3 x 2</span>
-<span class="co">#&gt;   `school grade` `number of students`</span>
-<span class="co">#&gt;   &lt;fct&gt;                         &lt;int&gt;</span>
-<span class="co">#&gt; 1 preschool                        90</span>
-<span class="co">#&gt; 2 1st class                        30</span>
-<span class="co">#&gt; 3 2nd class                        68</span>
-
-hagelloch_raw <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> CL)) <span class="op">+</span>
-<span class="st">       </span><span class="kw"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">       </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span>
-<span class="st">       </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>,
-            <span class="dt">color =</span> <span class="st">"School Grade"</span>,
-            <span class="dt">title =</span> <span class="st">"Town analysis by grade"</span>) </code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>hagelloch_raw <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span> =<span class="st"> </span>CL) <span class="op">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="st">`</span><span class="dt">number of students</span><span class="st">`</span> =<span class="st"> </span><span class="kw">n</span>())</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;   `school grade` `number of students`</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt;   &lt;fct&gt;                         &lt;int&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 1 preschool                        90</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 2 1st class                        30</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 3 2nd class                        68</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a>hagelloch_raw <span class="op">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="st">   </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> CL)) <span class="op">+</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="st">       </span><span class="kw">geom_aggregate</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="st">       </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="st">       </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17"></a>            <span class="dt">color =</span> <span class="st">"School Grade"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18"></a>            <span class="dt">title =</span> <span class="st">"Town analysis by grade"</span>) </span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 <div id="simulate-sir-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#simulate-sir-data" class="anchor"></a>Simulate SIR data</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_sims &lt;-<span class="st"> </span><span class="dv">100</span>
-n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span>
-beta &lt;-<span class="st"> </span>.<span class="dv">1</span>
-gamma &lt;-<span class="st"> </span>.<span class="dv">03</span>
-init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)
-    
-out &lt;-<span class="st"> </span><span class="kw"><a href="reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> n_sims,
-                           <span class="dt">n_time_steps =</span> n_time_steps,
-                           <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,
-                           <span class="dt">init_SIR =</span> init_SIR)
-                                 
-df_groups &lt;-<span class="st"> </span>out <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw"><a href="reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(tI, tR)) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">rename</span>(<span class="dt">S =</span> X0, <span class="dt">I =</span> X1, <span class="dt">R =</span> X2)
-  
-df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim)) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>n_sims &lt;-<span class="st"> </span><span class="dv">100</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>beta &lt;-<span class="st"> </span><span class="fl">.1</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>gamma &lt;-<span class="st"> </span><span class="fl">.03</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7"></a>out &lt;-<span class="st"> </span><span class="kw">simulate_SIR_agents</span>(<span class="dt">n_sims =</span> n_sims,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>                           <span class="dt">n_time_steps =</span> n_time_steps,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>                           <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,</span>
+<span id="cb5-10"><a href="#cb5-10"></a>                           <span class="dt">init_SIR =</span> init_SIR)</span>
+<span id="cb5-11"><a href="#cb5-11"></a>                                 </span>
+<span id="cb5-12"><a href="#cb5-12"></a>df_groups &lt;-<span class="st"> </span>out <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="st">    </span><span class="kw">agents_to_aggregate</span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(tI, tR)) <span class="op">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="st">    </span><span class="kw">rename</span>(<span class="dt">S =</span> X0, <span class="dt">I =</span> X1, <span class="dt">R =</span> X2)</span>
+<span id="cb5-15"><a href="#cb5-15"></a>  </span>
+<span id="cb5-16"><a href="#cb5-16"></a>df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="st">    </span><span class="kw">geom_prediction_band</span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),</span>
+<span id="cb5-18"><a href="#cb5-18"></a>                         <span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim), <span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()</span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
 </div>
 </div>
@@ -184,7 +186,7 @@ df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
 <ol>
 <li><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></li>
 <li><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></li>
-<li>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); timeternR:::update_approved_layers()</a></code>
+<li>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); EpiCompare:::update_approved_layers()</a></code>
 </li>
 </ol>
 </li>
@@ -222,8 +224,8 @@ df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/skgallagher/timeternR"><img src="https://travis-ci.org/skgallagher/timeternR.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://codecov.io/gh/skgallagher/timeternR"><img src="https://codecov.io/gh/skgallagher/timeternR/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://travis-ci.org/skgallagher/EpiCompare"><img src="https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://codecov.io/gh/skgallagher/EpiCompare"><img src="https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>
 </div>

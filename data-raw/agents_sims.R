@@ -21,7 +21,7 @@ agents_sims <- simulate_SIR_agents(n_sims = n_sims,
 
 all_sims_agg <- agents_sims %>%
  group_by(sim) %>%
-    timeternR::agents_to_aggregate_SIR(ind = 1:3)
+    EpiCompare::agents_to_aggregate_SIR(ind = 1:3)
 
 library(ggplot2)
 ggplot(data = all_sims_agg, aes(x = t, y = S, col = as.numeric(sim),

@@ -35,11 +35,11 @@ create the delta ball associated with points
 }
 \examples{
 library(dplyr)
-delta_ball_cb <- timeternR::pomp_df \%>\%
+delta_ball_cb <- EpiCompare::pomp_df \%>\%
   filter(.id <= 10) \%>\%
   arrange(time) \%>\% # just to be safe
   select(-time, -H, -cases) \%>\%
   group_by(.id) \%>\%
-  grab_top_depth_filaments(alpha_level = .9) \%>\%
+  grab_top_depth_filaments(conf_level = .9) \%>\%
   create_delta_ball_structure() #data_columns = c(S,I,R)
 }

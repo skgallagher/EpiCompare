@@ -10,10 +10,10 @@ authors:
     href: "https://benjaminleroy.github.io/"
 
 reference:
-- title: timeternR
+- title: EpiCompare
   desc: general package information
   contents:
-  - matches("timeternR")
+  - matches("EpiCompare")
 - title: data
   desc: Data included in package
   contents:

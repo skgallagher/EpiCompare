@@ -1,31 +1,31 @@
 # Comments for Shannon:
 # # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
 # (difference between the below examples. - this may correspond to comment:
-# timeternR::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
+# EpiCompare::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
 # is part of the problem...") additionally, this doesn't cost us anything in
 # the filament visualization as the data points are the same.
 #
 # # example code:
-# agents <- timeternR::hagelloch_raw
+# agents <- EpiCompare::hagelloch_raw
 # states <- c("tI", "tR")
 # death <- "tDEAD"
 # birth <- NULL
 # min_max_time <- c(0, NA)
 # b <- agents_to_aggregate(agents, states, death, birth = birth)
-# a <- timeternR::hagelloch_raw %>%
-# timeternR::fortify_agents() %>%
-# timeternR::agents_to_aggregate_SIR() %>%
+# a <- EpiCompare::hagelloch_raw %>%
+# EpiCompare::fortify_agents() %>%
+# EpiCompare::agents_to_aggregate_SIR() %>%
 # as.matrix
 #
 # #look at:
 # b[1:(nrow(b)-2),] - a[2:nrow(a),]
 #
 # # keeping in mind:
-# timeternR::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
+# EpiCompare::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
 # dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
 #
 # ### example 2 of code:
-# agents <- timeternR::hagelloch_raw
+# agents <- EpiCompare::hagelloch_raw
 # # making babies
 # set.seed(5)
 # babies <- sample(nrow(agents),size = 5)
@@ -37,9 +37,9 @@
 # min_max_time <- c(0, NA)
 #
 # b <- agents_to_aggregate(agents, states, death, birth = birth)
-# a <- timeternR::hagelloch_raw %>%
-# timeternR::fortify_agents() %>%
-# timeternR::agents_to_aggregate_SIR() %>%
+# a <- EpiCompare::hagelloch_raw %>%
+# EpiCompare::fortify_agents() %>%
+# EpiCompare::agents_to_aggregate_SIR() %>%
 # as.matrix
 #
 # b[1:(nrow(b)-2),] - a[2:nrow(a),]
@@ -344,7 +344,7 @@ expanding_info <- function(df, t_min, t_max, K){
 #' # for standard data.frame objects (agents_to_aggregate.grouped_df)
 #' ###
 #' library(dplyr)
-#' agents <- timeternR::hagelloch_raw
+#' agents <- EpiCompare::hagelloch_raw
 #' # making babies
 #' set.seed(5)
 #' babies <- sample(nrow(agents),size = 5)
@@ -433,7 +433,7 @@ agents_to_aggregate <- function(agents,
 #'
 #' @examples
 #' library(dplyr)
-#' agents <- timeternR::hagelloch_raw
+#' agents <- EpiCompare::hagelloch_raw
 #' # making babies
 #' set.seed(5)
 #' babies <- sample(nrow(agents),size = 5)

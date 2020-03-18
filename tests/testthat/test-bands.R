@@ -333,7 +333,7 @@ gamma <- .03
 init_SIR <- c(950, 50, 0)
 
 
-sim10 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+sim10 <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
                                         n_time_steps = n_time_steps,
                                         beta = beta, gamma = gamma,
                                         init_SIR = init_SIR)

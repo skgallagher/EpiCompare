@@ -1,4 +1,4 @@
 library(testthat)
-library(timeternR)
+library(EpiCompare)
 
-test_check("timeternR")
+test_check("EpiCompare")
