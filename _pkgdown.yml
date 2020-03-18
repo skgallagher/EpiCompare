@@ -61,3 +61,6 @@ reference:
   contents:
   - matches(".*")
 
+right:
+ - icon: fa-github
+   href: https://github.com/skgallagher/EpiCompare
