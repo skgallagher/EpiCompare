@@ -191,7 +191,7 @@ df_groups %>% ggplot() +
         in `R/aaa.R` to overcome messages from CRAN relative to this
         hack (using `:::`). For some reason - when documenting for
         `pkgdown` website, we need to do `library(ggtern);
-        timeternR:::update_approved_layers()`
+        EpiCompare:::update_approved_layers()`
 3.  `geom_prediction_band` required not just `compute_group` but
     `compute_layer` - there is very little documentation on how to
     approach this correctly. Basically - there are problems when the

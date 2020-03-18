@@ -18,9 +18,16 @@ fortify_aggregate.pomp_list <- function(data,
                                            states = c("S", "I", "R"),
                                            package_source = NULL){
 
+    ## pull out state names
+    browser()
+    nms <- dimnames(data[[1]])
+    if(class(states) != "quosures")
+    state_cols <- dplyr::enquos(states)
+    states <- unname(tidyselect::vars_select(nms$variable,
+                                             !!!state_cols))
 
-    if(is.null(states)){
-        nms <- dimnames(data[[1]])
+    if(length(states) == 0){
+
         states <- grep("^[A-Z]{1}$", nms$variable,
                        value = TRUE)
     }

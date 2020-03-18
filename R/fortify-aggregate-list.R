@@ -19,6 +19,10 @@ fortify_aggregate.list <- function(data,
                                            states = NULL,
                                            package_source = NULL){
 
+
+    if(!is.null(states)){
+        states <- dplyr::enquos(states)
+    }
     if(!is.null(package_source) & package_source == "pomp"){
         out <- fortify_aggregate.pomp_list(data,
                                                states = states)

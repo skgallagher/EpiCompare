@@ -35,10 +35,15 @@ fortify_aggregate.icm <- function(data,
                               states = NULL,
                               package_source = NULL){
 
-  #  states <- enquo(states)
+
+    ## Tidifying code
+    state_cols <- dplyr::enquos(states)
+    states <- unname(tidyselect::vars_select(names(data$epi),
+                                             !!!state_cols))
+
 
     ## Grab the state names if not specified
-    if(!is.null(states)){
+    if(length(states) == 0){
         states <- get_epimodel_icm_states(data)
     }
 

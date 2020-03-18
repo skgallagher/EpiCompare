@@ -772,7 +772,7 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'
 
 #' # for speed purposes
-#' smaller_pomp_df <- timeternR::pomp_df %>% filter(.id < 10)
+#' smaller_pomp_df <- EpiCompare::pomp_df %>% filter(.id < 10)
 #'
 #' vis_data <- smaller_pomp_df %>%
 #'  rename(x = "S", y = "I", z = "R") %>%

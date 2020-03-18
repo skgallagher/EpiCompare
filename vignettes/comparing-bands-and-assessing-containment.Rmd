@@ -86,7 +86,7 @@ init_SIR <- c(950, 50, 0)
 
     
 
-sim50 <- timeternR::simulate_SIR_agents(n_sims = n_sims,
+sim50 <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
                                  n_time_steps = n_time_steps,
                                  beta = beta, gamma = gamma,
                                  init_SIR = init_SIR)
@@ -180,7 +180,7 @@ out2 <- EpiCompare::simulate_SIR_agents(n_sims = 100,
                                       beta = beta, gamma = gamma,
                                       init_SIR = c(950, 50, 0))
 
-sim50_2 <- timeternR::simulate_SIR_agents(n_sims = 50,
+sim50_2 <- EpiCompare::simulate_SIR_agents(n_sims = 50,
                                        n_time_steps = 100,
                                        beta = beta, gamma = gamma,
                                        init_SIR = c(950, 50, 0))

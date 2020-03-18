@@ -24,7 +24,17 @@
 fortify_aggregate.pomp_df <- function(data,
                                            states = c("S", "I", "R"),
                                           package_source = NULL){
-    if(is.null(states)){
+
+    browser()
+    ## pull out state names
+    if(class(states!= "quosure")){
+        state_cols <- dplyr::enquos(states)
+    }
+    states <- unname(tidyselect::vars_select(colnames(data),
+                                             !!!state_cols))
+
+
+    if(length(states) == 0){
         states <- grep("^[A-Z]{1}$", colnames(data),
                        value = TRUE)
     }
