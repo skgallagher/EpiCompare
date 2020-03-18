@@ -4,6 +4,7 @@
 #' @param data Output from a pomp simulation where the output is a data frame,
 #'   \code{pomp::simulate()}
 #' @param states vector of state names
+#' @param enquo_states either is null or a quosure
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified
 #'   with the \code{states} argument.  If code{states = NULL}, we will attempt
@@ -16,14 +17,20 @@
 #' }
 fortify_aggregate.pomp_list <- function(data,
                                            states = c("S", "I", "R"),
+                                        enquo_states = NULL,
                                            package_source = NULL){
 
+    nms <- dimnames(data$states)
+    nm_vars <- nms$variable
     ## pull out state names
-    browser()
-    nms <- dimnames(data[[1]])
-    if(class(states) != "quosures")
-    state_cols <- dplyr::enquos(states)
-    states <- unname(tidyselect::vars_select(nms$variable,
+  #  browser()
+    if(!is.null(enquo_states)){
+        state_cols <- enquo_states
+    } else{
+        state_cols <- dplyr::enquo(states)
+    }
+
+    states <- unname(tidyselect::vars_select(nm_vars,
                                              !!!state_cols))
 
     if(length(states) == 0){

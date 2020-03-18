@@ -4,6 +4,7 @@
 #' @param data Output from a pomp simulation where the output is a data frame,
 #'   \code{pomp::simulate()}
 #' @param states vector of state names
+#' @param enquo_states vector of quoted names
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified
 #'   with the \code{states} argument.  If code{states = NULL}, we will attempt
@@ -22,10 +23,11 @@
 #' unique(rowSums(out[, 3:5]))
 fortify_aggregate.pompList <- function(data,
                                            states = NULL,
+                                          enquo_states = NULL,
                                            package_source = NULL){
     pomp_output <- data
     df <- as.data.frame(pomp_output)
-    out <- fortify_aggregate.pomp_df(df, states = states)
+    out <- fortify_aggregate.pomp_df(df, enquo_states = dplyr::enquo(states))
 
 
 }

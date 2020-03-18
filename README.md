@@ -176,9 +176,11 @@ df_groups %>% ggplot() +
     github](https://github.com/tidyverse/design/issues/95) and
     [tidyverse
     principles](https://principles.tidyverse.org/changes-multivers.html).
+
 2.  For writing your own `geom`s and `stat`s that works with `ggtern`
     (which are generally restricted), the following 2 stack-exchange
     articles helped use do so with ease:
+    
     1.  [stack-exchange: personal code
         idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
     
@@ -192,6 +194,7 @@ df_groups %>% ggplot() +
         hack (using `:::`). For some reason - when documenting for
         `pkgdown` website, we need to do `library(ggtern);
         EpiCompare:::update_approved_layers()`
+
 3.  `geom_prediction_band` required not just `compute_group` but
     `compute_layer` - there is very little documentation on how to
     approach this correctly. Basically - there are problems when the
@@ -201,6 +204,13 @@ df_groups %>% ggplot() +
     group =paste(var1, var2)`, if there are the same `var2` values
     across different `var1` values but they don’t mean they should be
     grouped together.
+
+4.  I (`skgallagher`) had problems with tidy evaluation with
+    `fortify_aggregate`, specifically when one method called another
+    method. To get around this, I used a hack to introducing a new
+    argument which would only ever be `NULL` or an object of class
+    `quosure`. Thus the outer methods that called inner methods passed
+    quosures. See code in `fortify-aggregate-list.R` e.g..
 
 ## Contributors
 

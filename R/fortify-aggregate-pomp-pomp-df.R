@@ -5,6 +5,7 @@
 #'   \code{pomp::simulate()}, and we have added the name pomp_df to the class
 #'   names.
 #' @param states vector of state names
+#' @param enquo_states enquosure states that have already been quoted
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified
 #'   with the \code{states} argument.  If code{states = NULL}, we will attempt
@@ -23,13 +24,15 @@
 #' unique(rowSums(out[, 3:5]))
 fortify_aggregate.pomp_df <- function(data,
                                            states = c("S", "I", "R"),
+                                         enquo_states = NULL,
                                           package_source = NULL){
 
-    browser()
-    ## pull out state names
-    if(class(states!= "quosure")){
-        state_cols <- dplyr::enquos(states)
+    if(!is.null(enquo_states)){
+        state_cols <- enquo_states
+    } else{
+        state_cols <- dplyr::enquo(states)
     }
+
     states <- unname(tidyselect::vars_select(colnames(data),
                                              !!!state_cols))
 

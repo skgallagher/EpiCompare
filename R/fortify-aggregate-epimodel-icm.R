@@ -15,6 +15,7 @@
 #'
 #' @param data output from external source package.  See details
 #' @param states names of states we want aggregate totals of at each time
+#' @param enquo_states vector of quoted names
 #' @param package_source optional argument to include the package from which the
 #'   output is derived from, which helps with the fortify function when outputs
 #'   are of generic classes such as list or data.frame
@@ -33,6 +34,7 @@
 #' head(out)
 fortify_aggregate.icm <- function(data,
                               states = NULL,
+                              enquo_states = NULL,
                               package_source = NULL){
 
 

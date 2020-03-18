@@ -4,7 +4,12 @@
 \alias{fortify_aggregate}
 \title{Take external aggregate data and put it in a format used in this package}
 \usage{
-fortify_aggregate(data, states = NULL, package_source = NULL)
+fortify_aggregate(
+  data,
+  states = NULL,
+  enquo_states = NULL,
+  package_source = NULL
+)
 }
 \arguments{
 \item{data}{output from external source package.  See details}

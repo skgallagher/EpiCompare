@@ -29,6 +29,7 @@
 #' ## TODO
 fortify_aggregate <- function(data,
                               states = NULL,
+                              enquo_states = NULL,
                               package_source = NULL){
 
     UseMethod("fortify_aggregate")

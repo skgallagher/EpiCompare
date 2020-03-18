@@ -149,6 +149,8 @@ df_groups %>% ggplot() +
     c. Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); EpiCompare:::update_approved_layers()`
 3. `geom_prediction_band` required not just `compute_group` but `compute_layer` - there is very little documentation on how to approach this correctly. Basically - there are problems when the `compute_group` wants to make multiple `pieces`/`groups` - and it is similar to the problem that if you do something like `aes(color= var1, group =var2)` you may actually want to do `aes(color= var1, group =paste(var1, var2)`, if there are the same `var2` values across different `var1` values but they don't mean they should be grouped together.
 
+4. I (`skgallagher`) had problems with tidy evaluation with `fortify_aggregate`, specifically when one method called another method.  To get around this, I used a hack to introducing a new argument which would only ever be `NULL` or an object of class `quosure`.  Thus the outer methods that called inner methods passed quosures.  See code in `fortify-aggregate-list.R` e.g..
+
 ## Contributors
 
 - Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))

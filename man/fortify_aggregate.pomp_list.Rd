@@ -5,13 +5,20 @@
 \title{Takes in data from the R pomp package  where the output is a data frame and
 puts it in SIR format for EpiCompare}
 \usage{
-\method{fortify_aggregate}{pomp_list}(data, states = c("S", "I", "R"), package_source = NULL)
+\method{fortify_aggregate}{pomp_list}(
+  data,
+  states = c("S", "I", "R"),
+  enquo_states = NULL,
+  package_source = NULL
+)
 }
 \arguments{
 \item{data}{Output from a pomp simulation where the output is a data frame,
 \code{pomp::simulate()}}
 
 \item{states}{vector of state names}
+
+\item{enquo_states}{either is null or a quosure}
 
 \item{package_source}{optional package name}
 }

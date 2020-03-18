@@ -4,12 +4,19 @@
 \alias{fortify_aggregate.icm}
 \title{Take external aggregate data and put it in a format used in this package}
 \usage{
-\method{fortify_aggregate}{icm}(data, states = NULL, package_source = NULL)
+\method{fortify_aggregate}{icm}(
+  data,
+  states = NULL,
+  enquo_states = NULL,
+  package_source = NULL
+)
 }
 \arguments{
 \item{data}{output from external source package.  See details}
 
 \item{states}{names of states we want aggregate totals of at each time}
+
+\item{enquo_states}{vector of quoted names}
 
 \item{package_source}{optional argument to include the package from which the
 output is derived from, which helps with the fortify function when outputs

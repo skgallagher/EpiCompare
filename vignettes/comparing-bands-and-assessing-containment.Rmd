@@ -174,23 +174,14 @@ Suppose your lab has seen an epidemic that has similar characteristics as the cu
 beta <- .15
 gamma <- .05
 
-<<<<<<< HEAD
 
-out2 <- EpiCompare::simulate_SIR_agents(n_sims = 100,
-                                      n_time_steps = 100,
-                                      beta = beta, gamma = gamma,
-                                      init_SIR = c(950, 50, 0))
 
-sim50_2 <- EpiCompare::simulate_SIR_agents(n_sims = 50,
-                                       n_time_steps = 100,
-                                       beta = beta, gamma = gamma,
-                                       init_SIR = c(950, 50, 0))
-=======
+
 sim50_2 <- simulate_SIR_agents(n_sims = 50,
                                n_time_steps = 100,
                                beta = beta, gamma = gamma,
                                init_SIR = c(950, 50, 0))
->>>>>>> 418b127415f22ec25a238769f2813d3895d787e7
+
 
 
 df_group2 <- sim50_2 %>% group_by(sim) %>% 
