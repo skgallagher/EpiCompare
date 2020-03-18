@@ -41,7 +41,7 @@ reference:
   - starts_with("contained")
   - matches("create.*structure")
   - matches("grab_top_depth_filaments")
-  - matches("print.*")
+  - matches("print.")
 - title: geometry structure & depth
   desc: internal and semi-internal
   contents:

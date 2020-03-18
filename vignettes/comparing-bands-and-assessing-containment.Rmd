@@ -133,12 +133,13 @@ delta_ball_cb <- df_group %>%
 ```
 
 Which is just a data version (not exactly, but close) to this:
-```{r}
-b <- ggplot() +
+```{r cache = T}
+ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
-                       conf_level = .6, pb_type = "delta_ball") +
+                       conf_level = .6, pb_type = "delta_ball",
+                       grid_size = rep(50,2)) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern()
 ```
@@ -175,14 +176,10 @@ beta <- .15
 gamma <- .05
 
 
-
-
 sim50_2 <- simulate_SIR_agents(n_sims = 50,
                                n_time_steps = 100,
                                beta = beta, gamma = gamma,
                                init_SIR = c(950, 50, 0))
-
-
 
 df_group2 <- sim50_2 %>% group_by(sim) %>% 
   agents_to_aggregate(states = c("tI", "tR")) %>%
@@ -193,7 +190,7 @@ df_group2 <- sim50_2 %>% group_by(sim) %>%
 
 ### First
 
-```{r}
+```{r cache = T}
 df_all <- rbind( df_group %>% ungroup() %>% mutate(sim = as.character(sim),
                                                    epi_model = "first"),
                 df_group2 %>% ungroup() %>% mutate(sim = as.character(sim),

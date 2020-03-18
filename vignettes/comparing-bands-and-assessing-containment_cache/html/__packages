@@ -1,0 +1,9 @@
+base
+ggplot2
+ggtern
+testthat
+usethis
+devtools
+dplyr
+tidyr
+EpiCompare
