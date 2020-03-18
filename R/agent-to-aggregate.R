@@ -816,7 +816,8 @@ agents_to_aggregate.grouped_df <- function(agents,
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
-    # old
+    # old tidyr
+
     out <- agents %>% tidyr::nest() %>%
       dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
                                         states = !!!dplyr::enquos(states),
@@ -825,6 +826,19 @@ agents_to_aggregate.grouped_df <- function(agents,
                                         min_max_time = min_max_time_all)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
+
+    # making sure output is also grouped_df
+    group_columns <- names(attr(agents, "groups"))[names(attr(agents, "groups")) != ".rows"]
+
+    if (length(group_columns) == 1) {
+      group_sym <- dplyr::sym(group_columns)
+      out <- out %>% dplyr::group_by(!!group_sym)
+    }
+    if (length(group_columns) > 1) {
+      group_sym <- dplyr::syms(group_columns)
+      out <- out %>% dplyr::group_by(!!!group_sym)
+    }
+
   }
 
   return(out)

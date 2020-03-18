@@ -290,7 +290,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
     data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
     # required piece and group to be cleaned up
-    data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+    data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                        group_old = .data$group,
                                        piece = as.numeric(
                                          factor(paste(.data$PANEL,
@@ -731,10 +731,10 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'
 #' \itemize{
 #' \item \code{delta_ball}: relative to all the points in the top
-#' \code{conf_level} curves, we find the minimum delta such all of these
-#' points are contained in at least 1 ball around another point with radius delta.
-#' This can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i, x_j)}.
-#' Then we take the union of delta-balls surround all the points as the
+#' \code{conf_level} curves, we find the minimum delta such all of these points
+#' are contained in at least 1 ball around another point with radius delta. This
+#' can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i,
+#' x_j)}. Then we take the union of delta-balls surround all the points as the
 #' prediction band.
 #'
 #' \item \code{convex_hull}: with to all the points in the top

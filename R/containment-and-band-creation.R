@@ -154,7 +154,7 @@ filament_distance_depth <- function(grouped_df,
 #' @param filament_depth_function function to calculate depth relative to the
 #'   filaments in the \code{grouped_df}. Will take in \code{data_columns}
 #'   parameter as well
-#' @param alpha_level proportion of filaments to keep
+#' @param conf_level proportion of filaments to keep
 #' @param .remove_group boolean (default true). Should the output keep the
 #' grouping columns or just havd data points?
 #'
@@ -166,16 +166,16 @@ filament_distance_depth <- function(grouped_df,
 #' top_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
 #'   filter(.id <= 10) %>%
 #'   grab_top_depth_filaments(data_columns =c("S","I","R"),
-#'                            alpha_level = .5)
+#'                            conf_level = .5)
 #'
 #' # note that the below doesn't contain all filaments - as some have 0 depth
 #' all_but_extreme_filaments <- timeternR::pomp_df %>% group_by(.id) %>%
 #'   filter(.id <= 10) %>%
 #'   grab_top_depth_filaments(data_columns = c("S","I","R"),
-#'                            alpha_level = 0)
+#'                            conf_level = 1)
 grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
                                      filament_depth_function = filament_distance_depth,
-                                     alpha_level = .95,
+                                     conf_level = .95,
                                      .remove_group = TRUE){
   #quos
   data_columns_q <- dplyr::enquos(data_columns)
@@ -187,10 +187,12 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
   depth_vector <- grouped_df %>%
     filament_depth_function(data_columns = data_columns)
 
-  num_top <- sum(depth_vector > stats::quantile(depth_vector, probs = alpha_level))
+  num_top <- sum(depth_vector > stats::quantile(depth_vector,
+                                                probs = 1 - conf_level))
+  # ^conf_level = 1 - alpha
 
   if (num_top == 0){
-    stop("selected 'alpha_level' returns 0 filaments")
+    stop("selected 'conf_level' returns 0 filaments")
   }
 
   if (tidyr_new_interface()){
@@ -198,7 +200,9 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
       dplyr::ungroup() %>%
       dplyr::mutate(depth = depth_vector) %>%
       dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = alpha_level))
+                      stats::quantile(depth_vector, probs = 1 - conf_level))
+    # ^conf_level = 1 - alpha
+
 
     if (.remove_group){
       updated_df <- updated_df %>%
@@ -213,7 +217,8 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
     updated_df <- grouped_df %>% tidyr::nest() %>%
       dplyr::mutate(depth = depth_vector) %>%
       dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = alpha_level))
+                      stats::quantile(depth_vector, probs = 1 - conf_level))
+    # ^conf_level = 1 - alpha
 
     if (.remove_group){
       updated_df <- updated_df %>%
@@ -257,7 +262,7 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
 #'   arrange(time) %>% # just to be safe
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
-#'   grab_top_depth_filaments(alpha_level = .9) %>%
+#'   grab_top_depth_filaments(conf_level = .9) %>%
 #'   create_delta_ball_structure() #data_columns = c(S,I,R)
 create_delta_ball_structure <- function(data_points, data_columns = NULL,
                                         .lower_simplex_project = TRUE){
@@ -328,7 +333,7 @@ create_delta_ball_structure <- function(data_points, data_columns = NULL,
 #'   arrange(time) %>% # just to be safe
 #'   select(-time, -H, -cases) %>%
 #'   group_by(.id) %>%
-#'   grab_top_depth_filaments(alpha_level = .9) %>%
+#'   grab_top_depth_filaments(conf_level = .9) %>%
 #'   create_convex_hull_structure() #data_columns = c(S,I,R)
 create_convex_hull_structure <- function(data_points, data_columns = NULL,
                                          .lower_simplex_project = TRUE){
