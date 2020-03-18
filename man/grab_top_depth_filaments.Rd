@@ -8,7 +8,7 @@ grab_top_depth_filaments(
   grouped_df,
   data_columns = NULL,
   filament_depth_function = filament_distance_depth,
-  alpha_level = 0.95,
+  conf_level = 0.95,
   .remove_group = TRUE
 )
 }
@@ -25,7 +25,7 @@ something like \code{c(S,I,R)} or \code{c("S", "I", "R")}. If the input is
 filaments in the \code{grouped_df}. Will take in \code{data_columns}
 parameter as well}
 
-\item{alpha_level}{proportion of filaments to keep}
+\item{conf_level}{proportion of filaments to keep}
 
 \item{.remove_group}{boolean (default true). Should the output keep the
 grouping columns or just havd data points?}
@@ -41,11 +41,11 @@ library(dplyr)
 top_filaments <- EpiCompare::pomp_df \%>\% group_by(.id) \%>\%
   filter(.id <= 10) \%>\%
   grab_top_depth_filaments(data_columns =c("S","I","R"),
-                           alpha_level = .5)
+                           conf_level = .5)
 
 # note that the below doesn't contain all filaments - as some have 0 depth
 all_but_extreme_filaments <- EpiCompare::pomp_df \%>\% group_by(.id) \%>\%
   filter(.id <= 10) \%>\%
   grab_top_depth_filaments(data_columns = c("S","I","R"),
-                           alpha_level = 0)
+                           conf_level = 1)
 }

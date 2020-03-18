@@ -44,6 +44,6 @@ convex_hull_cb <- EpiCompare::pomp_df \%>\%
   arrange(time) \%>\% # just to be safe
   select(-time, -H, -cases) \%>\%
   group_by(.id) \%>\%
-  grab_top_depth_filaments(alpha_level = .9) \%>\%
+  grab_top_depth_filaments(conf_level = .9) \%>\%
   create_convex_hull_structure() #data_columns = c(S,I,R)
 }

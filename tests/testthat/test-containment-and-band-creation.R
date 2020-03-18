@@ -334,14 +334,14 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
           ", no data_columns)"), {
   top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-    grab_top_depth_filaments(alpha_level = .5,
+    grab_top_depth_filaments(conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
   top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-    grab_top_depth_filaments(alpha_level = .5)
+    grab_top_depth_filaments(conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
                               top_filaments %>% select(-.id))
@@ -349,7 +349,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
   all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-    grab_top_depth_filaments(alpha_level = 0,
+    grab_top_depth_filaments(conf_level = 1,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
@@ -357,7 +357,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
   testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
                            filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                           grab_top_depth_filaments(alpha_level = 1))
+                           grab_top_depth_filaments(conf_level = 0))
 
 })
 
@@ -366,7 +366,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
-                             alpha_level = .5,
+                             conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
@@ -374,7 +374,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
-                             alpha_level = .5)
+                             conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
                               top_filaments %>% select(-.id))
@@ -383,7 +383,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c("S","I","R"),
-                             alpha_level = 0,
+                             conf_level = 1,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
@@ -393,7 +393,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                            filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c("S","I","R"),
-                             alpha_level = 1))
+                             conf_level = 0))
 
 })
 
@@ -402,7 +402,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
-                             alpha_level = .5,
+                             conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
@@ -410,7 +410,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
-                             alpha_level = .5)
+                             conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
                               top_filaments %>% select(-.id))
@@ -419,7 +419,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
     filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c(S,I,R),
-                             alpha_level = 0,
+                             conf_level = 1,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
@@ -429,7 +429,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                            filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c(S,I,R),
-                             alpha_level = 1))
+                             conf_level = 0))
 
 })
 
@@ -441,21 +441,21 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                      top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1,
+                       grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE))
 
                    testthat::expect_error(
                      top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1))
+                       grab_top_depth_filaments(conf_level = 0))
 
                    # string column names
                    testthat::expect_error(
                      top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1,
+                       grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE,
                                                 data_columns = c("S","I","R")
                                                 ))
@@ -464,14 +464,14 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                      top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1,
+                       grab_top_depth_filaments(conf_level = 0,
                                                 data_columns = c("S","I","R")))
                    # promise column names
                    testthat::expect_error(
                      top_filaments <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1,
+                       grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE,
                                                 data_columns = c(S,I,R)
                        ))
@@ -480,7 +480,7 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                      top_filaments_points <- EpiCompare::pomp_df %>%
                        group_by(.id) %>%
                        filter(.id <= 10) %>% select(-time, -H, -cases) %>%
-                       grab_top_depth_filaments(alpha_level = 1,
+                       grab_top_depth_filaments(conf_level = 0,
                                                 data_columns = c(S,I,R)))
                  })
 

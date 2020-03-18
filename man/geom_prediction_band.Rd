@@ -131,10 +131,10 @@ where the curves lie.
 
 \itemize{
 \item \code{delta_ball}: relative to all the points in the top
-\code{conf_level} curves, we find the minimum delta such all of these
-points are contained in at least 1 ball around another point with radius delta.
-This can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i, x_j)}.
-Then we take the union of delta-balls surround all the points as the
+\code{conf_level} curves, we find the minimum delta such all of these points
+are contained in at least 1 ball around another point with radius delta. This
+can be mathematically expressed as: \eqn{\delta = \max_{i} \min_{j} d(x_i,
+x_j)}. Then we take the union of delta-balls surround all the points as the
 prediction band.
 
 \item \code{convex_hull}: with to all the points in the top

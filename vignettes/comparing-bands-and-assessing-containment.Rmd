@@ -70,6 +70,7 @@ df_single <- pretend_actual_data %>%
   rename(S = "X0", I = "X1", R = "X2") 
 ```
 ```{r eval = F}
+# visual not run...
 ggplot(df_single, aes(x = S, y = I, z = R)) +
   geom_path(color = "blue") +
   coord_tern()
@@ -84,12 +85,11 @@ beta <- .1
 gamma <- .03
 init_SIR <- c(950, 50, 0)
 
-    
 
-sim50 <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
-                                 n_time_steps = n_time_steps,
-                                 beta = beta, gamma = gamma,
-                                 init_SIR = init_SIR)
+sim50 <- simulate_SIR_agents(n_sims = n_sims,
+                             n_time_steps = n_time_steps,
+                             beta = beta, gamma = gamma,
+                             init_SIR = init_SIR)
 
 df_group <- sim50 %>% group_by(sim) %>% 
   agents_to_aggregate(states = c("tI", "tR")) %>% 
@@ -108,7 +108,7 @@ ggplot() +
 ```
 
 ```{r eval = F}
-# again, aggregate version:
+# again, aggregate version (visual not run):
 ggplot(df_group) +
   geom_path(aes(x = S, y = I, z = R, group = sim),
             alpha = .1) +
@@ -118,9 +118,9 @@ ggplot(df_group) +
 
 ## How close is this model? 
 
-Great! The visualization looks like you made a good estimate of the SIR model parameters. But how good? Would a 90\% prediction interval contain the true epidemic?
+Great! The visualization looks like you made a good estimate of the SIR model parameters. But how good? Would a 60\% prediction interval contain the true epidemic?
 
-We propose to assess this question with containment of the epidemic with a band using 90\% of the simulations - specifically the top 90\% most *globally* deep filaments of simulations. (*since this looks like a 'single mode' style distribution - global depth isn't that bad.*)
+We propose to assess this question with containment of the epidemic with a band using 60\% of the simulations - specifically the top 60\% most *globally* deep filaments of simulations. (*since this looks like a 'single mode' style distribution - global depth isn't that bad.*)
 
 We define:
 ```{r}
@@ -128,7 +128,7 @@ delta_ball_cb <- df_group %>%
   arrange(t) %>% # just to be safe
   select(-t) %>%
   group_by(sim) %>%
-  grab_top_depth_filaments(alpha_level = .4) %>%
+  grab_top_depth_filaments(conf_level = .6) %>%
   create_delta_ball_structure()
 ```
 
@@ -138,7 +138,7 @@ b <- ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
                            sim_group = as.numeric(sim)),
-                       conf_level = .4, pb_type = "delta_ball") +
+                       conf_level = .6, pb_type = "delta_ball") +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern()
 ```
@@ -150,14 +150,14 @@ contained(delta_ball_cb,
          df_single %>% select(-t)) # aggregate version
 ```
 
-What about a less strigent ruling? 
+What about a less strigent ruling (maybe a normal prediction band with 90% confidence)? 
 
 ```{r}
 delta_ball_cb1 <- df_group %>%
   arrange(t) %>% # just to be safe
   select(-t) %>%
   group_by(sim) %>%
-  grab_top_depth_filaments(alpha_level = .1) %>%
+  grab_top_depth_filaments(conf_level = .9) %>%
   create_delta_ball_structure()
 ```
 
@@ -174,6 +174,7 @@ Suppose your lab has seen an epidemic that has similar characteristics as the cu
 beta <- .15
 gamma <- .05
 
+<<<<<<< HEAD
 
 out2 <- EpiCompare::simulate_SIR_agents(n_sims = 100,
                                       n_time_steps = 100,
@@ -184,6 +185,12 @@ sim50_2 <- EpiCompare::simulate_SIR_agents(n_sims = 50,
                                        n_time_steps = 100,
                                        beta = beta, gamma = gamma,
                                        init_SIR = c(950, 50, 0))
+=======
+sim50_2 <- simulate_SIR_agents(n_sims = 50,
+                               n_time_steps = 100,
+                               beta = beta, gamma = gamma,
+                               init_SIR = c(950, 50, 0))
+>>>>>>> 418b127415f22ec25a238769f2813d3895d787e7
 
 
 df_group2 <- sim50_2 %>% group_by(sim) %>% 
@@ -195,7 +202,7 @@ df_group2 <- sim50_2 %>% group_by(sim) %>%
 
 ### First
 
-```{r eval = F}
+```{r}
 df_all <- rbind( df_group %>% ungroup() %>% mutate(sim = as.character(sim),
                                                    epi_model = "first"),
                 df_group2 %>% ungroup() %>% mutate(sim = as.character(sim),
@@ -211,6 +218,7 @@ ggplot() +
 
 ### Second 
 ```{r eval = F}
+# visual not run
 ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
@@ -233,6 +241,7 @@ ggplot() +
 
 ### Third
 ```{r eval = F}
+# visual not run
 df_all <- rbind(df_group %>% ungroup() %>% 
                   mutate(sim = as.numeric(as.character(sim)),
                          epi_model = "first"),
@@ -270,7 +279,7 @@ delta_ball_cb_group2 <- df_group2 %>%
   arrange(t) %>% # just to be safe
   select(-t) %>%
   group_by(sim) %>%
-  grab_top_depth_filaments(alpha_level = .1) %>%
+  grab_top_depth_filaments(conf_level = .9) %>%
   create_delta_ball_structure()
 ```
 
