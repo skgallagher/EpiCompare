@@ -1,8 +1,8 @@
 ---
-title: "Getting started with EpiCompare"
+title: "Getting started with EpiCompare (for SIR agent-based data)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with EpiCompare}
+  %\VignetteIndexEntry{Getting started with EpiCompare (for SIR agent-based data)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -42,7 +42,14 @@ library(tidyr)
 library(ggtern)
 ```
 
-The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered, information on their school class.
+This "quickstart" guide presents how to:
+  - work with agent-based SIR data and how to leverage `geom_aggregate` to quickly compare groups of the population's experience of the epidemic.
+  - Visualizing and quantifying geometric uncertainty in SIR based data, using `agents_to_aggregate` to convert data from agents to aggregate, and leveraging `geom_prediction_band` to express uncertainty and centrality of simulations. This example also gives an example of the internal `simulate_SIR_agents` function.
+  
+
+## Measles outbreak in Hagelloch, Germany in 1861
+
+Our first example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered, information on their school class.
 
 ```{r quickstart, fig.width=6, eval=TRUE, message=F}
 ## Visualizing epidemic progression using EpiCompare
@@ -55,7 +62,7 @@ EpiCompare::hagelloch_raw %>% head() %>%
 
 ```
 
-To understand to epidemic we can examine it through an "aggregate" lense (using `geom_aggregate`), which aggregates the groups to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
+To understand to epidemic we can examine it through an "aggregate" lense (using `geom_aggregate`), which aggregates across agents to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
 
 ```{r}
 theme_set(theme_minimal())
@@ -89,8 +96,9 @@ hagelloch_raw %>%
        scale_color_brewer(type = "qual")
 ``` 
 
+## Agent SIR simulations models 
 
-## Simulating epidemics with `simulate_SIR_agents`.
+### Simulating epidemics with `simulate_SIR_agents`.
 
 The below code simulates SIR data at the individual (or agent) level, aggregates it into SIR format, and plots it in the ``standard'' view of *percent in state* vs. *time*.
 	
@@ -139,7 +147,7 @@ ggplot(data = df_ave, aes(x = S, y = I, z = R)) + geom_path() +
   coord_tern()
 ```
 
-## Simulating and visualizing multiple epidemics 
+### Simulating and visualizing multiple epidemics 
 
 We can also simulation multiple epidemics with different parameters (and can also examine simulations from both `pomp` and `epiModels` packages).
 
@@ -199,7 +207,8 @@ ggplot() +
 # note: the error message actually comes from the geom_path
 ```
 
-Here's a demo of all current prediction bands:
+Here's a demo of all current geometric tools to create prediction bands:
+
 ```{r fig.width = 7}
 vis_data <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
@@ -250,3 +259,5 @@ grid.arrange(vis_data, vis_spherical,
              vis_delta_ball, vis_kde,
              vis_convex_hull, nrow = 2)
 ```
+
+
