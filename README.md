@@ -6,7 +6,17 @@ EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/f
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare) <!-- badges: end -->
 
-The goal of EpiCompare is to develop functional based visualization and statistics that focus on use in ternary plots.
+The goal of EpiCompare is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to tidyverse/ggplot2 style to enhance easy of use.
+
+Time free analysis allows for stronger comparison of epidemics and model based simulations avoiding different scaling and shifts of time that mess up time-based comparisons.
+
+To achieve this goal, the package contains:
+
+-   **Visualization tools** to visualize SIR epidemics and simulations from SIR models in a time-free manner using `ggtern`’s ternary plots and prediction bands. For agent-based SIR models we also provide visualization tools to let the user easily explore how different characteristics of the agents relate to different experiences in the epidemic.
+-   General **comparison tools** to compare epidemics and epidemic models that have higher numbers of states (again in a time-free manner), allowing for the user to examine the differences between models through simulations, and if an epidemic is similar to a model through simulations and prediction bands.
+-   **Conversion tools** to:
+    -   Convert and then compare models from *standard epidemic packages* like `EpiModels`, `pomp`, as well as internal agent-based models, and epidemics in a common framework.
+    -   Convert *agent-based information into aggregate* to compare in the aggregate framework described above.
 
 Installation
 ------------
