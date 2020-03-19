@@ -34,9 +34,10 @@ reference:
   contents:
   - starts_with("geom_")
   - starts_with("stat_")
-- title: Convex hull and delta ball tools
-  desc: forward facing function associated with convex hull and delta-ball
-    covering relative to creating a confidence/prediction band
+- title: convex hull and delta ball tools
+  desc: Forward facing functions associated with convex hull and delta-ball
+    covering relative to creating a prediction band. This can be used
+    for any dimensional model.
   contents:
   - starts_with("contained")
   - matches("create.*structure")
@@ -52,7 +53,7 @@ reference:
   - starts_with("step")
   - starts_with("project")
 - title: special functions
-  desc: Special functions that make the package work
+  desc: special (internal) functions that make the package work
   contents:
   - matches("imports_hidden_from")
   - matches("tidyr_new_interface")
@@ -62,5 +63,5 @@ reference:
   - matches(".*")
 
 right:
- - icon: fa-github
-   href: https://github.com/skgallagher/EpiCompare
+- icon: fa-github
+  href: https://github.com/skgallagher/EpiCompare

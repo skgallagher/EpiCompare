@@ -1,7 +1,5 @@
-pandoc: 2.9.2
+pandoc: 1.19.2.1
 pkgdown: 1.4.1
 pkgdown_sha: ~
-articles:
-  comparing-bands-and-assessing-containment: comparing-bands-and-assessing-containment.html
-  getting_started: getting_started.html
+articles: []
 

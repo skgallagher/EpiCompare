@@ -104,7 +104,8 @@ ggplot() +
                  alpha = .1) +
   geom_aggregate(data = pretend_actual_data,
                  aes(y = tI, z = tR), color = "blue") +
-  coord_tern()
+  coord_tern() +
+  labs(x = "S", y = "I", z = "R")
 ```
 
 ```{r eval = F}
@@ -113,7 +114,8 @@ ggplot(df_group) +
   geom_path(aes(x = S, y = I, z = R, group = sim),
             alpha = .1) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
-  coord_tern()
+  coord_tern() + 
+  labs(x = "S", y = "I", z = "R")
 ```
 
 ## How close is this model? 
@@ -186,7 +188,7 @@ df_group2 <- sim50_2 %>% group_by(sim) %>%
   rename(S = "X0", I = "X1", R = "X2")
 ```
 
-## Possible visuals {.tabset}
+## Motivating visuals {.tabset}
 
 ### First
 
@@ -245,7 +247,7 @@ ggplot() +
 ```
 
 ```{r eval = F}
-# this would also work
+# this would also work (and is not run)
 df_all_agg <- rbind(sim50 %>% mutate(epi_model = "first"),
                 sim50_2 %>% mutate(epi_model = "second"))
 
@@ -254,13 +256,16 @@ ggplot() +
             aes(y = tI, z = tR, color = epi_model,
                 group = factor(paste(epi_model,sim))), 
                 alpha = .1)  +
-  coord_tern()
+  coord_tern() + 
+  labs(x = "S", y = "I", z = "R")
 ```
 
 
-## Numerical comparison
+## Numerical comparison (good for higher dimensional models)
 
-*Define hausdorff distance*... tell story...
+Above we saw how to compare a epidemic to a model (through simulations), and how to visually compare simulations in a time-free manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.
+
+We provide one such metric, the [**Hausdorff Distance**](https://en.wikipedia.org/wiki/Hausdorff_distance), which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically `hausdorff_dist()` can calculate this distance between `delta_ball` and `convex_hull` based prediction bands (with classes `delta_ball_structure` and `convex_hull_structure` respectively.
 
 ```{r}
 delta_ball_cb_group2 <- df_group2 %>%

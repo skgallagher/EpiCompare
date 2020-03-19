@@ -50,3 +50,5 @@ RoxygenNote: 7.0.2
 VignetteBuilder: 
     knitr,
     kableExtra
+URL: https://github.com/skgallagher/EpiCompare
+BugReports: https://github.com/skgallagher/EpiCompare/issues

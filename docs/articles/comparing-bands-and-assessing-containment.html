@@ -69,7 +69,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/skgallagher/EpiCompare">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -79,13 +86,13 @@
 
       
 
-      </header><script src="comparing-bands-and-assessing-containment_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Comparing bands and assessing containment</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/skgallagher/EpiCompare/blob/master/vignettes/comparing-bands-and-assessing-containment.Rmd"><code>vignettes/comparing-bands-and-assessing-containment.Rmd</code></a></small>
       <div class="hidden name"><code>comparing-bands-and-assessing-containment.Rmd</code></div>
 
     </div>
@@ -93,209 +100,211 @@
     
     
 <p><left><img src="../man/figures/logo.png" width="100"></left></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span>(EpiCompare)){</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>  devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"shannong19/EpiCompare"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span>(EpiCompare)){
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)
+  devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"shannong19/EpiCompare"</span>)
+}
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
 <p>This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.</p>
 <p>To motivate these tools we’re actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we’ve generated a <code>pretend_actual_data</code>-set and a set of simulations.</p>
 <p>Look at this beautify pretend data. A good peak. We’re able to use <code>geom_aggregate</code> on our data (though we also could have used <code>agents_to_aggregate</code> + <code>geom_path</code>).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a>pretend_actual_data &lt;-<span class="st"> </span>EpiCompare<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(</span>
-<span id="cb2-3"><a href="#cb2-3"></a>                          <span class="dt">n_sims =</span> <span class="dv">1</span>,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>                          <span class="dt">n_time_steps =</span> <span class="dv">1000</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>                          <span class="dt">beta =</span> <span class="fl">.0099</span>, <span class="dt">gamma =</span> <span class="fl">.0029</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>                          <span class="dt">init_SIR =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>))</span>
-<span id="cb2-7"><a href="#cb2-7"></a></span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a></span>
-<span id="cb2-10"><a href="#cb2-10"></a>pretend_actual_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="st">  </span><span class="kw"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR),</span>
-<span id="cb2-12"><a href="#cb2-12"></a>                 <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="st">  </span><span class="kw">coord_tern</span>() </span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)
+pretend_actual_data &lt;-<span class="st"> </span>EpiCompare<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(
+                          <span class="dt">n_sims =</span> <span class="dv">1</span>,
+                          <span class="dt">n_time_steps =</span> <span class="dv">1000</span>,
+                          <span class="dt">beta =</span> .<span class="dv">0099</span>, <span class="dt">gamma =</span> .<span class="dv">0029</span>,
+                          <span class="dt">init_SIR =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>))
+
+
+
+pretend_actual_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>(<span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR),
+                 <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>() </code></pre></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># another approach for the same visual</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>df_single &lt;-<span class="st"> </span>pretend_actual_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw"><a href="../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>) </span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># visual not run...</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">ggplot</span>(df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R)) <span class="op">+</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># another approach for the same visual</span>
+df_single &lt;-<span class="st"> </span>pretend_actual_data <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># visual not run...</span>
+<span class="kw">ggplot</span>(df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>()</code></pre></div>
 <p>Now, suppose, without having read our paper, you don’t have a proof of @Shannon’s at the top of your head, but you still think the following model fits decently well for the above data.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>n_sims &lt;-<span class="st"> </span><span class="dv">50</span> </span>
-<span id="cb5-2"><a href="#cb5-2"></a>n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>beta &lt;-<span class="st"> </span><span class="fl">.1</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>gamma &lt;-<span class="st"> </span><span class="fl">.03</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)</span>
-<span id="cb5-6"><a href="#cb5-6"></a></span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a>sim50 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> n_sims,</span>
-<span id="cb5-9"><a href="#cb5-9"></a>                             <span class="dt">n_time_steps =</span> n_time_steps,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>                             <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,</span>
-<span id="cb5-11"><a href="#cb5-11"></a>                             <span class="dt">init_SIR =</span> init_SIR)</span>
-<span id="cb5-12"><a href="#cb5-12"></a></span>
-<span id="cb5-13"><a href="#cb5-13"></a>df_group &lt;-<span class="st"> </span>sim50 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="st">  </span><span class="kw"><a href="../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="st">                      </span><span class="co">#min_max_time = c(0,100)) %&gt;% </span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>) </span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> sim50, <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">group =</span> sim),</span>
-<span id="cb6-3"><a href="#cb6-3"></a>                 <span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="kw"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> pretend_actual_data,</span>
-<span id="cb6-5"><a href="#cb6-5"></a>                 <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_sims &lt;-<span class="st"> </span><span class="dv">50</span> 
+n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span>
+beta &lt;-<span class="st"> </span>.<span class="dv">1</span>
+gamma &lt;-<span class="st"> </span>.<span class="dv">03</span>
+init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)
+
+
+sim50 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> n_sims,
+                             <span class="dt">n_time_steps =</span> n_time_steps,
+                             <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,
+                             <span class="dt">init_SIR =</span> init_SIR)
+
+df_group &lt;-<span class="st"> </span>sim50 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                      </span><span class="co">#min_max_time = c(0,100)) %&gt;% </span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> sim50, <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">group =</span> sim),
+                 <span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> pretend_actual_data,
+                 <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>)</code></pre></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># again, aggregate version (visual not run):</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">ggplot</span>(df_group) <span class="op">+</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>            <span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># again, aggregate version (visual not run):</span>
+<span class="kw">ggplot</span>(df_group) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim),
+            <span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>)</code></pre></div>
 <div id="how-close-is-this-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-close-is-this-model" class="anchor"></a>How close is this model?</h2>
 <p>Great! The visualization looks like you made a good estimate of the SIR model parameters. But how good? Would a 60% prediction interval contain the true epidemic?</p>
 <p>We propose to assess this question with containment of the epidemic with a band using 60% of the simulations - specifically the top 60% most <em>globally</em> deep filaments of simulations. (<em>since this looks like a ‘single mode’ style distribution - global depth isn’t that bad.</em>)</p>
 <p>We define:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>delta_ball_cb &lt;-<span class="st"> </span>df_group <span class="op">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="st">  </span><span class="kw"><a href="../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> <span class="fl">.6</span>) <span class="op">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw"><a href="../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">delta_ball_cb &lt;-<span class="st"> </span>df_group <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> .<span class="dv">6</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</code></pre></div>
 <p>Which is just a data version (not exactly, but close) to this:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>b &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="st">  </span><span class="kw"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group, </span>
-<span id="cb9-3"><a href="#cb9-3"></a>                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, </span>
-<span id="cb9-4"><a href="#cb9-4"></a>                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),</span>
-<span id="cb9-5"><a href="#cb9-5"></a>                       <span class="dt">conf_level =</span> <span class="fl">.6</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>) <span class="op">+</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group, 
+                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, 
+                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),
+                       <span class="dt">conf_level =</span> .<span class="dv">6</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,
+                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>,<span class="dv">2</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_single, <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R), <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>()
+<span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span></code></pre></div>
+<p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Is it contained in the above delta ball?</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="../reference/contained.html">contained</a></span>(delta_ball_cb, </span>
-<span id="cb10-2"><a href="#cb10-2"></a>         df_single <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t)) <span class="co"># aggregate version</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/contained.html">contained</a></span>(delta_ball_cb, 
+         df_single <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t)) <span class="co"># aggregate version</span>
+<span class="co">#&gt; [1] FALSE</span></code></pre></div>
 <p>What about a less strigent ruling (maybe a normal prediction band with 90% confidence)?</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>delta_ball_cb1 &lt;-<span class="st"> </span>df_group <span class="op">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span></span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="st">  </span><span class="kw"><a href="../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> <span class="fl">.9</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6"></a><span class="st">  </span><span class="kw"><a href="../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw"><a href="../reference/contained.html">contained</a></span>(delta_ball_cb1, </span>
-<span id="cb12-2"><a href="#cb12-2"></a>         df_single <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t)) <span class="co"># aggregate version</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">delta_ball_cb1 &lt;-<span class="st"> </span>df_group <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> .<span class="dv">9</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/contained.html">contained</a></span>(delta_ball_cb1, 
+         df_single <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t)) <span class="co"># aggregate version</span>
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
 </div>
 </div>
 <div id="comparing-another-simulation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#comparing-another-simulation" class="anchor"></a>Comparing another simulation</h1>
 <p>Suppose your lab has seen an epidemic that has similar characteristics as the current epidemic, and had already build simulations below for such thing:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>beta &lt;-<span class="st"> </span><span class="fl">.15</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>gamma &lt;-<span class="st"> </span><span class="fl">.05</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a></span>
-<span id="cb13-4"><a href="#cb13-4"></a></span>
-<span id="cb13-5"><a href="#cb13-5"></a></span>
-<span id="cb13-6"><a href="#cb13-6"></a></span>
-<span id="cb13-7"><a href="#cb13-7"></a>sim50_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> <span class="dv">50</span>,</span>
-<span id="cb13-8"><a href="#cb13-8"></a>                               <span class="dt">n_time_steps =</span> <span class="dv">100</span>,</span>
-<span id="cb13-9"><a href="#cb13-9"></a>                               <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,</span>
-<span id="cb13-10"><a href="#cb13-10"></a>                               <span class="dt">init_SIR =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>))</span>
-<span id="cb13-11"><a href="#cb13-11"></a></span>
-<span id="cb13-12"><a href="#cb13-12"></a></span>
-<span id="cb13-13"><a href="#cb13-13"></a></span>
-<span id="cb13-14"><a href="#cb13-14"></a>df_group2 &lt;-<span class="st"> </span>sim50_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb13-15"><a href="#cb13-15"></a><span class="st">  </span><span class="kw"><a href="../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta &lt;-<span class="st"> </span>.<span class="dv">15</span>
+gamma &lt;-<span class="st"> </span>.<span class="dv">05</span>
+
+
+sim50_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> <span class="dv">50</span>,
+                               <span class="dt">n_time_steps =</span> <span class="dv">100</span>,
+                               <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,
+                               <span class="dt">init_SIR =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>))
+
+df_group2 &lt;-<span class="st"> </span>sim50_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>)</code></pre></div>
 <div id="possible-visuals" class="section level2 tabset">
 <h2 class="hasAnchor">
 <a href="#possible-visuals" class="anchor"></a>Possible visuals</h2>
 <div id="first" class="section level3">
 <h3 class="hasAnchor">
 <a href="#first" class="anchor"></a>First</h3>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>df_all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>( df_group <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim),</span>
-<span id="cb14-2"><a href="#cb14-2"></a>                                                   <span class="dt">epi_model =</span> <span class="st">"first"</span>),</span>
-<span id="cb14-3"><a href="#cb14-3"></a>                df_group2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim),</span>
-<span id="cb14-4"><a href="#cb14-4"></a>                                                   <span class="dt">epi_model =</span> <span class="st">"second"</span>))</span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="st">  </span><span class="kw"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_all, </span>
-<span id="cb14-7"><a href="#cb14-7"></a>                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">fill =</span> epi_model,</span>
-<span id="cb14-8"><a href="#cb14-8"></a>                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)), <span class="dt">alpha =</span> <span class="fl">.5</span>,</span>
-<span id="cb14-9"><a href="#cb14-9"></a>                       <span class="dt">conf_level =</span> <span class="fl">.9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10"></a>                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>))  <span class="op">+</span></span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df_all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>( df_group <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim),
+                                                   <span class="dt">epi_model =</span> <span class="st">"first"</span>),
+                df_group2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim),
+                                                   <span class="dt">epi_model =</span> <span class="st">"second"</span>))
+<span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_all, 
+                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">fill =</span> epi_model,
+                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)), <span class="dt">alpha =</span> .<span class="dv">5</span>,
+                       <span class="dt">conf_level =</span> .<span class="dv">9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,
+                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>))  <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>()</code></pre></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="second" class="section level3">
 <h3 class="hasAnchor">
 <a href="#second" class="anchor"></a>Second</h3>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># visual not run</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="st">  </span><span class="kw"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group, </span>
-<span id="cb15-4"><a href="#cb15-4"></a>                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, </span>
-<span id="cb15-5"><a href="#cb15-5"></a>                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),</span>
-<span id="cb15-6"><a href="#cb15-6"></a>                       <span class="dt">color =</span> <span class="st">"blue"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7"></a>                       <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">alpha =</span> <span class="fl">.5</span>,</span>
-<span id="cb15-8"><a href="#cb15-8"></a>                       <span class="dt">conf_level =</span> <span class="fl">.9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,</span>
-<span id="cb15-9"><a href="#cb15-9"></a>                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>)) <span class="op">+</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="st">  </span><span class="kw"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group2, </span>
-<span id="cb15-11"><a href="#cb15-11"></a>                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, </span>
-<span id="cb15-12"><a href="#cb15-12"></a>                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),</span>
-<span id="cb15-13"><a href="#cb15-13"></a>                       <span class="dt">color =</span> <span class="st">"red"</span>,</span>
-<span id="cb15-14"><a href="#cb15-14"></a>                       <span class="dt">fill =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> <span class="fl">.5</span>,</span>
-<span id="cb15-15"><a href="#cb15-15"></a>                       <span class="dt">conf_level =</span> <span class="fl">.9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,</span>
-<span id="cb15-16"><a href="#cb15-16"></a>                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>)) <span class="op">+</span></span>
-<span id="cb15-17"><a href="#cb15-17"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># visual not run</span>
+<span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group, 
+                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, 
+                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),
+                       <span class="dt">color =</span> <span class="st">"blue"</span>,
+                       <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">alpha =</span> .<span class="dv">5</span>,
+                       <span class="dt">conf_level =</span> .<span class="dv">9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,
+                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="dt">data =</span> df_group2, 
+                       <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, 
+                           <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),
+                       <span class="dt">color =</span> <span class="st">"red"</span>,
+                       <span class="dt">fill =</span> <span class="st">"red"</span>, <span class="dt">alpha =</span> .<span class="dv">5</span>,
+                       <span class="dt">conf_level =</span> .<span class="dv">9</span>, <span class="dt">pb_type =</span> <span class="st">"delta_ball"</span>,
+                       <span class="dt">grid_size =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="dv">50</span>, <span class="dv">2</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>()</code></pre></div>
 </div>
 <div id="third" class="section level3">
 <h3 class="hasAnchor">
 <a href="#third" class="anchor"></a>Third</h3>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># visual not run</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>df_all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(df_group <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="st">                  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim)),</span>
-<span id="cb16-4"><a href="#cb16-4"></a>                         <span class="dt">epi_model =</span> <span class="st">"first"</span>),</span>
-<span id="cb16-5"><a href="#cb16-5"></a>                df_group2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb16-6"><a href="#cb16-6"></a><span class="st">                  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim)),</span>
-<span id="cb16-7"><a href="#cb16-7"></a>                         <span class="dt">epi_model =</span> <span class="st">"second"</span>))</span>
-<span id="cb16-8"><a href="#cb16-8"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb16-9"><a href="#cb16-9"></a><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_all, </span>
-<span id="cb16-10"><a href="#cb16-10"></a>            <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">color =</span> epi_model,</span>
-<span id="cb16-11"><a href="#cb16-11"></a>                <span class="dt">group =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(epi_model,sim))), </span>
-<span id="cb16-12"><a href="#cb16-12"></a>                <span class="dt">alpha =</span> <span class="fl">.1</span>)  <span class="op">+</span></span>
-<span id="cb16-13"><a href="#cb16-13"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># this would also work</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>df_all_agg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(sim50 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">epi_model =</span> <span class="st">"first"</span>),</span>
-<span id="cb17-3"><a href="#cb17-3"></a>                sim50_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">epi_model =</span> <span class="st">"second"</span>))</span>
-<span id="cb17-4"><a href="#cb17-4"></a></span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
-<span id="cb17-6"><a href="#cb17-6"></a><span class="st">  </span><span class="kw"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> df_all_agg, </span>
-<span id="cb17-7"><a href="#cb17-7"></a>            <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> epi_model,</span>
-<span id="cb17-8"><a href="#cb17-8"></a>                <span class="dt">group =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(epi_model,sim))), </span>
-<span id="cb17-9"><a href="#cb17-9"></a>                <span class="dt">alpha =</span> <span class="fl">.1</span>)  <span class="op">+</span></span>
-<span id="cb17-10"><a href="#cb17-10"></a><span class="st">  </span><span class="kw">coord_tern</span>()</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># visual not run</span>
+df_all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(df_group <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim)),
+                         <span class="dt">epi_model =</span> <span class="st">"first"</span>),
+                df_group2 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">sim =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(sim)),
+                         <span class="dt">epi_model =</span> <span class="st">"second"</span>))
+<span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_all, 
+            <span class="kw">aes</span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">color =</span> epi_model,
+                <span class="dt">group =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(epi_model,sim))), 
+                <span class="dt">alpha =</span> .<span class="dv">1</span>)  <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># this would also work (and is not run)</span>
+df_all_agg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(sim50 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">epi_model =</span> <span class="st">"first"</span>),
+                sim50_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">epi_model =</span> <span class="st">"second"</span>))
+
+<span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>(<span class="dt">data =</span> df_all_agg, 
+            <span class="kw">aes</span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> epi_model,
+                <span class="dt">group =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(epi_model,sim))), 
+                <span class="dt">alpha =</span> .<span class="dv">1</span>)  <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_tern</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>)</code></pre></div>
 </div>
 </div>
 <div id="numerical-comparison" class="section level2">
 <h2 class="hasAnchor">
 <a href="#numerical-comparison" class="anchor"></a>Numerical comparison</h2>
-<p><em>Define hausdorff distance</em>… tell story…</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>delta_ball_cb_group2 &lt;-<span class="st"> </span>df_group2 <span class="op">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span></span>
-<span id="cb18-5"><a href="#cb18-5"></a><span class="st">  </span><span class="kw"><a href="../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> <span class="fl">.9</span>) <span class="op">%&gt;%</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a><span class="st">  </span><span class="kw"><a href="../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw"><a href="../reference/hausdorff_dist.html">hausdorff_dist</a></span>(delta_ball_cb1, delta_ball_cb_group2)</span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#&gt; [1] 0.2294748</span></span></code></pre></div>
+<p>Above we saw how to compare a epidemic to a model (through simulations), and how to visually compare simulations in a time-free manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.</p>
+<p>We provide one such metric, the <a href="https://en.wikipedia.org/wiki/Hausdorff_distance"><strong>Hausdorff Distance</strong></a>, which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically <code><a href="https://rdrr.io/pkg/EpiCompare/man/hausdorff_dist.html">hausdorff_dist()</a></code> can calculate this distance between <code>delta_ball</code> and <code>convex_hull</code> based prediction bands (with classes <code>delta_ball_structure</code> and <code>convex_hull_structure</code> respectively.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">delta_ball_cb_group2 &lt;-<span class="st"> </span>df_group2 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(t) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># just to be safe</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>t) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="dt">conf_level =</span> .<span class="dv">9</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/hausdorff_dist.html">hausdorff_dist</a></span>(delta_ball_cb1, delta_ball_cb_group2)
+<span class="co">#&gt; [1] 0.2294748</span></code></pre></div>
 </div>
 </div>
   </div>
@@ -307,14 +316,12 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li>
-<a href="#overview">Overview</a>
-      <ul class="nav nav-pills nav-stacked">
+<a href="#overview">Overview</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#how-close-is-this-model">How close is this model?</a></li>
       </ul>
 </li>
       <li>
-<a href="#comparing-another-simulation">Comparing another simulation</a>
-      <ul class="nav nav-pills nav-stacked">
+<a href="#comparing-another-simulation">Comparing another simulation</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#possible-visuals">Possible visuals</a></li>
       <li><a href="#numerical-comparison">Numerical comparison</a></li>
       </ul>

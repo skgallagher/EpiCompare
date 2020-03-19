@@ -112,7 +112,12 @@ based)." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/skgallagher/EpiCompare">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,7 +132,7 @@ based)." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>generalized function to convert raw agent based data to aggregate data</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/agent-to-aggregate.R'><code>R/agent-to-aggregate.R</code></a></small>
     <div class="hidden name"><code>agents_to_aggregate.data.frame.Rd</code></div>
     </div>
 
@@ -139,7 +144,7 @@ based).</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(
+<span class='fu'>agents_to_aggregate</span>(
   <span class='no'>agents</span>,
   <span class='no'>states</span>,
   <span class='kw'>death</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -200,7 +205,7 @@ from the data.</p></td>
 <span class='no'>agents</span>$<span class='no'>tBIRTH</span> <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
 <span class='no'>agents</span>$<span class='no'>tBIRTH</span>[<span class='no'>babies</span>] <span class='kw'>&lt;-</span> <span class='no'>agents</span>$<span class='no'>tI</span>[<span class='no'>babies</span>] - <span class='fl'>5</span>
 
-<span class='no'>aggregate_b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
+<span class='no'>aggregate_b</span> <span class='kw'>&lt;-</span> <span class='fu'>agents_to_aggregate</span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
                                    <span class='kw'>death</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>birth</span> <span class='kw'>=</span> <span class='no'>tBIRTH</span>)
 
 <span class='co'># looking at when babies where born:</span>
@@ -304,7 +309,7 @@ from the data.</p></td>
 #&gt; 94     94        188</div><div class='input'>
 
 <span class='co'># including death</span>
-<span class='no'>aggregate_d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
+<span class='no'>aggregate_d</span> <span class='kw'>&lt;-</span> <span class='fu'>agents_to_aggregate</span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
                                    <span class='kw'>death</span> <span class='kw'>=</span> <span class='no'>tDEAD</span>, <span class='kw'>birth</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='co'># looking at when people died:</span>

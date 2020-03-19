@@ -69,7 +69,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/skgallagher/EpiCompare">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -81,9 +88,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="epicompare-" class="section level1">
+<div id="epicompare" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#epicompare-" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="" width="120"></a>
+<a href="#epicompare" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="" width="120"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -97,8 +104,8 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the developmental version of EpiCompare from github using:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/EpiCompare"</span>)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"skgallagher/EpiCompare"</span>)</code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
@@ -125,62 +132,62 @@
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)</span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(EpiCompare)</code></pre></div>
 <p>The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>hagelloch_raw <span class="op">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR)) <span class="op">+</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="st">    </span><span class="kw"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>, <span class="dt">title =</span> <span class="st">"Town Analysis"</span>)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_aggregate</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>, <span class="dt">title =</span> <span class="st">"Town Analysis"</span>)</code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 <p>Previous work has suggested that the class (<code>CL</code>) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>hagelloch_raw <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span> =<span class="st"> </span>CL) <span class="op">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="st">`</span><span class="dt">number of students</span><span class="st">`</span> =<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>())</span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;   `school grade` `number of students`</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt;   &lt;fct&gt;                         &lt;int&gt;</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 1 preschool                        90</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 2 1st class                        30</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 3 2nd class                        68</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a></span>
-<span id="cb4-12"><a href="#cb4-12"></a>hagelloch_raw <span class="op">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="st">   </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> CL)) <span class="op">+</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="st">       </span><span class="kw"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="st">       </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="st">       </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>            <span class="dt">color =</span> <span class="st">"School Grade"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18"></a>            <span class="dt">title =</span> <span class="st">"Town analysis by grade"</span>) </span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hagelloch_raw <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span> =<span class="st"> </span>CL) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="st">`</span><span class="dt">school grade</span><span class="st">`</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="st">`</span><span class="dt">number of students</span><span class="st">`</span> =<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/n.html">n</a></span>())
+<span class="co">#&gt; # A tibble: 3 x 2</span>
+<span class="co">#&gt;   `school grade` `number of students`</span>
+<span class="co">#&gt;   &lt;fct&gt;                         &lt;int&gt;</span>
+<span class="co">#&gt; 1 preschool                        90</span>
+<span class="co">#&gt; 2 1st class                        30</span>
+<span class="co">#&gt; 3 2nd class                        68</span>
+
+hagelloch_raw <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">y =</span> tI, <span class="dt">z =</span> tR, <span class="dt">color =</span> CL)) <span class="op">+</span>
+<span class="st">       </span><span class="kw">geom_aggregate</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">       </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() <span class="op">+</span>
+<span class="st">       </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>,
+            <span class="dt">color =</span> <span class="st">"School Grade"</span>,
+            <span class="dt">title =</span> <span class="st">"Town analysis by grade"</span>) </code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 <div id="simulate-sir-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#simulate-sir-data" class="anchor"></a>Simulate SIR data</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>n_sims &lt;-<span class="st"> </span><span class="dv">100</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>beta &lt;-<span class="st"> </span><span class="fl">.1</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>gamma &lt;-<span class="st"> </span><span class="fl">.03</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)</span>
-<span id="cb5-6"><a href="#cb5-6"></a>    </span>
-<span id="cb5-7"><a href="#cb5-7"></a>out &lt;-<span class="st"> </span><span class="kw"><a href="reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="dt">n_sims =</span> n_sims,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>                           <span class="dt">n_time_steps =</span> n_time_steps,</span>
-<span id="cb5-9"><a href="#cb5-9"></a>                           <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,</span>
-<span id="cb5-10"><a href="#cb5-10"></a>                           <span class="dt">init_SIR =</span> init_SIR)</span>
-<span id="cb5-11"><a href="#cb5-11"></a>                                 </span>
-<span id="cb5-12"><a href="#cb5-12"></a>df_groups &lt;-<span class="st"> </span>out <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="st">    </span><span class="kw"><a href="reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(tI, tR)) <span class="op">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="st">    </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> X0, <span class="dt">I =</span> X1, <span class="dt">R =</span> X2)</span>
-<span id="cb5-15"><a href="#cb5-15"></a>  </span>
-<span id="cb5-16"><a href="#cb5-16"></a>df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() <span class="op">+</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="st">    </span><span class="kw"><a href="reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),</span>
-<span id="cb5-18"><a href="#cb5-18"></a>                         <span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim), <span class="dt">alpha =</span> <span class="fl">.1</span>) <span class="op">+</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()</span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_sims &lt;-<span class="st"> </span><span class="dv">100</span>
+n_time_steps &lt;-<span class="st"> </span><span class="dv">100</span>
+beta &lt;-<span class="st"> </span>.<span class="dv">1</span>
+gamma &lt;-<span class="st"> </span>.<span class="dv">03</span>
+init_SIR &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">950</span>, <span class="dv">50</span>, <span class="dv">0</span>)
+    
+out &lt;-<span class="st"> </span><span class="kw">simulate_SIR_agents</span>(<span class="dt">n_sims =</span> n_sims,
+                           <span class="dt">n_time_steps =</span> n_time_steps,
+                           <span class="dt">beta =</span> beta, <span class="dt">gamma =</span> gamma,
+                           <span class="dt">init_SIR =</span> init_SIR)
+                                 
+df_groups &lt;-<span class="st"> </span>out <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">agents_to_aggregate</span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(tI, tR)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> X0, <span class="dt">I =</span> X1, <span class="dt">R =</span> X2)
+  
+df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_prediction_band</span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">sim_group =</span> <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(sim)),
+                         <span class="dt">alpha =</span> .<span class="dv">2</span>, <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">color =</span> <span class="st">"blue"</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> S, <span class="dt">y =</span> I, <span class="dt">z =</span> R, <span class="dt">group =</span> sim), <span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()
+<span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
 </div>
 </div>
@@ -194,10 +201,10 @@
 <ol>
 <li><p><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></p></li>
 <li><p><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></p></li>
-<li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern);     EpiCompare:::update_approved_layers()</a></code></p></li>
+<li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); EpiCompare:::update_approved_layers()</a></code></p></li>
 </ol>
 </li>
-<li><p><code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color=     var1, group =var2)</a></code> you may actually want to do <code>aes(color= var1,     group =paste(var1, var2)</code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</p></li>
+<li><p><code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color= var1, group =var2)</a></code> you may actually want to do <code>aes(color= var1, group =paste(var1, var2)</code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</p></li>
 <li><p>I (<code>skgallagher</code>) had problems with tidy evaluation with <code>fortify_aggregate</code>, specifically when one method called another method. To get around this, I used a hack to introducing a new argument which would only ever be <code>NULL</code> or an object of class <code>quosure</code>. Thus the outer methods that called inner methods passed quosures. See code in <code>fortify-aggregate-list.R</code> e.g..</p></li>
 </ol>
 </div>
@@ -213,7 +220,16 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/skgallagher/EpiCompare">https://​github.com/​skgallagher/​EpiCompare</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/skgallagher/EpiCompare/issues">https://​github.com/​skgallagher/​EpiCompare/​issues</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>

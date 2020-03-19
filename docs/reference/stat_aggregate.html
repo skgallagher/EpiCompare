@@ -109,7 +109,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/skgallagher/EpiCompare">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -124,7 +129,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>aggregate SIR path visuals from agent data</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/geom-aggregate.R'><code>R/geom-aggregate.R</code></a>, <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/stat-aggregate.R'><code>R/stat-aggregate.R</code></a></small>
     <div class="hidden name"><code>stat_aggregate.Rd</code></div>
     </div>
 
@@ -224,7 +229,7 @@ and <code><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This visual leverage the function <code><a href='agents_to_aggregate.html'>agents_to_aggregate</a></code>
+    <p>This visual leverage the function <code>agents_to_aggregate</code>
 underneath. This function converts individual agents' information on when the
 agent transitions between 3 different states (ordered), to create a temporal
 tally/aggregation of how many agents are in what state at each integer time
