@@ -64,7 +64,7 @@
       <a href="../articles/comparing-bands-and-assessing-containment.html">Comparing bands and assessing containment</a>
     </li>
     <li>
-      <a href="../articles/getting_started.html">Getting started with EpiCompare</a>
+      <a href="../articles/getting-started.html">Getting started with EpiCompare (for SIR agent-based data)</a>
     </li>
   </ul>
 </li>
@@ -223,9 +223,9 @@ sim50_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw"><
 df_group2 &lt;-<span class="st"> </span>sim50_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(sim) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="dt">states =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">S =</span> <span class="st">"X0"</span>, <span class="dt">I =</span> <span class="st">"X1"</span>, <span class="dt">R =</span> <span class="st">"X2"</span>)</code></pre></div>
-<div id="possible-visuals" class="section level2 tabset">
+<div id="motivating-visuals" class="section level2 tabset">
 <h2 class="hasAnchor">
-<a href="#possible-visuals" class="anchor"></a>Possible visuals</h2>
+<a href="#motivating-visuals" class="anchor"></a>Motivating visuals</h2>
 <div id="first" class="section level3">
 <h3 class="hasAnchor">
 <a href="#first" class="anchor"></a>First</h3>
@@ -292,9 +292,9 @@ df_all_agg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">"S"</span>, <span class="dt">y =</span> <span class="st">"I"</span>, <span class="dt">z =</span> <span class="st">"R"</span>)</code></pre></div>
 </div>
 </div>
-<div id="numerical-comparison" class="section level2">
+<div id="numerical-comparison-good-for-higher-dimensional-models" class="section level2">
 <h2 class="hasAnchor">
-<a href="#numerical-comparison" class="anchor"></a>Numerical comparison</h2>
+<a href="#numerical-comparison-good-for-higher-dimensional-models" class="anchor"></a>Numerical comparison (good for higher dimensional models)</h2>
 <p>Above we saw how to compare a epidemic to a model (through simulations), and how to visually compare simulations in a time-free manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.</p>
 <p>We provide one such metric, the <a href="https://en.wikipedia.org/wiki/Hausdorff_distance"><strong>Hausdorff Distance</strong></a>, which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically <code><a href="https://rdrr.io/pkg/EpiCompare/man/hausdorff_dist.html">hausdorff_dist()</a></code> can calculate this distance between <code>delta_ball</code> and <code>convex_hull</code> based prediction bands (with classes <code>delta_ball_structure</code> and <code>convex_hull_structure</code> respectively.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">delta_ball_cb_group2 &lt;-<span class="st"> </span>df_group2 <span class="op">%&gt;%</span>
@@ -322,8 +322,8 @@ df_all_agg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.
 </li>
       <li>
 <a href="#comparing-another-simulation">Comparing another simulation</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#possible-visuals">Possible visuals</a></li>
-      <li><a href="#numerical-comparison">Numerical comparison</a></li>
+<li><a href="#motivating-visuals">Motivating visuals</a></li>
+      <li><a href="#numerical-comparison-good-for-higher-dimensional-models">Numerical comparison (good for higher dimensional models)</a></li>
       </ul>
 </li>
       </ul>
