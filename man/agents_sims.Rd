@@ -4,12 +4,14 @@
 \name{agents_sims}
 \alias{agents_sims}
 \title{agents_sims Example output from SIR simulations}
-\format{An array with dimension 50 x 3 x 188 data frame with 188 rows and 3 columns.  Below are the descriptions of each dimension
+\format{
+An array with dimension 50 x 3 x 188 data frame with 188 rows and 3 columns.  Below are the descriptions of each dimension
 \describe{
   \item{sim}{Simulation number is the first dimension.  They are named between 1 and 50}
   \item{agent_stat}{This is the sufficient statistic for each agent as described above.  The names of the statistics are \code{init_state}, \code{max_time_S}, and \code{max_time_I}}
   \item{agent_id}{the ID of the agent}
-}}
+}
+}
 \usage{
 agents_sims
 }

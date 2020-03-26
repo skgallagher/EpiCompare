@@ -1,3 +1,4 @@
+
 #' Takes in data from the R pomp package  where the output is a data frame and
 #' puts it in SIR format for EpiCompare
 #'
@@ -5,7 +6,6 @@
 #'   \code{pomp::simulate()}, and we have added the name pomp_df to the class
 #'   names.
 #' @param states vector of state names
-#' @param enquo_states enquosure states that have already been quoted
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified
 #'   with the \code{states} argument.  If code{states = NULL}, we will attempt
@@ -24,17 +24,40 @@
 #' unique(rowSums(out[, 3:5]))
 fortify_aggregate.pomp_df <- function(data,
                                            states = c("S", "I", "R"),
-                                         enquo_states = NULL,
+                                          package_source = NULL){
+    fortify_aggregate.pomp_df_inner(data = data,
+                              states = dplyr::enquo(states))
+  
+
+
+}
+
+
+
+
+#' Takes in data from the R pomp package  where the output is a data frame and
+#' puts it in SIR format for EpiCompare
+#'
+#' @param data Output from a pomp simulation where the output is a data frame,
+#'   \code{pomp::simulate()}, and we have added the name pomp_df to the class
+#'   names.
+#' @param states vector of state names.  These are strings.
+#' @param package_source optional package name
+#' @details The default variables that are retained are SIR, but can be modified
+#'   with the \code{states} argument.  If code{states = NULL}, we will attempt
+#'   to find all single letter names in POMP and output those.
+#' @return data frame with the following columns
+#' \describe{
+#' \item{t}{the time}
+#' \item{sim}{simulation number (factor variable) (optional column)}
+#' \item{Xk}{where k = 0, ..., K}
+#' }
+fortify_aggregate.pomp_df_inner <- function(data,
+                                           states = c("S", "I", "R"),
                                           package_source = NULL){
 
-    if(!is.null(enquo_states)){
-        state_cols <- enquo_states
-    } else{
-        state_cols <- dplyr::enquo(states)
-    }
-
     states <- unname(tidyselect::vars_select(colnames(data),
-                                             !!!state_cols))
+                                             !!states))
 
 
     if(length(states) == 0){
@@ -43,9 +66,15 @@ fortify_aggregate.pomp_df <- function(data,
     }
 
     pomp_output <- data
-    out <- pomp_output %>%
-        dplyr::rename(t = "time", sim = ".id") %>%
-        dplyr::select(dplyr::one_of(c("t", "sim", states))) %>%
+    if(".id" %in% colnames(pomp_output)){
+        out <- pomp_output %>%
+            dplyr::rename(t = "time", sim = ".id")
+    } else{
+        out <- pomp_output %>%
+            dplyr::rename(t = "time") %>%
+            dplyr::mutate(sim = 1)
+    }
+    out <- out %>%    dplyr::select(dplyr::one_of(c("t", "sim", states))) %>%
         dplyr::mutate(sim = factor(.data$sim, ordered = FALSE)) %>%
         dplyr::arrange(dplyr::desc(-as.numeric(.data$sim)))
 

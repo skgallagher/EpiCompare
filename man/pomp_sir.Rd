@@ -4,7 +4,8 @@
 \name{pomp_sir}
 \alias{pomp_sir}
 \title{pomp_sir Example output from the \code{pomp} package.}
-\format{A 52100 x 7 data.frame where each row is a time and the number of individuals in each state at that time.  The columns include
+\format{
+A 52100 x 7 data.frame where each row is a time and the number of individuals in each state at that time.  The columns include
 \describe{
 \item{time}{possibly continuous, greater than 0}
 \item{.id}{the simulation ID}
@@ -13,7 +14,8 @@
 \item{R}{the number of Recovered at the given time}
 \item{H}{the number of new incidence}
 \item{cases}{the number of cases recorded within a given reporting interval}
-}}
+}
+}
 \usage{
 pomp_sir
 }

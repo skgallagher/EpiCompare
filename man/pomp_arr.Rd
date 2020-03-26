@@ -4,7 +4,9 @@
 \name{pomp_arr}
 \alias{pomp_arr}
 \title{Example SIR simulation output of class 'array' from the \code{pomp} package}
-\format{A list of 2 entries where the first and second entries are both arrays.  The first entry has dimension 4x 100 x10 and the dimension names are respectively variable ("S", "I", "R", "H"), rep, and time.  The second entry has dimension 1 x 100 x 101 where the dimension names are respectively variable ("cases"), 'rep', and 'time'.  Thus entry ijk in either array corresponds to the number of the variable i at simulation/rep j and time k.}
+\format{
+A list of 2 entries where the first and second entries are both arrays.  The first entry has dimension 4x 100 x10 and the dimension names are respectively variable ("S", "I", "R", "H"), rep, and time.  The second entry has dimension 1 x 100 x 101 where the dimension names are respectively variable ("cases"), 'rep', and 'time'.  Thus entry ijk in either array corresponds to the number of the variable i at simulation/rep j and time k.
+}
 \usage{
 pomp_arr
 }

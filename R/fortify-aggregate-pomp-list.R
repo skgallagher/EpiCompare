@@ -1,14 +1,13 @@
 #' Takes in data from the R pomp package  where the output is a data frame and
-#' puts it in SIR format for EpiCompare
+#' puts it in SIR format for EpiCompare.
 #'
 #' @param data Output from a pomp simulation where the output is a data frame,
 #'   \code{pomp::simulate()}
-#' @param states vector of state names
-#' @param enquo_states either is null or a quosure
+#' @param states vector of state names.  These are strings.
 #' @param package_source optional package name
 #' @details The default variables that are retained are SIR, but can be modified
 #'   with the \code{states} argument.  If code{states = NULL}, we will attempt
-#'   to find all single letter names in POMP and output those.
+#'   to find all single letter names in POMP and output those.  This is an internal function.
 #' @return data frame with the following columns
 #' \describe{
 #' \item{t}{the time}
@@ -17,21 +16,13 @@
 #' }
 fortify_aggregate.pomp_list <- function(data,
                                            states = c("S", "I", "R"),
-                                        enquo_states = NULL,
                                            package_source = NULL){
 
     nms <- dimnames(data$states)
     nm_vars <- nms$variable
-    ## pull out state names
-  #  browser()
-    if(!is.null(enquo_states)){
-        state_cols <- enquo_states
-    } else{
-        state_cols <- dplyr::enquo(states)
-    }
 
     states <- unname(tidyselect::vars_select(nm_vars,
-                                             !!!state_cols))
+                                             !!states))
 
     if(length(states) == 0){
 

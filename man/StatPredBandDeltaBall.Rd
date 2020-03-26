@@ -5,7 +5,9 @@
 \alias{StatPredBandDeltaBall}
 \title{stat object for use in delta_ball based stat_prediction_band and
 geom_prediction_band}
-\format{An object of class \code{StatPredBandDeltaBall} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.}
+\format{
+An object of class \code{StatPredBandDeltaBall} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.
+}
 \usage{
 StatPredBandDeltaBall
 }

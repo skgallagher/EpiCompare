@@ -4,12 +4,14 @@
 \name{EpiModel_agg_bd}
 \alias{EpiModel_agg_bd}
 \title{EpiModel_agg_bd Example output from the \code{EpiModel} package for a individual model with birth and death rates.}
-\format{a \code{dcm} object from the \code{EpiModel} package.  This contains the following elements:
+\format{
+a \code{dcm} object from the \code{EpiModel} package.  This contains the following elements:
 \describe{
 \item{param}{the epidemic parameters passed into the model through param, with additional parameters added as necessary.}
 \item{control}{the control settings passed into the model through control, with additional controls added as necessary.}
 \item{epi}{a list of data frames, one for each epidemiological output from the model. Outputs for base models always include the size of each compartment, as well as flows in, out of, and between compartments.}
-}}
+}
+}
 \usage{
 EpiModel_agg_bd
 }

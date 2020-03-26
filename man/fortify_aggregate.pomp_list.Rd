@@ -3,22 +3,15 @@
 \name{fortify_aggregate.pomp_list}
 \alias{fortify_aggregate.pomp_list}
 \title{Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare}
+puts it in SIR format for EpiCompare.}
 \usage{
-\method{fortify_aggregate}{pomp_list}(
-  data,
-  states = c("S", "I", "R"),
-  enquo_states = NULL,
-  package_source = NULL
-)
+\method{fortify_aggregate}{pomp_list}(data, states = c("S", "I", "R"), package_source = NULL)
 }
 \arguments{
 \item{data}{Output from a pomp simulation where the output is a data frame,
 \code{pomp::simulate()}}
 
-\item{states}{vector of state names}
-
-\item{enquo_states}{either is null or a quosure}
+\item{states}{vector of state names.  These are strings.}
 
 \item{package_source}{optional package name}
 }
@@ -32,10 +25,10 @@ data frame with the following columns
 }
 \description{
 Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare
+puts it in SIR format for EpiCompare.
 }
 \details{
 The default variables that are retained are SIR, but can be modified
   with the \code{states} argument.  If code{states = NULL}, we will attempt
-  to find all single letter names in POMP and output those.
+  to find all single letter names in POMP and output those.  This is an internal function.
 }

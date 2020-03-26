@@ -4,12 +4,7 @@
 \alias{fortify_aggregate}
 \title{Take external aggregate data and put it in a format used in this package}
 \usage{
-fortify_aggregate(
-  data,
-  states = NULL,
-  enquo_states = NULL,
-  package_source = NULL
-)
+fortify_aggregate(data, states = NULL, package_source = NULL)
 }
 \arguments{
 \item{data}{output from external source package.  See details}
@@ -36,5 +31,13 @@ This function converts external data sources (we currently support
   and puts it in a format that can be used by our exploring functions.
 }
 \examples{
-## TODO
+   ## ICM
+   out <- fortify_aggregate(EpiModel_icm)
+   ## DCM
+   out3 <- fortify_aggregate(EpiModel_det)
+   ## POMP (POMP_LIST)
+   out <- fortify_aggregate(pomp_pomp, states = NULL)
+   ##
+   out <- fortify_aggregate(pomp_pomp, states = c("S", "I", "R"))
+   out <- fortify_aggregate(pomp_df, package_source = "pomp")
 }

@@ -6,7 +6,8 @@
 \alias{hagelloch_raw2}
 \alias{hagelloch_aug_births}
 \title{Measles in Hagelloch, Germany, 1861}
-\format{A data frame with 188 rows and 12 columns
+\format{
+A data frame with 188 rows and 12 columns
 \describe{
   \item{PN}{Patient number (Case ID) per individual}
   \item{NAME}{Patient's last name}
@@ -42,7 +43,12 @@
   \item{tR}{imputed time when individual entered into recovery}
   \item{tI}{imputed time when individual was infected}
  \item{tBORN}{Imputed time when individual was born.  (Only for \code{hagelloch_aug_births}}
-}}
+}
+
+An object of class \code{agents_df} (inherits from \code{agents_df}, \code{data.frame}) with 188 rows and 26 columns.
+
+An object of class \code{agents_df} (inherits from \code{data.frame}) with 193 rows and 27 columns.
+}
 \source{
 \url{https://rdrr.io/rforge/surveillance/man/hagelloch.html}
 }

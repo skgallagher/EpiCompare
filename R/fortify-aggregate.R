@@ -26,10 +26,17 @@
 #'   and puts it in a format that can be used by our exploring functions.
 #' @export
 #' @examples
-#' ## TODO
+#'    ## ICM
+#'    out <- fortify_aggregate(EpiModel_icm)
+#'    ## DCM
+#'    out3 <- fortify_aggregate(EpiModel_det)
+#'    ## POMP (POMP_LIST)
+#'    out <- fortify_aggregate(pomp_pomp, states = NULL)
+#'    ##
+#'    out <- fortify_aggregate(pomp_pomp, states = c("S", "I", "R"))
+#'    out <- fortify_aggregate(pomp_df, package_source = "pomp")
 fortify_aggregate <- function(data,
                               states = NULL,
-                              enquo_states = NULL,
                               package_source = NULL){
 
     UseMethod("fortify_aggregate")

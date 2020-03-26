@@ -5,7 +5,9 @@
 \alias{StatPredBandKDE}
 \title{stat object for use in kde based stat_prediction_band and
 geom_prediction_band}
-\format{An object of class \code{StatPredBandKDE} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.}
+\format{
+An object of class \code{StatPredBandKDE} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.
+}
 \usage{
 StatPredBandKDE
 }

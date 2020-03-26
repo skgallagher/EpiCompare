@@ -4,14 +4,16 @@
 \name{hagelloch_agents}
 \alias{hagelloch_agents}
 \title{Measles in Hagelloch, Germany, 1861 (agent format)}
-\format{A data frame with 188 rows and 3 columns. Below are the description of
+\format{
+A data frame with 188 rows and 3 columns. Below are the description of
 each column.
 \describe{
   \item{init_state}{Initial state (\code{factor}) for individual (at time t = 0). For the
   states, 0 = S, 1 = I, 2 = R.}
   \item{max_time_S}{maximum time individual was suspectable (S)}
   \item{max_time_I}{maximum time individual was infected (I)}
-}}
+}
+}
 \usage{
 hagelloch_agents
 }

@@ -4,7 +4,9 @@
 \name{pomp_pomp}
 \alias{pomp_pomp}
 \title{Example SIR simulation output of class ' pomp' from the \code{pomp} package}
-\format{The object is a 'pompList' which contains essentially all information from a \code{pomp} simulation.}
+\format{
+The object is a 'pompList' which contains essentially all information from a \code{pomp} simulation.
+}
 \usage{
 pomp_pomp
 }

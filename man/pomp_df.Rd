@@ -4,7 +4,8 @@
 \name{pomp_df}
 \alias{pomp_df}
 \title{Example SIR simulation output of class ' data.frame' from the \code{pomp} package}
-\format{A data frame of dimension 10100 x 7 where the columns are
+\format{
+A data frame of dimension 10100 x 7 where the columns are
 \describe{
 \item{time}{an integer value between 0 and 100}
 \item{.id}{the simulation ID number}
@@ -13,7 +14,8 @@
 \item{R}{The number of Recovered at given time and simulation ID}
 \item{H}{A helper variable}
 \item{cases}{}
-}}
+}
+}
 \usage{
 pomp_df
 }

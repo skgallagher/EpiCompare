@@ -4,13 +4,15 @@
 \name{hagelloch_sir}
 \alias{hagelloch_sir}
 \title{Measles in Hagelloch, Germany, 1861 (SIR format)}
-\format{A data frame with 95 rows and 4 columns
+\format{
+A data frame with 95 rows and 4 columns
 \describe{
   \item{t}{time since outbreak, \eqn{t = 0, \dots, T=94}}
   \item{S}{Number of individuals suspectable}
   \item{I}{Number of individuals infected}
   \item{R}{Number of individuals in recovery}
-}}
+}
+}
 \usage{
 hagelloch_sir
 }
