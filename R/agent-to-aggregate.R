@@ -73,7 +73,7 @@ check_min_max_time <- function(min_max_time){
 #' checks if states within data frame are ordered as inputted (<=)
 #'
 #' This function assesses whether agents's time they enter each state is
-#' correctly order. The assumption is that these would be ordered in increasing
+#' correctly ordered. The assumption is that these would be ordered in increasing
 #' values, with the allowance of \code{NA} values not effecting this decision.
 #'
 #' If this important assumption is violated this function either raises an error
@@ -109,6 +109,9 @@ check_min_max_time <- function(min_max_time){
 #' @export
 check_ordered <- function(df, states, assert_error = TRUE){
 
+  if(c("tbl_df") %in% class(df)){
+    df <- as.data.frame(df)
+  }
   df_select <- df[, states]
   K <- length(states)
 

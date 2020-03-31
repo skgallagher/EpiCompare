@@ -11,12 +11,13 @@ test_that("NAs for geom_aggregate", {
                    tI = c(446, NA, 196, 465, NA),
                    tR = c(464, NA, 425, 476, NA))
 
-  df %>% ggplot() +
+  g <- df %>% ggplot() +
     geom_aggregate(aes(y = tI, z = tR),
                    color = "blue") +
     coord_tern()
+  print(g)
 
-  expect_true(TRUE)
+  expect_true(FALSE)
 
 })
 
