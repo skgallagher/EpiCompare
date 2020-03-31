@@ -1,6 +1,6 @@
 ---
 title: "Comparing bands and assessing containment"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 ---
 
 ```{r, include = FALSE}
@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.align = "center"
 )
-devtools::load_all()
+print(sessionInfo())
 ```
 
 <left>
@@ -30,7 +30,6 @@ theme_set(theme_minimal())
 ```{r echo = F, message = F, warning = F}
 # hidden load currently
 library(devtools)
-#library(EpiCompare)
 library(dplyr)
 library(tidyr)
 ggplot2::theme_set(ggplot2::theme_minimal())
@@ -55,7 +54,8 @@ pretend_actual_data <- EpiCompare::simulate_SIR_agents(
 
 
 
-pretend_actual_data %>% ggplot() +
+pretend_actual_data %>% 
+  ggplot() +
   geom_aggregate(aes(y = tI, z = tR),
                  color = "blue") +
   coord_tern() 
