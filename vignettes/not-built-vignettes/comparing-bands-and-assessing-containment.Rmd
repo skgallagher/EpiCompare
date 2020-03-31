@@ -1,10 +1,6 @@
 ---
 title: "Comparing bands and assessing containment"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Getting started with EpiCompare (for SIR agent-based data)}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -17,7 +13,7 @@ devtools::load_all()
 ```
 
 <left>
-![](../man/figures/logo.png){width=100px}
+![](../../man/figures/logo.png){width=100px}
 
 ```{r eval = FALSE}
 if(!require(EpiCompare)){
