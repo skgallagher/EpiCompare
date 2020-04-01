@@ -52,12 +52,13 @@ fortify_aggregate.epimodel_inner <- function(data,
                 "rescaled to evenly spaced, integer values")
     }
 
+    
     ## Extract time steps
     mat <- data$epi[[1]]
     if("timesteps" %in% names(data$control)){
-        t <- rep(1:length(data$control$timesteps), ncol(mat))
+        t <- rep(1:length(data$control$timesteps), each = ncol(mat))
     } else{
-        t <- rep(1:data$control$nsteps, ncol(mat))
+        t <- rep(1:data$control$nsteps, each = ncol(mat))
     }
 
 

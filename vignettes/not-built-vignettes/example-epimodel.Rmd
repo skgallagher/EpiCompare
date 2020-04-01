@@ -1,0 +1,177 @@
+---
+title: "Compatibility with EpiModel"
+output: html_document
+bibliography: our-bib.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+devtools::load_all()
+library(EpiModel)
+library(dplyr)
+library(ggtern)
+```
+
+
+
+
+##  Overview
+
+The software suite [EpiModel](https://www.epimodel.org/) [@jeness2018-epimodel] ([R package: `EpiModel`](https://cran.r-project.org/web/packages/EpiModel/index.html)) provides a number of tools in order to simulate and analyze epidemic models, especially those of the form $S \rightarrow I \rightarrow R$, where $S$ stands for susceptible, $I$ stands for infectious, and $R$ stands for recovered.
+
+In this vignette, we walk through how to convert your models from EpiModel and visualize and assess them with EpiCompare.
+
+You will need to install/load the following packages.
+
+```{r eval = FALSE}
+library(EpiCompare)
+library(EpiModel)
+library(dplyr)
+library(knitr)
+```
+
+
+## Deterministic Compartment Model
+
+EpiModel allows the user to make a variety of compartment models with different disease parameters.  We have stored one such example in `EpiCompare::EpiModel_det`.  You can find more details about this prepared data set with `?EpiCompare::EpiModel_det`.
+
+
+The below code loads in the object which is of class `dcm`, which is a special class from the `EpiModel` package.  The parameter settings are found with `EpiModel_det$param` and more model specification can be found with `EpiModel_det$control`.
+
+```{r}
+data(EpiModel_det)
+class(EpiModel_det)
+EpiModel_det$param
+```
+
+
+EpiCompare provides a function, `fortify_aggregate()` to wrangle the data contained in the class `dcm` to be used with our pipeline.
+
+```{r}
+fortified_dcm <- fortify_aggregate(EpiModel_det)
+fortified_dcm %>% head(3) %>% knitr::kable()
+```
+
+By default, `fortify_aggregate` will attempt to find all the relevant states and their counts from the `EpiModel` object, but we can specify which ones we want.  The existing names can be found with
+
+```{r}
+names(EpiModel_det$epi)
+```
+
+If we want to look at only the number of infectious at each time step, we can look at
+
+```{r}
+dcm1 <- fortify_aggregate(EpiModel_det, states = c("i.num"))
+dcm1 %>% head(3) %>% knitr::kable()
+```
+
+The function `fortify_aggregate` is a `tidyverse` styled function meaning it can take as arguments for states either strings or symbolic variables.  Note that the variable names are assigned by order given in `states`.  
+
+```{r}
+dcm2 <- fortify_aggregate(EpiModel_det, states = c(r.num, i.num, s.num))
+dcm2 %>% head(3) %>% knitr::kable()
+```
+
+We add an identifier for this model data.
+
+```{r}
+fortified_dcm <- fortified_dcm %>%
+  mutate(id = "dcm")
+
+```
+
+## Individual Contact Model
+
+EpiModel also allows the user to create stochastic simulations of SIR models.  Like before, we have prepared a pre-made object, `EpiCompare::EpiModel_icm`, details of which can be found with `?EpiCompare::EpiModel_icm`.  More parameter settings can be found by looking at the `EpiModel_icm$control` settings.
+
+```{r}
+data(EpiModel_icm)
+class(EpiModel_icm)
+EpiModel_det$param
+```
+
+Again, we wrangle the data with `fortify_aggregate`, which will automatically detect the $S$, $I$, and $R$ compartments by default.  We also add an identifier for this model.
+
+```{r}
+fortified_icm <- fortify_aggregate(EpiModel_icm)
+fortified_icm %>% head(3) %>% knitr::kable()
+fortified_icm <- fortified_icm %>%
+  mutate(id = "icm")
+```
+
+We now see this model has multiple simulations, as opposed to the deterministic version.  We can plot the individual simulations.
+
+```{r, message = FALSE}
+library(tidyr)
+## Vs time
+out <-  fortified_icm %>%
+  pivot_longer(-c(t, sim, id)) %>%
+  arrange(sim, t)
+
+out %>%
+  ggplot() + geom_path(aes(x = t, y = value, group = paste(sim, name)), alpha = .4) + 
+      facet_wrap(~name) + labs(title = "State vs. Time")
+```
+
+```{r, warning = FALSE}
+## Ternary
+fortified_icm %>%
+  ggplot() + geom_path(aes(x = X0, y = X1, z = X2, group = sim), alpha = .4) + 
+  coord_tern() + labs(title = "Ternary View")
+```
+
+
+## Network-based Compartment Model
+
+Finally, we provide the same `fortify_aggregate` function to network models produced in EpiModel.
+
+```{r eval = FALSE}
+## WARNING:  Will take a minute or two
+
+set.seed(42)
+nw <- network.initialize(n = 1000, directed = FALSE)
+nw <- set.vertex.attribute(nw, "race", rep(0:1, each = 500))
+formation <- ~edges + nodefactor("race") + nodematch("race") + concurrent
+target.stats <- c(250, 375, 225, 100)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+est1 <- netest(nw, formation, target.stats, coef.diss, edapprox = TRUE)
+
+param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.02)
+status.vector <- c(rbinom(500, 1, 0.1), rep(0, 500))
+status.vector <- ifelse(status.vector == 1, "i", "s")
+init <- init.net(status.vector = status.vector)
+control <- control.net(type = "SIR", nsteps = 100,
+                       nsims = 100, epi.by = "race")
+sim_output <- netsim(est1, param, init, control)
+```
+```{r eval = FALSE, echo = FALSE}
+saveRDS(sim_output, "sim_output.RDS")
+```
+
+```{r echo = FALSE}
+sim_output <- readRDS("sim_output.RDS")
+```
+
+```{r}
+class(sim_output)
+names(sim_output$epi)
+```
+
+```{r}
+fortified_net <- fortify_aggregate(sim_output, states = c("s.num", "i.num", "r.num"))
+```
+
+We can then plot the simulations and a 95% confidence band.
+
+```{r, warning = FALSE}
+fortified_net %>% 
+  ggplot() +
+    geom_prediction_band(aes(x = X0, y = X1, z = X2, t = t, sim_group = as.numeric(sim)),
+                         alpha = .2, fill = "blue", color = "blue",
+                         conf_level = .9, pb_type = "kde") +
+    geom_line(aes(x = X0, y = X1, z = X2, group = sim), alpha = .2) +
+    coord_tern() + theme_zoom_L(.45)
+```
+
+
+## References
