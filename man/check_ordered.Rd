@@ -30,7 +30,7 @@ This function returns either
 }
 \description{
 This function assesses whether agents's time they enter each state is
-correctly order. The assumption is that these would be ordered in increasing
+correctly ordered. The assumption is that these would be ordered in increasing
 values, with the allowance of \code{NA} values not effecting this decision.
 }
 \details{

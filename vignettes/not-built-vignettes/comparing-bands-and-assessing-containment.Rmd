@@ -132,7 +132,7 @@ delta_ball_cb <- df_group %>%
 ```
 
 Which is just a data version (not exactly, but close) to this:
-```{r cache = T}
+```{r cache = F}
 ggplot() +
   geom_prediction_band(data = df_group, 
                        aes(x = S, y = I, z = R, 
@@ -189,7 +189,7 @@ df_group2 <- sim50_2 %>% group_by(sim) %>%
 
 ### First
 
-```{r cache = T}
+```{r cache = F}
 df_all <- rbind( df_group %>% ungroup() %>% mutate(sim = as.character(sim),
                                                    epi_model = "first"),
                 df_group2 %>% ungroup() %>% mutate(sim = as.character(sim),

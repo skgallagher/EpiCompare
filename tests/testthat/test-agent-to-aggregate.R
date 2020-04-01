@@ -791,7 +791,6 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks, strings", {
 
 test_that("NAs for geom_aggregate", {
 
-  library(ggplot2)
   df <- data.frame(agent_id = factor(1:5),
                    sim = factor(1),
                    tI = c(446, NA, 196, 465, NA),
@@ -802,8 +801,9 @@ test_that("NAs for geom_aggregate", {
                    color = "blue") +
     coord_tern()
 
+  print(g)
 
-  expect_silent(print(g))
+  expect_true(is.ggplot(g))
 
 
 })
