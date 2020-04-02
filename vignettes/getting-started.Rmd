@@ -17,10 +17,6 @@ library(devtools)
 devtools::load_all()
 ```
 
-<left>
-![](../man/figures/logo.png){width=100px}
-</left>
-
 # Installation
 
 To install `EpiCompare`, run the folllowing code.

@@ -3,38 +3,41 @@
 \docType{package}
 \name{EpiCompare}
 \alias{EpiCompare}
-\title{EpiCompare: Ternary plot visualization for SIR curves (UPDATE)}
+\title{EpiCompare:}
 \description{
-The goal of EpiCompare is to develop functional based visualization and
-statistics that focus on use in ternary plots. (UPDATE)
+The goal of \code{EpiCompare} is to provide the epidemiology community with
+easy-to-use tools to encourage comparing and assessing epidemics and
+epidemiology models in a time-free manner. All tools attempt to adhere to
+\code{\link[tidyverse]{tidyverse}}/\code{\link[ggplot2]{ggplot2}} style to
+enhance easy of use.
 }
 \details{
-This package attempts to:
+Time free analysis allows for stronger comparison of epidemics and model
+based simulations avoiding different scaling and shifts of time that mess up
+time-based comparisons.
+
+To achieve this goal, the package contains:
 \itemize{
-  \item \strong{Comparisons Model and Epidemic Comparisons}: We provide easy
-  ways to compare multiple epidemics, epidemics vs models, or models verse
-  models with ternary plots and confidence analysis
-    \itemize{
-      \item Ternary plots have been shown to help show time-independent like
-      comparing R_0
-      \item Added confidence band structure allows for examining variability
-      within simulations from models cleanly (and without worrying about time
-      variation)
-        \itemize{
-          \item Provides ways to moves beyond pointwise examination to
-          uniform containment
-        }
-    }
-  \item \strong{Agent (->/ vs) Aggregate}: Provide easy way to compare agents
-  based data/modeling vs aggregation
-    \itemize{
-      \item Our tools provide easy ways to explore different grouping of
-      agents and understanding how these groups different through aggregation
-      visualizations (see Shannon’s thesis for rational of quick access to
-      grouping abilities)
-   }
-  \item\strong{ggplot2/ggtern and tidyverse}: tools exist in the rapidly
-  expanding tidyverse/ggplot2 paradigm, allowing for quick deployment and
-  less cost in learning new assessment tools
- }
+\item \strong{Visualization tools} to visualize SIR epidemics and simulations
+from SIR models in a time-free manner using \code{\link[ggtern]{ggtern}}’s
+ternary plots and prediction bands. For agent-based SIR models we also
+provide visualization tools to let the user easily explore how different
+characteristics of the agents relate to different experiences in the
+epidemic.
+
+\item \strong{General comparison} tools to compare epidemics and epidemic
+models that have higher numbers of states (again in a time-free manner),
+allowing for the user to examine the differences between models through
+simulations, and if an epidemic is similar to a model through simulations and
+prediction bands.
+
+\item \strong{Conversion tools} to:
+\itemize{
+\item Convert and then compare models from \emph{standard epidemic packages}
+like \code{\link[EpiModel]{EpiModel}}, \code{\link[pomp]{pomp}}, as well as
+internal agent-based models, and epidemics in a common framework.
+\item Convert \emph{agent-based information into aggregate} to compare in the
+aggregate framework described above.
+}
+}
 }

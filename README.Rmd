@@ -14,14 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/figures/logo.png" align="right" alt="" width="120" /></a>
+# EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/figures/logo.png" align="right" alt="EpiCompare" width="120" /></a>
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare)
 [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare)
 <!-- badges: end -->
 
-The goal of EpiCompare is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to tidyverse/ggplot2 style to enhance easy of use.
+The goal of `EpiCompare` is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to `tidyverse`/`ggplot2` style to enhance easy of use.
 
 Time free analysis allows for stronger comparison of epidemics and model based simulations avoiding different scaling and shifts of time that mess up time-based comparisons. 
 
