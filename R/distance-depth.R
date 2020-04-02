@@ -87,8 +87,8 @@ depth_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
 #' Specifically we use Geenens & Nieto-Reyes's global distance-based depth
 #' defined as:
 #'
-#' \eqn{DD(x, \hat{P}) = 1/(n choose 2) * sum_{i!=j} I(d(X_1, X_2) > max(d(X_1,x),
-#' d(X_2,x)))}
+#' \eqn{DD(x, \hat{P}) = 1/(n choose 2) \cdot \sum_{i!=j} I(d(X_i, X_j) >
+#' max(d(X_i,x), d(X_j,x)))}
 #'
 #' @details
 #' This function (renamed as \code{depth_function}) is shared with
@@ -147,5 +147,91 @@ distance_depth_function <- function(dist_mat){
                                 ])
   }
 
+  return(depth)
+}
+
+
+
+#' Localized version of Geenens & Nieto-Reyes functional distance-based depth
+#'
+#' Calculates a localized distance-based depth vector using a distance matrix.
+#' Specifically we alter Geenens & Nieto-Reyes's global distance-based depth to
+#' a local depth similar to Agostinelli & Romanazzi (2011) localized approach,
+#' and define our local distance-based depth as:
+#' 
+#' \eqn{LDD(x, \hat{P}, \tau) = 1/(|S| choose 2) \cdot \sum_{i!=j, i,j \in S}
+#' I(d(X_i, X_j) > max(d(X_i,x), d(X_j,x)))}
+#'
+#' where \eqn{S = {i : D(X_i,x) < \tau}}.
+#'
+#' Note that if \eqn{|S| = 1}, then we say that \code{LDD(x) = 0}.
+#'
+#' @details
+#' This function (renamed as \code{depth_function}) is shared with
+#' \pkg{TCpredictionbands} on github:
+#' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
+#' 
+#' @param dist_mat a n x n square positive symmetric matrix
+#' @param tau localizing parameter (default is Inf)
+#'
+#' @return depth vector length n with depth values associated with indices in
+#'   \code{dist_mat}
+#' @export
+#'
+#' @examples
+#' dist_mat <- matrix(c(0,   1, 1.5,
+#'                      1,   0, 2,
+#'                      1.5, 2, 0   ),
+#'                    nrow = 3,
+#'                    byrow = TRUE)
+#'
+#' dd_vec <- local_distance_depth_function(dist_mat) # c(1,0,0)
+#' 
+#' ldd_vec1 <- local_distance_depth_function(dist_mat, tau = 2) # c(1,0,0)
+#' ldd_vec2 <- local_distance_depth_function(dist_mat, tau = 1.5) # c(1,0,0)
+#' ldd_vec3 <- local_distance_depth_function(dist_mat, tau = 1) # c(0,0,0)
+#' ldd_vec <- local_distance_depth_function(dist_mat, tau = .1) # c(0,0,0)
+local_distance_depth_function <- function(dist_mat, tau = Inf){
+  
+  if (nrow(dist_mat) != ncol(dist_mat) |
+      any(t(dist_mat) != dist_mat) |
+      any(dist_mat < 0)) {
+    stop("your dist_mat is not a positive symmetric square matrix")
+  }
+  
+  N <- nrow(dist_mat)
+  depth <- rep(0, N)
+  
+  for (obs_index in 1:N) {
+    # effected by tau
+    rm_idx <- c(1:N)[-obs_index]
+    
+    dist_to_obs = dist_mat[obs_index, -obs_index]
+    keep_idx <- rm_idx[dist_to_obs <= tau]
+    N_keep <- length(keep_idx)
+    
+    if (N_keep <= 1) { # if only 1 or 0 points are in the S
+      depth[obs_index] <- 0
+    } else {
+    sub_matrix <- dist_mat[keep_idx,keep_idx]
+    obs_column <- dist_mat[keep_idx, obs_index]
+    obs_row <- dist_mat[obs_index, keep_idx]
+    
+    obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
+    obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
+                                    nrow = N_keep)
+    obs_combo_array[, ,2] <- matrix(rep(obs_row, N_keep),
+                                    nrow = N_keep, byrow = T)
+    
+    # below seems complicated
+    max_matrix <- apply(obs_combo_array, 1:2, max)
+
+    depth[obs_index] <- mean((sub_matrix > max_matrix)[
+      row(sub_matrix)!=col(sub_matrix)
+      #^ignoring the diagonal values
+      ])
+    }
+  }
+  
   return(depth)
 }

@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A local version (Agostinelli &amp; Romanazzi 2011 style) of Geenens &amp; Nieto-Reyes
-functional distance-based depth — local_distance_depth_function • EpiCompare</title>
+<title>Localized version of Geenens &amp; Nieto-Reyes functional distance-based depth — local_distance_depth_function • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -43,11 +42,11 @@ functional distance-based depth — local_distance_depth_function • EpiCompare
 
 
 
-<meta property="og:title" content="A local version (Agostinelli &amp; Romanazzi 2011 style) of Geenens &amp; Nieto-Reyes
-functional distance-based depth — local_distance_depth_function" />
-<meta property="og:description" content="Calculates a local global distance-based depth vector using a distance matrix.
-Specifically we update Geenens &amp;amp; Nieto-Reyes's global distance-based depth
-to a local version (Agostinelli &amp;amp; Romanazzi 2011 style):" />
+<meta property="og:title" content="Localized version of Geenens &amp; Nieto-Reyes functional distance-based depth — local_distance_depth_function" />
+<meta property="og:description" content="Calculates a localized distance-based depth vector using a distance matrix.
+Specifically we alter Geenens &amp;amp; Nieto-Reyes's global distance-based depth to
+a local depth similar to Agostinelli &amp;amp; Romanazzi (2011) localized approach,
+and define our local distance-based depth as:" />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -138,16 +137,16 @@ to a local version (Agostinelli &amp;amp; Romanazzi 2011 style):" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A local version (Agostinelli &amp; Romanazzi 2011 style) of Geenens &amp; Nieto-Reyes
-functional distance-based depth</h1>
+    <h1>Localized version of Geenens &amp; Nieto-Reyes functional distance-based depth</h1>
     <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/distance-depth.R'><code>R/distance-depth.R</code></a></small>
     <div class="hidden name"><code>local_distance_depth_function.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates a local global distance-based depth vector using a distance matrix.
-Specifically we update Geenens &amp; Nieto-Reyes's global distance-based depth
-to a local version (Agostinelli &amp; Romanazzi 2011 style):</p>
+    <p>Calculates a localized distance-based depth vector using a distance matrix.
+Specifically we alter Geenens &amp; Nieto-Reyes's global distance-based depth to
+a local depth similar to Agostinelli &amp; Romanazzi (2011) localized approach,
+and define our local distance-based depth as:</p>
     </div>
 
     <pre class="usage"><span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</pre>
@@ -161,8 +160,7 @@ to a local version (Agostinelli &amp; Romanazzi 2011 style):</p>
     </tr>
     <tr>
       <th>tau</th>
-      <td><p>positive scalar (default <code>Inf</code> - this makes the function
-return the same as <code>distance_depth_function</code>.)</p></td>
+      <td><p>localizing parameter (default is Inf)</p></td>
     </tr>
     </table>
 
@@ -172,12 +170,14 @@ return the same as <code>distance_depth_function</code>.)</p></td>
   <code>dist_mat</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>\(LDD(x, \hat{P}) = 1/(|S| choose 2) * sum_{i!=j \in S} I(d(X_i, X_j) &gt;
-max(d(X_i,x), d(X_j,x)))\)</p>
-<p>where \(S = \{i: d(X_i,x) \leq \tau \}.\)</p>
+    <p>\(LDD(x, \hat{P}, \tau) = 1/(|S| choose 2) \cdot \sum_{i!=j, i,j \in S}
+I(d(X_i, X_j) &gt; max(d(X_i,x), d(X_j,x)))\)</p>
+<p>where \(S = {i : D(X_i,x) &lt; \tau}\).</p>
+<p>Note that if \(|S| = 1\), then we say that <code>LDD(x) = 0</code>.</p>
 
-<p>This function also makes a point have 0 depth, if $S$ contains just that
-individual point</p>
+<p>This function (renamed as <code>depth_function</code>) is shared with
+<span class="pkg">TCpredictionbands</span> on github:
+<a href='https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands'>TCpredictionbands</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>dist_mat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,   <span class='fl'>1</span>, <span class='fl'>1.5</span>,
@@ -187,10 +187,11 @@ individual point</p>
                    <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='no'>dd_vec</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>) <span class='co'># c(1,0,0)</span>
-<span class='no'>dd_vec2</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='no'>extreme_ldd_vec</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>1.9</span>)
-<span class='no'>extreme_ldd_vec2</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>.5</span>)
-<span class='co'>#c(1,1,1)</span></div></pre>
+
+<span class='no'>ldd_vec1</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='co'># c(1,0,0)</span>
+<span class='no'>ldd_vec2</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>1.5</span>) <span class='co'># c(1,0,0)</span>
+<span class='no'>ldd_vec3</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>1</span>) <span class='co'># c(0,0,0)</span>
+<span class='no'>ldd_vec</span> <span class='kw'>&lt;-</span> <span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>.1</span>) <span class='co'># c(0,0,0)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

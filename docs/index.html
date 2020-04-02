@@ -96,11 +96,11 @@
   <div class="contents col-md-9">
 <div id="epicompare" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#epicompare" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="" width="120"></a>
+<a href="#epicompare" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="EpiCompare" width="120"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of EpiCompare is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to tidyverse/ggplot2 style to enhance easy of use.</p>
+<p>The goal of <code>EpiCompare</code> is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to <code>tidyverse</code>/<code>ggplot2</code> style to enhance easy of use.</p>
 <p>Time free analysis allows for stronger comparison of epidemics and model based simulations avoiding different scaling and shifts of time that mess up time-based comparisons.</p>
 <p>To achieve this goal, the package contains:</p>
 <ul>
@@ -201,8 +201,8 @@ df_groups <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
 <li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/r/base/library.html">library(ggtern); EpiCompare:::update_approved_layers()</a></code></p></li>
 </ol>
 </li>
-<li><p><code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color= var1, group =var2)</a></code> you may actually want to do <code>aes(color= var1, group =paste(var1, var2)</code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</p></li>
-<li><p>I (<code>skgallagher</code>) had problems with tidy evaluation with <code>fortify_aggregate</code>, specifically when one method called another method. To get around this, I used a hack to introducing a new argument which would only ever be <code>NULL</code> or an object of class <code>quosure</code>. Thus the outer methods that called inner methods passed quosures. See code in <code>fortify-aggregate-list.R</code> e.g..</p></li>
+<li>
+<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">

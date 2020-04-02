@@ -10,6 +10,6 @@
 ^doc$
 ^Meta$
 ^README\.Rmd$
-^vignettes/high-dimensional-bands-and-containment\.Rmd$
+^vignettes/not-built-vignettes/.*
 ^dev/.*
 ^shannon_thesis/.*

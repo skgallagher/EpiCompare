@@ -1,7 +1,7 @@
 
-How to cite item
-EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks
-Citation Format  
+%How to cite item
+%EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks
+%Citation Format  
 @article{jeness2018-epimodel,
    author = {Samuel Jenness and Steven Goodreau and Martina Morris},
    title = {EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks},
@@ -17,3 +17,44 @@ Citation Format
    url = {https://www.jstatsoft.org/v084/i08}
 }
 
+@article{Agostinelli2011,
+abstract = {Local depth is a generalization of ordinary depth able to reveal local features of the probability distribution. Liu's simplicial depth is primarily used, but results for Tukey's halfspace depth are also derived. It is shown that the maximizers of local depth can help to detect the mode(s) of a probability distribution. This work is devoted to the univariate case, but the main definitions are stated in the general multivariate case. Theoretical results and applications are illustrated with several examples. {\textcopyright} 2010 Elsevier B.V.},
+annote = {This paper proposes 2 local depth that switches the definitions of the global depths they update in such a ways the the geometry changes are pretty clean.
+
+Local depth definitions:
+1. Local simplicial depth (t is tuning): 
+ld{\_}s(x, t) = Proportion of simplicials of size p that contain x (p should be at least d + 1 - where d is size of space) *is the extension of this actually check the triangle inequality and see if the max distance is below tau?*
+
+2. Local halfspace depth:
+d{\_}hs: halfspace is converted into slabs. then same definition is applied
+
+In 4.1 they have some examples but also discuss some quick ways one might tune tau (specifically using the distribution of |X{\_}1 - X{\_}2| (in 1d space)
+
+- example (22) shows that - with too small a selection of tau, you gets a high number of patial maximum ("local") - think about how to avoid it?
+
+- proposed examining |x{\_}1 - x{\_}2| distribution (For 1d) to select tau.
+* could we provide analysis to how tau is "just right"? (min should probably be our $\backslash$delta
+
+- also mentioned a way to test if a point is a mode (this is depend on tau {\&} it seems to have the reverse null hypothesis then as desired) - not sure this is need to be extended -but if there was a way to think about H{\_}t,n as a function of tau we might be able to better capture tau. 
+
+- I don't think tau really needs to go to zero as n-{\textgreater} infinite. Does this match with KDEs?},
+author = {Agostinelli, Claudio and Romanazzi, Mario},
+doi = {10.1016/j.jspi.2010.08.001},
+issn = {03783758},
+journal = {Journal of Statistical Planning and Inference},
+keywords = {Data depth,Halfspace depth,Multimodal distribution,Simplicial depth},
+month = {feb},
+number = {2},
+pages = {817--830},
+publisher = {Elsevier B.V.},
+title = {{Local depth}},
+volume = {141},
+year = {2011}
+}
+
+@misc{Geenens2017,
+abstract = {The concept of depth has proved very important for multivariate and functional data analysis, as it essentially acts as a surrogate for the notion a ranking of observations which is absent in more than one dimension. Yet, naive attempts to extend to the functional context some succesful multivariate depth measures have been seen to lead to absurd results, as they failed to take into acount in their construction purely functional features such as continuity, smoothness and contiguity. In this paper we suggest a natural depth which satisfies all the properties that a valid functional depth measure should fulfill. It is explicitly constructed on a certain distance d between functional objects, which has to be selected by the analyst. This allows the depth measure to really be tailored to the data at hand and to the ultimate goal of the analysis, a very desirable property in functional data analysis given the polymorphic nature of those data. This flexibility is thoroughly illustrated by several real data analyses, including an original one pertaining to the field of Symbolic Data Analysis},
+author = {Geenens, Gery and Nieto-Reyes, Alicia},
+title = {{On the functional distance-based depth}},
+year = {2017}
+}

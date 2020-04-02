@@ -19,8 +19,8 @@ Specifically we use Geenens & Nieto-Reyes's global distance-based depth
 defined as:
 }
 \details{
-\eqn{DD(x, \hat{P}) = 1/(n choose 2) * sum_{i!=j} I(d(X_1, X_2) > max(d(X_1,x),
-d(X_2,x)))}
+\eqn{DD(x, \hat{P}) = 1/(n choose 2) \cdot \sum_{i!=j} I(d(X_i, X_j) >
+max(d(X_i,x), d(X_j,x)))}
 
 
 This function (renamed as \code{depth_function}) is shared with

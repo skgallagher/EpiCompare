@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EpiCompare: Ternary plot visualization for SIR curves (UPDATE) — EpiCompare • EpiCompare</title>
+<title>EpiCompare: — EpiCompare • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,9 +42,12 @@
 
 
 
-<meta property="og:title" content="EpiCompare: Ternary plot visualization for SIR curves (UPDATE) — EpiCompare" />
-<meta property="og:description" content="The goal of EpiCompare is to develop functional based visualization and
-statistics that focus on use in ternary plots. (UPDATE)" />
+<meta property="og:title" content="EpiCompare: — EpiCompare" />
+<meta property="og:description" content="The goal of EpiCompare is to provide the epidemiology community with
+easy-to-use tools to encourage comparing and assessing epidemics and
+epidemiology models in a time-free manner. All tools attempt to adhere to
+tidyverse/ggplot2 style to
+enhance easy of use." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -135,43 +138,45 @@ statistics that focus on use in ternary plots. (UPDATE)" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>EpiCompare: Ternary plot visualization for SIR curves (UPDATE)</h1>
+    <h1>EpiCompare:</h1>
     <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/EpiCompare.R'><code>R/EpiCompare.R</code></a></small>
     <div class="hidden name"><code>EpiCompare.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The goal of EpiCompare is to develop functional based visualization and
-statistics that focus on use in ternary plots. (UPDATE)</p>
+    <p>The goal of <code>EpiCompare</code> is to provide the epidemiology community with
+easy-to-use tools to encourage comparing and assessing epidemics and
+epidemiology models in a time-free manner. All tools attempt to adhere to
+<code><a href='https://tidyverse.tidyverse.org/reference/tidyverse-package.html'>tidyverse</a></code>/<code><a href='https://ggplot2.tidyverse.org/reference/ggplot2-package.html'>ggplot2</a></code> style to
+enhance easy of use.</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This package attempts to:</p><ul>
-<li><p><strong>Comparisons Model and Epidemic Comparisons</strong>: We provide easy
-  ways to compare multiple epidemics, epidemics vs models, or models verse
-  models with ternary plots and confidence analysis</p><ul>
-<li><p>Ternary plots have been shown to help show time-independent like
-      comparing R_0</p></li>
-<li><p>Added confidence band structure allows for examining variability
-      within simulations from models cleanly (and without worrying about time
-      variation)</p><ul>
-<li><p>Provides ways to moves beyond pointwise examination to
-          uniform containment</p></li>
+    <p>Time free analysis allows for stronger comparison of epidemics and model
+based simulations avoiding different scaling and shifts of time that mess up
+time-based comparisons.</p>
+<p>To achieve this goal, the package contains:</p><ul>
+<li><p><strong>Visualization tools</strong> to visualize SIR epidemics and simulations
+from SIR models in a time-free manner using <code><a href='https://rdrr.io/pkg/ggtern/man/ggtern.html'>ggtern</a></code>’s
+ternary plots and prediction bands. For agent-based SIR models we also
+provide visualization tools to let the user easily explore how different
+characteristics of the agents relate to different experiences in the
+epidemic.</p></li>
+<li><p><strong>General comparison</strong> tools to compare epidemics and epidemic
+models that have higher numbers of states (again in a time-free manner),
+allowing for the user to examine the differences between models through
+simulations, and if an epidemic is similar to a model through simulations and
+prediction bands.</p></li>
+<li><p><strong>Conversion tools</strong> to:</p><ul>
+<li><p>Convert and then compare models from <em>standard epidemic packages</em>
+like <code><a href='https://rdrr.io/pkg/EpiModel/man/EpiModel-package.html'>EpiModel</a></code>, <code><a href='https://rdrr.io/pkg/pomp/man/pomp.html'>pomp</a></code>, as well as
+internal agent-based models, and epidemics in a common framework.</p></li>
+<li><p>Convert <em>agent-based information into aggregate</em> to compare in the
+aggregate framework described above.</p></li>
 </ul></li>
-</ul></li>
-<li><p><strong>Agent (-&gt;/ vs) Aggregate</strong>: Provide easy way to compare agents
-  based data/modeling vs aggregation</p><ul>
-<li><p>Our tools provide easy ways to explore different grouping of
-      agents and understanding how these groups different through aggregation
-      visualizations (see Shannon’s thesis for rational of quick access to
-      grouping abilities)</p></li>
-</ul></li>
-<li><p><strong>ggplot2/ggtern and tidyverse</strong>: tools exist in the rapidly
-  expanding tidyverse/ggplot2 paradigm, allowing for quick deployment and
-  less cost in learning new assessment tools</p></li>
 </ul>
 
 
