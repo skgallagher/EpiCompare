@@ -13,3 +13,4 @@
 ^vignettes/not-built-vignettes/.*
 ^dev/.*
 ^shannon_thesis/.*
+^jss/.*
