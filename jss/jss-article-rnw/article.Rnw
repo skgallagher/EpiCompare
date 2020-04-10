@@ -79,7 +79,7 @@ devtools::load_all()
 }
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\SweaveOpts{concordance=FALSE}
 
 
 %% -- Introduction -------------------------------------------------------------
