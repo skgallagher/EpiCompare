@@ -73,7 +73,7 @@
       <a href="../../articles/not-built-vignettes/example-covid-19-us.html">Examining COVID-19 with EpiCompare</a>
     </li>
     <li>
-      <a href="../../articles/not-built-vignettes/example-epimodel.html">Examining COVID-19 with EpiCompare</a>
+      <a href="../../articles/not-built-vignettes/example-epimodel.html">Example of using EpiCompare with EpiModel outputs</a>
     </li>
   </ul>
 </li>
@@ -208,8 +208,8 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">0</span>:<span class="fl">10</span>/<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="no">t</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">check.names</span> <span class="kw">=</span> <span class="no">F</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">DT</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span>(<span class="kw">options</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">dom</span> <span class="kw">=</span> <span class="st">'t'</span>))</pre></body></html></div>
-<div id="htmlwidget-0b009be1acafb325c5fc" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0b009be1acafb325c5fc">{"x":{"filter":"none","data":[["1"],[0],[81389],[142857.2],[253837.2],[499522.4],[3000619],[5466365.2],[6685779.4],[8088442],[9873504.6],[22287176]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
+<div id="htmlwidget-8cd3945ce1bd44e80d2a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8cd3945ce1bd44e80d2a">{"x":{"filter":"none","data":[["1"],[0],[72869.4],[129272],[219721.6],[414130.8],[2060079],[5206239.6],[6376866.6],[7364360.8],[8741839.6],[15531376]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
 <span class="no">tau</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.3</span>)[<span class="st">"30%"</span>]
 
 <span class="no">dist_mat</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">dist</span> <span class="kw">=</span> <span class="no">.</span>) <span class="kw">%&gt;%</span>

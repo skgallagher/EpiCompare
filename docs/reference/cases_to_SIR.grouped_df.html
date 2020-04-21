@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compress filaments to filaments with the same number of points (equally
-linearly space compared to original filament definition) — filament_compression • EpiCompare</title>
+<title>Impute Recovered counts for the SIR model — cases_to_SIR.grouped_df • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -47,10 +46,8 @@ linearly space compared to original filament definition) — filament_compressio
 
 
 
-<meta property="og:title" content="Compress filaments to filaments with the same number of points (equally
-linearly space compared to original filament definition) — filament_compression" />
-<meta property="og:description" content="Compress filaments to filaments with the same number of points (equally
-linearly space compared to original filament definition)" />
+<meta property="og:title" content="Impute Recovered counts for the SIR model — cases_to_SIR.grouped_df" />
+<meta property="og:description" content="Impute Recovered counts for the SIR model" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -143,59 +140,56 @@ linearly space compared to original filament definition)" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compress filaments to filaments with the same number of points (equally
-linearly space compared to original filament definition)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/containment-and-band-creation.R'><code>R/containment-and-band-creation.R</code></a></small>
-    <div class="hidden name"><code>filament_compression.Rd</code></div>
+    <h1>Impute Recovered counts for the SIR model</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/impute-recovery-counts.R'><code>R/impute-recovery-counts.R</code></a></small>
+    <div class="hidden name"><code>cases_to_SIR.grouped_df.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compress filaments to filaments with the same number of points (equally
-linearly space compared to original filament definition)</p>
+    <p>Impute Recovered counts for the SIR model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filament_compression</span>(<span class='no'>grouped_df</span>, <span class='kw'>data_columns</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>number_points</span> <span class='kw'>=</span> <span class='fl'>13</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for grouped_df</span>
+<span class='fu'>cases_to_SIR</span>(<span class='no'>data</span>, <span class='no'>par</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"chain-binomial"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>grouped_df</th>
-      <td><p>grouped_df data.frame object (assumed rows per filament are
-ordered) - grouped per each filament</p></td>
+      <th>data</th>
+      <td><p>data frame or grouped data frame with the following columns</p><dl'>
+<dt>t</dt><dd><p>time</p></dd>
+<dt>confirmed</dt><dd><p>number of cumulative confirmed cases at time t in the group</p></dd>
+<dt>N</dt><dd><p>population size, which is used as the number of susceptible (minus the initial infections)</p></dd>
+
+</dl></td>
     </tr>
     <tr>
-      <th>data_columns</th>
-      <td><p>columns of data.frame that relate to
-  the filament's coordinates in euclidean space. The input should look like
-something like <code><a href='https://rdrr.io/r/base/c.html'>c(S,I,R)</a></code> or <code><a href='https://rdrr.io/r/base/c.html'>c("S", "I", "R")</a></code>. If the input is
-<code>NULL</code> this function will treat this like all non-group columns.</p></td>
+      <th>par</th>
+      <td><p>named vector of parameters</p></td>
     </tr>
     <tr>
-      <th>number_points</th>
-      <td><p>integer number of points for each filament to be
-compressed to</p></td>
+      <th>method</th>
+      <td><p>Currently default is "chain-binomial".  See details.  More methods to come.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>updated grouped_df with new rows so that each filament has the same
-  number of points.</p>
+    <p>the input data with the additional columns</p><dl'>
+<dt>X0</dt><dd><p>number of susceptible</p></dd>
+<dt>X1</dt><dd><p>number of infectious</p></dd>
+<dt>X2</dt><dd><p>number of recovered</p></dd>
+
+</dl>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='no'>t13compression</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>pomp_sir</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='no'>time</span>) <span class='kw'>%&gt;%</span> <span class='co'># just to be safe</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>H</span>, -<span class='no'>cases</span>, -<span class='no'>time</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;=</span> <span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>.id</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>filament_compression</span>()
-
-<span class='no'>t9compression</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>pomp_sir</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;=</span> <span class='fl'>5</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>.id</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>filament_compression</span>(<span class='kw'>data_columns</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"S"</span>,<span class='st'>"I"</span>,<span class='st'>"R"</span>), <span class='kw'>number_points</span> <span class='kw'>=</span> <span class='fl'>9</span>)</div></pre>
+    <pre class="examples"><div class='input'>  <span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>4</span>,
+                    <span class='kw'>confirmed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>9</span>, <span class='fl'>9</span>),
+                    <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+   <span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'>cases_to_SIR</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>df</span>,
+                       <span class='kw'>par</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

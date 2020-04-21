@@ -1,6 +1,11 @@
 pandoc: 2.9.2.1
 pkgdown: 1.5.0
 pkgdown_sha: ~
-articles: []
-last_built: 2020-04-21T17:57Z
+articles:
+  getting-started: getting-started.html
+  comparing-bands-and-assessing-containment: not-built-vignettes/comparing-bands-and-assessing-containment.html
+  depths-impact-on-prediction-bands: not-built-vignettes/depths-impact-on-prediction-bands.html
+  example-covid-19-us: not-built-vignettes/example-covid-19-us.html
+  example-epimodel: not-built-vignettes/example-epimodel.html
+last_built: 2020-04-21T18:52Z
 

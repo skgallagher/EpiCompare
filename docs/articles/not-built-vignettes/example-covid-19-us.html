@@ -73,7 +73,7 @@
       <a href="../../articles/not-built-vignettes/example-covid-19-us.html">Examining COVID-19 with EpiCompare</a>
     </li>
     <li>
-      <a href="../../articles/not-built-vignettes/example-epimodel.html">Examining COVID-19 with EpiCompare</a>
+      <a href="../../articles/not-built-vignettes/example-epimodel.html">Example of using EpiCompare with EpiModel outputs</a>
     </li>
   </ul>
 </li>
@@ -382,7 +382,7 @@ Alabama
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">data_grouped</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">state</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="kw">t</span> <span class="kw">=</span> <span class="no">date</span>, <span class="kw">N</span> <span class="kw">=</span> <span class="no">pop</span>)
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu">cases_to_SIR</span>(<span class="no">data_grouped</span>, <span class="kw">par</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span> <span class="kw">=</span> <span class="fl">1</span>/<span class="fl">14</span>)) <span class="kw">%&gt;%</span>
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/cases_to_SIR.html">cases_to_SIR</a></span>(<span class="no">data_grouped</span>, <span class="kw">par</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span> <span class="kw">=</span> <span class="fl">1</span>/<span class="fl">14</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 
