@@ -1,5 +1,5 @@
 ---
-title: "Examining COVID-19 with EpiCompare"
+title: "Example of using EpiCompare with EpiModel outputs"
 output: html_document
 bibliography: our-bib.bib
 ---

@@ -21,7 +21,19 @@
 #' \item{X1}{number of infectious}
 #' \item{X2}{number of recovered}
 #' }
-#' @details For the method "chain-binomial".  Let the cumulative case counts at time \eqn{t} be \eqn{J_t}.  Then the number of susceptibles is simply \eqn{S_t = N - J_t}.  The number of infectious and recovered is imputed iteratively using random draws from a chain binomial based on the state sizes at the previous time step.  Specifically, we assume \eqn{I_{t_0} = J_{t_0}} and \eqn{R_{t_0} = 0}, that is the initial number of recovered individuals is zero.  Then for each \eqn{ t \in \{ t_0 + 1, t_0 + 2, \dots, T\}} \eqn{R_t = R_{t-1} + Binomial\eqn{(I_{t-1}, \gamma)} and \eqn{I_t = J_t - R_t}.  Here \eqn{(X0, X1, X2) = (S, I, R)}.
+#' @details For the method "chain-binomial". 
+#'  Let the cumulative case counts at time \eqn{t} be \eqn{J_t}. 
+#'   Then the number of susceptibles is simply \eqn{S_t = N - J_t}. 
+#'    The number of infectious and recovered is imputed iteratively
+#'     using random draws from a chain binomial based on the
+#'      state sizes at the previous time step. 
+#'   Specifically, we assume \eqn{I_{t_0} = J_{t_0}} and 
+#'  \eqn{R_{t_0} = 0}, that is the initial number of recovered
+#'   individuals is zero.  Then for each 
+#'   \eqn{ t \in \{ t_0 + 1, t_0 + 2, \dots, T\}} 
+#'   \eqn{R_t = R_{t-1} +} Binomial\eqn{(I_{t-1}, \gamma)} 
+#'   and \eqn{I_t = J_t - R_t}. 
+#'    Here \eqn{(X0, X1, X2) = (S, I, R)}.
 #' @export
 #' @examples
 #'   df <- data.frame(t = 0:4,
@@ -58,7 +70,6 @@ cases_to_SIR <- function(data, par,
 #' \item{X1}{number of infectious}
 #' \item{X2}{number of recovered}
 #' }
-#' @details For the method "chain-binomial".  Let the cumulative case counts at time \eqn{t} be \eqn{J_t}.  Then the number of susceptibles is simply \eqn{S_t = N - J_t}.  The number of infectious and recovered is imputed iteratively using random draws from a chain binomial based on the state sizes at the previous time step.  Specifically, we assume \eqn{I_{t_0} = J_{t_0}} and \eqn{R_{t_0} = 0}, that is the initial number of recovered individuals is zero.  Then for each \eqn{ t \in \{ t_0 + 1, t_0 + 2, \dots, T\}} \eqn{R_t = R_{t-1} + Binomial\eqn{(I_{t-1}, \gamma)} and \eqn{I_t = J_t - R_t}.  Here \eqn{(X0, X1, X2) = (S, I, R)}.
 #' @export
 #' @examples
 #'   df <- data.frame(t = 0:4,
@@ -74,7 +85,7 @@ cases_to_SIR.data.frame <- function(data, par,
 
     ## Iteratively choose recoveries based on past infection size
     for(ii in 2:nrow(new_data)){
-        new_recoveries <- rbinom(n = 1, size = new_data$X1[ii-1],
+        new_recoveries <- stats::rbinom(n = 1, size = new_data$X1[ii-1],
                                  prob = as.numeric(par[1]))
         new_data$X2[ii] <- new_data$X2[ii-1] + new_recoveries
         new_data$X1[ii] <- new_data$confirmed[ii] - new_data$X2[ii]
@@ -103,7 +114,6 @@ cases_to_SIR.data.frame <- function(data, par,
 #' \item{X1}{number of infectious}
 #' \item{X2}{number of recovered}
 #' }
-#' @details For the method "chain-binomial".  Let the cumulative case counts at time \eqn{t} be \eqn{J_t}.  Then the number of susceptibles is simply \eqn{S_t = N - J_t}.  The number of infectious and recovered is imputed iteratively using random draws from a chain binomial based on the state sizes at the previous time step.  Specifically, we assume \eqn{I_{t_0} = J_{t_0}} and \eqn{R_{t_0} = 0}, that is the initial number of recovered individuals is zero.  Then for each \eqn{ t \in \{ t_0 + 1, t_0 + 2, \dots, T\}} \eqn{R_t = R_{t-1} + Binomial\eqn{(I_{t-1}, \gamma)} and \eqn{I_t = J_t - R_t}.  Here \eqn{(X0, X1, X2) = (S, I, R)}.
 #' @export
 #' @examples
 #'   df <- data.frame(t = 0:4,
@@ -124,8 +134,8 @@ cases_to_SIR.grouped_df <- function(data, par,
   } else {
     # old tidyr
 
-    out <- agents %>% tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, caess_to_SIR,
+    out <- data %>% tidyr::nest() %>%
+      dplyr::mutate(update = purrr::map(.data$data, cases_to_SIR,
                                         par = par)) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
