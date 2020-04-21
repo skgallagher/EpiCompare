@@ -1,0 +1,200 @@
+---
+title: "Examining COVID-19 with EpiCompare"
+output: html_document
+bibliography: our-bib.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+devtools::load_all()
+library(EpiModel)
+library(dplyr)
+library(ggtern)
+library(coronavirus)
+library(knitr)
+library(kableExtra)
+theme_set(theme_bw())
+```
+
+
+
+
+##  Overview
+
+Data for the COVID-19 outbreak is available publicly from many sources including from the [Johns Hopkins Coronavirus Tracker](https://github.com/CSSEGISandData/COVID-19) github repository ([@dong2020]).  We want to use EpiCompare to compare outbreaks in different US states. 
+
+In this vignette, we assume a **SIR** disease progression.  That is, individuals begin in the susceptible state, move to the infectious state, and then finally are recovered.
+
+In this vignette, we will
+
+1. Download JHU Coronavirus data via the `R COVID19` package ([@covid19-kaggle-r]).
+
+2. Convert to SI format.
+
+3.  Impute a **random** number of recovered based on infection duration estimates to make the data into SIR format.
+
+4. Compare the states' outbreaks using EpiCompare.
+
+
+
+
+You will need to install/load the following packages.
+
+```{r eval = FALSE}
+library(EpiCompare)
+library(dplyr)
+library(knitr)
+library(COVID19)
+library(tidyr)
+library(kableExtra)
+theme_set(theme_bw())
+```
+
+## Downloading the coronavirus data for the US
+
+```{r results = 'asis'}
+library(COVID19)
+
+data <- covid19("USA", level = 2)  ## State level US data, will take a few seconds
+
+data %>% select(id, state, date, confirmed, recovered, deaths, pop) %>% 
+  head() %>% kable() %>% kable_styling(position = "center")
+
+```
+```{r}
+data <- data %>% group_by(state) 
+  
+ggplot(data = data, aes(x = date, y =confirmed / pop, group = state)) + 
+  geom_line() +
+  xlim(c(as.Date("2020-03-16"), max(data$date) + 5)) +
+  geom_text(data = . %>% filter(date == max(date)),
+            aes(label = state), vjust = .001, hjust = 0)  +
+  labs(x = "", y = "(Cumulative Confirmed Cases) / (Population Size)")
+```
+
+
+From this, it looks like the state dominates the others in terms of cumulative cases, even after adjusting for population size.
+
+However, the outbreak did not begin on the same day in the states.  So perhaps, we want to adjust for the timing.  We can adjust the dates relative to the first case reported in the state.
+
+
+This looks like the following:
+
+```{r}
+data <- data %>% group_by(state) %>% filter(confirmed > 0) %>%
+  mutate(first_date = min(date)) %>%
+  mutate(rel_date = date - first_date)
+  
+ggplot(data = data, aes(x = rel_date, y = confirmed / pop, group = state)) + 
+  geom_line() +
+  xlim(c(0, max(data$rel_date) + 3)) +
+  geom_text(data = . %>% filter(date == max(date)),
+            aes(label = state), vjust = .001, hjust = 0)  +
+  labs(x = "Days relative to first case in state", y = "(Cumulative Confirmed Cases) / (Population Size)")
+```
+
+This view looks a little different from the raw-time version and now New York does not look to be completely dominant.  On the other hand, this view makes it hard to compare states like MA, Illinois, CA, and AZ -- states which all had an early case but did not have a sustained outbreak until much later.
+
+Another idea is to standardize the time relative to the first time the .0005 cumulative cases per population threshold is crossed.
+
+```{r}
+data2 <- data %>% group_by(state) %>% filter(confirmed/pop > 0.0005) %>%
+  mutate(first_date = min(date)) %>%
+  mutate(rel_date = date - first_date)
+  
+ggplot(data = data2, aes(x = rel_date, y = confirmed / pop, group = state)) + 
+  geom_line() +
+  xlim(c(0, max(data2$rel_date) + 5)) +
+  geom_text(data = . %>% filter(date == max(date)),
+            aes(label = state), vjust = .001, hjust = 0)  +
+  labs(x = "Days relative to .0005 Cases/Pop threshold", y = "(Cumulative Confirmed Cases) / (Population Size)")
+```
+
+
+Now it looks like New Jersey, in fact, looks like it has a worse outbreak than New York?
+
+**Which picture shows the truth?**
+
+We can play the same game over and over, we can pick arbitrary time points or thresholds to plot the relative time of the outbreak.  As we see, this time point can skew our view of the outbreak.
+
+An alternative to this arbitrary scaling is to use Time Free Analysis (TFA).
+
+## Adding in the Recovered
+
+```{r}
+
+gamma <- 1/14 # assuming 14 days recovery
+data3 <- data %>% group_by(state) %>%
+  mutate(new_cases = confirmed - lag(confirmed),
+         lag1_cases = lag(confirmed)) %>%
+  mutate(new_cases = ifelse(is.na(new_cases) | new_cases < 0, 0, new_cases)) %>%
+  mutate(new_recov = rbinom(n = 1, size = lag1_cases, prob = gamma))
+
+states <- c("New York", "New Jersey", "Louisiana",
+                                          "Massachusetts", "Connecticut", 
+                                          "District of Columbia", "Rhode Island",
+                                          "Michigan", "Pennsylvania")
+
+ggplot(data = data %>% filter(state %in% states), aes(x = confirmed / pop,
+                        y= state,
+                        group = state, col = date)) +
+  geom_point(size = 4, alpha = .4)  
+```
+
+
+
+
+
+
+
+
+```{r}
+deaths <- data %>% group_by(state) %>%
+  mutate(time = date,
+        S = (pop - confirmed) / pop * 100,
+         I = (confirmed - deaths) / pop * 100,
+        Deaths = deaths / pop * 100) %>%
+  select(state, time, S, I, Deaths) %>% na.omit()
+
+sub <- deaths %>% filter(state == "Pennsylvania")
+
+
+ggplot(data = deaths %>% filter(state %in% states),
+       aes(x = S, y = I, z = Deaths, group = state, col = state)) +  
+  geom_point(aes = .3) + coord_tern() + theme_zoom_L(.01) + geom_point() +
+  labs(title = "Ternary")
+
+
+
+```
+
+
+```{r}
+data_grouped <- data %>% group_by(state) %>%
+  rename(t = date, N = pop)
+
+out <- cases_to_SIR(data_grouped, par = c("gamma" = 1/14)) %>%
+  rename(S = X0, I = X1, R = X2)
+
+
+
+ggplot(data = out %>% filter(state %in% states),
+       aes(x = S / N * 100, y = I/ N * 100, z = R/ N * 100, group = state, col = state)) + coord_tern() + geom_path(alpha = .8) + 
+  geom_point(alpha = .8) +  theme_zoom_L(.011) + 
+  scale_color_brewer(palette = "Paired")
+```
+
+```{r fig.height = 10}
+ggplot(data = out %>% filter(state %in% states),
+       aes(x = S / N * 100, y = I/ N * 100, z = R/ N * 100, group = state, col = state)) + coord_tern() + geom_path(alpha = .8) + 
+  geom_point(alpha = .8) +  theme_zoom_L(.011) + 
+  scale_color_brewer(palette = "Paired") + facet_wrap(~state) +
+  theme(legend.position = "bottom")
+
+
+```
+
+## References

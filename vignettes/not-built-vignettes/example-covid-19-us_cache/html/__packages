@@ -1,0 +1,16 @@
+base
+ggplot2
+ggtern
+testthat
+EpiCompare
+deSolve
+network
+networkDynamic
+ergm
+tergm
+EpiModel
+dplyr
+coronavirus
+knitr
+COVID19
+kableExtra

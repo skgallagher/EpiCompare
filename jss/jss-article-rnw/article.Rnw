@@ -1,3 +1,8 @@
+\documentclass{article}
+
+\begin{document}
+
+\end{document}
 \documentclass[article]{jss}
 
 %% -- LaTeX packages and custom commands ---------------------------------------

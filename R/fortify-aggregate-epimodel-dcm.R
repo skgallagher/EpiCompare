@@ -24,7 +24,7 @@ fortify_aggregate.dcm <- function(data,
                                   package_source = NULL){
 
     out <- fortify_aggregate.epimodel_inner(data,
-                                 states = dplyr::enquo(states))
+                                            states = dplyr::enquo(states))
     return(out)
 
 }

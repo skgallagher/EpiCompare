@@ -57,8 +57,10 @@ fortify_aggregate.epimodel_inner <- function(data,
     mat <- data$epi[[1]]
     if("timesteps" %in% names(data$control)){
         t <- rep(1:length(data$control$timesteps), each = ncol(mat))
+        orig_t <- rep(data$control$timesteps, each = ncol(mat))
     } else{
         t <- rep(1:data$control$nsteps, each = ncol(mat))
+        orig_t <- t
     }
 
 
@@ -68,8 +70,11 @@ fortify_aggregate.epimodel_inner <- function(data,
         dplyr::select(.data$sim, dplyr::starts_with("X")) %>%
         dplyr::mutate(sim = factor(.data$sim))
     agg_df$t <- t
+    agg_df$orig_t <- orig_t
+
+
     agg_df <- agg_df %>%
-        dplyr::select(.data$t, dplyr::everything())
+        dplyr::select(.data$t, .data$orig_t, dplyr::everything())
 
     return(agg_df)
 
