@@ -23,4 +23,5 @@ jss/jss-article-rnw/article.synctex.gz
 jss/jss-article-rnw/article.pdf
 jss/jss-article-rnw/article.tex
 jss/jss-article-rnw/article.auxs
-*cache*
+*_cache/
+*_files/
