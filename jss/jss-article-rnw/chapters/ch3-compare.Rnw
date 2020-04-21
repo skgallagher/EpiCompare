@@ -1,0 +1,3 @@
+% !Rnw root = ../article.Rnw
+
+\subsection[Compare]{Compare} \label{sec:purpose-compare}

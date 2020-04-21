@@ -1,0 +1,6 @@
+% !Rnw root = ../article.Rnw
+
+\subsection[Case Study 2]{Case Study 2} \label{sec:ex2}
+
+
+EXAMPLE 2

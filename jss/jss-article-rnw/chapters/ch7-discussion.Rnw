@@ -1,0 +1,6 @@
+% !Rnw root = ../article.Rnw
+
+\section[Discussion]{Discussion} \label{sec:discussion}
+
+
+QED
