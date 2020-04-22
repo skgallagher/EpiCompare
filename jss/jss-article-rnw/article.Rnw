@@ -13,6 +13,10 @@
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
 
+\usepackage{amsmath}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
 %% For Sweave-based articles about R packages:
 %% need no \usepackage{Sweave}
 \SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
@@ -41,15 +45,7 @@ library("MASS")
 
 %% - \Abstract{} almost as usual
 \Abstract{
-  This short article illustrates how to write a manuscript for the
-  \emph{Journal of Statistical Software} (JSS) using its {\LaTeX} style files.
-  Generally, we ask to follow JSS's style guide and FAQs precisely. Also,
-  it is recommended to keep the {\LaTeX} code as simple as possible,
-  i.e., avoid inclusion of packages/commands that are not necessary.
-  For outlining the typical structure of a JSS article some brief text snippets
-  are employed that have been inspired by \cite{Zeileis+Kleiber+Jackman:2008},
-  discussing count data regression in \proglang{R}. Editorial comments and
-  instructions are marked by vertical bars.
+We do something
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
@@ -64,16 +60,13 @@ library("MASS")
 %% - May contain multiple authors for the same affiliation
 %%   (in the same first line, separated by comma).
 \Address{
-  Achim Zeileis\\
-  Journal of Statistical Software\\
-  \emph{and}\\
-  Department of Statistics\\
-  Faculty of Economics and Statistics\\
-  Universit\"at Innsbruck\\
-  Universit\"atsstr.~15\\
-  6020 Innsbruck, Austria\\
-  E-mail: \email{Achim.Zeileis@R-project.org}\\
-  URL: \url{https://eeecon.uibk.ac.at/~zeileis/}
+  Shanon K. Gallagher\\
+  Biostatistics Research Branch\\
+  Division of Clinical Research\\
+  National Institute of Allergy and Infectious Diseases\\
+  5601 Fishers Lane\\
+  Rockville, MD 20852\\
+  E-mail: \email{shannon.gallagher@nih.gov}
 }
 
 \begin{document}
@@ -92,10 +85,15 @@ library("MASS")
 
 \SweaveInput{chapters/ch7-discussion.Rnw}
 
+
+
 \section{references}
 
 \bibliography{EpiCompare}
 
+
+
+\SweaveInput{chapters/app1-proofs.Rnw}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

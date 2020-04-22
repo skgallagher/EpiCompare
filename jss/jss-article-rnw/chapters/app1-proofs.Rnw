@@ -1,0 +1,33 @@
+% !Rnw root = ../article.Rnw
+
+\section[Proof of Theorem]{Proof of Theorem} \label{app:proof}
+
+
+
+\begin{proof}
+\cite{harko2014} provide an analytical solution for the Kermack and McKendrick equations (Eq. \eqref{eq:sir-ode}) by reparameterizing the ODEs so that $\mathcal{S}(u) = S(t)$, $\mathcal{I}(u) = S(t)$, and $\mathcal{R}(u) = R(t)$ for $0< u_T < 1$ with
+\begin{align}\label{eq:harko-odes}
+\mathcal{S}(u) &= S(0)u\\
+\mathcal{I}(u) &= N - R(0) + NR_0^{-1}\log u - S(0)u \nonumber\\
+\mathcal{R}(u) &= R(0) - NR_0^{-1} \log u, \nonumber
+\end{align}
+and $u$ and t are related by the following integral,
+\begin{align*}
+    t &= \int_{u}^1 \frac{N}{\beta \tau (N - R(0) + R_{0}^{-1} \log \tau - S(0)\tau)}d\tau \\
+    &= \int_{u}^1 \frac{1}{\beta f(S(0), R(0), N, R_0, \tau)} d \tau\\
+    &= \int_{u}^1 \frac{1}{\beta f(\tau)} d\tau,
+\end{align*}
+where we have made the denominator of the integral a function of $N$, the initial values, $R_0$, and $\tau$, which we further condense to $f(\tau)$ for brevity.
+Then for a given $t$ we want to find $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Or equivalently, for a fixed $u$ want to find $v$ such that  $\mathcal{S}_1(u) = \mathcal{S}_2(v)$ and then the corresponding $t$ and $s$ are given by
+\begin{align*}
+    t & = \int_{u}^1 \frac{1}{\beta_1 f(\tau)} d\tau \\
+    s & = \int_{v}^1 \frac{1}{\beta_2 f(\tau)} d\tau.
+\end{align*}
+Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the initial values and $R_0$, then $u = v$. We then can find a relation for $s$,
+    \begin{align*}
+    s & = \int_{u}^1 \frac{1}{\beta_2 f(\tau)} d\tau  \\
+    & = \int_{u}^1 \frac{1}{a\beta_1 f(\tau)} d\tau \\ 
+    &= \frac{1}{a}\int_{u}^1 \frac{1}{\beta_1 f(\tau)} d\tau \\
+    &= \frac{1}{a}t.
+\end{align*}
+\end{proof}

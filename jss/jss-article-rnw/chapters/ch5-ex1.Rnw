@@ -4,3 +4,15 @@
 
 
 EXAMPLE 1
+
+
+
+
+
+
+
+
+
+
+%%% Move to example?  Think I will
+As a motivating example for time free analysis visualizations, we would like to compare the outbreak of COVID-19 across different states.  Typically, the raw data must be adjusted (or stochastically imputed) in order for \textit{fair} comparisons to be seen.  A fairly common example of this is when visualizatios show deaths or infections by percent of the area's population.  Another issue is that outbreaks differ temporally:  the first state (CA?) with confirmed COVID cases occurred on January X while the final state (WV?) occurred on March Y.  One approach to adjust for the different outbreak times is to show the number of cumulative cases versus the time since the first reported outbreak in the state.  However, this can result in unexpected features such as shown in Figure \ref{fig:covid-states-time-adjusted}, where Massachusetts has an early reported case but does not have a sustained outbreak until long after that first case.  Instead of adjusting temporally to the first case, we could instead adjust to when an threshold of cases (raw or percentage) is determined but how this threshold is determined is unclear.  Time free analysis
