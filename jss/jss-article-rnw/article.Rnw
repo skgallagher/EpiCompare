@@ -6,9 +6,6 @@
 \usepackage{thumbpdf,lmodern}
 \usepackage{import}
 
-%% another package (only for this demo article)
-\usepackage{framed}
-
 %% new custom commands
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
@@ -33,8 +30,8 @@ library("MASS")
 %% - Separate authors by \And or \AND (in \author) or by comma (in \Plainauthor).
 %% - \AND starts a new line, \And does not.
 \author{Shannon K. Gallagher\\ National Institute of\\ Allergy and Infectious Diseases
-   \And Benjamin P. Leroy\\Carnegie Mellon University}
-\Plainauthor{Shannon K. Gallagher, Benjamin P. Leroy}
+   \And Benjamin LeRoy\\Statistics and Data Science Department,\\Carnegie Mellon University}
+\Plainauthor{Shannon K. Gallagher, Benjamin LeRoy}
 
 %% - \title{} in title case
 %% - \Plaintitle{} without LaTeX markup (if any)
