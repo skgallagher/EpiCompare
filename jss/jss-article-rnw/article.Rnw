@@ -1,4 +1,5 @@
-\documentclass[article]{jss}
+\documentclass[article, shortnames]{jss} 
+%^note: Ben changed this to get shortnames for references ("shortnames")
 
 %% -- LaTeX packages and custom commands ---------------------------------------
 
@@ -13,6 +14,12 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
+
+% note making commands
+\newcommand{\ben}{\textcolor{blue}}
+\newcommand{\skg}{\textcolor{red}}
+\usepackage[normalem]{ulem} % for \sout
+
 
 %% For Sweave-based articles about R packages:
 %% need no \usepackage{Sweave}
