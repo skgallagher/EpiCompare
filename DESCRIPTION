@@ -35,6 +35,7 @@ Imports:
     tibble,
     sp
 Suggests: 
+    COVID19,
     devtools,
     EpiModel,
     gridExtra,
@@ -45,11 +46,9 @@ Suggests:
     pomp,
     progress,
     rmarkdown,
-    testthat (>= 2.1.0),
-    COVID19
+    testthat (>= 2.1.0)
 RoxygenNote: 7.1.0
 VignetteBuilder: 
-    knitr,
-    kableExtra
+    knitr
 URL: https://github.com/skgallagher/EpiCompare
 BugReports: https://github.com/skgallagher/EpiCompare/issues

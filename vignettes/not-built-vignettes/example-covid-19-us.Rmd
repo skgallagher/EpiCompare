@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
 devtools::load_all()
-library(EpiModel)
+library(EpiCompare)
 library(dplyr)
-library(ggtern)
-library(coronavirus)
 library(knitr)
+library(COVID19)
+library(tidyr)
 library(kableExtra)
 theme_set(theme_bw())
 ```
