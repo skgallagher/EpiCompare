@@ -89,13 +89,7 @@ We do something
 
 \SweaveInput{chapters/ch7-discussion.Rnw}
 
-
-
-\section{references}
-
 \bibliography{EpiCompare}
-
-
 
 \SweaveInput{chapters/app1-proofs.Rnw}
 
