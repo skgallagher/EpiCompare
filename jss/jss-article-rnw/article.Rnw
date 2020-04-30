@@ -77,8 +77,13 @@ We do something
 
 \SweaveInput{chapters/ch1-intro.Rnw}
 
-\section{Purpose and Details}
-\SweaveInput{chapters/ch2-vis.Rnw}
+\section{Literature review}
+\SweaveInput{chapters/ch2-lit-review.Rnw}
+
+\section{Reasons and tools for time-free analysis}
+\SweaveInput{chapters/ch3-time-free.Rnw}
+
+%\SweaveInput{chapters/ch2-vis.Rnw}
 \SweaveInput{chapters/ch3-compare.Rnw}
 \SweaveInput{chapters/ch4-convert.Rnw}
 

@@ -1,0 +1,72 @@
+% !Rnw root = ../article.Rnw
+
+Although epidemics are by definition a process that evolves over time, empidemics, including the recent COVID-19, need to oftern be compared in a less time focused, or even time-free way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of suspectible vs infected vs recovered individuals) don't always as inteligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-free tools and in this section we present benefits of the time-free analysis, 1) motivation for time-free analysis through $R_0$ (the initial reproduction number), 2) time-free visualization tools for 3-state models (e.g. SIR models), and 3) potential for similar analysis for models with more states (e.g. SEIR models).
+
+\subsection{Motivation through $R_0$}
+
+$R_0$, the initial reproduction number, has been called the ``most important quantity in epdiemiology''. To see the importance of $R_0$, one need only read the newspaper \citep{FILL IN} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{FILL IN}. $R_O$ is also, maybe, the most famous \textit{time-free} numerical summary of an epidemic, and is most commonly associated with the Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework, composed of data and statistical models where individuals pass from Susceptible to Infectious to Recovered states is a common, if not the most common, modeling framework in infectious disease epidemiology (seen in examples of recent published works in \cite{FILL IN}).
+
+In regards to traditional $X$ vs. time plots, $R_0$ is difficult to visualize. For example, in a SIR simulation with two models have the same value of $R_0$, one can see in Fig. \ref{fig:different-scales-standard} that there is no way of knowing that from looking at the graph.
+
+<<echo = F>>=
+# \@Shannon: Make this figure reproducible here plz
+# Also --- my vote is that we do this with points and lines? ~ Ben
+@
+
+\begin{figure}[!ht]
+%% Code to reproduce is in inst/paper_figs/different-time-scales.R
+    \centering
+    \includegraphics[width = .5\textwidth]{images/diff-time-standard.pdf}%\includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
+    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.}
+    \label{fig:different-scales-standard}
+\end{figure}
+
+\subsection{Ternary and time-free visualizations for $R_0$}
+
+It is possible to identify, at a glance, which SIR epidemic paths, like those in Fig. \ref{fig:different-scales}  have the same value of $R_0$ via ``time-free`` visualizations, under some circumstances. Specifically, for SIR model's we propose using ternary to examine an epidemic's trajectory in a more time-free manner. 
+
+Ternary plots are sometimes used in chemistry \citep{} but only rarely seen in the field of infectious disease epidemiology (to our knowledge, only seen in \cite{}).  Ternary plots illustrate the relationship of constrained 3D data, namely of points $(a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]$ with $a_i+ b_i + c_i =1$ and as such, are situational.  The SIR framework happens to be of the situational format required for ternary plots where $(S(t), I(t), R(t))$ are the number of susceptible, infectious, and recovered individuals in each state at time $t$ and $S(t) + I(t) + R(t) = N(t)$ where $N(t)$ is the population size at time $t$.
+
+Ternary plots are time-free in the sense that the temporal scale does not explicitly apear in the visualization and as a consequence, allow for direct comparisons of outbreaks on different time scales (e.g. days vs. years) or of SIR data of the same disease in different areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
+
+
+To show that ternary plots have to potential to aid in the comparison of different epidemic's $R_0$s -in certain circumstances- we first need to introduce the classic, deterministic Kermack and McKendrick SIR model where the initial number in each state $(S(0), I(0), R(0))$ are known and $N$ the population size is constant.  The movement of individuals among the states is given by the following differential equations (Eq. \eqref{eq:sir-ode}) where $\beta$ is the average infection rate and $\gamma$ is the average recovery rate,
+\begin{align}\label{eq:sir-ode}
+      S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
+      I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
+      R^\prime(t) &= \gamma I(t) \nonumber.
+  \end{align}
+  
+If we have two SIR models that follow the Kermack and McKendrick SIR model, have the same percentage of individuals in the initial states, and the same value of $R_0$ then the two models will create exactly overlapping paths in a ternary plot. 
+
+More formally, let two Kermack and McKendrick (see Eq. \eqref{eq:sir-ode}) SIR models be denoted $(S_1(t), I_1(t), R_1(t))$ and $(S_2(t), I_2(t), R_2(t))$, respectively, for $t > 0$. Assume both models have initial values $(S(0), I(0), R(0))$.  Let $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$.  Equivalently, $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$ for some $a > 0$. 
+
+\begin{theorem}\label{thm:sir-scale}
+Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
+\end{theorem}
+
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Appendix \ref{app:proof}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these models in a ternary plot.
+
+<<echo = F>>=
+# \@Shannon: Make this figure reproducible here plz
+# Also --- my vote is that we do this with points and lines? ~ Ben
+@
+
+\begin{figure}[!ht]
+%% Code to reproduce is in inst/paper_figs/different-time-scales.R
+    \centering
+    \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
+    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.  While there are obvious are differences in Fig.\ref{fig:different0-scale-standard}, the data sets look quite similar in the ternary view.}
+    \label{fig:different-scales-tern}
+\end{figure}
+
+In \pkg{EpiCompare}, we also provide visualization tools to aid in comparing models in the ternary / time-free space, which is presented in more details in Section \ref{sec:time-free-in-simplex}.
+
+
+\subsection{Simplexes beyond ternary plots and time-free comparison tools} \label{sec:time-free-in-simplex}
+
+\ben{Maybe should include something like "beyond ternary plots as a tool for time-free analysis..."}
+
+The basis of time-free analysis in ternary plots is extended to higher dimensional models (i.e. models with more states) in \pkg{EpiCompare} as well. The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions. This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a 1 dimension less space through the simplexical structure of the data.
+
+\ben{I think this would be a good place to actually present the geometric tools we'd like to use for comparison of different models... - @Shannon - thoughts?}
