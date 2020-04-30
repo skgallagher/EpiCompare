@@ -83,9 +83,12 @@ We do something
 \section{Reasons and tools for time-free analysis}
 \SweaveInput{chapters/ch3-time-free.Rnw}
 
-%\SweaveInput{chapters/ch2-vis.Rnw}
-\SweaveInput{chapters/ch3-compare.Rnw}
-\SweaveInput{chapters/ch4-convert.Rnw}
+%\SweaveInput{chapters/ch2-vis.Rnw} % this file still exists
+%\SweaveInput{chapters/ch3-compare.Rnw}
+%\SweaveInput{chapters/ch4-convert.Rnw}
+
+\section{Code Orientation}
+\SweaveInput{chapters/ch4-orientation.Rnw}
 
 
 \section{In practice}

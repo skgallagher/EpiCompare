@@ -1,0 +1,5 @@
+% !Rnw root = ../article.Rnw
+
+\ben{This potentially could similar to that done in EpiModel's \citep{Jenness2018} orientation section, but I'm not sure - it might also depend upon which journal we aim to publish in. I also expect that this section will mirror how we present the pipeline in the Literature review.}
+
+
