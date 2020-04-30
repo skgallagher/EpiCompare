@@ -2,4 +2,18 @@
 
 \ben{This potentially could similar to that done in EpiModel's \citep{Jenness2018} orientation section, but I'm not sure - it might also depend upon which journal we aim to publish in. I also expect that this section will mirror how we present the pipeline in the Literature review.}
 
+---
+
+\ben{We also called this section ``Presenting EpiCompare'', not sure if we want to do that verse ``Package Orrientation'', but we'll figure it out.}
+
+---
+
+\ben{Also, note that the original sections proposed for this section and the Literature Review were:
+\begin{enumerate}
+\item Data collection
+\item Exploratory analysis
+\item ``Modelling'' $\rightarrow$ simulations
+\item Assessment and comparisons
+\end{enumerate}
+}
 
