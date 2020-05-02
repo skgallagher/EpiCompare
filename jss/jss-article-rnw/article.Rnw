@@ -37,7 +37,7 @@ library("MASS")
 %% - Separate authors by \And or \AND (in \author) or by comma (in \Plainauthor).
 %% - \AND starts a new line, \And does not.
 \author{Shannon K. Gallagher\\ National Institute of\\ Allergy and Infectious Diseases
-   \And Benjamin LeRoy\\Statistics and Data Science Department,\\Carnegie Mellon University}
+   \And Benjamin LeRoy\\Statistics and Data Science Department\\Carnegie Mellon University}
 \Plainauthor{Shannon K. Gallagher, Benjamin LeRoy}
 
 %% - \title{} in title case

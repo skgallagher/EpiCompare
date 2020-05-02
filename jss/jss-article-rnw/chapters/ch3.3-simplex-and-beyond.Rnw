@@ -1,0 +1,11 @@
+% !Rnw root = ../article.Rnw
+
+\subsection{Simplexes beyond ternary plots and time-free comparison tools} \label{sec:time-free-in-simplex}
+
+\ben{Maybe should include something like "beyond ternary plots as a tool for time-free analysis..."}
+
+The basis of time-free analysis in ternary plots is extended to higher dimensional models (i.e. models with more states) in \pkg{EpiCompare} as well. The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions. This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a 1 dimension less space through the simplexical structure of the data.
+
+\ben{I think this would be a good place to actually present the geometric tools we'd like to use for comparison of different models... - @Shannon - thoughts?}
+
+Tools to do comparisons beyond visualizations focus on created prediction bands \citep{Vovk2005)
