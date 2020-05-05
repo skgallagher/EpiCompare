@@ -1,3 +1,47 @@
+#' Example SIS model  of class `dcm` from the \code{EpiModel} package.
+#' 
+#' @description  This is a deterministic SIS model where 
+#' the infection parameter \eqn{\beta = 0.2} and the recovery/re-susceptibility
+#' parameter is \eqn{\nu = 0.05}.  The initial number of susceptible is \eqn{S(0) = 499}
+#' and the initial number of infectious is \eqn{I(0)=1}.  There are 100 steps.
+#' For more details, see <<http://statnet.org/tut/BasicDCMs.html#sis_model_with_sensitivity_analyses>>.
+#' @format The object is a 'dcm', which is output from the EpiModel R package.
+#' @examples 
+#' library(EpiModel)
+#' data(sis_data)
+#' plot(sis_data)
+"sis_data"
+
+
+#' Example SIS model converted to aggregate format
+#' 
+#' @description  This is a deterministic SIS model where 
+#' the infection parameter \eqn{\beta = 0.2} and the recovery/re-susceptibility
+#' parameter is \eqn{\nu = 0.05}.  The initial number of susceptible is \eqn{S(0) = 499}
+#' and the initial number of infectious is \eqn{I(0)=1}.  There are 100 steps.
+#' For more details, see <<http://statnet.org/tut/BasicDCMs.html#sis_model_with_sensitivity_analyses>>.  
+#' We then use \code{fortify_aggregate()} to convert the data to output used with \code{EpiCompare} functions.
+#' @format The object has the following columns
+#' \describe{
+#' \item{t}{time}
+#' \item{orig_t}{original t in simulation}
+#' \item{sim}{simulation number}
+#' \item{X0}{number of Susceptible}
+#' \item{X1}{number of Infectious}
+#' }
+#' @examples 
+#' library(EpiModel)
+#' data(sis_data_f)
+#' head(sis_data_f)
+"sis_data_f"
+
+
+
+
+
+
+
+
 #' Example SIR simulation output of class ' pomp' from the \code{pomp} package
 #'
 #' @description The data is an example of simulation output from functions from the \href{https://kingaa.github.io/pomp/}{pomp package by King et al}.  The code for how this data was generated can be found in the \code{data-raw} folder.  We also make available the other possible output formats from pomp.  See \link{pomp_df} and \link{pomp_arr}

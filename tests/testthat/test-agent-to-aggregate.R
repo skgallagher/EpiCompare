@@ -31,11 +31,12 @@ test_that("check_ordered", {
                                                  "group2 <= group1"),
                                     error = c(F, T),
                                     count = c(4L, 1L)))
+  df <-  data.frame(id = as.character(1:5),
+             error = c(rep(FALSE, 4), TRUE),
+             ordering =  c(rep("group1 <= group2", 4),
+                           "group2 <= group1"))
   testthat::expect_equal(output$ordering_df,
-                         data.frame(id = factor(1:5),
-                                    error = c(rep(FALSE, 4), TRUE),
-                                    ordering =  c(rep("group1 <= group2", 4),
-                                                  "group2 <= group1")))
+                         df)
 
   # no error in ordering
   df_ordered <- data.frame(group1 = 1:5,
@@ -801,8 +802,9 @@ test_that("NAs for geom_aggregate", {
                    color = "blue") +
     coord_tern()
 
+  
   print(g)
-
+dev.off()
   expect_true(is.ggplot(g))
 
 
