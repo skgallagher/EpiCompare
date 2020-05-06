@@ -1,5 +1,5 @@
 Package: EpiCompare
-Title: functional based data visualized with ternary plots in the simplex
+Title: EpiCompare
 Version: 0.0.1
 Authors@R: 
     c(person(given = "Shannon",
@@ -10,7 +10,7 @@ Authors@R:
            family = "LeRoy",
            role = c("aut"),
            email = "bpleroy@stat.cmu.edu"))     
-Description: functional based data visualized with ternary plots in the simplex.
+Description: A pipeline to analyze and compare infectious disease epidemics.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
