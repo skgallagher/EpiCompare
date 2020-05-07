@@ -61,13 +61,13 @@ EpiCompare::hagelloch_raw %>% head() %>%
 To understand to epidemic we can examine it through an "aggregate" lense (using `geom_aggregate`), which aggregates across agents to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
 
 ```{r}
-theme_set(theme_minimal())
+theme_set(theme_sir())
 
 hagelloch_raw %>%
   ggplot(aes(y = tI, z = tR)) +
     geom_aggregate() + 
     coord_tern() +
-    labs(x = "S", y = "I", z = "R", title = "Town analysis")
+    labs(x = "S", y = "I", z = "R", title = "Town analysis") 
 ```
 
 Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.

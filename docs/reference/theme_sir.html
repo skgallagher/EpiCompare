@@ -117,6 +117,12 @@
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Example of using EpiCompare with EpiModel outputs</a>
     </li>
+    <li>
+      <a href="../articles/not-built-vignettes/full-modeling-process.html">Full modeling process</a>
+    </li>
+    <li>
+      <a href="../articles/not-built-vignettes/ternary-plots-explained.html">Ternary Plots: Explained</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -156,6 +162,17 @@
 
     <p>theme to add to ggtern plots</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>)
+
+<span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>hagelloch_raw</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>.</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>tI</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='no'>tR</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='no'>SEX</span>)) +
+  <span class='fu'>geom_aggregate</span>() + <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/coord_tern.html'>coord_tern</a></span>() +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"S"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"I"</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='st'>"R"</span>,
+       <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>) +
+       <span class='fu'>theme_sir</span>()</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='theme_sir-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

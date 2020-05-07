@@ -1,4 +1,4 @@
-#' EpiCompare: 
+#' EpiCompare: package overview
 #' 
 #' The goal of \code{EpiCompare} is to provide the epidemiology community with
 #' easy-to-use tools to encourage comparing and assessing epidemics and

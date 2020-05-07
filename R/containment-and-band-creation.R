@@ -436,6 +436,7 @@ contained <- function(x, y, .lower_simplex_project = TRUE){
   UseMethod("contained")
 }
 
+
 #' @rdname contained
 contained.delta_ball_structure <- function(x, y,
                                            .lower_simplex_project = TRUE){
@@ -451,6 +452,9 @@ contained.delta_ball_structure <- function(x, y,
   interior_dist <- dist_mat %>% apply(2, min) %>% max
 
   return(interior_dist <= delta)
+}
+if (r_new_interface()){
+  .S3method("contained", "delta_ball_structure")
 }
 
 #' @rdname contained
@@ -471,7 +475,9 @@ contained.convex_hull_structure <- function(x, y,
   }
   return(all(contained_vec))
 }
-
+if (r_new_interface()){
+  .S3method("contained", "convex_hull_structure")
+}
 
 #' Create linear map to move simplex with p vertices to p-1 dimensional space
 #'

@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 )
 print(sessionInfo())
 ```
-
+ 
 
 ```{r eval = FALSE}
 if(!require(EpiCompare)){
@@ -22,7 +22,7 @@ library(EpiCompare)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-theme_set(theme_bw())
+theme_set(theme_sir())
 ```
 
 ```{r echo = F, message = F, warning = F}
@@ -30,8 +30,8 @@ theme_set(theme_bw())
 library(devtools)
 library(dplyr)
 library(tidyr)
-ggplot2::theme_set(ggplot2::theme_bw())
 devtools::load_all()
+ggplot2::theme_set(theme_sir())
 ```
 
 # Overview
@@ -56,7 +56,7 @@ pretend_actual_data %>%
   ggplot() +
   geom_aggregate(aes(y = tI, z = tR),
                  color = "blue") +
-  coord_tern()  +  theme_sir() 
+  coord_tern()   
 ```
 ```{r}
 # another approach for the same visual
@@ -101,7 +101,7 @@ ggplot() +
   geom_aggregate(data = pretend_actual_data,
                  aes(y = tI, z = tR), color = "blue") +
   coord_tern() +
-  labs(x = "S", y = "I", z = "R") + theme_sir()
+  labs(x = "S", y = "I", z = "R") 
 ```
 
 ```{r eval = F}
@@ -111,7 +111,7 @@ ggplot(df_group) +
             alpha = .1) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern() + 
-  labs(x = "S", y = "I", z = "R") + theme_sir()
+  labs(x = "S", y = "I", z = "R") 
 ```
 
 ## How close is this model? 
@@ -139,7 +139,7 @@ ggplot() +
                        conf_level = .6, pb_type = "delta_ball",
                        grid_size = rep(50,2)) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
-  coord_tern() + theme_sir()
+  coord_tern() 
 ```
 
 Is it contained in the above delta ball?

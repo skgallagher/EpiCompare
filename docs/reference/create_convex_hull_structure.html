@@ -118,6 +118,12 @@ dimensional space" />
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Example of using EpiCompare with EpiModel outputs</a>
     </li>
+    <li>
+      <a href="../articles/not-built-vignettes/full-modeling-process.html">Full modeling process</a>
+    </li>
+    <li>
+      <a href="../articles/not-built-vignettes/ternary-plots-explained.html">Ternary Plots: Explained</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -193,12 +199,12 @@ always be done)</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='co'># this will look like a 2d data frame (but this is becuase pomp_df info is</span>
 <span class='co'># on the 3d simplex)</span>
-<span class='no'>convex_hull_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='pomp_df.html'>pomp_df</a></span> <span class='kw'>%&gt;%</span>
+<span class='no'>convex_hull_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>pomp_df</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;=</span> <span class='fl'>10</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='no'>time</span>) <span class='kw'>%&gt;%</span> <span class='co'># just to be safe</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>time</span>, -<span class='no'>H</span>, -<span class='no'>cases</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>.id</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='grab_top_depth_filaments.html'>grab_top_depth_filaments</a></span>(<span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>.9</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>grab_top_depth_filaments</span>(<span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>.9</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'>create_convex_hull_structure</span>() <span class='co'>#data_columns = c(S,I,R)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

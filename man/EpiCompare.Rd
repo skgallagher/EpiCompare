@@ -3,7 +3,7 @@
 \docType{package}
 \name{EpiCompare}
 \alias{EpiCompare}
-\title{EpiCompare:}
+\title{EpiCompare: package overview}
 \description{
 The goal of \code{EpiCompare} is to provide the epidemiology community with
 easy-to-use tools to encourage comparing and assessing epidemics and

@@ -1,40 +1,62 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/figures/logo.png" align="right" alt="EpiCompare" width="120" /></a>
-==================================================================================================================================================
+
+# EpiCompare <a href = "https://skgallagher.github.io/EpiCompare/"><img src="man/figures/logo.png" align="right" alt="EpiCompare" width="120" /></a>
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare) <!-- badges: end -->
 
-The goal of `EpiCompare` is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to `tidyverse`/`ggplot2` style to enhance easy of use.
+[![Travis build
+status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare)
+[![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare)
+<!-- badges: end -->
 
-Time free analysis allows for stronger comparison of epidemics and model based simulations avoiding different scaling and shifts of time that mess up time-based comparisons.
+The goal of `EpiCompare` is to provide the epidemiology community with
+easy-to-use tools to encourage comparing and assessing epidemics and
+epidemiology models in a time-free manner. All tools attempt to adhere
+to `tidyverse`/`ggplot2` style to enhance easy of use.
+
+Time free analysis allows for stronger comparison of epidemics and model
+based simulations avoiding different scaling and shifts of time that
+mess up time-based comparisons.
 
 To achieve this goal, the package contains:
 
--   **Visualization tools** to visualize SIR epidemics and simulations from SIR models in a time-free manner using `ggtern`’s ternary plots and prediction bands. For agent-based SIR models we also provide visualization tools to let the user easily explore how different characteristics of the agents relate to different experiences in the epidemic.
--   General **comparison tools** to compare epidemics and epidemic models that have higher numbers of states (again in a time-free manner), allowing for the user to examine the differences between models through simulations, and if an epidemic is similar to a model through simulations and prediction bands.
--   **Conversion tools** to:
-    -   Convert and then compare models from *standard epidemic packages* like `EpiModels`, `pomp`, as well as internal agent-based models, and epidemics in a common framework.
-    -   Convert *agent-based information into aggregate* to compare in the aggregate framework described above.
+  - **Visualization tools** to visualize SIR epidemics and simulations
+    from SIR models in a time-free manner using `ggtern`’s ternary plots
+    and prediction bands. For agent-based SIR models we also provide
+    visualization tools to let the user easily explore how different
+    characteristics of the agents relate to different experiences in the
+    epidemic.
+  - General **comparison tools** to compare epidemics and epidemic
+    models that have higher numbers of states (again in a time-free
+    manner), allowing for the user to examine the differences between
+    models through simulations, and if an epidemic is similar to a model
+    through simulations and prediction bands.
+  - **Conversion tools** to:
+      - Convert and then compare models from *standard epidemic
+        packages* like `EpiModels`, `pomp`, as well as internal
+        agent-based models, and epidemics in a common framework.
+      - Convert *agent-based information into aggregate* to compare in
+        the aggregate framework described above.
 
-Installation
-------------
+## Installation
 
-You can install the developmental version of EpiCompare from github using:
+You can install the developmental version of EpiCompare from github
+using:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("skgallagher/EpiCompare")
 ```
 
-Data
-----
+## Data
 
-Description of data including in this package can be found in the data section of the [reference](https://skgallagher.github.io/EpiCompare/reference/index.html#section-data) page of the documentation website.
+Description of data including in this package can be found in the data
+section of the
+[reference](https://skgallagher.github.io/EpiCompare/reference/index.html#section-data)
+page of the documentation website.
 
-Example
--------
+## Example
 
 ``` r
 library(tidyr)
@@ -44,19 +66,24 @@ library(ggtern)
 library(EpiCompare)
 ```
 
-The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.
+The following example comes from a Measles outbreak in Hagelloch,
+Germany in 1861. We have data on each child (agent) in the town.
 
 ``` r
 hagelloch_raw %>%
   ggplot(aes(y = tI, z = tR)) +
     geom_aggregate() + 
     coord_tern() +
-    labs(x = "S", y = "I", z = "R", title = "Town Analysis")
+    labs(x = "S", y = "I", z = "R", title = "Town Analysis") +
+    theme_sir()
+#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
-Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.
+Previous work has suggested that the class (`CL`) the student was in
+effected how the experienced the outbreak. The below figure shows
+differences in the outbreak relative to this grouping.
 
 ``` r
 hagelloch_raw %>% 
@@ -76,7 +103,9 @@ hagelloch_raw %>%
        coord_tern() +
        labs(x = "S", y = "I", z = "R",
             color = "School Grade",
-            title = "Town analysis by grade") 
+            title = "Town analysis by grade") +
+       theme_sir()
+#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
@@ -103,26 +132,55 @@ df_groups %>% ggplot() +
     geom_prediction_band(aes(x = S, y = I, z = R, sim_group = as.numeric(sim)),
                          alpha = .2, fill = "blue", color = "blue") +
     geom_line(aes(x = S, y = I, z = R, group = sim), alpha = .1) +
-    coord_tern()
+    coord_tern() +
+    theme_sir()
 #> Warning: Ignoring unknown aesthetics: z
+#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
-Package Creation Notes:
------------------------
+## Package Creation Notes:
 
-1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` &lt;= 0.8.3. We followed ideas found in [tidyr: in-packages](https://tidyr.tidyverse.org/articles/in-packages.html), for the code, and - when working with Travis CI (using a matrix for multiple builds) - we leverage ideas in [tidyverse travis on github](https://github.com/tidyverse/design/issues/95) and [tidyverse principles](https://principles.tidyverse.org/changes-multivers.html).
-2.  For writing your own `geom`s and `stat`s that works with `ggtern` (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
-    1.  [stack-exchange: personal code idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
-    2.  [stack-exchange: being able to access ggtern's element write away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
+1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` \<=
+    0.8.3. We followed ideas found in [tidyr:
+    in-packages](https://tidyr.tidyverse.org/articles/in-packages.html),
+    for the code, and - when working with Travis CI (using a matrix for
+    multiple builds) - we leverage ideas in [tidyverse travis on
+    github](https://github.com/tidyverse/design/issues/95) and
+    [tidyverse
+    principles](https://principles.tidyverse.org/changes-multivers.html).
+2.  For writing your own `geom`s and `stat`s that works with `ggtern`
+    (which are generally restricted), the following 2 stack-exchange
+    articles helped use do so with ease:
+    1.  [stack-exchange: personal code
+        idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
+    
+    2.  [stack-exchange: being able to access ggtern’s element write
+        away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
+    
+    3.  Finally, we’ve also leveraged ideas from [R-devel: on avoiding
+        problems with
+        `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html)
+        in `R/aaa.R` to overcome messages from CRAN relative to this
+        hack (using `:::`). For some reason - when documenting for
+        `pkgdown` website, we need to do `library(ggtern);
+        EpiCompare:::update_approved_layers()`
+3.  `geom_prediction_band` required not just `compute_group` but
+    `compute_layer` - there is very little documentation on how to
+    approach this correctly. Basically - there are problems when the
+    `compute_group` wants to make multiple `pieces`/`groups` - and it is
+    similar to the problem that if you do something like `aes(color =
+    var1, group = var2)` you may actually want to do `aes(color = var1,
+    group = paste(var1, var2))`, if there are the same `var2` values
+    across different `var1` values but they don’t mean they should be
+    grouped together.
+4.  Now that `R` have come out with version \>= 4.0.0, we now need to
+    call `.S3method("method", "class")` to define the connection for
+    `S3` methods (e.g. `method.class` function), which we have for the
+    `contained` function.
 
-    3.  Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); EpiCompare:::update_approved_layers()`
+## Contributors
 
-3.  `geom_prediction_band` required not just `compute_group` but `compute_layer` - there is very little documentation on how to approach this correctly. Basically - there are problems when the `compute_group` wants to make multiple `pieces`/`groups` - and it is similar to the problem that if you do something like `aes(color = var1, group = var2)` you may actually want to do `aes(color = var1, group = paste(var1, var2))`, if there are the same `var2` values across different `var1` values but they don't mean they should be grouped together.
-
-Contributors
-------------
-
--   Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
--   Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
+  - Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
+  - Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))

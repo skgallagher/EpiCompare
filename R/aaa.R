@@ -47,3 +47,12 @@ update_approved_layers <- function(stat_names = .newstat,
 }
 
 update_approved_layers()
+
+
+#' logic to check if R is >= 4
+#'
+#' @return logical value (boolean)
+#' @export
+r_new_interface <- function() {
+  as.numeric(R.version$major) >= 4
+}

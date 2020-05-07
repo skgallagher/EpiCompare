@@ -80,11 +80,13 @@ df_all_vis <- df_all %>%
 
 
 ```{r warning = F}
+
+theme_set(theme_sir())
+
 all_curves <- ggplot(df_all_vis) +
   geom_path(aes(x = S, y = I, z = R, color = id, group = id2),
             alpha = .1) + 
   coord_tern() +
-  theme_minimal() +
   labs(color = "Group")
 
 all_curves
@@ -101,7 +103,6 @@ global_depth_pb <- all_curves +
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
                        pb_type = "delta_ball", conf_level = .6) +
-  
   coord_tern()
 
 global_depth_pb

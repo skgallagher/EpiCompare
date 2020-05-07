@@ -34,7 +34,8 @@ Imports:
     tidyselect,
     tibble,
     sp
-Suggests: 
+Suggests:
+    coronavirus,
     COVID19,
     devtools,
     EpiModel,

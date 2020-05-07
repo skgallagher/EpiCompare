@@ -103,7 +103,8 @@ hagelloch_raw %>%
   ggplot(aes(y = tI, z = tR)) +
     geom_aggregate() + 
     coord_tern() +
-    labs(x = "S", y = "I", z = "R", title = "Town Analysis")
+    labs(x = "S", y = "I", z = "R", title = "Town Analysis") +
+    theme_sir()
 ```
 
 Previous work has suggested that the class (`CL`) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.
@@ -119,7 +120,8 @@ hagelloch_raw %>%
        coord_tern() +
        labs(x = "S", y = "I", z = "R",
             color = "School Grade",
-            title = "Town analysis by grade") 
+            title = "Town analysis by grade") +
+       theme_sir()
 ```
 
 
@@ -146,7 +148,8 @@ df_groups %>% ggplot() +
     geom_prediction_band(aes(x = S, y = I, z = R, sim_group = as.numeric(sim)),
                          alpha = .2, fill = "blue", color = "blue") +
     geom_line(aes(x = S, y = I, z = R, group = sim), alpha = .1) +
-    coord_tern()
+    coord_tern() +
+    theme_sir()
 ```
 
 
@@ -158,7 +161,7 @@ df_groups %>% ggplot() +
 
     c. Finally, we've also leveraged ideas from [R-devel: on avoiding problems with `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html) in `R/aaa.R` to overcome messages from CRAN relative to this hack (using `:::`). For some reason - when documenting for `pkgdown` website, we need to do `library(ggtern); EpiCompare:::update_approved_layers()`
 3. `geom_prediction_band` required not just `compute_group` but `compute_layer` - there is very little documentation on how to approach this correctly. Basically - there are problems when the `compute_group` wants to make multiple `pieces`/`groups` - and it is similar to the problem that if you do something like `aes(color = var1, group = var2)` you may actually want to do `aes(color = var1, group = paste(var1, var2))`, if there are the same `var2` values across different `var1` values but they don't mean they should be grouped together.
-
+4. Now that `R` have come out with version >= 4.0.0, we now need to call `.S3method("method", "class")` to define the connection for `S3` methods (e.g. `method.class` function), which we have for the `contained` function. 
 
 ## Contributors
 

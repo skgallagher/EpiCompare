@@ -56,8 +56,6 @@ theme_set(theme_bw())
 ## Downloading the coronavirus data for the US
 
 ```{r results = 'asis'}
-library(COVID19)
-
 data <- covid19("USA", level = 2)  ## State level US data, will take a few seconds
 
 data %>% select(id, state, date, confirmed, recovered, deaths, pop) %>% 

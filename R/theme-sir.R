@@ -1,12 +1,19 @@
-## SKG
-## ADDING SIR THEME
-## May 6, 2020
-
-
 #' Add a portable theme for SIR ternary plots
 #' 
 #' @return theme to add to ggtern plots
 #' @export
+#' 
+#' @examples 
+#' library(ggplot2)
+#' library(dplyr)
+#' library(ggtern)
+#'
+#' EpiCompare::hagelloch_raw %>% filter(SEX %in% c("male", "female")) %>%
+#'   ggplot(., aes(y = tI, z = tR, color = SEX)) +
+#'   geom_aggregate() + coord_tern() +
+#'   labs(x = "S", y = "I", z = "R",
+#'        color = "Gender") +
+#'        theme_sir()
 theme_sir <- function(){
   ggplot2::theme_bw() +
     ggtern::theme_hideticks() +

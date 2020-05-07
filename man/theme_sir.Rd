@@ -12,3 +12,15 @@ theme to add to ggtern plots
 \description{
 Add a portable theme for SIR ternary plots
 }
+\examples{
+library(ggplot2)
+library(dplyr)
+library(ggtern)
+
+EpiCompare::hagelloch_raw \%>\% filter(SEX \%in\% c("male", "female")) \%>\%
+  ggplot(., aes(y = tI, z = tR, color = SEX)) +
+  geom_aggregate() + coord_tern() +
+  labs(x = "S", y = "I", z = "R",
+       color = "Gender") +
+       theme_sir()
+}

@@ -21,6 +21,7 @@ reference:
   - starts_with("EpiModel_")
   - starts_with("hagelloch_")
   - starts_with("agents_sim")
+  - starts_with("sis_data")
 - title: fortify
   desc: Fortify functions
   contents:
@@ -30,10 +31,11 @@ reference:
   contents:
   - matches("agents_to_aggregate")
 - title: geoms and stats
-  desc: forward facing geoms & stats
+  desc: forward facing geoms & stats (and one theme)
   contents:
   - starts_with("geom_")
   - starts_with("stat_")
+  - matches("theme_sir")
 - title: convex hull and delta ball tools
   desc: Forward facing functions associated with convex hull and delta-ball
     covering relative to creating a prediction band. This can be used
