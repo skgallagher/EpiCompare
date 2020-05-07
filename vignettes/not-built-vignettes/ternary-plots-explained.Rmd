@@ -1,0 +1,278 @@
+---
+title: "Ternary Plots: Explained"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with EpiCompare (for SIR agent-based data)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE, warning = F}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+library(devtools)
+devtools::load_all()
+```
+
+```{r eval = FALSE, echo = F}
+if(!require(EpiCompare)){
+  library(devtools)
+  devtools::install_github("skgallagher/EpiCompare")
+}
+library(EpiCompare)
+```
+
+```{r setup, message = FALSE, warning = FALSE, echo = F}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggtern)
+library(purrr)
+theme_set(theme_minimal())
+```
+
+# Introduction to Ternary plots
+
+A ternary plot is a "triangular" or 3 dimensional simplex that is used to represent relative proportions of 3 quantities. In this package we encourage the use of ternary plots to example the change in proportions of a population who are **Suspectible**, **Infected**, and have **Recovered** from a disease (more commonly refered to as an *SIR* model). Ternary plots are also used in chemistry and other physical sciences. 
+
+At the same time, Ternary plots aren't *that* common, so we thought it would be useful to introduced them in more detail here, so that users can feel more comfortable interpreting them.
+
+## How the axes and locations of the plot really work
+
+As mentioned above, ternary plots are to show proportions. For example we could see the proportion of a population that are suspectible start out at 100%, which would mean that no one was Infected or Recovered, in the SIR model with would look like a point `(1,0,0)`. Likewise, me might see, midway through the epidemic, that 30% of people were still not infected (aka still Suspectible), 20% were currently infected and the rest had recoved - this would look like the point `(.3,.2,.5)`.
+
+We could plot these two points like done in the following plot.
+
+```{r echo = F, message = F, warning = F}
+data <- data.frame(S = c(1,.3),
+                   I = c(0,.2),
+                   R = c(0,.5),
+                   labels = c("start", "midway"))
+
+ggplot(data) +
+  geom_point(aes(x = S, y = I, z = R), size = 4)+
+  geom_text(aes(x = S-.1, y = I+.05, z = R+.05, label = labels)) +
+  coord_tern()
+```
+
+Looking at the above figure, we can start to get our head around how these points lie on the graphic relative to the simplex they exist in. To identify the values associated with our "midway" point, we can draw 3 lines perpendicular to to the edges that intersect the point (like seen below).
+
+```{r echo = F, message = F, warning = F}
+data <- data.frame(S = c(1,.3),
+                   I = c(0,.2),
+                   R = c(0,.5),
+                   labels = c("start", "midway"))
+
+ggplot(data) +
+  geom_point(aes(x = S, y = I, z = R), size = 4)+
+  geom_text(aes(x = S-.1, y = I+.05, z = R+.05, label = labels)) +
+  geom_crosshair_tern(aes(x = S, y = I, z = R)) +
+  coord_tern()
+```
+
+But does that even really help us / what is it showing us? Well, to make it more clear, it's useful to think of each axis line to be associated with the dimension that ends with "100" (to denote 100%). For example, we could vary the lowest proportion of `S` iteratively and we'd get the following visual (I've excluded the points for now).
+
+```{r message = F, warning = F, echo = F, cache = T}
+x_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
+  data <- data.frame(x = c(1,1-cut,1-cut,1), y = c(0,cut,0,0), z = c(0,0,cut,0),
+                     cut = cut) 
+ggplot(data) +
+  geom_polygon_closed(aes(x = x, y = y,z = z), alpha = .3) +
+  geom_text(data = data.frame(x = 1-cut, y = cut/2, z = cut/2, label = round(1-cut,2)),
+            aes(x = x, y = y, z = z, label = label)) +
+  coord_tern() +
+  labs(title = paste("S >=", round(1-cut,2)), 
+       x = "S", y = "I", z = "R")
+})
+```
+
+
+```{r x-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F, cache = T, eval = F}
+walk(x_growth_plots, print)
+# note the below gif needs to be manually saved for the document...
+```
+
+```{asis}
+<center>
+![](../../../vignettes/not-built-vignettes/ternary-plot-explained-gif/x_vis.gif)
+</center>
+```
+
+
+
+Similarly, we can do that will all the axes (in the following visual).
+
+
+```{r message = F, warning = F, echo = F, cache = T}
+all_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
+  x_data <- data.frame(x = c(1,1-cut,1-cut,1), y = c(0,cut,0,0), z = c(0,0,cut,0))
+  x_plot <- ggplot(x_data) +
+    geom_polygon_closed(aes(x = x, y = y,z = z), alpha = .3) +
+    geom_text(data = data.frame(x = 1-cut, y = cut/2, z = cut/2, 
+                                label = round(1-cut,2)),
+              aes(x = x, y = y, z = z, label = label)) +    
+    coord_tern() +
+    labs(title = paste("S >=", round(1-cut,2)),
+       x = "S", y = "I", z = "R")
+
+  y_data <- data.frame(y = c(1,1-cut,1-cut,1), x = c(0,cut,0,0), z = c(0,0,cut,0))
+  y_plot <- ggplot(y_data) +
+    geom_polygon_closed(aes(x = x, y = y,z = z), alpha = .3) +
+      geom_text(data = data.frame(x = 1-cut, y = cut/2, z = cut/2, 
+                                  label =round(1-cut,2)),
+            aes(x = y, y = x, z = z, label = label)) +
+    coord_tern() +
+    labs(title = paste("I >=", round(1-cut,2)), 
+       x = "S", y = "I", z = "R")
+
+  z_data <- data.frame(z = c(1,1-cut,1-cut,1), y = c(0,cut,0,0), x = c(0,0,cut,0))
+  z_plot <- ggplot(z_data) +
+    geom_polygon_closed(aes(x = x, y = y,z = z), alpha = .3) +
+    geom_text(data = data.frame(x = 1-cut, y = cut/2, z = cut/2, 
+                                label = round(1-cut,2)),
+              aes(x = z, y = y, z = x, label = label)) +
+    coord_tern() +
+    labs(title = paste("R >=", round(1-cut,2)), 
+       x = "S", y = "I", z = "R")
+  
+  return(list(x_plot, y_plot, z_plot))
+})
+
+```
+
+
+
+```{r all-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F, cache = T, fig.width= 7, eval = F}
+walk(all_growth_plots, function(x) grid.arrange(grobs = x, nrow = 1, top = "Grey represents:"))
+# note the below gif needs to be manually saved for the document...
+```
+
+
+```{asis}
+<center>
+![](../../../vignettes/not-built-vignettes/ternary-plot-explained-gif/all_vis.gif)
+</center>
+```
+
+In this way, we should be able to think about the midway point with these 3 plots in mind:
+
+```{r echo = F, message = F, warning = F, fig.width= 7}
+data <- data.frame(S = c(1,.3),
+                   I = c(0,.2),
+                   R = c(0,.5),
+                   labels = c("start", "midway")) %>%
+  filter(labels == "midway")
+
+
+x_cut <- .3
+x_data <- data.frame(x = c(1,x_cut,x_cut,1), 
+                     y = c(0,1-x_cut,0,0), 
+                     z = c(0,0,1-x_cut,0))
+
+y_cut <- .2
+y_data <- data.frame(y = c(1,y_cut,y_cut,1), 
+                     x = c(0,1-y_cut,0,0), 
+                     z = c(0,0,1-y_cut,0))
+z_cut <- .5
+z_data <- data.frame(z = c(1,z_cut,z_cut,1), 
+                     y = c(0,1-z_cut,0,0), 
+                     x = c(0,0,1-z_cut,0))
+
+
+vis_crosshair <- ggplot(data) +
+  geom_point(aes(x = S, y = I, z = R), size = 4)+
+  geom_text(aes(x = S-.1, y = I+.05, z = R+.05, label = labels)) +
+  geom_crosshair_tern(aes(x = S, y = I, z = R)) +
+  coord_tern()
+
+
+  
+x_vis <- vis_crosshair + 
+  geom_polygon_closed(data = x_data,
+                      aes(x = x, y = y, z = z),
+                      alpha = .1) +
+  labs(title = "S >= .3")
+
+y_vis <- vis_crosshair + 
+  geom_polygon_closed(data = y_data,
+                      aes(x = x, y = y, z = z),
+                      alpha = .1) +
+  labs(title = "I >= .2")
+
+z_vis <- vis_crosshair + 
+  geom_polygon_closed(data = z_data,
+                      aes(x = x, y = y, z = z),
+                      alpha = .1) +
+  labs(title = "R >= .5")
+
+grid.arrange(x_vis, y_vis, z_vis, nrow = 1, top = "Grey represents:")
+```
+
+## How to do this with `ggtern`?
+
+The `ggtern` package, which we leverage inside EpiCompare, allows for `ggplot2` style coding, and also rescales values if they are not in proportions. Below are 3 examples to demonstrate these things.
+
+```{r}
+# just the data
+data <- data.frame(S = c(1,.3),
+                   I = c(0,.2),
+                   R = c(0,.5),
+                   labels = c("start", "midway"))
+
+data_unscaled <- data.frame(S = c(200, 60),
+                            I = c(0, 40),
+                            R = c(0, 100),
+                            labels = c("start", "midway"))
+
+```
+
+### Regular data, ggplot base + coord_tern()
+
+```{r echo = T, message = F, warning = F}
+ggplot(data) +
+  geom_point(aes(x = S, y = I, z = R)) +
+  coord_tern() 
+```
+
+### Regular data, ggtern base
+
+```{r echo = T, message = F, warning = F}
+ggtern(data) +
+  geom_point(aes(x = S, y = I, z = R)) 
+```
+
+### Unscaled regular data, ggplot base + coord_tern()
+
+```{r echo = T, message = F, warning = F}
+ggplot(data_unscaled) +
+  geom_point(aes(x = S, y = I, z = R)) +
+  coord_tern() 
+```
+
+
+
+
+
+
+
+```{asis, echo = F}
+Notes, 
+\@Shannon potentially 
+- in some ways: mirror https://csmgeo.csm.jmu.edu/geollab/Fichter/SedRx/readternary.html
+
+
+approach from: https://blogdown-demo.rbind.io/2018/01/31/gif-animations/, and https://bookdown.org/yihui/rmarkdown-cookbook/animation.html
+```
+
+
+
+
+
+
+
+
+
+
