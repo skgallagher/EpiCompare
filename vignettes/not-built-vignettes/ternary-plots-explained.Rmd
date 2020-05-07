@@ -95,9 +95,9 @@ walk(x_growth_plots, print)
 # note the below gif needs to be manually saved for the document...
 ```
 
-```{asis}
+```{asis, }
 <center>
-![](../../../vignettes/not-built-vignettes/ternary-plot-explained-gif/x_vis.gif)
+![](https://benjaminleroy.github.io/documents/epicompare_gif/x_vis.gif)
 </center>
 ```
 
@@ -153,7 +153,7 @@ walk(all_growth_plots, function(x) grid.arrange(grobs = x, nrow = 1, top = "Grey
 
 ```{asis}
 <center>
-![](../../../vignettes/not-built-vignettes/ternary-plot-explained-gif/all_vis.gif)
+![](https://benjaminleroy.github.io/documents/epicompare_gif//all_vis.gif)
 </center>
 ```
 
