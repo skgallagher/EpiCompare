@@ -1,0 +1,23 @@
+% !Rnw root = ../article.Rnw
+
+\section[SKG tries an Intro]{SKG Intro} \label{sec:skg_intro}
+
+COVID-19 has changed the course of scientific advancement as evidenced by the plethora of studies, modeling tools, and forecasts made publicly available on arXiv and medArXiv as well as peer-reviewed journals.  As a consequence of the large number of models and results, it is more difficult to parse through the models and results, which are often nuanced and specific to a certain region of the disease analysis pipeline.  By disease analysis pipeline, we refer to the process of how data is collected, processed and explored, statistically modeled, analyzed, and finally diseminated to others.
+
+We introduce the \texttt{R} package \pkg{EpiCompare} which is used to supplement and enhance (as opposed to supplant and compete with) existing infectious disease analysis software at every step in the analysis pipeline.  We offer a suite of functions and vignettes to aid with visualization, comparison, and conversion of existing tools.  The goal of \pkg{EpiCompare} is a streamlined process to standardize output from a variety of epidemic models, and when possible to compare disease data and disease models to one another through standard comparison tools (e.g. prevalence vs. time plots) along with novel contributions through what we call time-free analysis.
+
+More specifically, \pkg{EpiCompare} complements and enhances the disease analysis pipeline in the following areas:
+
+\begin{itemize}
+\item \textbf{Data harmonization and Exploratory Data Analysis (EDA)}.  \pkg{EpiCompare} contains \pkg{tidyverse}-style  functions to harmonize output from popular infectious disease software so they can be simply compared to one another.  Additionally, we provide tools to aggregate and compare three standard formats of infectious disease data.
+
+\item \textbf{Data analysis and comparison}. \pkg{EpiCompare} complements existing conventional data visualizations (e.g. prevalence vs. time) through time-free analysis, which we introduce via the well-known epidemiological concept of $R_0$, the infectious reproduction number.
+
+Additionally, we support statistical comparison of different models via conformal bands (e.g. prediction bands), which can be used to determine differences among models or sub-groups within models.
+
+\end{itemize}
+
+The paper is arranged as follows.  
+
+
+

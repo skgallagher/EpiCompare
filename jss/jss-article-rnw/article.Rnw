@@ -75,6 +75,8 @@ We do something
 
 \begin{document}
 
+\SweaveInput{chapters/ch1-intro-v2.Rnw}
+
 \SweaveInput{chapters/ch1-intro.Rnw}
 
 \section{Literature review}
