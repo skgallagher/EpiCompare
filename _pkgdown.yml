@@ -60,6 +60,7 @@ reference:
   - matches("imports_hidden_from")
   - matches("tidyr_new_interface")
   - matches("update_approved_layers")
+  - matches("r_new_interface")
 - title: everything
   contents:
   - matches(".*")

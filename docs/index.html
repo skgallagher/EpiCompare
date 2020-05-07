@@ -219,6 +219,7 @@
 </li>
 <li>
 <code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
+<li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">
