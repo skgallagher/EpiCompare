@@ -121,19 +121,19 @@
 <a href="#how-the-axes-and-locations-of-the-plot-really-work" class="anchor"></a>How the axes and locations of the plot really work</h2>
 <p>As mentioned above, ternary plots are to show proportions. For example we could see the proportion of a population that are suspectible start out at 100%, which would mean that no one was Infected or Recovered, in the SIR model with would look like a point <code>(1,0,0)</code>. Likewise, me might see, midway through the epidemic, that 30% of people were still not infected (aka still Suspectible), 20% were currently infected and the rest had recoved - this would look like the point <code>(.3,.2,.5)</code>.</p>
 <p>We could plot these two points like done in the following plot.</p>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/two-points-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Looking at the above figure, we can start to get our head around how these points lie on the graphic relative to the simplex they exist in. To identify the values associated with our “midway” point, we can draw 3 lines perpendicular to to the edges that intersect the point (like seen below).</p>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/two-points-crosshairs-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>But does that even really help us / what is it showing us? Well, to make it more clear, it’s useful to think of each axis line to be associated with the dimension that ends with “100” (to denote 100%). For example, we could vary the lowest proportion of <code>S</code> iteratively and we’d get the following visual (I’ve excluded the points for now).</p>
 <center>
 <img src="https://benjaminleroy.github.io/documents/epicompare_gif/x_vis.gif">
 </center>
 <p>Similarly, we can do that will all the axes (in the following visual).</p>
 <center>
-<img src="https://benjaminleroy.github.io/documents/epicompare_gif//all_vis.gif">
+<img src="https://benjaminleroy.github.io/documents/epicompare_gif/all_vis.gif">
 </center>
 <p>In this way, we should be able to think about the midway point with these 3 plots in mind:</p>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/point-shade-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="how-to-do-this-with-ggtern" class="section level2">
 <h2 class="hasAnchor">
@@ -155,14 +155,14 @@
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>()</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/example1-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="regular-data-ggtern-base" class="section level3">
 <h3 class="hasAnchor">
 <a href="#regular-data-ggtern-base" class="anchor"></a>Regular data, ggtern base</h3>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggtern</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>))</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/example2-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="unscaled-regular-data-ggplot-base-coord_tern" class="section level3">
 <h3 class="hasAnchor">
@@ -170,7 +170,7 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data_unscaled</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>()</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/example3-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>
