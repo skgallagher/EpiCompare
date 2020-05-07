@@ -78,9 +78,6 @@
     <li>
       <a href="../../articles/not-built-vignettes/ternary-plots-explained.html">Ternary Plots: Explained</a>
     </li>
-    <li>
-      <a href="../../articles/not-built-vignettes/ternary-plots-explained2.html">Ternary Plots: Explained</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -136,7 +133,7 @@
 <img src="https://benjaminleroy.github.io/documents/epicompare_gif//all_vis.gif">
 </center>
 <p>In this way, we should be able to think about the midway point with these 3 plots in mind:</p>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="how-to-do-this-with-ggtern" class="section level2">
 <h2 class="hasAnchor">
@@ -158,14 +155,14 @@
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>()</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="regular-data-ggtern-base" class="section level3">
 <h3 class="hasAnchor">
 <a href="#regular-data-ggtern-base" class="anchor"></a>Regular data, ggtern base</h3>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggtern</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>))</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="unscaled-regular-data-ggplot-base-coord_tern" class="section level3">
 <h3 class="hasAnchor">
@@ -173,7 +170,7 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data_unscaled</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>()</pre></body></html></div>
-<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="ternary-plots-explained_files/figure-html/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>

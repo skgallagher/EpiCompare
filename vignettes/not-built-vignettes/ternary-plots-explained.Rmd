@@ -75,7 +75,7 @@ ggplot(data) +
 
 But does that even really help us / what is it showing us? Well, to make it more clear, it's useful to think of each axis line to be associated with the dimension that ends with "100" (to denote 100%). For example, we could vary the lowest proportion of `S` iteratively and we'd get the following visual (I've excluded the points for now).
 
-```{r message = F, warning = F, echo = F, cache = T}
+```{r message = F, warning = F, eval = F, echo = F}
 x_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
   data <- data.frame(x = c(1,1-cut,1-cut,1), y = c(0,cut,0,0), z = c(0,0,cut,0),
                      cut = cut) 
@@ -90,12 +90,13 @@ ggplot(data) +
 ```
 
 
-```{r x-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F, eval = F}
+```{r eval = F, echo = F}
+#```{r x-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F}
 walk(x_growth_plots, print)
 # note the below gif needs to be manually saved for the document...
 ```
 
-```{asis, }
+```{asis}
 <center>
 ![](https://benjaminleroy.github.io/documents/epicompare_gif/x_vis.gif)
 </center>
@@ -106,7 +107,7 @@ walk(x_growth_plots, print)
 Similarly, we can do that will all the axes (in the following visual).
 
 
-```{r message = F, warning = F, echo = F, cache = T}
+```{r message = F, warning = F, echo = F, eval = F}
 all_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
   x_data <- data.frame(x = c(1,1-cut,1-cut,1), y = c(0,cut,0,0), z = c(0,0,cut,0))
   x_plot <- ggplot(x_data) +
@@ -144,8 +145,8 @@ all_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
 ```
 
 
-
-```{r all-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F,  fig.width= 7, eval = F}
+```{r eval = F, echo = F}
+#```{r all-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F,  fig.width= 7, eval = F}
 walk(all_growth_plots, function(x) grid.arrange(grobs = x, nrow = 1, top = "Grey represents:"))
 # note the below gif needs to be manually saved for the document...
 ```
@@ -251,10 +252,6 @@ ggplot(data_unscaled) +
   geom_point(aes(x = S, y = I, z = R)) +
   coord_tern() 
 ```
-
-
-
-
 
 
 
