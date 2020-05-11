@@ -65,7 +65,7 @@ fig <- plot_ly() %>%
   add_trace(x = c(1,0,0),
                y = c(0,1,0),
                z = c(0,0,1),
-               facecolor = c(130, 130, 130),
+               facecolor = "grey",
                opacity = .5,
             type = "mesh3d") %>%
   layout(title = "3d Unit Simplex", scene = scene, showlegend = FALSE) %>%
