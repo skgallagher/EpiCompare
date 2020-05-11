@@ -49,7 +49,7 @@ library("MASS")
 
 %% - \Abstract{} almost as usual
 \Abstract{
-We do something
+We do something, possibly useful
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
@@ -77,7 +77,7 @@ We do something
 
 \SweaveInput{chapters/ch1-intro-v2.Rnw}
 
-\SweaveInput{chapters/ch1-intro.Rnw}
+%\SweaveInput{chapters/ch1-intro.Rnw}
 
 \section{Literature review}
 \SweaveInput{chapters/ch2-lit-review.Rnw}
@@ -100,6 +100,8 @@ We do something
 \SweaveInput{chapters/ch7-discussion.Rnw}
 
 \bibliography{EpiCompare}
+
+\appendix
 
 \SweaveInput{chapters/app1-proofs.Rnw}
 
