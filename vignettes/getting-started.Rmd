@@ -195,7 +195,7 @@ ggplot() +
                        aes(x = S, y = I, z = R,
                            sim_group = as.numeric(as.character(sim))),
                        fill = "blue", color = NA, alpha = .2,
-                       conf_level = .05, grid_size = rep(100, 2),
+                       conf_level = .95, grid_size = rep(100, 2),
                        pb_type = "delta_ball"
                        ) +
   geom_path(data = df_ave, aes(x = S, y = I, z = R)) +
