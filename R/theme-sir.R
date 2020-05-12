@@ -15,7 +15,7 @@
 #'        color = "Gender") +
 #'        theme_sir()
 theme_sir <- function(){
-  ggplot2::theme_bw() +
+  ggtern::theme_bw() +
     ggtern::theme_hideticks() +
     ggtern::theme_showarrows() 
 }
