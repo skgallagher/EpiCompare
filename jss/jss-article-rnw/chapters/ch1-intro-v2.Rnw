@@ -11,7 +11,7 @@ We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhan
 
 The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data.  To this end, \pkg{EpiCompare}
 \begin{enumerate}
-  \ite Standardizes outputs from common infectious disease model software as a form of data pre-processing
+  \item Standardizes outputs from common infectious disease model software as a form of data pre-processing
   \item Complements existing software for data visualization and EDA
   \item Provides support for modeling and simulation
   \item Harmonizes data and model formats to be used in conjunction with one another
