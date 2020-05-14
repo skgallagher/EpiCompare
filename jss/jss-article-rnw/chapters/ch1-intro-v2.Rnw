@@ -16,7 +16,8 @@ We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhan
     \label{fig:pipeline}
 \end{figure}
 
-The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \ben\{pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-free tools (motivated in more detail in Section \ref{sec:time-free}).} \ben{More broadly,\sout{To this end,}} \pkg{EpiCompare} \ben{aids the data analysis pipeline for infecetious diseases by}
+The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \ben
+{\pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-free tools (motivated in more detail in Section \ref{sec:time-free}).} \ben{More broadly,\sout{To this end,}} \pkg{EpiCompare} \ben{aids the data analysis pipeline for infecetious diseases by}
 \begin{enumerate}
   \item Standardiz\ben{\sout{es}ing} outputs from common \ben{\proglang{R}-based} infectious disease model software \ben{\sout{as a form of data pre-processing} and common data storage types}
   \item \ben{\sout{Complements existing software for data visualization and EDA} Expanding upon existing data visualization and EDA tools}
