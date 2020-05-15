@@ -1,3 +1,4 @@
+
 library(pomp)
 
 ## From the pomp example from: https://kingaa.github.io/short-course/parest/odes.html#exercise-sirs-model
@@ -19,11 +20,11 @@ init2 <- Csnippet("
 ")
 
 sirs <- pomp(data=data.frame(time=seq(0,100, by = 1),cases=NA),
-     times="time",t0= 0,
-     skeleton=vectorfield(sirs.ode),
-     rinit=init2,
-     statenames=c("S","I","R"),
-     paramnames=c("Beta","gamma","eta","S_0","I_0","N")
+             times="time",t0= 0,
+             skeleton=vectorfield(sirs.ode),
+             rinit=init2,
+             statenames=c("S","I","R"),
+             paramnames=c("Beta","gamma","eta","S_0","I_0","N")
 )
 
 params <- c(Beta = .2, gamma = .1, eta = .05,
@@ -38,8 +39,5 @@ ggplot(data = sirs_data %>%
                                                  group = name,
                                                  col = name)) + geom_line()
 
- 
+
 usethis::use_data(sirs_data, overwrite = TRUE)
-
-
-
