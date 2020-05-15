@@ -43,6 +43,7 @@ library("MASS")
 %% - \title{} in title case
 %% - \Plaintitle{} without LaTeX markup (if any)
 %% - \Shorttitle{} with LaTeX markup (if any), used as running title
+% EpiCompare: A tidy R package for comparing and assessing epidemics and epidimology models
 \title{\proglang{EpiCompare}: Working title}
 \Plaintitle{EpiCompare}
 \Shorttitle{\prolang{EpiCompare}}
