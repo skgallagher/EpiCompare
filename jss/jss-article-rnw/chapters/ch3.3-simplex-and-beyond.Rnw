@@ -3,15 +3,12 @@
 \subsection{Simplexes beyond ternary plots and time-free comparison tools} \label{sec:time-free-in-simplex}
 
 \ben{\sout{Maybe should include something like "beyond ternary plots as a tool for time-free analysis..."}}
-\ben{Beyond ternary plots, and the associated SIR models, we can extend the time-free approach described in Section \ref{sec:ternary} to higher dimensions (i.e. models with more states).\sout{The basis of time-free analysis in ternary plots is extended to higher dimensional models (i.e. models with more states) in \pkg{EpiCompare} as well.}} The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions. This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a 1 dimension less space through the simplexical structure of the data.
+\ben{Beyond ternary plots, and the associated SIR models, we can extend the time-free approach described in Section \ref{sec:ternary} to higher dimensions (i.e. models with more states).\sout{The basis of time-free analysis in ternary plots is extended to higher dimensional models (i.e. models with more states) in \pkg{EpiCompare} as well.}} The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a 1 dimension less space through the simplexical structure of the data.
 
-\ben{I think this would be a good place to actually present the geometric tools we'd like to use for comparison of different models... - @Shannon - thoughts?}
+\ben{In \pkg{EpiCompare} we allow for the compare epidemics in these higher dimensional spaces by first projecting onto these simplexes. To aid in the comparison of models and epidemics we provide multiple tools. The first of which is, through multiple simulations under specific model parameters we can generate multiple time-series under the same assumptions. In \pkg{EpiCompare} we provide ways (leveraging conformal inference \cite{Vovk2005}) to create prediction regions for a true epidemic under the model assumptions. These regions require representing multi-dimensional structures for functions to completely contain epidemics. We extend off of papers like \citet{Dalmasso2019a} and \citet{LeRoy2020} to create these bands. These high dimensional bands allow the user to assess if the true epidemic is within the band (there-by assessing the model's representation of the epidemic), and also compare who different models are from each other through distances that compare sets. We recommend using the Hausdorff distance to compare such sets as it captures how much bigger the sets would have to expand to cover each other, and is defined mathematically as 
+\[
+d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
+\]}
 
-\ben{Should introduce 
-\begin{enumerate}
-\item thinking about epidemics as functions in high dimensional space
-\item containment of functions
-\item comparison of sets with Hausdorff distance 
-\end{enumerate}
-}
+
 
