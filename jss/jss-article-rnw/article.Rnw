@@ -87,7 +87,7 @@ We do something, possibly useful
 \section{Literature review}
 \SweaveInput{chapters/ch2-lit-review.Rnw}
 
-\section{Reasons and tools for time-free analysis}
+\section{Reasons and tools for time-free analysis} \label{sec:time-free}
 \SweaveInput{chapters/ch3-time-free.Rnw}
 
 %\SweaveInput{chapters/ch2-vis.Rnw} % this file still exists

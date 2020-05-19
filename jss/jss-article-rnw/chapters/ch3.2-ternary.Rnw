@@ -38,7 +38,7 @@ The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \
 %% Code to reproduce is in inst/paper_figs/different-time-scales.R
     \centering
     \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \ben{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different0-scale-standard}, the data sets look quite similar in the ternary view.}
+    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \ben{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view.}
     \label{fig:different-scales-tern}
 \end{figure}
 

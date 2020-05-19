@@ -2,11 +2,11 @@
 
 \section[Introduction]{Introduction} \label{sec:skg_intro}
 
-As the availability of scientific resources has increased through the decades, the number of models to analyze a particular disease outbreak has also increased.  This phenomenon is evidenced by the appearance of dozens of publicly available estimates of the reproduction number $R_0$ for COVID-19 \ben{\citep[e.g.][]{Sanche2020}}, \ben{and is well documented in many literature reviews in epidemology \citep[e.g.][]{Canzani2015}}.  As both the quantity of data and models increase, so does the need for standard and fair comparisons of models, as according to the data analysis pipeline of infectious diseases. 
+As the availability of scientific resources has increased through the decades, the number of models to analyze a particular disease outbreak has also increased.  This phenomenon is evidenced by the appearance of dozens of publicly available estimates of the reproduction number $R_0$ for COVID-19 \ben{\citep[e.g.][]{Sanche2020a}}, \ben{and is well documented in many literature reviews in epidemology \citep[e.g.][]{Canzani2015}}.  As both the quantity of data and models increase, so does the need for standard and fair comparisons of models, as according to the data analysis pipeline of infectious diseases. 
 
 
-We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhance the available tools for every part of the infectious disease analysis pipeline, with special emphasis on tools \ben{\sout{a)}}  to compare multiple infectious disease data sets or infectious disease models to one another  and \ben{\sout{b)}} to harmonize input and output data\ben{\footnote{\ben{I rearranged these 2 since we might want to push the new a) more?}}}.
-  In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. \ben{In Figure \ref{fig:pipeline} we also highlight where \pkg{EpiCompare} can aid in this pipeline.\footnote{\ben{I just feel like we want to cycle back to emphasis the package - but I'm open.}}}
+We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhance the available tools for every part of the infectious disease analysis pipeline, with special emphasis on tools to compare multiple infectious disease data sets or infectious disease models to one another  and to harmonize input and output data.
+  In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. In Figure \ref{fig:pipeline} we also highlight where \pkg{EpiCompare} can aid in this pipeline.
 
 \begin{figure}[!ht]
 %% Code to reproduce is in inst/paper_figs/different-time-scales.R
@@ -16,14 +16,12 @@ We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhan
     \label{fig:pipeline}
 \end{figure}
 
-The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \ben
-{\pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-free tools (motivated in more detail in Section \ref{sec:time-free}).} \ben{More broadly,\sout{To this end,}} \pkg{EpiCompare} \ben{aids the data analysis pipeline for infecetious diseases by}
+The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-free tools (motivated in more detail in Section \ref{sec:time-free}).More broadly, \pkg{EpiCompare} aids the data analysis pipeline for infecetious diseases by
 \begin{enumerate}
-  \item Standardiz\ben{\sout{es}ing} outputs from common \ben{\proglang{R}-based} infectious disease model software \ben{\sout{as a form of data pre-processing} and common data storage types}
-  \item \ben{\sout{Complements existing software for data visualization and EDA} Expanding upon existing data visualization and EDA tools}
-  \item Provides support for modeling and simulation\ben{\footnote{\ben{What are you trying to say here?}}}
-  \item \ben{\sout{Harmonizes data and model formats to be used in conjunction with one another}\footnote{\ben{I think this is the same as the first bullet?}}}
-  \item \ben{Aiding in comparison and assessment of \sout{Assesses}} models through time free analysis and conformal prediction bands and comparisons.
+  \item Standardizing outputs from common \proglang{R}-based infectious disease model software and common data storage types
+  \item Expanding upon existing data visualization and EDA tools
+  \item \ben{\sout{Provides support for modeling and simulation} Providing a interface for simple ODE-style agent based modeling.}
+  \item Aiding in comparison and assessment of models through time free analysis and conformal prediction bands and comparisons.
 \end{enumerate}
 Although \pkg{EpiCompare} aids in every part of the pipeline, our tools especially emphasize improvements for pipeline parts (1), (4), and (5) which can be summarized as data input and output harmonization and contributions to fairly comparing models and data to one another.
 
