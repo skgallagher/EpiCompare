@@ -22,10 +22,12 @@ and \eqn{R^\prime = \gamma I - \eta R}.
 library(ggplot2)
 library(tidyr)
 head(sirs_data)
-ggplot(data = sirs_data \%>\%
+if(tidyr_new_interface()){
+  ggplot(data = sirs_data \%>\%
          tidyr::pivot_longer(-c(time, .id)),
           aes(x = time, y = value,
                                                 group = name,
                                                  col = name)) + geom_line()
+}
 }
 \keyword{datasets}
