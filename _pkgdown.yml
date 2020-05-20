@@ -65,6 +65,21 @@ reference:
   contents:
   - matches(".*")
 
+
+articles:
+- title: Learning to EpiCompare
+  navbar: ~
+  contents: #this order
+  - 'getting-started'
+  - 'not-built-vignettes/ternary-plots-explained'
+  - 'not-built-vignettes/comparing-bands-and-assessing-containment'
+  - 'not-built-vignettes/depths-impact-on-prediction-bands'
+  - 'not-built-vignettes/example-epimodel'
+- title: Data examples
+  contents:
+  - 'not-built-vignettes/example-covid-19-us'
+
+  
 right:
 - icon: fa-github
   href: https://github.com/skgallagher/EpiCompare

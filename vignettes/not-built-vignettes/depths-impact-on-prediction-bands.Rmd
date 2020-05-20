@@ -1,7 +1,11 @@
 ---
-title: "Depths' impact on prediction bands"
+title: "Understanding Prediction Bands and the Impact of Quantile Functions"
 output: rmarkdown::html_document
 bibliography: our-bib.bib
+vignette: >
+  %\VignetteIndexEntry{Understanding Prediction Bands and the Impact of Quantile Functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE, eval = T}
@@ -25,7 +29,7 @@ library(tidyr)
 
 # Overview
 
-This vignette focusing on understanding how depth for functional/filamental data can aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see [Comparing bands and assessing containment](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html) for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth creates different prediction bands.
+This vignette focusing on understanding how depth for functional/filamental data can aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html) for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth creates different prediction bands.
 
 # Data generation 
 

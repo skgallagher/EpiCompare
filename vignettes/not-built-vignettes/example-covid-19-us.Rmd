@@ -1,7 +1,11 @@
 ---
-title: "Examining COVID-19 with EpiCompare"
+title: "COVID-19 and EpiCompare"
 output: html_document
 bibliography: our-bib.bib
+vignette: >
+  %\VignetteIndexEntry{COVID-19 and EpiCompare}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

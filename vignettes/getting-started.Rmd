@@ -1,8 +1,8 @@
 ---
-title: "Getting started with EpiCompare (for SIR agent-based data)"
+title: "Getting started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with EpiCompare (for SIR agent-based data)}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -39,6 +39,7 @@ library(ggtern)
 ```
 
 This "quickstart" guide presents how to:
+
   - work with agent-based SIR data and how to leverage `geom_aggregate` to quickly compare groups of the population's experience of the epidemic.
   - Visualizing and quantifying geometric uncertainty in SIR based data, using `agents_to_aggregate` to convert data from agents to aggregate, and leveraging `geom_prediction_band` to express uncertainty and centrality of simulations. This example also gives an example of the internal `simulate_SIR_agents` function.
   

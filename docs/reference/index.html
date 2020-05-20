@@ -102,22 +102,23 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/getting-started.html">Getting started with EpiCompare (for SIR agent-based data)</a>
+      <a href="../articles/getting-started.html">Getting started</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing bands and assessing containment</a>
+      <a href="../articles/not-built-vignettes/ternary-plots-explained.html">An Introduction to Ternary Plots</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Depths' impact on prediction bands</a>
+      <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/example-covid-19-us.html">Examining COVID-19 with EpiCompare</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/example-epimodel.html">Example of using EpiCompare with EpiModel outputs</a>
+      <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li class="divider"></li>
     <li>
-      <a href="../articles/not-built-vignettes/ternary-plots-explained.html">Ternary Plots: Explained</a>
+      <a href="../articles/index.html">More...</a>
     </li>
   </ul>
 </li>
@@ -726,6 +727,18 @@ geom_prediction_band</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="agent_array_to_df.html">agent_array_to_df()</a></code> </p>
+        </td>
+        <td><p>Put agent_array into a data frame format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="agent_array_to_mat.html">agent_array_to_mat()</a></code> </p>
+        </td>
+        <td><p>Put agent_array into a matrix format</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="agents_sims.html">agents_sims</a></code> </p>
         </td>
         <td><p>agents_sims Example output from SIR simulations</p></td>
@@ -861,6 +874,12 @@ is actually d^2</p></td>
           <p><code><a href="distance_depth_function.html">distance_depth_function()</a></code> </p>
         </td>
         <td><p>Geenens &amp; Nieto-Reyes functional distance-based depth</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="draws_to_states.html">draws_to_states()</a></code> </p>
+        </td>
+        <td><p>Draw the transfer matrix</p></td>
       </tr><tr>
         
         <td>
@@ -1040,6 +1059,18 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="get_previous_counts.html">get_previous_counts()</a></code> </p>
+        </td>
+        <td><p>Count number in each state</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_state_names.html">get_state_names()</a></code> </p>
+        </td>
+        <td><p>Get the state names fro the transition matrix</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="get_tri_matrix.html">get_tri_matrix()</a></code> </p>
         </td>
         <td><p>Make triangle matrix</p></td>
@@ -1088,6 +1119,12 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="initialize_agent_array.html">initialize_agent_array()</a></code> </p>
+        </td>
+        <td><p>Initialize array for agent simulations</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="inner_delta_ball_wrapper.html">inner_delta_ball_wrapper()</a></code> </p>
         </td>
         <td><p>Run delta ball analysis</p></td>
@@ -1103,6 +1140,12 @@ puts it in SIR format for EpiCompare.</p></td>
           <p><code><a href="local_distance_depth_function.html">local_distance_depth_function()</a></code> </p>
         </td>
         <td><p>Localized version of Geenens &amp; Nieto-Reyes functional distance-based depth</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="multinomial_updater.html">multinomial_updater()</a></code> </p>
+        </td>
+        <td><p>Multinomial draws to update states depending on past count</p></td>
       </tr><tr>
         
         <td>
@@ -1178,6 +1221,18 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="simulate_agents.html">simulate_agents()</a></code> </p>
+        </td>
+        <td><p>Simulate an agent-based model for given state-to-state transfers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sirs_data.html">sirs_data</a></code> </p>
+        </td>
+        <td><p>Example of SIRS model generated  from the <code>pomp</code> package.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="sis_data.html">sis_data</a></code> </p>
         </td>
         <td><p>Example SIS model  of class `dcm` from the <code>EpiModel</code> package.</p></td>
@@ -1235,6 +1290,12 @@ puts it in SIR format for EpiCompare.</p></td>
           <p><code><a href="to_lower_simplex.html">to_lower_simplex()</a></code> </p>
         </td>
         <td><p>move df to simplex representation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="trans_mat_to_D_fxn.html">trans_mat_to_D_fxn()</a></code> </p>
+        </td>
+        <td><p>Take a character formula transition matrix and turn it into a function</p></td>
       </tr><tr>
         
         <td>

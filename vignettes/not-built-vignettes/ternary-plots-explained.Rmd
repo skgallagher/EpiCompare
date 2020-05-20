@@ -1,8 +1,10 @@
 ---
-title: "Ternary Plots: Explained"
-output: 
-  rmarkdown::html_document:
-    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+title: "An Introduction to Ternary Plots"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{An Introduction to Ternary Plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE, warning = F}

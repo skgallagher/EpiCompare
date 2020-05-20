@@ -1,5 +1,5 @@
 ---
-title: "Comparing bands and assessing containment"
+title: "Comparing Models (to Models) and Epidemics (to Models)"
 output: rmarkdown::html_document
 ---
 

@@ -1,7 +1,11 @@
 ---
-title: "Example of using EpiCompare with EpiModel outputs"
+title: "Using EpiModel models with EpiCompare"
 output: html_document
 bibliography: our-bib.bib
+vignette: >
+  %\VignetteIndexEntry{Using EpiModel models with EpiCompare}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

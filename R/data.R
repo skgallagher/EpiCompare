@@ -13,12 +13,14 @@
 #' library(ggplot2)
 #' library(tidyr)
 #' head(sirs_data)
-#' if(tidyr_new_interface()){
+#' if(EpiCompare:::tidyr_new_interface()){
 #'   ggplot(data = sirs_data %>%
 #'          tidyr::pivot_longer(-c(time, .id)),
-#'           aes(x = time, y = value,
-#'                                                 group = name,
-#'                                                  col = name)) + geom_line()
+#'           aes(x = time, y = value, group = name, col = name)) + geom_line()
+#' } else {
+#'   ggplot(data = sirs_data %>%
+#'          tidyr::gather(-c(time, .id)),
+#'           aes(x = time, y = value, group = name, col = name)) + geom_line()
 #' }
 "sirs_data"
 
