@@ -10,6 +10,9 @@ knitr::knit_engines$set(python = reticulate::eng_python)
 ```{r echo = F}
 # R code
 library(reticulate)
+if (Sys.info()['user'] == "benjaminleroy"){
+  use_python("/Users/benjaminleroy/miniconda3/bin/python")
+}
 ```
 
 ```{python}
@@ -435,10 +438,7 @@ bar = progressbar.ProgressBar()
 ldd = list()
 for tau in bar(tau_list):
     ldd.append(local_distance_depth_function(dist_mat, tau))
-```
 
-
-```{python echo = F}
 # get min/max range of density estimate:
 _min = np.inf
 _max = -np.inf
@@ -446,10 +446,7 @@ _max = -np.inf
 for idx, tau in enumerate(tau_list):
     _min = np.min([np.min(ldd[idx]), _min])
     _max = np.max([np.max(ldd[idx]), _max])
-```
 
-
-```{python echo = F}
 #visualizing them
 fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
 ax = ax.ravel()

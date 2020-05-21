@@ -329,7 +329,7 @@
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r">
 <span class="no">psuedo_density_data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span>()
-<span class="co">#&gt; [1] 0.0006688648 0.0137477807</span>
+<span class="co">#&gt; [1] 0.001733508 0.013491885</span>
 
 <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span>
   <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">psuedo_density</span>^<span class="fl">2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">id2</span>)) +
