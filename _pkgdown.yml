@@ -67,7 +67,8 @@ reference:
 
 
 articles:
-- title: Learning to EpiCompare
+- title: Learning EpiCompare
+  desc: Vignettes aimed at getting you started and aware of the tools available
   navbar: ~
   contents: #this order
   - 'getting-started'
@@ -76,8 +77,13 @@ articles:
   - 'not-built-vignettes/depths-impact-on-prediction-bands'
   - 'not-built-vignettes/example-epimodel'
 - title: Data examples
+  desc: Vignettes that take a dive into different datasets
   contents:
   - 'not-built-vignettes/example-covid-19-us'
+- title: Extended Discussions
+  desc: Vignettes that provided extended discussions on statistical ideas
+  contents:
+  - 'not-built-vignettes/Comparing-Depth-and-Density'
 
   
 right:

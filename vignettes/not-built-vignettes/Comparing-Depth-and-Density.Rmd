@@ -1,0 +1,506 @@
+---
+title: "Comparing Depth and Density"
+output: html_document
+---
+
+```{r echo = F}
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+```{r echo = F}
+# R code
+library(reticulate)
+```
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import scipy.stats
+import scipy
+import scipy.spatial
+import progressbar
+```
+
+# The difference between density and depth
+
+In this vignette, we will be attempting to compare depth (distance based) to a Guassian KDE - to emphasis that depth (local or otherwise) focuses more on geometric features of centrality than kernel density destimates. This will be done using data in 1d and 2d euclidean space. 
+
+We will be using 2 different data sets, as show below and have versions of them in 1d and 2d euclidean space.
+
+*This vignette is actually written in `python` using the `reticulate` package from `R studio`. This was done for some speed gains. It's possible that we will craft this into a fast `R` approach later in this package's life.*
+
+## the data
+
+```{python}
+np.random.seed(1)
+single_2d = np.random.uniform(size = (1000,2))
+single_1d = np.random.uniform(size = 1000)
+
+double_2d = np.vstack([
+              np.vstack([np.random.uniform(low = 0, high = .1,size = (500)),
+                         np.random.uniform(low = 0, high = 1,size = (500))]).T,
+              np.vstack([np.random.uniform(low = .9, high = 1,size = (500)),
+                         np.random.uniform(low = 0, high = 1,size = (500))]).T])
+
+double_1d = np.hstack([np.random.uniform(low = 0, high = .1,size = (500)),
+                       np.random.uniform(low = .9, high = 1,size = (500))])
+```
+
+```{python echo = F}
+fig, ax = plt.subplots(nrows = 2, ncols = 2)
+_ = ax[0,0].scatter(single_2d[:,0], single_2d[:,1], marker = ".")
+_ = ax[1,0].hist(single_1d, bins = 25)
+_ = ax[0,1].scatter(double_2d[:,0], double_2d[:,1], marker = ".")
+_ = ax[1,1].hist(double_1d, bins = 50)
+# labels
+ax[0,0].set_ylabel("2d data");
+ax[1,0].set_ylabel("1d data");
+ax[1,0].set_xlabel("single uniform block");
+ax[1,1].set_xlabel("two uniform blocks");
+plt.show()
+```
+
+## 2d data example
+
+Let's first do the 2d data examples (I think they're really good at emphasising the differences between the two). As you can see from the data visualization
+
+### 1 block distribution
+
+Let's start with the 2d euclidean data first. For the 1 block of uniform distribution, we will examine different values of $\tau$ relative to the local distance depth defined above. 
+
+**But before we do**, let's look at the distribution to distances:
+
+```{python}
+dist_mat = scipy.spatial.distance_matrix(x = single_2d, y = single_2d)
+
+plt.hist(dist_mat.ravel());
+plt.show()
+```
+
+#### Local Depth and Global Depth
+
+```{python echo = F}
+# hidden local_depth function
+def remove_idx(i,n):
+    return np.concatenate([np.arange(i),np.arange(i+1,n)])
+
+def local_distance_depth_function(dist_matrix, tau = np.inf):
+    """
+    calculates a depth vector using a distance matrix
+
+    Arguments:
+    ----------
+    dist_matrix: np.array (n,n)
+        square positive symmetric matrix
+    tau : non-negative scalar constains which 
+
+    Returns:
+    --------
+    depth: np.array (n,) 
+        vector with depth values associated with indices in dist_matrix
+    """
+    N = dist_matrix.shape[0]
+    
+    if (N != dist_matrix.shape[1]) or \
+        (np.any(dist_matrix.T != dist_matrix)) or \
+        (np.any(dist_matrix < 0)):
+        stop("this is not a positive symmetric square matrix")
+
+    depth = np.zeros(N)
+  
+
+    for obs_index in np.arange(N):
+        # vector of idx to keep (not associated with idx examining) 
+        rm_idx = remove_idx(obs_index, N)
+        # from symmetry:
+        dist_to_obs = dist_matrix[obs_index, rm_idx]
+        keep_idx = rm_idx[dist_to_obs <= tau]
+        
+        sub_matrix = dist_matrix[keep_idx,][:,keep_idx]
+        N_inner = sub_matrix.shape[0]
+        
+        obs_column = dist_matrix[keep_idx,obs_index]
+        obs_row    = dist_matrix[obs_index,keep_idx]
+        
+        obs_column_matrix = np.tile(obs_column, (N_inner,1))
+        obs_row_matrix    = np.tile(obs_column, (N_inner,1)).T 
+        
+        obs_combo_array = np.zeros((N_inner, N_inner, 2))
+        obs_combo_array[:,:,0] = obs_column_matrix
+        obs_combo_array[:,:,1] = obs_row_matrix
+
+        max_matrix = obs_combo_array.max(axis = 2)
+
+        min_matrix = obs_combo_array.min(axis = 2)
+
+        max_part = np.mean((sub_matrix > max_matrix)[
+            ~np.eye(min_matrix.shape[0],dtype=bool) #ignore diagonal
+        ])
+
+        
+        depth[obs_index] = max_part
+    return(depth)
+```
+
+I've hidden the creation of a python version of `EpiCompare::local_deistance_depth_function` in this document, but it's code the same way - just a little faster in `python` than `R`.
+
+Below are visualization of the different local depth scores (relative to $\tau$). 
+
+
+```{python cache = F}
+tau_list = [.1,.2,.4,.6,.8,1,np.inf]
+
+bar = progressbar.ProgressBar()
+ldd = list()
+for tau in bar(tau_list):
+    ldd.append(local_distance_depth_function(dist_mat, tau))
+```
+
+
+```{python echo = F}
+tau_list = [.1,.2,.4,.6,.8,1,np.inf]
+
+# get min/max range of density estimate:
+_min = np.inf
+_max = -np.inf
+
+for idx, tau in enumerate(tau_list):
+    _min = np.min([np.min(ldd[idx]), _min])
+    _max = np.max([np.max(ldd[idx]), _max])
+```
+
+
+```{python echo = F}
+#visualizing them
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, tau in enumerate(tau_list):
+    ldd_tau_i = ldd[idx]
+    cs = ax[idx].scatter(single_2d[:,0], single_2d[:,1], c = ldd_tau_i, 
+                         vmin = _min, vmax = _max)
+    ax[idx].set_title("tau = " + str(tau));
+
+fig.colorbar(cs);
+fig.delaxes(ax[7]);
+fig.suptitle("Local Depth fitting on uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+We really want to compare this to smoothing of a Guassian KDE to be able to really examine the differences.
+
+#### KDE Estimate
+
+The below estimates are with varying bandwidth parameters for the Guassian KDE estimates. Note that the final "bw = silverman" uses the Silverman's Method to select the bandwidth parameter.
+
+```{python echo = F}
+m1, m2 = single_2d[:,0], single_2d[:,1]
+xmin = m1.min()
+xmax = m1.max()
+ymin = m2.min()
+ymax = m2.max()
+X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+positions = np.vstack([X.ravel(), Y.ravel()])
+values = np.vstack([m1, m2])
+
+bw_methods = [.01,.05,.1,.2,.3,.5,1, "silverman"]
+Z_list = list()
+for idx, bw_method in enumerate(bw_methods):
+    kernel = scipy.stats.gaussian_kde(values, bw_method = bw_method)
+    Z_list.append(np.reshape(kernel(positions).T, X.shape))
+```
+
+```{python echo = F}
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+
+for idx, bw_method in enumerate(bw_methods):
+    Z = Z_list[idx]
+    cs = ax[idx].imshow(np.rot90(Z), cmap=plt.cm.gist_earth_r,
+                        extent=[xmin, xmax, ymin, ymax])
+    _ = ax[idx].set_title("bw = " + str(bw_method))
+    
+#fig.colorbar(cs)
+fig.tight_layout();
+fig.suptitle("Kernel density estimates of uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+#### Comparing the Differences
+
+It should be pretty clear these two approaches act differently. And, with the uniform structure we capture different things. Arguably the depth approach better captures the geometric structure of the uniform distribution. You can image a Gaussian distribution (instead of uniform distribution), would show much less differences.
+
+Let's move onto another two-dimensional dataset that has different, but also interesting, structure - 2 disjoint uniform blocks.
+
+### 2 block distribution
+
+Again, let's first look at the distribution of distances between data points.
+```{python echo = F}
+dist_mat2 = scipy.spatial.distance_matrix(x = double_2d, y = double_2d)
+
+plt.hist(dist_mat.ravel());
+plt.show()
+```
+
+#### Local Depth and Global Depth 
+```{python}
+tau_list2 = [.1,.2,.4,.6,.8,1,1.2,np.inf]
+
+bar = progressbar.ProgressBar()
+ldd2 = list()
+for tau in bar(tau_list2):
+    ldd2.append(local_distance_depth_function(dist_mat2, tau))
+```
+
+```{python echo = F}
+# get min/max range of density estimate:
+_min = np.inf
+_max = -np.inf
+
+for idx, tau in enumerate(tau_list):
+    _min = np.min([np.min(ldd2[idx]), _min])
+    _max = np.max([np.max(ldd2[idx]), _max])
+
+```
+
+```{python echo = F}
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, tau in enumerate(tau_list):
+    ldd_tau_i = ldd2[idx]
+    cs = ax[idx].scatter(double_2d[:,0], double_2d[:,1], c = ldd_tau_i,
+                         vmin = _min, vmax = _max)
+    _ = ax[idx].set_title("tau = " + str(tau))
+
+fig.colorbar(cs);
+fig.delaxes(ax[7]);
+fig.suptitle("Local depth fitting on split uniform set squares");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show();
+```
+
+#### KDE
+
+```{python echo = F}
+# kde
+m1, m2 = double_2d[:,0], double_2d[:,1]
+xmin = m1.min()
+xmax = m1.max()
+ymin = m2.min()
+ymax = m2.max()
+X, Y = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+positions2 = np.vstack([X.ravel(), Y.ravel()])
+values = np.vstack([m1, m2])
+```
+
+```{python echo = F, cache = T}
+bw_methods = [.01,.05,.1,.2,.3,.5,1,3, None]
+Z_list2 = list()
+for idx, bw_method in enumerate(bw_methods):
+    kernel = scipy.stats.gaussian_kde(values,bw_method = bw_method)
+    Z_list2.append(np.reshape(kernel(positions2).T, X.shape))
+
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, bw_method in enumerate(bw_methods[:(len(bw_methods)-1)]):
+    Z = Z_list2[idx]
+    _ = ax[idx].imshow(np.rot90(Z), cmap=plt.cm.gist_earth_r,
+          extent=[xmin, xmax, ymin, ymax])
+    _ = ax[idx].set_title("bw = " + str(bw_method))
+fig.suptitle("Kernel density estimates of split uniform set squares");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+#### Comparisons
+
+In this example too, the geometric structure of the data is more highlighted with the low values of $\tau$ - in which we get a central ridge for each of the blocks. This isn't captured by the KDE, and we get (do to random clumping) high density regions that *do not* well represent the geometric structure of the data.
+
+## 1d data example
+
+Below I'd just like to show the same argumet in the `x` dimension of the data. I'll just be showing the figures
+
+### 1 Block distribution
+
+Let's start with the 2d euclidean data first. For the 1 block of uniform distribution, we will examine different values of $\tau$ relative to the local distance depth defined above. 
+
+**But before we do**, let's look at the distribution to distances:
+
+```{python}
+dist_mat = scipy.spatial.distance_matrix(x = single_1d.reshape((-1,1)), y = single_1d.reshape((-1,1)))
+
+plt.hist(dist_mat.ravel());
+plt.show()
+```
+
+#### Local Depth and Global Depth
+
+```{python cache = T}
+tau_list = [.1,.2,.4,.6,.8,np.inf]
+
+bar = progressbar.ProgressBar()
+ldd = list()
+for tau in bar(tau_list):
+    ldd.append(local_distance_depth_function(dist_mat, tau))
+
+# get min/max range of density estimate:
+_min = np.inf
+_max = -np.inf
+
+for idx, tau in enumerate(tau_list):
+    _min = np.min([np.min(ldd[idx]), _min])
+    _max = np.max([np.max(ldd[idx]), _max])
+
+#visualizing them
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, tau in enumerate(tau_list):
+    ldd_tau_i = ldd[idx]
+    resort = np.argsort(single_1d)
+    cs = ax[idx].plot(single_1d[resort],  
+                      ldd_tau_i[resort])
+    ax[idx].set_title("tau = " + str(tau));
+
+
+fig.delaxes(ax[7]);
+fig.suptitle("Local Depth fitting on uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+#### KDE Estimate
+
+```{python echo = F, message=FALSE, results='hide', cache = T}
+from sklearn.neighbors import KernelDensity
+
+bw_methods = [.01,.05,.1,.2,.3,.5,1]
+prob_list = list()
+for idx, bw_method in enumerate(bw_methods):
+    kde = KernelDensity(bandwidth=bw_method, kernel='gaussian');
+    kde.fit(single_1d[:,None]);
+    prob = np.exp(kde.score_samples(single_1d[:,None]));
+    prob_list.append(prob)
+
+#visualizing them
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, bw in enumerate(bw_methods):
+    resort = np.argsort(single_1d)
+    cs = ax[idx].plot(single_1d[resort],  
+                      prob_list[idx][resort])
+    #ax[idx].set_title("bw = " + str(bw));
+
+fig.delaxes(ax[6]);
+fig.delaxes(ax[7]);
+
+fig.suptitle("KDE fit on uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+
+
+
+
+
+
+
+### 2 Block distribution
+
+I'm not sure that this really shows anything, but I include it anyway.
+
+Let's look at the distribution to distances, for the 2 block distribution
+
+```{python}
+dist_mat = scipy.spatial.distance_matrix(x = double_1d.reshape((-1,1)), y = double_1d.reshape((-1,1)))
+
+plt.hist(dist_mat.ravel(),bins = 50);
+plt.show()
+```
+
+#### Local Depth and Global Depth
+
+```{python cache = T}
+tau_list = [.1,.2,.4,.6,.8,np.inf]
+
+bar = progressbar.ProgressBar()
+ldd = list()
+for tau in bar(tau_list):
+    ldd.append(local_distance_depth_function(dist_mat, tau))
+```
+
+
+```{python echo = F}
+# get min/max range of density estimate:
+_min = np.inf
+_max = -np.inf
+
+for idx, tau in enumerate(tau_list):
+    _min = np.min([np.min(ldd[idx]), _min])
+    _max = np.max([np.max(ldd[idx]), _max])
+```
+
+
+```{python echo = F}
+#visualizing them
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, tau in enumerate(tau_list):
+    ldd_tau_i = ldd[idx]
+    resort = np.argsort(double_1d)
+    cs = ax[idx].plot(double_1d[resort],  
+                      ldd_tau_i[resort])
+    ax[idx].set_title("tau = " + str(tau));
+
+
+fig.delaxes(ax[7]);
+fig.suptitle("Local Depth fitting on uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+#### KDE Estimate
+
+```{python echo = F, cache = T}
+from sklearn.neighbors import KernelDensity
+
+bw_methods = [.01,.05,.1,.2,.3,.5,1]
+prob_list = list()
+for idx, bw_method in enumerate(bw_methods):
+    kde = KernelDensity(bandwidth=bw_method, kernel='gaussian');
+    kde.fit(double_1d[:,None]);
+    prob = np.exp(kde.score_samples(double_1d[:,None]));
+    prob_list.append(prob)
+
+#visualizing them
+fig, ax = plt.subplots(nrows = 2, ncols = 4, figsize = (12,6))
+ax = ax.ravel()
+
+for idx, bw in enumerate(bw_methods):
+    resort = np.argsort(double_1d)
+    cs = ax[idx].plot(double_1d[resort],  
+                      prob_list[idx][resort])
+    #ax[idx].set_title("bw = " + str(bw));
+
+fig.delaxes(ax[6]);
+fig.delaxes(ax[7]);
+
+fig.suptitle("KDE fit on uniform hypercube");
+fig.tight_layout(rect=[0, 0.03, 1, 0.95]);
+plt.show()
+```
+
+
+
+
+
+

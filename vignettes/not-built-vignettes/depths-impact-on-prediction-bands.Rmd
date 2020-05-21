@@ -6,6 +6,7 @@ vignette: >
   %\VignetteIndexEntry{Understanding Prediction Bands and the Impact of Quantile Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+
 ---
 
 ```{r, include = FALSE, eval = T}
@@ -29,7 +30,10 @@ library(tidyr)
 
 # Overview
 
-This vignette focusing on understanding how depth for functional/filamental data can aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html) for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth creates different prediction bands.
+This vignette focusing on understanding the use of diffeerent conformal scores (current different quantile functions) and how they aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html) for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth, and psuedo-densities creates different prediction bands.
+
+The next step of this package will be to provide conformal inference [@Vovk2005] wrappers around these quantile functions (conformal scores) to make the prediction intervals valid in a finit sense (which they are currently not).
+
 
 # Data generation 
 
@@ -185,8 +189,7 @@ df_all_ld %>%
   labs(title = "Local Depth", color = "(local depth)^2") 
 ```
 
-Here's a different prediction band based on local depth. It's slightly different
-because we're filtering first (we may drop a few more than we want).
+*Although currently not built in*, we can still visualize prediction band based on local depth would look like. Notice how the local depth seems to equally emphasis the centers of both mixtures in the scores and the prediction band.
 
 ```{r}
 
@@ -204,6 +207,84 @@ grid.arrange(global_depth_pb + labs(title = "global-based prediction band"),
              local_depth_pb + labs(title = "local-based prediction band"),
              nrow = 1)
 ```
+
+# Beyond Depth: A psuedo-density approach
+
+Depth based metrics focus on "centrality" of observations, which is different than densities, [Comparing Depth and Density](https://skgallagher.github.io/EpiCompare/articles/not-built-vignettes/Comparing-Depth-and-Density.html) provides a introduction into how to think about the differences between densities and depth.
+
+Papers like  [@Ferraty2012] and [@Ciollaro2014] provide us this ways to estimate "psuedo-densities" for each point. *Although also not included in this package*, the below code sketched how one could approach using the Guassian Kernel based psuedo-densities proposed in these papers.
+
+```{r}
+dist_mat <- df_all %>%
+  arrange(t) %>% # just to be safe
+  select(-t) %>%
+  group_by(id, sim) %>% group_split() %>%
+  dist_matrix_innersq_direction(position = 2:4, verbose = TRUE)
+
+
+psuedo_density_function <- function(dist_mat, bw){
+  dmat <- dnorm(dist_mat, sd = bw)
+  estimated_density <- rowSums(dmat)/sum(dmat)
+}
+
+psuedo_density_data <- df_all %>%
+  arrange(t) %>% # just to be safe
+  select(-t) %>%
+  group_by(id, sim) %>%
+  filament_distance_depth(depth_func = 
+    function(dist_mat) {
+      psuedo_density_function(dist_mat, bw = tau)
+      }, data_columns = c("S","I","R"))
+
+
+df_all_pd <- df_all_vis %>% group_by(id, sim) %>%
+  nest() %>% 
+  ungroup() %>% mutate(psuedo_density = psuedo_density_data) %>%
+  unnest(col = c(data)) %>%
+  mutate(psuedo_density2 = cut(psuedo_density, breaks = 5),
+         id2 = factor(paste0(id, sim), 
+                      levels = paste0(rep(c("first", "second"), each = 100),
+                                      rep(1:100, length = 200)))) %>%
+  mutate(id2 = as.numeric(id2)) 
+
+data.frame(psuedo_density = psuedo_density_data) %>%
+  ggplot() +
+  geom_histogram(aes(x = psuedo_density))
+
+psuedo_density_data %>% range()
+
+df_all_pd %>% 
+  ggplot(aes(x = S, y = I, z = R, color = psuedo_density^2, group = id2)) +
+  geom_path() +
+  coord_tern() +
+  labs(title = "Psuedo Density", color = "(psuedo density)^2") 
+```
+
+
+```{r}
+local_cutoff_pd <- df_all_pd %>% pull(psuedo_density) %>% quantile(probs = .4)
+
+
+
+psuedo_density_pb <- all_curves + 
+  geom_prediction_band(data = df_all_pd %>% filter(psuedo_density > local_cutoff_pd),
+                       aes(x = S, y = I, z = R, 
+                          sim_group = id2),
+                       pb_type = "delta_ball", conf_level = 1) +
+  
+  coord_tern()
+
+layout_mat <- matrix(c(rep(c(rep(1,4), rep(2, 4)),4),
+                       rep(c(4,4, rep(3,4), 4,4), 4)), nrow = 8, byrow = T)
+
+grid.arrange(global_depth_pb + labs(title = "global depth based prediction band"),
+             local_depth_pb + labs(title = "local depth based prediction band"),
+             psuedo_density_pb + labs(title = "psuedo-density based prediciton band"),
+             ggplot() + theme_minimal(),
+             layout_matrix = layout_mat)
+```
+
+
 
 
 # References

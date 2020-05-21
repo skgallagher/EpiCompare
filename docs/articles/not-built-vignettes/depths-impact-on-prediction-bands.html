@@ -122,7 +122,8 @@
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>This vignette focusing on understanding how depth for functional/filamental data can aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see <a href="https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a> for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth creates different prediction bands.</p>
+<p>This vignette focusing on understanding the use of diffeerent conformal scores (current different quantile functions) and how they aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see <a href="https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a> for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth, and psuedo-densities creates different prediction bands.</p>
+<p>The next step of this package will be to provide conformal inference <span class="citation">(Vovk, Gammerman, and Shafer 2005)</span> wrappers around these quantile functions (conformal scores) to make the prediction intervals valid in a finit sense (which they are currently not).</p>
 </div>
 <div id="data-generation" class="section level1">
 <h1 class="hasAnchor">
@@ -213,8 +214,8 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">0</span>:<span class="fl">10</span>/<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="no">t</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">check.names</span> <span class="kw">=</span> <span class="no">F</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">DT</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span>(<span class="kw">options</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">dom</span> <span class="kw">=</span> <span class="st">'t'</span>))</pre></body></html></div>
-<div id="htmlwidget-15b56f4dfad25736b0f0" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-15b56f4dfad25736b0f0">{"x":{"filter":"none","data":[["1"],[0],[81868.2],[162777.2],[299287.2],[600930.8],[2132268],[4964388],[6345207.59999999],[7808804.00000001],[9484075],[18268736]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
+<div id="htmlwidget-90aedc11d3780315499d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-90aedc11d3780315499d">{"x":{"filter":"none","data":[["1"],[0],[71918.2],[129502.4],[234668.2],[437886],[2322787],[5589031.6],[6844527.2],[8068221.2],[9559618.6],[15677708]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
 <span class="no">tau</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.3</span>)[<span class="st">"30%"</span>]
 
 <span class="no">dist_mat</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">dist</span> <span class="kw">=</span> <span class="no">.</span>) <span class="kw">%&gt;%</span>
@@ -266,7 +267,7 @@
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Local Depth"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"(local depth)^2"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<p>Here’s a different prediction band based on local depth. It’s slightly different because we’re filtering first (we may drop a few more than we want).</p>
+<p><em>Although currently not built in</em>, we can still visualize prediction band based on local depth would look like. Notice how the local depth seems to equally emphasis the centers of both mixtures in the scores and the prediction band.</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r">
 <span class="no">local_cutoff</span> <span class="kw">&lt;-</span> <span class="no">df_all_ld</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="no">local_depth</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.4</span>)
 
@@ -284,6 +285,82 @@
              <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
+<div id="beyond-depth-a-psuedo-density-approach" class="section level1">
+<h1 class="hasAnchor">
+<a href="#beyond-depth-a-psuedo-density-approach" class="anchor"></a>Beyond Depth: A psuedo-density approach</h1>
+<p>Depth based metrics focus on “centrality” of observations, which is different than densities, <a href="https://skgallagher.github.io/EpiCompare/articles/not-built-vignettes/Comparing-Depth-and-Density.html">Comparing Depth and Density</a> provides a introduction into how to think about the differences between densities and depth.</p>
+<p>Papers like <span class="citation">(Ferraty, Kudraszow, and Vieu 2012)</span> and <span class="citation">(Ciollaro et al. 2014)</span> provide us this ways to estimate “psuedo-densities” for each point. <em>Although also not included in this package</em>, the below code sketched how one could approach using the Guassian Kernel based psuedo-densities proposed in these papers.</p>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">dist_mat</span> <span class="kw">&lt;-</span> <span class="no">df_all</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu">dist_matrix_innersq_direction</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">2</span>:<span class="fl">4</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+
+
+<span class="no">psuedo_density_function</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dist_mat</span>, <span class="no">bw</span>){
+  <span class="no">dmat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span>(<span class="no">dist_mat</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="no">bw</span>)
+  <span class="no">estimated_density</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">dmat</span>)/<span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">dmat</span>)
+}
+
+<span class="no">psuedo_density_data</span> <span class="kw">&lt;-</span> <span class="no">df_all</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
+  <span class="fu">filament_distance_depth</span>(<span class="kw">depth_func</span> <span class="kw">=</span>
+    <span class="kw">function</span>(<span class="no">dist_mat</span>) {
+      <span class="fu">psuedo_density_function</span>(<span class="no">dist_mat</span>, <span class="kw">bw</span> <span class="kw">=</span> <span class="no">tau</span>)
+      }, <span class="kw">data_columns</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>,<span class="st">"I"</span>,<span class="st">"R"</span>))
+
+
+<span class="no">df_all_pd</span> <span class="kw">&lt;-</span> <span class="no">df_all_vis</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">psuedo_density</span> <span class="kw">=</span> <span class="no">psuedo_density_data</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span>(<span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">data</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">psuedo_density2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(<span class="no">psuedo_density</span>, <span class="kw">breaks</span> <span class="kw">=</span> <span class="fl">5</span>),
+         <span class="kw">id2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="no">id</span>, <span class="no">sim</span>),
+                      <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"first"</span>, <span class="st">"second"</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="fl">100</span>),
+                                      <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>:<span class="fl">100</span>, <span class="kw">length</span> <span class="kw">=</span> <span class="fl">200</span>)))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">id2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">id2</span>))
+
+<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">psuedo_density</span> <span class="kw">=</span> <span class="no">psuedo_density_data</span>) <span class="kw">%&gt;%</span>
+  <span class="fu">ggplot</span>() +
+  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">psuedo_density</span>))
+<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></pre></body></html></div>
+<p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<div class="sourceCode" id="cb12"><html><body><pre class="r">
+<span class="no">psuedo_density_data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span>()
+<span class="co">#&gt; [1] 0.0006688648 0.0137477807</span>
+
+<span class="no">df_all_pd</span> <span class="kw">%&gt;%</span>
+  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">psuedo_density</span>^<span class="fl">2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">id2</span>)) +
+  <span class="fu">geom_path</span>() +
+  <span class="fu">coord_tern</span>() +
+  <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Psuedo Density"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"(psuedo density)^2"</span>)
+<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
+<p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-2.png" width="700"></p>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">local_cutoff_pd</span> <span class="kw">&lt;-</span> <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="no">psuedo_density</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.4</span>)
+
+
+
+<span class="no">psuedo_density_pb</span> <span class="kw">&lt;-</span> <span class="no">all_curves</span> +
+  <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">psuedo_density</span> <span class="kw">&gt;</span> <span class="no">local_cutoff_pd</span>),
+                       <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
+                          <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">id2</span>),
+                       <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>, <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">1</span>) +
+
+  <span class="fu">coord_tern</span>()
+<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
+
+<span class="no">layout_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>,<span class="fl">4</span>), <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">2</span>, <span class="fl">4</span>)),<span class="fl">4</span>),
+                       <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">4</span>,<span class="fl">4</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">3</span>,<span class="fl">4</span>), <span class="fl">4</span>,<span class="fl">4</span>), <span class="fl">4</span>)), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">8</span>, <span class="kw">byrow</span> <span class="kw">=</span> <span class="no">T</span>)
+
+<span class="fu">grid.arrange</span>(<span class="no">global_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"global depth based prediction band"</span>),
+             <span class="no">local_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"local depth based prediction band"</span>),
+             <span class="no">psuedo_density_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"psuedo-density based prediciton band"</span>),
+             <span class="fu">ggplot</span>() + <span class="fu">theme_minimal</span>(),
+             <span class="kw">layout_matrix</span> <span class="kw">=</span> <span class="no">layout_mat</span>)</pre></body></html></div>
+<p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+</div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
@@ -291,8 +368,17 @@
 <div id="ref-Agostinelli2011">
 <p>Agostinelli, Claudio, and Mario Romanazzi. 2011. “Local depth.” <em>Journal of Statistical Planning and Inference</em> 141 (2). Elsevier B.V.: 817–30. <a href="https://doi.org/10.1016/j.jspi.2010.08.001">https://doi.org/10.1016/j.jspi.2010.08.001</a>.</p>
 </div>
+<div id="ref-Ciollaro2014">
+<p>Ciollaro, Mattia, Christopher Genovese, Jing Lei, and Larry Wasserman. 2014. “The functional mean-shift algorithm for mode hunting and clustering in infinite dimensions” 1 (Figure 2). <a href="http://arxiv.org/abs/1408.1187">http://arxiv.org/abs/1408.1187</a>.</p>
+</div>
+<div id="ref-Ferraty2012">
+<p>Ferraty, Frédéric, Nadia Kudraszow, and Philippe Vieu. 2012. “Nonparametric estimation of a surrogate density function in infinite-dimensional spaces.” <em>Journal of Nonparametric Statistics</em> 24 (2): 447–64. <a href="https://doi.org/10.1080/10485252.2012.671943">https://doi.org/10.1080/10485252.2012.671943</a>.</p>
+</div>
 <div id="ref-Geenens2017">
 <p>Geenens, Gery, and Alicia Nieto-Reyes. 2017. “On the functional distance-based depth.”</p>
+</div>
+<div id="ref-Vovk2005">
+<p>Vovk, Vladimir, Alex Gammerman, and Glenn Shafer. 2005. <em>Algorithmic Learning in a Random World</em>. Springer Science &amp; Business Media.</p>
 </div>
 </div>
 </div>

@@ -28,7 +28,7 @@ if(EpiCompare:::tidyr_new_interface()){
           aes(x = time, y = value, group = name, col = name)) + geom_line()
 } else {
   ggplot(data = sirs_data \%>\%
-         tidyr::gather(-c(time, .id)),
+         tidyr::gather("name", "value", -time, -.id),
           aes(x = time, y = value, group = name, col = name)) + geom_line()
 }
 }
