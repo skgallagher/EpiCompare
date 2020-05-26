@@ -20,5 +20,9 @@ a list of length \eqn{K^2} where entry K(i-1) + j for i, j <= K is a function.  
 Take a character formula transition matrix and turn it into a function
 }
 \details{
-This function dynamically creates a list of functions that turn the character transition formulas provided by the user in D_mat into \eqn{K^2} functions which take in arguments X0, ..., X{K-1)}, par1, par2, ..., par{n_pars}, and N and output the numeric transition rate of an individual currently in state \eqn{i} to move to state \eqn{j}.
+This function dynamically creates a list of functions that turn the
+ character transition formulas provided by the user in D_mat into \eqn{K^2}
+  functions which take in arguments X0, ..., X{K-1)}, par1, par2, ..., par{n_pars},
+ N, and t and output the numeric transition rate of an individual
+  currently in state \eqn{i} to move to state \eqn{j}.
 }

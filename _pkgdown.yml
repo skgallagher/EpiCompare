@@ -76,6 +76,7 @@ articles:
   - 'not-built-vignettes/comparing-bands-and-assessing-containment'
   - 'not-built-vignettes/depths-impact-on-prediction-bands'
   - 'not-built-vignettes/example-epimodel'
+  - 'not-built-vignettes/basic-abm'
 - title: Data examples
   desc: Vignettes that take a dive into different datasets
   contents:

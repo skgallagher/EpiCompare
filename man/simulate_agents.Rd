@@ -12,7 +12,8 @@ simulate_agents(
   n_sims,
   birth_dates = NULL,
   birth_states = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  out_format = "wide"
 )
 }
 \arguments{
@@ -31,6 +32,11 @@ simulate_agents(
 \item{birth_states}{which state an agent begins when born into the system}
 
 \item{verbose}{logical to print progress}
+
+\item{out_format}{Format of the output data frame.
+Wide corresponds to one row to each agent and "long" corresponds to one row being a state change.
+Generally, 'wide' is more readable and slightly easier to use with other EpiCompare functions.  However,
+there is a problem when agents can enter a state more than once.  This will trigger an error.}
 }
 \value{
 a data frame with the following columns
@@ -46,5 +52,9 @@ a data frame with the following columns
 Simulate an agent-based model for given state-to-state transfers
 }
 \details{
-A (fairly) generic, simple agent-based model based on multinomial draws to transfer from state to state.   Although the function can support a non-constant population, it does not support random births, they must be pre-specified. Random deaths may be supported by adding a compartment for them.
+A (fairly) generic, simple agent-based model based on multinomial/categorical draws to transfer from state to state.  
+ Although the function can support a non-constant population,
+  it does not support random births, they must be pre-specified. 
+  Random deaths may be supported by adding a compartment for them.
+ Please see the 'basic-abm' vignette for more details on usage.
 }

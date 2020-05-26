@@ -5,31 +5,32 @@
 \alias{sirs_data}
 \title{Example of SIRS model generated  from the \code{pomp} package.}
 \format{
-The object is a data frame.
+The object is a data frame of dimension 7525x8.  The columns are
+\describe{
+\item{sim}{simulation number between 1 and 25}
+\item{t}{time between 0 and 300}
+\item{S1}{susceptible for the first time}
+\item{I1}{infectious for first time}
+\item{R1}{recovered for first time}
+\item{S2}{susceptible for second time}
+\item{I2}{infectious for second time}
+\item{R2}{recovered for second and final time}
+}
 }
 \usage{
 sirs_data
 }
 \description{
-This is a deterministic SIRS model where 
-the infection parameter \eqn{\beta = 0.2} and the recovery from infection parameter is
-parameter is \eqn{\gamma = 0.1}.  The recovery to susceptible parameter is \eqn{\eta = .05}.  The initial number of susceptible is \eqn{S(0) = 990}
-and the initial number of infectious is \eqn{I(0)=10}.  There are 100 steps.
-So in summary, \eqn{S^\prime = -\beta SI / N + \eta R}, \eqn{I^\prime = \beta S I /N -\gamma I}
-and \eqn{R^\prime = \gamma I - \eta R}.
+This is a stochastic (SIR)-> (SIR) model (two sets of infections in sequence)
+created from EpiCompare::simulate_agents().
+The model is S1->I1->R1->S2->I2->R2.  It is two SIR models pasted together with a transition 
+between first recovery and second suscepbiility.  The parameters are \eqn{beta_1 = .5},
+\eqn{\beta_2 = .08}, \eqn{\gamma_1 = .4}, \eqn{\gamma_2 = .06}, \eqn{\eta = .08} where 
+\eqn{\eta} is the transition from R1 to S2.
 }
 \examples{
 library(ggplot2)
 library(tidyr)
 head(sirs_data)
-if(EpiCompare:::tidyr_new_interface()){
-  ggplot(data = sirs_data \%>\%
-         tidyr::pivot_longer(-c(time, .id)),
-          aes(x = time, y = value, group = name, col = name)) + geom_line()
-} else {
-  ggplot(data = sirs_data \%>\%
-         tidyr::gather("name", "value", -time, -.id),
-          aes(x = time, y = value, group = name, col = name)) + geom_line()
-}
 }
 \keyword{datasets}

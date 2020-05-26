@@ -143,7 +143,7 @@ def local_distance_depth_function(dist_matrix, tau = np.inf):
     return(depth)
 ```
 
-I've hidden the creation of a python version of `EpiCompare::local_deistance_depth_function` in this document, but it's code the same way - just a little faster in `python` than `R`.
+I've hidden the creation of a python version of `EpiCompare::local_distance_depth_function` in this document, but it's coded the same way - just a little faster in `python` than `R`.
 
 Below are visualization of the different local depth scores (relative to $\tau$). 
 

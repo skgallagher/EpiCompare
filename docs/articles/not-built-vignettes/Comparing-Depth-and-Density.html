@@ -75,6 +75,9 @@
     <li>
       <a href="../../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li>
+      <a href="../../articles/not-built-vignettes/basic-abm.html">Basic simulations with EpiCompare</a>
+    </li>
     <li class="divider">
     <li>
       <a href="../../articles/index.html">More...</a>
@@ -99,7 +102,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="Comparing-Depth-and-Density_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Comparing Depth and Density</h1>
@@ -112,13 +115,13 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="im">import</span> numpy <span class="im">as</span> np</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="im">import</span> pandas <span class="im">as</span> pd</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="im">import</span> scipy.stats</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="im">import</span> scipy</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="im">import</span> scipy.spatial</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="im">import</span> progressbar</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="im">import</span> scipy.stats</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="im">import</span> scipy</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="im">import</span> scipy.spatial</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="im">import</span> progressbar</span></code></pre></div>
 <div id="the-difference-between-density-and-depth" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-difference-between-density-and-depth" class="anchor"></a>The difference between density and depth</h1>
@@ -128,19 +131,19 @@
 <div id="the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-data" class="anchor"></a>the data</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" data-line-number="1">np.random.seed(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">single_2d <span class="op">=</span> np.random.uniform(size <span class="op">=</span> (<span class="dv">1000</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">single_1d <span class="op">=</span> np.random.uniform(size <span class="op">=</span> <span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">double_2d <span class="op">=</span> np.vstack([</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">              np.vstack([np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="fl">.1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                         np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))]).T,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">              np.vstack([np.random.uniform(low <span class="op">=</span> <span class="fl">.9</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">                         np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))]).T])</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">double_1d <span class="op">=</span> np.hstack([np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="fl">.1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">                       np.random.uniform(low <span class="op">=</span> <span class="fl">.9</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))])</a></code></pre></div>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>single_2d <span class="op">=</span> np.random.uniform(size <span class="op">=</span> (<span class="dv">1000</span>,<span class="dv">2</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>single_1d <span class="op">=</span> np.random.uniform(size <span class="op">=</span> <span class="dv">1000</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>double_2d <span class="op">=</span> np.vstack([</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>              np.vstack([np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="fl">.1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>                         np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))]).T,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>              np.vstack([np.random.uniform(low <span class="op">=</span> <span class="fl">.9</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>                         np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))]).T])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>double_1d <span class="op">=</span> np.hstack([np.random.uniform(low <span class="op">=</span> <span class="dv">0</span>, high <span class="op">=</span> <span class="fl">.1</span>,size <span class="op">=</span> (<span class="dv">500</span>)),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>                       np.random.uniform(low <span class="op">=</span> <span class="fl">.9</span>, high <span class="op">=</span> <span class="dv">1</span>,size <span class="op">=</span> (<span class="dv">500</span>))])</span></code></pre></div>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-5-1.png"><!-- --></p>
 </div>
 <div id="d-data-example" class="section level2">
 <h2 class="hasAnchor">
@@ -151,55 +154,38 @@
 <a href="#block-distribution" class="anchor"></a>1 block distribution</h3>
 <p>Let’s start with the 2d euclidean data first. For the 1 block of uniform distribution, we will examine different values of <span class="math inline">\(\tau\)</span> relative to the local distance depth defined above.</p>
 <p><strong>But before we do</strong>, let’s look at the distribution to distances:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" data-line-number="1">dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> single_2d, y <span class="op">=</span> single_2d)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">plt.hist(dist_mat.ravel())<span class="op">;</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">plt.show()</a></code></pre></div>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> single_2d, y <span class="op">=</span> single_2d)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>plt.hist(dist_mat.ravel())<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>plt.show()</span></code></pre></div>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-6-1.png"><!-- --></p>
 <div id="local-depth-and-global-depth" class="section level4">
 <h4 class="hasAnchor">
 <a href="#local-depth-and-global-depth" class="anchor"></a>Local Depth and Global Depth</h4>
-<p>I’ve hidden the creation of a python version of <code>EpiCompare::local_deistance_depth_function</code> in this document, but it’s code the same way - just a little faster in <code>python</code> than <code>R</code>.</p>
+<p>I’ve hidden the creation of a python version of <code><a href="../../reference/local_distance_depth_function.html">EpiCompare::local_distance_depth_function</a></code> in this document, but it’s coded the same way - just a little faster in <code>python</code> than <code>R</code>.</p>
 <p>Below are visualization of the different local depth scores (relative to <span class="math inline">\(\tau\)</span>).</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" data-line-number="1">tau_list <span class="op">=</span> [.<span class="dv">1</span>,.<span class="dv">2</span>,.<span class="dv">4</span>,.<span class="dv">6</span>,.<span class="dv">8</span>,<span class="dv">1</span>,np.inf]</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">bar <span class="op">=</span> progressbar.ProgressBar()</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">ldd <span class="op">=</span> <span class="bu">list</span>()</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">    ldd.append(local_distance_depth_function(dist_mat, tau))</a></code></pre></div>
-<pre><code>## 
-                                                                               
-
-N/A% (0 of 7) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
-                                                                               
-
- 14% (1 of 7) |###                       | Elapsed Time: 0:00:00 ETA:   0:00:00
-                                                                               
-
- 28% (2 of 7) |#######                   | Elapsed Time: 0:00:00 ETA:   0:00:01
-                                                                               
-
- 42% (3 of 7) |###########               | Elapsed Time: 0:00:04 ETA:   0:00:17
-                                                                               
-
- 57% (4 of 7) |##############            | Elapsed Time: 0:00:20 ETA:   0:00:48
-                                                                               
-
- 71% (5 of 7) |##################        | Elapsed Time: 0:00:45 ETA:   0:00:49
-                                                                               
-
- 85% (6 of 7) |######################    | Elapsed Time: 0:01:16 ETA:   0:00:30
-                                                                               
-
-100% (7 of 7) |##########################| Elapsed Time: 0:01:47 Time:  0:01:47</code></pre>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-10-1.png" width="1152"></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>tau_list <span class="op">=</span> [<span class="fl">.1</span>,<span class="fl">.2</span>,<span class="fl">.4</span>,<span class="fl">.6</span>,<span class="fl">.8</span>,<span class="dv">1</span>,np.inf]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>bar <span class="op">=</span> progressbar.ProgressBar()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>ldd <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>    ldd.append(local_distance_depth_function(dist_mat, tau))</span></code></pre></div>
+<pre><code>##   0% |                                                                        |
+ 14% |##########                                                              |
+ 28% |####################                                                    |
+ 42% |##############################                                          |
+ 57% |#########################################                               |
+ 71% |###################################################                     |
+ 85% |#############################################################           |
+100% |########################################################################|</code></pre>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-10-1.png"><!-- --></p>
 <p>We really want to compare this to smoothing of a Guassian KDE to be able to really examine the differences.</p>
 </div>
 <div id="kde-estimate" class="section level4">
 <h4 class="hasAnchor">
 <a href="#kde-estimate" class="anchor"></a>KDE Estimate</h4>
 <p>The below estimates are with varying bandwidth parameters for the Guassian KDE estimates. Note that the final “bw = silverman” uses the Silverman’s Method to select the bandwidth parameter.</p>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-12-1.png" width="1152"></p>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-12-1.png"><!-- --></p>
 </div>
 <div id="comparing-the-differences" class="section level4">
 <h4 class="hasAnchor">
@@ -211,50 +197,31 @@ N/A% (0 of 7) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
 <div id="block-distribution-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#block-distribution-1" class="anchor"></a>2 block distribution</h3>
-<p>Again, let’s first look at the distribution of distances between data points. <img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
+<p>Again, let’s first look at the distribution of distances between data points. <img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-13-1.png"><!-- --></p>
 <div id="local-depth-and-global-depth-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#local-depth-and-global-depth-1" class="anchor"></a>Local Depth and Global Depth</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" data-line-number="1">tau_list2 <span class="op">=</span> [.<span class="dv">1</span>,.<span class="dv">2</span>,.<span class="dv">4</span>,.<span class="dv">6</span>,.<span class="dv">8</span>,<span class="dv">1</span>,<span class="fl">1.2</span>,np.inf]</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">bar <span class="op">=</span> progressbar.ProgressBar()</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">ldd2 <span class="op">=</span> <span class="bu">list</span>()</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list2):</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">    ldd2.append(local_distance_depth_function(dist_mat2, tau))</a></code></pre></div>
-<pre><code>## 
-                                                                               
-
-N/A% (0 of 8) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
-                                                                               
-
- 12% (1 of 8) |###                       | Elapsed Time: 0:00:00 ETA:   0:00:01
-                                                                               
-
- 25% (2 of 8) |######                    | Elapsed Time: 0:00:01 ETA:   0:00:03
-                                                                               
-
- 37% (3 of 8) |#########                 | Elapsed Time: 0:00:04 ETA:   0:00:14
-                                                                               
-
- 50% (4 of 8) |#############             | Elapsed Time: 0:00:09 ETA:   0:00:20
-                                                                               
-
- 62% (5 of 8) |################          | Elapsed Time: 0:00:15 ETA:   0:00:17
-                                                                               
-
- 75% (6 of 8) |###################       | Elapsed Time: 0:00:36 ETA:   0:00:43
-                                                                               
-
- 87% (7 of 8) |######################    | Elapsed Time: 0:01:08 ETA:   0:00:31
-                                                                               
-
-100% (8 of 8) |##########################| Elapsed Time: 0:01:38 Time:  0:01:38</code></pre>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>tau_list2 <span class="op">=</span> [<span class="fl">.1</span>,<span class="fl">.2</span>,<span class="fl">.4</span>,<span class="fl">.6</span>,<span class="fl">.8</span>,<span class="dv">1</span>,<span class="fl">1.2</span>,np.inf]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>bar <span class="op">=</span> progressbar.ProgressBar()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>ldd2 <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list2):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>    ldd2.append(local_distance_depth_function(dist_mat2, tau))</span></code></pre></div>
+<pre><code>##   0% |                                                                        |
+ 12% |#########                                                               |
+ 25% |##################                                                      |
+ 37% |###########################                                             |
+ 50% |####################################                                    |
+ 62% |#############################################                           |
+ 75% |######################################################                  |
+ 87% |###############################################################         |
+100% |########################################################################|</code></pre>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-16-1.png"><!-- --></p>
 </div>
 <div id="kde" class="section level4">
 <h4 class="hasAnchor">
 <a href="#kde" class="anchor"></a>KDE</h4>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-18-1.png"><!-- --></p>
 </div>
 <div id="comparisons" class="section level4">
 <h4 class="hasAnchor">
@@ -272,73 +239,58 @@ N/A% (0 of 8) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
 <a href="#block-distribution-2" class="anchor"></a>1 Block distribution</h3>
 <p>Let’s start with the 2d euclidean data first. For the 1 block of uniform distribution, we will examine different values of <span class="math inline">\(\tau\)</span> relative to the local distance depth defined above.</p>
 <p><strong>But before we do</strong>, let’s look at the distribution to distances:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" data-line-number="1">dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> single_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)), y <span class="op">=</span> single_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">plt.hist(dist_mat.ravel())<span class="op">;</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">plt.show()</a></code></pre></div>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> single_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)), y <span class="op">=</span> single_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>plt.hist(dist_mat.ravel())<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>plt.show()</span></code></pre></div>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-19-1.png"><!-- --></p>
 <div id="local-depth-and-global-depth-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#local-depth-and-global-depth-2" class="anchor"></a>Local Depth and Global Depth</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb9-1" data-line-number="1">tau_list <span class="op">=</span> [.<span class="dv">1</span>,.<span class="dv">2</span>,.<span class="dv">4</span>,.<span class="dv">6</span>,.<span class="dv">8</span>,np.inf]</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">bar <span class="op">=</span> progressbar.ProgressBar()</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">ldd <span class="op">=</span> <span class="bu">list</span>()</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">    ldd.append(local_distance_depth_function(dist_mat, tau))</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co"># get min/max range of density estimate:</span></a></code></pre></div>
-<pre><code>## 
-                                                                               
-
-N/A% (0 of 6) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
-                                                                               
-
- 16% (1 of 6) |####                      | Elapsed Time: 0:00:00 ETA:   0:00:04
-                                                                               
-
- 33% (2 of 6) |########                  | Elapsed Time: 0:00:04 ETA:   0:00:15
-                                                                               
-
- 50% (3 of 6) |#############             | Elapsed Time: 0:00:19 ETA:   0:00:42
-                                                                               
-
- 66% (4 of 6) |#################         | Elapsed Time: 0:00:41 ETA:   0:00:44
-                                                                               
-
- 83% (5 of 6) |#####################     | Elapsed Time: 0:01:09 ETA:   0:00:27
-                                                                               
-
-100% (6 of 6) |##########################| Elapsed Time: 0:01:36 Time:  0:01:36</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb11-1" data-line-number="1">_min <span class="op">=</span> np.inf</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">_max <span class="op">=</span> <span class="op">-</span>np.inf</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="cf">for</span> idx, tau <span class="kw">in</span> <span class="bu">enumerate</span>(tau_list):</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">    _min <span class="op">=</span> np.<span class="bu">min</span>([np.<span class="bu">min</span>(ldd[idx]), _min])</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">    _max <span class="op">=</span> np.<span class="bu">max</span>([np.<span class="bu">max</span>(ldd[idx]), _max])</a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#visualizing them</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">fig, ax <span class="op">=</span> plt.subplots(nrows <span class="op">=</span> <span class="dv">2</span>, ncols <span class="op">=</span> <span class="dv">4</span>, figsize <span class="op">=</span> (<span class="dv">12</span>,<span class="dv">6</span>))</a>
-<a class="sourceLine" id="cb11-10" data-line-number="10">ax <span class="op">=</span> ax.ravel()</a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="cf">for</span> idx, tau <span class="kw">in</span> <span class="bu">enumerate</span>(tau_list):</a>
-<a class="sourceLine" id="cb11-13" data-line-number="13">    ldd_tau_i <span class="op">=</span> ldd[idx]</a>
-<a class="sourceLine" id="cb11-14" data-line-number="14">    resort <span class="op">=</span> np.argsort(single_1d)</a>
-<a class="sourceLine" id="cb11-15" data-line-number="15">    cs <span class="op">=</span> ax[idx].plot(single_1d[resort],  </a>
-<a class="sourceLine" id="cb11-16" data-line-number="16">                      ldd_tau_i[resort])</a>
-<a class="sourceLine" id="cb11-17" data-line-number="17">    ax[idx].set_title(<span class="st">"tau = "</span> <span class="op">+</span> <span class="bu">str</span>(tau))<span class="op">;</span></a>
-<a class="sourceLine" id="cb11-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb11-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb11-20" data-line-number="20">fig.delaxes(ax[<span class="dv">7</span>])<span class="op">;</span></a>
-<a class="sourceLine" id="cb11-21" data-line-number="21">fig.suptitle(<span class="st">"Local Depth fitting on uniform hypercube"</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb11-22" data-line-number="22">fig.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="dv">1</span>, <span class="fl">0.95</span>])<span class="op">;</span></a>
-<a class="sourceLine" id="cb11-23" data-line-number="23">plt.show()</a></code></pre></div>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-20-1.png" width="1152"></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>tau_list <span class="op">=</span> [<span class="fl">.1</span>,<span class="fl">.2</span>,<span class="fl">.4</span>,<span class="fl">.6</span>,<span class="fl">.8</span>,np.inf]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>bar <span class="op">=</span> progressbar.ProgressBar()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>ldd <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a>    ldd.append(local_distance_depth_function(dist_mat, tau))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a><span class="co"># get min/max range of density estimate:</span></span></code></pre></div>
+<pre><code>##   0% |                                                                        |
+ 16% |############                                                            |
+ 33% |########################                                                |
+ 50% |####################################                                    |
+ 66% |################################################                        |
+ 83% |############################################################            |
+100% |########################################################################|</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>_min <span class="op">=</span> np.inf</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>_max <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="cf">for</span> idx, tau <span class="kw">in</span> <span class="bu">enumerate</span>(tau_list):</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    _min <span class="op">=</span> np.<span class="bu">min</span>([np.<span class="bu">min</span>(ldd[idx]), _min])</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>    _max <span class="op">=</span> np.<span class="bu">max</span>([np.<span class="bu">max</span>(ldd[idx]), _max])</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a><span class="co">#visualizing them</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>fig, ax <span class="op">=</span> plt.subplots(nrows <span class="op">=</span> <span class="dv">2</span>, ncols <span class="op">=</span> <span class="dv">4</span>, figsize <span class="op">=</span> (<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a>ax <span class="op">=</span> ax.ravel()</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a><span class="cf">for</span> idx, tau <span class="kw">in</span> <span class="bu">enumerate</span>(tau_list):</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a>    ldd_tau_i <span class="op">=</span> ldd[idx]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a>    resort <span class="op">=</span> np.argsort(single_1d)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true"></a>    cs <span class="op">=</span> ax[idx].plot(single_1d[resort],  </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true"></a>                      ldd_tau_i[resort])</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true"></a>    ax[idx].set_title(<span class="st">"tau = "</span> <span class="op">+</span> <span class="bu">str</span>(tau))<span class="op">;</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true"></a>fig.delaxes(ax[<span class="dv">7</span>])<span class="op">;</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true"></a>fig.suptitle(<span class="st">"Local Depth fitting on uniform hypercube"</span>)<span class="op">;</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true"></a>fig.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="dv">1</span>, <span class="fl">0.95</span>])<span class="op">;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true"></a>plt.show()</span></code></pre></div>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-20-1.png"><!-- --></p>
 </div>
 <div id="kde-estimate-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#kde-estimate-1" class="anchor"></a>KDE Estimate</h4>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-21-1.png" width="1152"></p>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-21-1.png"><!-- --></p>
 </div>
 </div>
 <div id="block-distribution-3" class="section level3">
@@ -346,69 +298,40 @@ N/A% (0 of 6) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
 <a href="#block-distribution-3" class="anchor"></a>2 Block distribution</h3>
 <p>I’m not sure that this really shows anything, but I include it anyway.</p>
 <p>Let’s look at the distribution to distances, for the 2 block distribution</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb12-1" data-line-number="1">dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> double_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)), y <span class="op">=</span> double_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">plt.hist(dist_mat.ravel(),bins <span class="op">=</span> <span class="dv">50</span>)<span class="op">;</span></a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">plt.show()</a></code></pre></div>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-22-1.png" width="1152"></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>dist_mat <span class="op">=</span> scipy.spatial.distance_matrix(x <span class="op">=</span> double_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)), y <span class="op">=</span> double_1d.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>plt.hist(dist_mat.ravel(),bins <span class="op">=</span> <span class="dv">50</span>)<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>plt.show()</span></code></pre></div>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-22-1.png"><!-- --></p>
 <div id="local-depth-and-global-depth-3" class="section level4">
 <h4 class="hasAnchor">
 <a href="#local-depth-and-global-depth-3" class="anchor"></a>Local Depth and Global Depth</h4>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb13-1" data-line-number="1">tau_list <span class="op">=</span> [.<span class="dv">1</span>,.<span class="dv">2</span>,.<span class="dv">4</span>,.<span class="dv">6</span>,.<span class="dv">8</span>,np.inf]</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">bar <span class="op">=</span> progressbar.ProgressBar()</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">ldd <span class="op">=</span> <span class="bu">list</span>()</a>
-<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">    ldd.append(local_distance_depth_function(dist_mat, tau))</a></code></pre></div>
-<pre><code>## 
-                                                                               
-
-N/A% (0 of 6) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
-                                                                               
-
- 16% (1 of 6) |####                      | Elapsed Time: 0:00:06 ETA:   0:00:31
-                                                                               
-
- 33% (2 of 6) |########                  | Elapsed Time: 0:00:12 ETA:   0:00:25
-                                                                               
-
- 50% (3 of 6) |#############             | Elapsed Time: 0:00:19 ETA:   0:00:19
-                                                                               
-
- 66% (4 of 6) |#################         | Elapsed Time: 0:00:25 ETA:   0:00:12
-                                                                               
-
- 83% (5 of 6) |#####################     | Elapsed Time: 0:00:32 ETA:   0:00:06
-                                                                               
-
-100% (6 of 6) |##########################| Elapsed Time: 0:01:01 Time:  0:01:01</code></pre>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-25-1.png" width="1152"></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>tau_list <span class="op">=</span> [<span class="fl">.1</span>,<span class="fl">.2</span>,<span class="fl">.4</span>,<span class="fl">.6</span>,<span class="fl">.8</span>,np.inf]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>bar <span class="op">=</span> progressbar.ProgressBar()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>ldd <span class="op">=</span> <span class="bu">list</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a><span class="cf">for</span> tau <span class="kw">in</span> bar(tau_list):</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>    ldd.append(local_distance_depth_function(dist_mat, tau))</span></code></pre></div>
+<pre><code>##   0% |                                                                        |
+ 16% |############                                                            |
+ 33% |########################                                                |
+ 50% |####################################                                    |
+ 66% |################################################                        |
+ 83% |############################################################            |
+100% |########################################################################|</code></pre>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-25-1.png"><!-- --></p>
 </div>
 <div id="kde-estimate-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#kde-estimate-2" class="anchor"></a>KDE Estimate</h4>
-<pre><code>## KernelDensity(algorithm='auto', atol=0, bandwidth=0.01, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=0.05, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=0.1, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=0.2, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=0.3, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=0.5, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)
-## KernelDensity(algorithm='auto', atol=0, bandwidth=1, breadth_first=True,
-##               kernel='gaussian', leaf_size=40, metric='euclidean',
-##               metric_params=None, rtol=0)</code></pre>
-<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-26-1.png" width="1152"></p>
+<pre><code>## KernelDensity(bandwidth=0.01)
+## KernelDensity(bandwidth=0.05)
+## KernelDensity(bandwidth=0.1)
+## KernelDensity(bandwidth=0.2)
+## KernelDensity(bandwidth=0.3)
+## KernelDensity(bandwidth=0.5)
+## KernelDensity(bandwidth=1)</code></pre>
+<p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-26-1.png"><!-- --></p>
 </div>
 </div>
 </div>

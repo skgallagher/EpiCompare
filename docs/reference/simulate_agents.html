@@ -117,6 +117,9 @@
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li>
+      <a href="../articles/not-built-vignettes/basic-abm.html">Basic simulations with EpiCompare</a>
+    </li>
     <li class="divider"></li>
     <li>
       <a href="../articles/index.html">More...</a>
@@ -161,7 +164,8 @@
   <span class='no'>n_sims</span>,
   <span class='kw'>birth_dates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>birth_states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>out_format</span> <span class='kw'>=</span> <span class='st'>"wide"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -199,6 +203,13 @@
       <th>verbose</th>
       <td><p>logical to print progress</p></td>
     </tr>
+    <tr>
+      <th>out_format</th>
+      <td><p>Format of the output data frame.
+Wide corresponds to one row to each agent and "long" corresponds to one row being a state change.
+Generally, 'wide' is more readable and slightly easier to use with other EpiCompare functions.  However,
+there is a problem when agents can enter a state more than once.  This will trigger an error.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -214,7 +225,11 @@
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A (fairly) generic, simple agent-based model based on multinomial draws to transfer from state to state.   Although the function can support a non-constant population, it does not support random births, they must be pre-specified. Random deaths may be supported by adding a compartment for them.</p>
+    <p>A (fairly) generic, simple agent-based model based on multinomial/categorical draws to transfer from state to state.  
+ Although the function can support a non-constant population,
+  it does not support random births, they must be pre-specified. 
+  Random deaths may be supported by adding a compartment for them.
+ Please see the 'basic-abm' vignette for more details on usage.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

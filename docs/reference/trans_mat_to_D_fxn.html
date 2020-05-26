@@ -117,6 +117,9 @@
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li>
+      <a href="../articles/not-built-vignettes/basic-abm.html">Basic simulations with EpiCompare</a>
+    </li>
     <li class="divider"></li>
     <li>
       <a href="../articles/index.html">More...</a>
@@ -177,7 +180,11 @@
     <p>a list of length \(K^2\) where entry K(i-1) + j for i, j &lt;= K is a function.  See details.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function dynamically creates a list of functions that turn the character transition formulas provided by the user in D_mat into \(K^2\) functions which take in arguments X0, ..., XK-1), par1, par2, ..., parn_pars, and N and output the numeric transition rate of an individual currently in state \(i\) to move to state \(j\).</p>
+    <p>This function dynamically creates a list of functions that turn the
+ character transition formulas provided by the user in D_mat into \(K^2\)
+  functions which take in arguments X0, ..., XK-1), par1, par2, ..., parn_pars,
+ N, and t and output the numeric transition rate of an individual
+  currently in state \(i\) to move to state \(j\).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

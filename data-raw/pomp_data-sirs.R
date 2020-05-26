@@ -7,6 +7,8 @@ library(pomp)
 ## Modified for a SIRS model like here: https://www.idmod.org/docs/typhoid/model-sir.html#sirs-model
 ## This is deterministic
 
+## NO LONGER USED.
+
 sirs.ode <- Csnippet("
   DS = -Beta*S*I/N + eta * R;
   DI = Beta*S*I/N-gamma*I;
