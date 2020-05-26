@@ -7,16 +7,18 @@ test_that("simulate_agents", {
                       "0", "0", "X2"), byrow = TRUE, nrow = 3)
     rownames(trans_mat) <- c("S", "I", "R")
     init_vals <- c(950, 50, 0)
-    par_vals <- c(par1 = .1, par2 = .03)
-    max_T <- 2
+    par_vals <- c(par1 = 1, par2 = 1)
+    max_T <- 25
     n_sims <- 5
+    output_format <- "wide"
 
     out <- simulate_agents(trans_mat,
                            init_vals,
                            par_vals,
                            max_T,
                            n_sims,
-                           verbose = FALSE)
+                           verbose = FALSE,
+                           out_format = output_format)
 
     expect_true(ncol(out) >= 5)
     

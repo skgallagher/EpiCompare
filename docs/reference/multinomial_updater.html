@@ -117,6 +117,9 @@
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li>
+      <a href="../articles/not-built-vignettes/basic-abm.html">Basic simulations with EpiCompare</a>
+    </li>
     <li class="divider"></li>
     <li>
       <a href="../articles/index.html">More...</a>
@@ -153,7 +156,7 @@
     <p>Multinomial draws to update states depending on past count</p>
     </div>
 
-    <pre class="usage"><span class='fu'>multinomial_updater</span>(<span class='no'>state_counts</span>, <span class='no'>par_vals</span>, <span class='no'>D_list_fxns</span>)</pre>
+    <pre class="usage"><span class='fu'>multinomial_updater</span>(<span class='no'>state_counts</span>, <span class='no'>par_vals</span>, <span class='no'>D_list_fxns</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,6 +172,10 @@
     <tr>
       <th>D_list_fxns</th>
       <td><p>output from <code>trans_mat_to_D_fxn</code></p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>current time, possibly used in the udpate function</p></td>
     </tr>
     </table>
 

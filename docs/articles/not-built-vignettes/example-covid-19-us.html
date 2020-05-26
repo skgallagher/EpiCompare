@@ -75,6 +75,9 @@
     <li>
       <a href="../../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
     </li>
+    <li>
+      <a href="../../articles/not-built-vignettes/basic-abm.html">Basic simulations with EpiCompare</a>
+    </li>
     <li class="divider">
     <li>
       <a href="../../articles/index.html">More...</a>
@@ -378,7 +381,7 @@ Alaska
 
 <span class="fu">ggplot</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">deaths</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">state</span> <span class="kw">%in%</span> <span class="no">states</span>),
        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">Deaths</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">state</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">state</span>)) +
-  <span class="fu">geom_point</span>(<span class="kw">aes</span> <span class="kw">=</span> <span class="fl">.3</span>) + <span class="fu">coord_tern</span>() + <span class="fu">theme_zoom_L</span>(<span class="fl">.01</span>) + <span class="fu">geom_point</span>() +
+  <span class="fu">geom_point</span>(<span class="kw">aes</span> <span class="kw">=</span> <span class="fl">.3</span>) + <span class="fu">coord_tern</span>() + <span class="fu">theme_zoom_L</span>(<span class="fl">.02</span>) + <span class="fu">geom_point</span>() +
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Ternary"</span>)</pre></body></html></div>
 <p><img src="example-covid-19-us_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">data_grouped</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">state</span>) <span class="kw">%&gt;%</span>
@@ -391,12 +394,12 @@ Alaska
 
 <span class="fu">ggplot</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">state</span> <span class="kw">%in%</span> <span class="no">states</span>),
        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span> / <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>/ <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>/ <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">state</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">state</span>)) + <span class="fu">coord_tern</span>() + <span class="fu">geom_path</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +
-  <span class="fu">geom_point</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +  <span class="fu">theme_zoom_L</span>(<span class="fl">.011</span>) +
+  <span class="fu">geom_point</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +  <span class="fu">theme_zoom_L</span>(<span class="fl">.02</span>) +
   <span class="fu">scale_color_brewer</span>(<span class="kw">palette</span> <span class="kw">=</span> <span class="st">"Paired"</span>)</pre></body></html></div>
 <p><img src="example-covid-19-us_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">state</span> <span class="kw">%in%</span> <span class="no">states</span>),
        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span> / <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>/ <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>/ <span class="no">N</span> * <span class="fl">100</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">state</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">state</span>)) + <span class="fu">coord_tern</span>() + <span class="fu">geom_path</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +
-  <span class="fu">geom_point</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +  <span class="fu">theme_zoom_L</span>(<span class="fl">.011</span>) +
+  <span class="fu">geom_point</span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.8</span>) +  <span class="fu">theme_zoom_L</span>(<span class="fl">.02</span>) +
   <span class="fu">scale_color_brewer</span>(<span class="kw">palette</span> <span class="kw">=</span> <span class="st">"Paired"</span>) + <span class="fu">facet_wrap</span>(~<span class="no">state</span>) +
   <span class="fu">theme</span>(<span class="kw">legend.position</span> <span class="kw">=</span> <span class="st">"bottom"</span>)</pre></body></html></div>
 <p><img src="example-covid-19-us_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>

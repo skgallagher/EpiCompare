@@ -4,7 +4,7 @@
 \alias{multinomial_updater}
 \title{Multinomial draws to update states depending on past count}
 \usage{
-multinomial_updater(state_counts, par_vals, D_list_fxns)
+multinomial_updater(state_counts, par_vals, D_list_fxns, time = NA)
 }
 \arguments{
 \item{state_counts}{vector of length K of counts in each state}
@@ -12,6 +12,8 @@ multinomial_updater(state_counts, par_vals, D_list_fxns)
 \item{par_vals}{parameter vector values}
 
 \item{D_list_fxns}{output from \code{\link{trans_mat_to_D_fxn}}}
+
+\item{time}{current time, possibly used in the udpate function}
 }
 \value{
 KxK matrix with new number in each state for agents who were in state i

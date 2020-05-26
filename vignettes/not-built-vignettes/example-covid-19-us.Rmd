@@ -166,7 +166,7 @@ sub <- deaths %>% filter(state == "Pennsylvania")
 
 ggplot(data = deaths %>% filter(state %in% states),
        aes(x = S, y = I, z = Deaths, group = state, col = state)) +  
-  geom_point(aes = .3) + coord_tern() + theme_zoom_L(.01) + geom_point() +
+  geom_point(aes = .3) + coord_tern() + theme_zoom_L(.02) + geom_point() +
   labs(title = "Ternary")
 
 
@@ -185,14 +185,14 @@ out <- cases_to_SIR(data_grouped, par = c("gamma" = 1/14)) %>%
 
 ggplot(data = out %>% filter(state %in% states),
        aes(x = S / N * 100, y = I/ N * 100, z = R/ N * 100, group = state, col = state)) + coord_tern() + geom_path(alpha = .8) + 
-  geom_point(alpha = .8) +  theme_zoom_L(.011) + 
+  geom_point(alpha = .8) +  theme_zoom_L(.02) + 
   scale_color_brewer(palette = "Paired")
 ```
 
 ```{r fig.height = 10}
 ggplot(data = out %>% filter(state %in% states),
        aes(x = S / N * 100, y = I/ N * 100, z = R/ N * 100, group = state, col = state)) + coord_tern() + geom_path(alpha = .8) + 
-  geom_point(alpha = .8) +  theme_zoom_L(.011) + 
+  geom_point(alpha = .8) +  theme_zoom_L(.02) + 
   scale_color_brewer(palette = "Paired") + facet_wrap(~state) +
   theme(legend.position = "bottom")
 

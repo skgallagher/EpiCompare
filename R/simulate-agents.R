@@ -20,7 +20,15 @@
 #' \item{sim}{simulation number}
 #' }
 #' @param verbose logical to print progress
-#' @details A (fairly) generic, simple agent-based model based on multinomial draws to transfer from state to state.   Although the function can support a non-constant population, it does not support random births, they must be pre-specified. Random deaths may be supported by adding a compartment for them.
+#' @param out_format Format of the output data frame.  
+#' Wide corresponds to one row to each agent and "long" corresponds to one row being a state change.
+#' Generally, 'wide' is more readable and slightly easier to use with other EpiCompare functions.  However,
+#' there is a problem when agents can enter a state more than once.  This will trigger an error.
+#' @details A (fairly) generic, simple agent-based model based on multinomial/categorical draws to transfer from state to state.  
+#'  Although the function can support a non-constant population,
+#'   it does not support random births, they must be pre-specified. 
+#'   Random deaths may be supported by adding a compartment for them.
+#'  Please see the 'basic-abm' vignette for more details on usage.
 #' @export
 simulate_agents <- function(trans_mat,
                             init_vals,
@@ -29,7 +37,8 @@ simulate_agents <- function(trans_mat,
                             n_sims,
                             birth_dates = NULL,
                             birth_states = NULL,
-                            verbose = TRUE){
+                            verbose = TRUE,
+                            out_format = "wide"){
 
     ## Translate the matrix to a function
     state_names <- get_state_names(trans_mat)
@@ -64,7 +73,8 @@ simulate_agents <- function(trans_mat,
             N <- sum(state_counts) # single number
             draw_matrix <- multinomial_updater(state_counts, 
                                                par_vals,
-                                               D_list_fxns)
+                                               D_list_fxns,
+                                               time = tt-1)
             new_states <- draws_to_states(agent_states,
                                           draw_matrix) #vector of length n_agents
             agent_array[ii,, tt] <- ifelse(is_born, next_states, new_states)
@@ -73,6 +83,33 @@ simulate_agents <- function(trans_mat,
     df <- agent_array_to_df(agent_array)
     df$state_name <- factor(df$state, levels = 0:(n_states-1),
                                             labels = state_names)
+    
+
+    if(out_format == "wide"){
+        
+        ## Check for duplicate rows in the long df
+        ## indicating someone enters a state more than once in a single simulation
+        temp_df <- df %>% dplyr::select(-.data$time) %>% dplyr::distinct()
+        if(nrow(temp_df) != nrow(df)){
+            stop(paste0("The simulation cannot output a wide format",
+                "because the transition matrix allows for ",
+                "re-entry into a state.  Either fix ",
+                "D or change out_format to `long`"))
+        }
+        
+
+        
+        if(tidyr_new_interface()){
+            df <- df %>% dplyr::select(-.data$state) %>%
+                tidyr::pivot_wider(id_cols = c(.data$sim, 
+                                               .data$agent_id),
+                    names_from = .data$state_name,
+                                            values_from = .data$time)
+        } else {
+            df <- df %>% dplyr::select(-.data$state) %>%
+                tidyr::spread(.data$state_name, .data$time)
+        }
+    }
     return(df)
     
 }
