@@ -163,26 +163,26 @@ S\left (1 - \beta \frac{I}{N} \right ) &amp; S\beta \frac{I}{N} &amp; 0\\
 A_n(t+1) |D(t) \sim \mathrm{Categorical} \left (1, P_i(t) \right ).
 \]</span></p>
 <p>This procedure can be done simply with EpiCompare with the following code:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r">  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
-   <span class="co">## This is the SIR representation</span>
-      <span class="no">trans_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"X0 * (1 - X1 * par1 / N)"</span>, <span class="st">"X0 * X1  * par1 / N"</span>, <span class="st">"0"</span>,
-                        <span class="st">"0"</span>, <span class="st">"X1 * (1 - par2)"</span>, <span class="st">"par2 * X1"</span>,
-                        <span class="st">"0"</span>, <span class="st">"0"</span>, <span class="st">"X2"</span>), <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>)
-      <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
-      <span class="no">init_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
-      <span class="no">par_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">par1</span> <span class="kw">=</span> <span class="fl">.1</span>, <span class="kw">par2</span> <span class="kw">=</span> <span class="fl">.03</span>)
-      <span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
-      <span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">10</span>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
+<span class="co">## This is the SIR representation</span>
+<span class="no">trans_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"X0 * (1 - X1 * par1 / N)"</span>, <span class="st">"X0 * X1  * par1 / N"</span>, <span class="st">"0"</span>,
+                  <span class="st">"0"</span>, <span class="st">"X1 * (1 - par2)"</span>, <span class="st">"par2 * X1"</span>,
+                  <span class="st">"0"</span>, <span class="st">"0"</span>, <span class="st">"X2"</span>), <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
+<span class="no">init_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
+<span class="no">par_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">par1</span> <span class="kw">=</span> <span class="fl">.1</span>, <span class="kw">par2</span> <span class="kw">=</span> <span class="fl">.03</span>)
+<span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
+<span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">10</span>
 
-      <span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu">simulate_agents</span>(<span class="no">trans_mat</span>,
-                             <span class="no">init_vals</span>,
-                             <span class="no">par_vals</span>,
-                             <span class="no">max_T</span>,
-                             <span class="no">n_sims</span>,
-                             <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu">simulate_agents</span>(<span class="no">trans_mat</span>,
+                       <span class="no">init_vals</span>,
+                       <span class="no">par_vals</span>,
+                       <span class="no">max_T</span>,
+                       <span class="no">n_sims</span>,
+                       <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 
-      <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">abm</span>) <span class="kw">%&gt;%</span>
-        <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">abm</span>) <span class="kw">%&gt;%</span>
+  <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:right;">
@@ -308,10 +308,10 @@ NA
 </table>
 <p>The main difference in the output of <code>simulate_agents</code> and functions from EpiModel and pomp is that we can determine exactly when each agent moves from one state as opposed to the aggregate total in each state.</p>
 <p>We can compare our ABM to aggregate models with <code>agents_to_aggregate</code>.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r">  <span class="no">agg_model</span> <span class="kw">&lt;-</span> <span class="no">abm</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
-    <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">agg_model</span>) <span class="kw">%&gt;%</span>
-        <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">agg_model</span> <span class="kw">&lt;-</span> <span class="no">abm</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+  <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">agg_model</span>) <span class="kw">%&gt;%</span>
+      <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:right;">
@@ -435,9 +435,9 @@ X2
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><html><body><pre class="r">  <span class="fu">ggplot</span>(<span class="no">agg_model</span>, <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">group</span><span class="kw">=</span> <span class="no">sim</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">sim</span>))) +
-           <span class="fu">geom_line</span>() +
-    <span class="fu">labs</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"time"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Number of infectious"</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"Sim."</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">agg_model</span>, <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">group</span><span class="kw">=</span> <span class="no">sim</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">sim</span>))) +
+         <span class="fu">geom_line</span>() +
+  <span class="fu">labs</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"time"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Number of infectious"</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"Sim."</span>)</pre></body></html></div>
 <p><img src="basic-abm_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>The strength of <code>simulate_agents</code> is that it can simulate an outbreak for <strong>any</strong> valid input of <span class="math inline">\(D\)</span>.</p>
 </div>
@@ -456,20 +456,20 @@ X2
 \]</span> where <span class="math inline">\(\beta(t) = b + sin(t)\)</span>, which allows for a cyclical infection rate.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co">## SIRS</span>
 
-   <span class="co">## This is the SIRS representation</span>
-      <span class="no">trans_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"X0 * (1 - X1 * (par1  +  sin(t)) / N)"</span>, <span class="st">"X0 * X1  * (par1 + sin(t)) / N"</span>, <span class="st">"0"</span>,
-                        <span class="st">"0"</span>, <span class="st">"X1 * (1 - par2)"</span>, <span class="st">"par2 * X1"</span>,
-                        <span class="st">"X2 * par3"</span>, <span class="st">"0"</span>, <span class="st">"X2 * (1 - par3)"</span>), <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>)
-      <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
-      <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
-      <span class="no">init_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
-      <span class="no">par_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">par1</span> <span class="kw">=</span> <span class="fl">.5</span>, <span class="kw">par2</span> <span class="kw">=</span> <span class="fl">.25</span>, <span class="kw">par3</span> <span class="kw">=</span> <span class="fl">.05</span>)
-      <span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
-      <span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
+<span class="co">## This is the SIRS representation</span>
+<span class="no">trans_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"X0 * (1 - X1 * (par1  +  sin(t)) / N)"</span>, <span class="st">"X0 * X1  * (par1 + sin(t)) / N"</span>, <span class="st">"0"</span>,
+                  <span class="st">"0"</span>, <span class="st">"X1 * (1 - par2)"</span>, <span class="st">"par2 * X1"</span>,
+                  <span class="st">"X2 * par3"</span>, <span class="st">"0"</span>, <span class="st">"X2 * (1 - par3)"</span>), <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
+<span class="no">init_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
+<span class="no">par_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">par1</span> <span class="kw">=</span> <span class="fl">.5</span>, <span class="kw">par2</span> <span class="kw">=</span> <span class="fl">.25</span>, <span class="kw">par3</span> <span class="kw">=</span> <span class="fl">.05</span>)
+<span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
+<span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
 
 
-      <span class="co">## Print the transition matrix</span>
-      <span class="fu">kable</span>(<span class="no">trans_mat</span>) <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">positio</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
+<span class="co">## Print the transition matrix</span>
+<span class="fu">kable</span>(<span class="no">trans_mat</span>) <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">positio</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:left;">
@@ -530,17 +530,17 @@ X2 * (1 - par3)
 </tbody>
 </table>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">## Warning:  will take about a minute.  Set `verbose = TRUE` to see progress</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
-      <span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu">simulate_agents</span>(<span class="no">trans_mat</span>,
-                             <span class="no">init_vals</span>,
-                             <span class="no">par_vals</span>,
-                             <span class="no">max_T</span>,
-                             <span class="no">n_sims</span>,
-                             <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-                             <span class="kw">out_format</span> <span class="kw">=</span> <span class="st">"long"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
+<span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu">simulate_agents</span>(<span class="no">trans_mat</span>,
+                       <span class="no">init_vals</span>,
+                       <span class="no">par_vals</span>,
+                       <span class="no">max_T</span>,
+                       <span class="no">n_sims</span>,
+                       <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
+                       <span class="kw">out_format</span> <span class="kw">=</span> <span class="st">"long"</span>)
 
-      <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">abm</span>) <span class="kw">%&gt;%</span>
-        <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">abm</span>) <span class="kw">%&gt;%</span>
+  <span class="fu">kable</span>() <span class="kw">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="st">"center"</span>)</pre></body></html></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:right;">

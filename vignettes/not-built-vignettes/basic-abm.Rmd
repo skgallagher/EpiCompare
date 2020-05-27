@@ -81,26 +81,26 @@ $$
 This procedure can be done simply with EpiCompare with the following code:
 
 ```{r}
-  set.seed(2020)
-   ## This is the SIR representation
-      trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
-                        "0", "X1 * (1 - par2)", "par2 * X1",
-                        "0", "0", "X2"), byrow = TRUE, nrow = 3)
-      rownames(trans_mat) <- c("S", "I", "R")
-      init_vals <- c(950, 50, 0)
-      par_vals <- c(par1 = .1, par2 = .03)
-      max_T <- 100
-      n_sims <- 10
-  
-      abm <- simulate_agents(trans_mat,
-                             init_vals,
-                             par_vals,
-                             max_T,
-                             n_sims,
-                             verbose = FALSE)
-      
-      head(abm) %>%
-        kable() %>% kable_styling(position = "center")
+set.seed(2020)
+## This is the SIR representation
+trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
+                  "0", "X1 * (1 - par2)", "par2 * X1",
+                  "0", "0", "X2"), byrow = TRUE, nrow = 3)
+rownames(trans_mat) <- c("S", "I", "R")
+init_vals <- c(950, 50, 0)
+par_vals <- c(par1 = .1, par2 = .03)
+max_T <- 100
+n_sims <- 10
+
+abm <- simulate_agents(trans_mat,
+                       init_vals,
+                       par_vals,
+                       max_T,
+                       n_sims,
+                       verbose = FALSE)
+
+head(abm) %>%
+  kable() %>% kable_styling(position = "center")
 ```
 
 The main difference in the output of `simulate_agents` and functions from EpiModel and pomp is that we can determine exactly when each agent moves from one state as opposed to the aggregate total in each state.
@@ -108,14 +108,14 @@ The main difference in the output of `simulate_agents` and functions from EpiMod
 We can compare our ABM to aggregate models with `agents_to_aggregate`.
 
 ```{r}
-  agg_model <- abm %>% dplyr::group_by(sim) %>%
-    agents_to_aggregate(states = c(I, R)) 
-  head(agg_model) %>%
-        kable() %>% kable_styling(position = "center")
-  
-  ggplot(agg_model, aes(x = t, y = X1, group= sim, col = factor(sim))) +
-           geom_line() + 
-    labs(x = "time", y = "Number of infectious", col = "Sim.")
+agg_model <- abm %>% dplyr::group_by(sim) %>%
+  agents_to_aggregate(states = c(I, R)) 
+head(agg_model) %>%
+      kable() %>% kable_styling(position = "center")
+
+ggplot(agg_model, aes(x = t, y = X1, group= sim, col = factor(sim))) +
+         geom_line() + 
+  labs(x = "time", y = "Number of infectious", col = "Sim.")
 
 ```
 
@@ -141,23 +141,22 @@ $$
 where $\beta(t) = b + sin(t)$, which allows for a cyclical infection rate.
 
 ```{r}
-
 ## SIRS
 
-   ## This is the SIRS representation
-      trans_mat <- matrix(c("X0 * (1 - X1 * (par1  +  sin(t)) / N)", "X0 * X1  * (par1 + sin(t)) / N", "0",
-                        "0", "X1 * (1 - par2)", "par2 * X1",
-                        "X2 * par3", "0", "X2 * (1 - par3)"), byrow = TRUE, nrow = 3)
-      rownames(trans_mat) <- c("S", "I", "R")
-      colnames(trans_mat) <- c("S", "I", "R")
-      init_vals <- c(950, 50, 0)
-      par_vals <- c(par1 = .5, par2 = .25, par3 = .05)
-      max_T <- 100
-      n_sims <- 100
-      
-      
-      ## Print the transition matrix
-      kable(trans_mat) %>% kable_styling(positio = "center")
+## This is the SIRS representation
+trans_mat <- matrix(c("X0 * (1 - X1 * (par1  +  sin(t)) / N)", "X0 * X1  * (par1 + sin(t)) / N", "0",
+                  "0", "X1 * (1 - par2)", "par2 * X1",
+                  "X2 * par3", "0", "X2 * (1 - par3)"), byrow = TRUE, nrow = 3)
+rownames(trans_mat) <- c("S", "I", "R")
+colnames(trans_mat) <- c("S", "I", "R")
+init_vals <- c(950, 50, 0)
+par_vals <- c(par1 = .5, par2 = .25, par3 = .05)
+max_T <- 100
+n_sims <- 100
+
+
+## Print the transition matrix
+kable(trans_mat) %>% kable_styling(positio = "center")
       
 ```
       
@@ -165,17 +164,17 @@ where $\beta(t) = b + sin(t)$, which allows for a cyclical infection rate.
 ```{r}
 
 ## Warning:  will take about a minute.  Set `verbose = TRUE` to see progress
-    set.seed(2020)
-      abm <- simulate_agents(trans_mat,
-                             init_vals,
-                             par_vals,
-                             max_T,
-                             n_sims,
-                             verbose = FALSE,
-                             out_format = "long")
-      
-      head(abm) %>%
-        kable() %>% kable_styling(position = "center")
+set.seed(2020)
+abm <- simulate_agents(trans_mat,
+                       init_vals,
+                       par_vals,
+                       max_T,
+                       n_sims,
+                       verbose = FALSE,
+                       out_format = "long")
+
+head(abm) %>%
+  kable() %>% kable_styling(position = "center")
 ```
 
 In the above table, it is clear that the agent can become susceptible again.

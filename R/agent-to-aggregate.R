@@ -96,7 +96,9 @@ check_min_max_time <- function(min_max_time){
 #'   column). The second, \code{summary_df} (k x 3) data frame contains
 #'   information on the number of unique ordering ("ordering"), if they caused
 #'   the assumption to be violated ("error") and the number of agents that had
-#'   the ordering ("count").
+#'   the ordering ("count"). Note that if an individual has \code{NA} for every 
+#'   states' time, then they have a \code{NA} in their "error" column (this 
+#'   is not the cause of the erroring).
 #' }
 #'
 #' @examples
@@ -119,11 +121,11 @@ check_ordered <- function(df, states, assert_error = TRUE){
 
     info_only_int_na <- df_select[, states]
 
-    for (i in K:2) {
-      if (sum(is.na(info_only_int_na[,i-1])) > 0) {
-        info_only_int_na[,i-1][
-          is.na(info_only_int_na[,i-1])
-          ] <- as.matrix(info_only_int_na)[,i][is.na(info_only_int_na[,i-1])]
+    for (i in 2:K) { 
+      if (sum(is.na(info_only_int_na[,i])) > 0) {
+        info_only_int_na[,i][
+          is.na(info_only_int_na[,i])
+          ] <- as.matrix(info_only_int_na)[,i-1][is.na(info_only_int_na[,i])]
       }
     }
 
@@ -141,7 +143,7 @@ check_ordered <- function(df, states, assert_error = TRUE){
                                         "ordered (some agents have times they",
                                         "enter each state in a different order",
                                         "than the 'state' parameter suggests).",
-                                        "Use the 'check_ord ered' function with",
+                                        "Use the 'check_ordered' function with",
                                         "'assert_error = FALSE' to get info",
                                         "on which rows made the assumption",
                                         "that states are ordered correctly",

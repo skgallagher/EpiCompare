@@ -48,6 +48,69 @@ test_that("check_ordered", {
 
 })
 
+test_that("check_ordered, dealing with NAs", {
+  # NAs and an error inside
+  test_na <- data.frame(sim = 1, agent_id = 1:5,
+                        S1 = rep(1,5),
+                        I1 = c( 4, 10,  9,  2,  9),
+                        R1 = c( 6, 11, 12,  3, 18),
+                        S2 = c(16, 13, 48, 57, 46),
+                        I2 = c(85, 15, 92, 84, 48),
+                        R2 = c(88, 22, 94, 87, 50),
+                        S3 = c(NA, 50, NA, 91, 65),
+                        I3 = c(NA, NA, NA, NA, 96),
+                        R3 = c(NA, NA, NA, NA, 100),
+                        S4 = c(NA, NA, NA, 90, NA)
+  )
+  
+  test_na_co_output <- check_ordered(test_na, 
+                                     states = paste0(c("S", "I", "R"),
+                                                     c(rep(1:3, each = 3),4)),
+                                     assert_error = F)
+  # this should error
+  testthat::expect_true(is.list(test_na_co_output))
+  
+  
+  # ordering df errors have no NAs
+  testthat::expect_equal(test_na_co_output$ordering_df$error,
+                         c(F,F,F,T,F)) 
+  testthat::expect_true(sum(is.na(test_na_co_output$ordering_df$error)) == 0)
+  
+  
+  # summary_df errors have no NAs
+  error_same <- test_na_co_output$summary_df %>% 
+    dplyr::left_join(data.frame(count = c(4,1), 
+                                error = c(F, T)), 
+                     by = "count") 
+  testthat::expect_equal(error_same$error.x, error_same$error.y) 
+  testthat::expect_true(sum(is.na(error_same$error.x)) == 0)
+  
+  
+  # NAs and a completely NA individual
+  test_na_full_row <- data.frame(sim = 1, agent_id = 1:6,
+                                 S1 = c(rep(1,5), NA),
+                                 I1 = c( 4, 10,  9,  2,  9, NA),
+                                 R1 = c( 6, 11, 12,  3, 18, NA),
+                                 S2 = c(16, 13, 48, 57, 46, NA),
+                                 I2 = c(85, 15, 92, 84, 48, NA),
+                                 R2 = c(88, 22, 94, 87, 50, NA),
+                                 S3 = c(NA, 50, NA, 91, 65, NA),
+                                 I3 = c(NA, NA, NA, NA, 96, NA),
+                                 R3 = c(NA, NA, NA, NA, 100, NA),
+                                 S4 = c(NA, NA, NA, 90, NA, NA)
+  )
+  test_na_full_row_co_output <- 
+    check_ordered(test_na_full_row, 
+                  states = paste0(c("S", "I", "R"), 
+                                  c(rep(1:3, each = 3),4)),
+                  assert_error = F)
+  
+  testthat::expect_true(is.na(test_na_full_row_co_output$ordering_df[6,]$error)) 
+  #^ if NAs we want ordering to be NA
+  
+  
+})
+
 
 test_that(paste("check_ordered works with NAs in tibbles,",
                 "data.frames and grouped_df"),{
