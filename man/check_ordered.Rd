@@ -25,7 +25,9 @@ This function returns either
   column). The second, \code{summary_df} (k x 3) data frame contains
   information on the number of unique ordering ("ordering"), if they caused
   the assumption to be violated ("error") and the number of agents that had
-  the ordering ("count").
+  the ordering ("count"). Note that if an individual has \code{NA} for every 
+  states' time, then they have a \code{NA} in their "error" column (this 
+  is not the cause of the erroring).
 }
 }
 \description{

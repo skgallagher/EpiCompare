@@ -36,14 +36,9 @@ library(purrr)
 
 # Introduction to Ternary plots
 
-
-```{r echo = F, warning = F, message =F}
-library(emo)
-```
-
 A ternary plot is a "triangular" plot that represents is used to represent relative proportions of 3 quantities. In this package we encourage the use of ternary plots to example the change in proportions of a population who are **Suspectible**, **Infected**, and have **Recovered** from a disease (more commonly refered to as an *SIR* model). Ternary plots are also used in chemistry and other physical sciences. 
 
-Because ternary plots aren't *that* common in epidemogolgy (yet `r emo::ji("wink")`), so we thought it would be useful to introduced them in more detail here, so that users can feel more comfortable interpreting them.
+Because ternary plots aren't *that* common in epidemogolgy (yet &#128521;), so we thought it would be useful to introduced them in more detail here, so that users can feel more comfortable interpreting them.
 
 ## Mathematical foundation (can be skipped)
 

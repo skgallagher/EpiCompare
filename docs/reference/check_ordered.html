@@ -191,7 +191,9 @@ is violated.</p></td>
   column). The second, <code>summary_df</code> (k x 3) data frame contains
   information on the number of unique ordering ("ordering"), if they caused
   the assumption to be violated ("error") and the number of agents that had
-  the ordering ("count").</p></li>
+  the ordering ("count"). Note that if an individual has <code>NA</code> for every 
+  states' time, then they have a <code>NA</code> in their "error" column (this 
+  is not the cause of the erroring).</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
