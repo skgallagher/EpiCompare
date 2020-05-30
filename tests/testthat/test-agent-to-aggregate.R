@@ -26,11 +26,11 @@ test_that("check_ordered", {
   testthat::expect_error(check_ordered(df_not_ordered, states))
 
   output <- check_ordered(df_not_ordered, states,assert_error = F)
-  testthat::expect_equal(output$summary_df,
-                         data.frame(ordering = c("group1 <= group2",
-                                                 "group2 <= group1"),
-                                    error = c(F, T),
-                                    count = c(4L, 1L)))
+  testthat::expect_equivalent(output$summary_df,
+                              data.frame(ordering = c("group1 <= group2",
+                                                      "group2 <= group1"),
+                                         error = c(F, T),
+                                         count = c(4L, 1L)))
   df <-  data.frame(id = as.character(1:5),
              error = c(rep(FALSE, 4), TRUE),
              ordering =  c(rep("group1 <= group2", 4),
@@ -126,7 +126,11 @@ test_that(paste("check_ordered works with NAs in tibbles,",
                                 sim = 1,
                                 tI = c(19, 18, NA, NA, NA),
                                 tR = c(35, 27, NA, NA, NA))
-          test_tbl <- dplyr::tbl_df(test_df)
+          if (utils::packageVersion("dplyr") >= '1.0.0'){
+            test_tbl <- tibble::as_tibble(test_df)
+          } else {
+            test_tbl <- dplyr::tbl_df(test_df)
+          }
           testthat::expect_true(check_ordered(test_tbl, c("tI", "tR")))
 
 
@@ -135,7 +139,12 @@ test_that(paste("check_ordered works with NAs in tibbles,",
                                 sim = rep(factor(c(1:2)), each = 5),
                                 tI = c(19, 18, NA, NA, NA),
                                 tR = c(35, 27, NA, NA, NA))
-          test_tbl <- dplyr::tbl_df(test_df) %>% dplyr::group_by(sim)
+          if (utils::packageVersion("dplyr") >= '1.0.0'){
+            test_tbl <- tibble::as_tibble(test_df) %>% dplyr::group_by(sim)
+          } else {
+            test_tbl <- dplyr::tbl_df(test_df) %>% dplyr::group_by(sim)
+          }
+          
           testthat::expect_true(check_ordered(test_tbl, c("tI", "tR")))
 
                 })
@@ -163,10 +172,10 @@ test_that("expanding_info", {
   df <- data.frame(state = 1:2,
                    t = rep(0,2),
                    count = rep(12,2))
-  testthat::expect_equal(expanding_info(df, t_min = 0, t_max = 0, K = 2),
-                         df %>% dplyr::select(t, state, count) %>%
-                           dplyr::mutate(t = as.character(t),
-                                         state = as.numeric(state)))
+  testthat::expect_equivalent(expanding_info(df, t_min = 0, t_max = 0, K = 2),
+                              df %>% dplyr::select(t, state, count) %>%
+                                 dplyr::mutate(t = as.character(t),
+                                               state = as.numeric(state)))
 })
 
 test_that("agents_to_aggregate.data.frame, data_example_s example",{
@@ -850,29 +859,3 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks, strings", {
   }
 
 })
-
-
-
-test_that("NAs for geom_aggregate", {
-
-  df <- data.frame(agent_id = factor(1:5),
-                   sim = factor(1),
-                   tI = c(446, NA, 196, 465, NA),
-                   tR = c(464, NA, 425, 476, NA))
-
-  g <- df %>% ggplot() +
-    geom_aggregate(aes(y = tI, z = tR),
-                   color = "blue") +
-    coord_tern()
-
-  
-  print(g)
-dev.off()
-  expect_true(is.ggplot(g))
-
-
-})
-
-
-
-

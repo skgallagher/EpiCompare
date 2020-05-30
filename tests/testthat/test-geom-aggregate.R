@@ -61,3 +61,19 @@ test_that("check geom_aggregate for raw works correctly with NAs", {
   # tells us below if there are removals (which there shouldn't be...)
   testthat::expect_silent(layer_data(geom_agg_vis_with_na))
 })
+
+test_that("NAs for geom_aggregate", {
+  df <- data.frame(agent_id = factor(1:5),
+                   sim = factor(1),
+                   tI = c(446, NA, 196, 465, NA),
+                   tR = c(464, NA, 425, 476, NA))
+  
+  g <- df %>% ggplot() +
+    geom_aggregate(aes(y = tI, z = tR),
+                   color = "blue") +
+    coord_tern()
+  
+  print(g)
+  dev.off()
+  expect_true(is.ggplot(g))
+})

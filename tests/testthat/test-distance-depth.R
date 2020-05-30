@@ -28,7 +28,7 @@ test_that("test for depth_curves_to_points.grouped_df", {
                                                               ncol = 2))}) %>%
     do.call(rbind, .) %>%
     mutate(id = rep(1:3, each = 5)) %>%
-    group_by(id)
+    group_by(id) %>% select(id, X1, X2)
 
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
@@ -40,8 +40,8 @@ test_that("test for depth_curves_to_points.grouped_df", {
                                                alpha = .2,
                                                dist_mat)
 
-  testthat::expect_equal(combined_points_df,
-                         random_data_df %>% filter(id == 1))
+  testthat::expect_equivalent(combined_points_df,
+                              random_data_df %>% filter(id == 1))
 })
 
 test_that("test for distance_depth_function", {
