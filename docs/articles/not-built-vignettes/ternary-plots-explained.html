@@ -61,6 +61,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
+    </li>
+    <li>
       <a href="../../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -102,7 +105,7 @@
 
       
 
-      </header><script src="ternary-plots-explained_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="ternary-plots-explained_files/plotly-binding-4.9.2.1/plotly.js"></script><script src="ternary-plots-explained_files/typedarray-0.1/typedarray.min.js"></script><script src="ternary-plots-explained_files/jquery-1.11.3/jquery.min.js"></script><link href="ternary-plots-explained_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
+      </header><script src="ternary-plots-explained_files/header-attrs-2.2/header-attrs.js"></script><script src="ternary-plots-explained_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="ternary-plots-explained_files/plotly-binding-4.9.2.1/plotly.js"></script><script src="ternary-plots-explained_files/typedarray-0.1/typedarray.min.js"></script><script src="ternary-plots-explained_files/jquery-1.11.3/jquery.min.js"></script><link href="ternary-plots-explained_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
 <script src="ternary-plots-explained_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><link href="ternary-plots-explained_files/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="ternary-plots-explained_files/plotly-main-1.52.2/plotly-latest.min.js"></script><div class="row">
   <div class="col-md-9 contents">
@@ -131,8 +134,8 @@
 \]</span></p>
 <p>Our ternary plots are a specific case where <span class="math inline">\(p\)</span> is equal to 3. In 3d the unit simplex actually looks like the following:</p>
 <center>
-<div id="htmlwidget-3dd71dc9899e9e9db5a1" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3dd71dc9899e9e9db5a1">{"x":{"visdat":{"19825cf8c5ba":["function () ","plotlyVisDat"]},"cur_data":"19825cf8c5ba","attrs":{"19825cf8c5ba":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[1,0,0],"y":[0,1,0],"z":[0,0,1],"facecolor":"grey","opacity":0.5,"type":"mesh3d","inherit":true},"19825cf8c5ba.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1],"y":[0,0],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true},"19825cf8c5ba.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,0],"y":[0,1],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true},"19825cf8c5ba.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,0],"y":[0,0],"z":[0,1],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"3d Unit Simplex","scene":{"camera":{"eye":{"x":1.875,"y":0.75,"z":1.125}},"xaxis":{"title":[]},"yaxis":{"title":[]},"zaxis":{"title":[]}},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":true,"x":[1,0,0],"y":[0,1,0],"z":[0,0,1],"facecolor":["grey"],"opacity":0.5,"type":"mesh3d","frame":null},{"x":[0,1],"y":[0,0],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"x":[0,0],"y":[0,1],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"x":[0,0],"y":[0,0],"z":[0,1],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(214,39,40,1)","line":{"color":"rgba(214,39,40,1)"}},"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7c272ad2967347c5ba58" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7c272ad2967347c5ba58">{"x":{"visdat":{"30fb5b7d400f":["function () ","plotlyVisDat"]},"cur_data":"30fb5b7d400f","attrs":{"30fb5b7d400f":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[1,0,0],"y":[0,1,0],"z":[0,0,1],"facecolor":"grey","opacity":0.5,"type":"mesh3d","inherit":true},"30fb5b7d400f.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,1],"y":[0,0],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true},"30fb5b7d400f.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,0],"y":[0,1],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true},"30fb5b7d400f.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":[0,0],"y":[0,0],"z":[0,1],"type":"scatter3d","mode":"lines","line":{"width":6,"color":"black"},"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"3d Unit Simplex","scene":{"camera":{"eye":{"x":1.875,"y":0.75,"z":1.125}},"xaxis":{"title":[]},"yaxis":{"title":[]},"zaxis":{"title":[]}},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":true,"x":[1,0,0],"y":[0,1,0],"z":[0,0,1],"facecolor":["grey"],"opacity":0.5,"type":"mesh3d","frame":null},{"x":[0,1],"y":[0,0],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"x":[0,0],"y":[0,1],"z":[0,0],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"x":[0,0],"y":[0,0],"z":[0,1],"type":"scatter3d","mode":"lines","line":{"color":"black","width":6},"marker":{"color":"rgba(214,39,40,1)","line":{"color":"rgba(214,39,40,1)"}},"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </center>
 <p>And a ternary plot is just a projection of this simplex onto a 2d surface.</p>
 </div>
@@ -152,7 +155,7 @@
 <center>
 <img src="https://benjaminleroy.github.io/documents/epicompare_gif/all_vis.gif">
 </center>
-<p>In this way, we should be able to think about the midway point with these 3 plots in mind (also note that the following plots use <code>theme_sir()</code> which provides useful arrows for your axes):</p>
+<p>In this way, we should be able to think about the midway point with these 3 plots in mind (also note that the following plots use <code><a href="../../reference/theme_sir.html">theme_sir()</a></code> which provides useful arrows for your axes):</p>
 <p><img src="ternary-plots-explained_files/figure-html/point-shade-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="how-to-do-this-with-ggtern" class="section level2">
@@ -175,7 +178,7 @@
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu">theme_sir</span>()</pre></body></html></div>
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example1-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="regular-data-ggtern-base" class="section level3">
@@ -183,7 +186,7 @@
 <a href="#regular-data-ggtern-base" class="anchor"></a>Regular data, ggtern base</h3>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggtern</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
-  <span class="fu">theme_sir</span>()</pre></body></html></div>
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example2-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="unscaled-regular-data-ggplot-base-coord_tern" class="section level3">
@@ -192,7 +195,7 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data_unscaled</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu">theme_sir</span>()</pre></body></html></div>
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example3-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>

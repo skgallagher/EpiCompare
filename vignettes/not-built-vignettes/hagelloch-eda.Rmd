@@ -1,0 +1,230 @@
+---
+title: "Hagelloch Measles -- Pre-processing and EDA"
+output: 
+  html_document:
+    code_folding: show
+bibliography: our-bib.bib
+vignette: >
+  %\VignetteIndexEntry{Hagelloch Measles 1 - EDA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+devtools::load_all()
+library(EpiModel)
+library(dplyr)
+library(ggtern)
+```
+
+
+## Overview
+
+In this series of vignettes, we will demonstrate epidemic analysis pipeline from EDA to dissemination using a case study of measles.
+
+## The Epidemic Analysis Pipeline
+
+![](images/pipeline1.png)
+
+## Hagelloch series vignettes
+
+[Hagelloch 1 Pre-processing and EDA]()
+
+[Hagelloch 2]()
+
+## Goals in this vignette
+
+1. Describe the Hagelloch measles data
+
+2. Illustrate some of the interesting features
+
+3. Show how `EpiCompare` can be used to aid with EDA
+
+## Intro: Measles outbreak in Hagelloch, Germany 1861-1862
+
+(Note that part of this section is taken with permission from @gallagher2019.)
+
+The Hagelloch data was initially collected by @pfeilsticker1863 and further analyzed by @oesterle1992.  The data set follows the course of a measles epidemic in Hagelloch, Germany from October 30, 1861 (Day 0) until January 24, 1862, covering a period of 87 days. 
+
+This data set is available, not only in our package, but also from the `surveillance` package [@surveillance2017].
+
+Previous analyses using the this data set include @roberts2004; @britton2011; @groendyke2012; and  @cori2013.  We encourage reading these insightful analyses.
+
+### General measles information
+
+Along with mumps, rubella, and varicella, measles is a highly infectious childhood disease. Symptoms of of the disease include high fever, cough, runny nose, and red, watery eyes.  Two to three days after initial symptoms, tiny white spots may be found in the mouth.  Three to five days after the symptoms begin, a rash appears on the body.  A high fever (104 degrees F or more) may also be observed.  Finally, the rash and fever resolve after a few days  [@cdc-measles2018].
+
+Measles is transferred from person to person through contaminated air or an infected surface.  [@cdc-measles2018] reports that a person is infectious four days before and after the appearance of the rash.  Measles is perhaps the most contagious person-disease on the planet, with a reproductive number estimated of around $R_0 = 19$ [@anderson1992], which means that when an infectious person is introduced to a fully susceptible population, she will infect on average 19 others.  In fact, a seven year-old boy in the Hagelloch data set purportedly infected 30 other individuals.  However, more recent estimates of $R_0$ for measles are closer to 6-7 [@getz2016].
+
+
+## Exploring the measles dataset in `R`.
+
+After loading the libraries,
+
+```{r, echo = FALSE}
+devtools::load_all()
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(forcats)
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+```
+
+```{r eval = FALSE}
+library(tidyerse)
+library(EpiCompare)
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+
+```
+you can look at the raw data using `data(hagelloch_raw)` and see the details with `?hagelloch_raw`.
+
+
+A piece of the raw data is displayed in the following table
+```{r}
+hagelloch_raw %>% select(PN, NAME, AGE, SEX, HN, PRO, ERU, IFTO) %>%
+  head(10) %>% kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+where `PRO` is the date where prodromes (i.e. initial symptoms) began and `ERU` is the date of the measles rash.  This data also includes the variable `IFTO` which is the (suspected) infector ID, which makes this data both highly informative and unusual! Only `r round(mean(is.na(hagelloch_raw$IFTO)), 2) * 100`% of the infected children of the `r nrow(hagelloch_raw)` total children  do not have a reported infector ID.  
+
+
+The data also includes $tI$ and $tR$ which are estimated times of infection and recovery (see @surveillance2017 for details).  We plot the infection duration for each child, coloring the lines by household (with recycled colors) and arranging the children by household.  From this we see that infection seems to be transmitted through the household ina  short period of time where there is almost always overlap among infectious children within the household.  We also arrange and color the lines by school grade, which shows us that the first class seems to all have been infected at approximately the same time.
+
+## Infection duration plots {.tabset}
+
+### By Household ID
+
+```{r class.source = 'fold-hide', fig.height = 8}
+hagelloch_raw %>% arrange(HN, NAME) %>%
+  mutate(new_id = paste(HN, NAME, PN, sep = "-")) %>%
+ggplot2::ggplot(aes(y = new_id, col = factor(HN))) +
+  scale_colour_manual(values=rep(brewer.pal(5,"Set1"),
+                                times= ceiling(length(unique(hagelloch_raw$HN)) / 5)),
+                      guide = FALSE) +
+  geom_errorbarh(aes(xmax = tR, xmin = tI), size  = 1) + theme_bw() + 
+  labs(x = "Date",
+       y = "Child ID",
+       title = "Infection time of children",
+       subtitle = "Colored by household ID (with recycled colors)") 
+```
+
+### By School Grade
+
+```{r class.source = 'fold-hide', fig.height = 8}
+hagelloch_raw %>% arrange(CL) %>%
+  mutate(new_id = paste(CL, PN, sep = "-")) %>%
+ggplot2::ggplot(aes(y = new_id, col = CL))+
+  geom_errorbarh(aes(xmax = tR, xmin = tI), size  = 1) + theme_bw() + 
+  labs(x = "Date",
+       y = "Child ID",
+       title = "Infection time of children",
+       subtitle = "Colored by household ID (with recycled colors)") +
+  viridis::scale_color_viridis(discrete = TRUE, end = .8)
+```
+
+## {-}
+
+##  Infectors
+
+We can also count the infections produced.  Here we see that one child is suspected of infecting 30 of others, most of which are his first school class peers.
+
+```{r}
+hagelloch_raw$inf_trans <- sapply(hagelloch_raw$PN, function(x){
+ sum(hagelloch_raw$IFTO == x, na.rm = TRUE)}
+ )
+  
+hagelloch_raw %>% filter(inf_trans > 0) %>%
+  ggplot() + geom_col(aes(x = reorder(PN, inf_trans), y = inf_trans,
+                          fill = CL)) + 
+  coord_flip() + 
+   viridis::scale_fill_viridis(discrete = TRUE, end = .8) +
+  labs(x = "ID", y = "Number of (suspected) transmissions",
+       title = "(Suspected) Number of infections caused by child") + theme_bw()
+
+```
+
+
+## Data pre-processing with `EpiCompare`
+
+Viewing interesting information at the agent-level is interesting, but we would also like to visualize information at the aggreate level, i.e. the total number of children in a given infection state over time.
+
+The funnction `EpiCompare::agent_to_aggregate()` converts the agent level data to an aggregate view.  This is demonstrated below.
+
+```{r}
+aggregate_hag <- hagelloch_raw %>% 
+  agents_to_aggregate(states = c(tI, tR)) %>%
+   rename(time = t, S = X0, I = X1, R = X2)
+
+aggregate_hag %>% head %>% 
+  kable()  %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+
+We can then plot, for instance,  the number of infectious children over time.
+
+
+```{r}
+aggregate_hag %>% 
+  ggplot(aes(x = time, y = I)) + 
+  geom_line(col = "red") + 
+  geom_point(col = "red") +
+  theme_bw() +
+  labs( x= "Time after initial infection (days)",
+        y = "# of infected children",
+        title = "Number of infectious children vs. time",
+        subtitle = "Hagelloch, Germany 1861-1862")
+
+```
+
+`EpiCompare::agent_to_aggregate()` also works on grouped data frames, meaning that we can aggregate the children by groups such as their class.
+
+```{r}
+aggregate_hag_class <- hagelloch_raw %>% 
+  group_by(CL) %>%
+  agents_to_aggregate(states = c(tI, tR)) %>%
+   rename(time = t, S = X0, I = X1, R = X2)
+
+aggregate_hag_class %>% head %>% 
+  kable()  %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+
+We can then plot, for instance,  the number of infectious children over time.
+
+
+```{r}
+aggregate_hag_class %>% 
+  ggplot(aes(x = time, y = I, group = CL,
+             col = CL)) + 
+  geom_line() + 
+  geom_point() +
+  theme_bw() +
+  viridis::scale_color_viridis(discrete = TRUE, end = .8) + 
+  labs( x= "Time after initial infection (days)",
+        y = "# of infected children",
+        title = "Number of infectious children vs. time",
+        subtitle = "Hagelloch, Germany 1861-1862")
+
+```
+From this plot, it seems that the first class may have been infected before the other two, which is something we can incorporate into a model.
+
+
+## In summary
+
+In this vignette, we introduced the Hagelloch measles data set.  We showed some aspects of the data at the agent-level, and at the aggregate level.  We used the `EpiCompare` function `agents_to_aggregate` to pre-process the data to convert it into a format to easily view aggregate level information that is compatible with `ggplot2` and other `tidyverse` style functions.
+
+In the next vignette, we will...
+
+## References

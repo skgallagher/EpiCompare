@@ -109,6 +109,9 @@ the columns associated with the grouping." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
+    </li>
+    <li>
       <a href="../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -260,16 +263,14 @@ desired time steps. A transformation of the output's <code>t</code> column by
 <span class='co'># for standard data.frame objects (agents_to_aggregate.grouped_df)</span>
 <span class='co'>###</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='no'>agents</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>hagelloch_raw</span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='no'>agents</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='hagelloch_raw.html'>hagelloch_raw</a></span>
 <span class='co'># making babies</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>5</span>)
-<span class='no'>babies</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>agents</span>),<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+<span class='no'>babies</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>agents</span>),<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>5</span>)
 <span class='no'>agents</span>$<span class='no'>tBIRTH</span> <span class='kw'>&lt;-</span> <span class='fl'>NA</span>
 <span class='no'>agents</span>$<span class='no'>tBIRTH</span>[<span class='no'>babies</span>] <span class='kw'>&lt;-</span> <span class='no'>agents</span>$<span class='no'>tI</span>[<span class='no'>babies</span>] - <span class='fl'>5</span>
 

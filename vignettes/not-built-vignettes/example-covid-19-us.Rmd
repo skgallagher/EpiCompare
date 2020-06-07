@@ -20,6 +20,7 @@ library(knitr)
 library(COVID19)
 library(tidyr)
 library(kableExtra)
+library(RColorBrewer)
 theme_set(theme_bw())
 ```
 
@@ -54,27 +55,33 @@ library(knitr)
 library(COVID19)
 library(tidyr)
 library(kableExtra)
+library(RColorBrewer)
 theme_set(theme_bw())
 ```
 
 ## Downloading the coronavirus data for the US
 
 ```{r results = 'asis'}
-data <- covid19("USA", level = 2)  ## State level US data, will take a few seconds
+data <- covid19("USA", level = 2) %>%  ## State level US data, will take a few seconds
+   mutate( state = administrative_area_level_2)
 
-data %>% select(id, state, date, confirmed, recovered, deaths, pop) %>% 
+data %>% 
+  select(id, state, date, confirmed, recovered, deaths, population) %>% 
   head() %>% kable() %>% kable_styling(position = "center")
 
 ```
 ```{r}
 data <- data %>% group_by(state) 
   
-ggplot(data = data, aes(x = date, y =confirmed / pop, group = state)) + 
+ggplot(data = data, aes(x = date, y =confirmed / population,
+                        group = state, col = state)) + 
   geom_line() +
   xlim(c(as.Date("2020-03-16"), max(data$date) + 5)) +
   geom_text(data = . %>% filter(date == max(date)),
             aes(label = state), vjust = .001, hjust = 0)  +
-  labs(x = "", y = "(Cumulative Confirmed Cases) / (Population Size)")
+  labs(x = "", y = "(Cumulative Confirmed Cases) / (Population Size)")  +  scale_colour_manual(values=rep(brewer.pal(5,"Set1"),
+                                times= ceiling(length(unique(hagelloch_raw$HN)) / 5)),
+                      guide = FALSE)
 ```
 
 
@@ -86,16 +93,23 @@ However, the outbreak did not begin on the same day in the states.  So perhaps, 
 This looks like the following:
 
 ```{r}
-data <- data %>% group_by(state) %>% filter(confirmed > 0) %>%
+data <- data %>%
+  mutate( state = administrative_area_level_2) %>%
+  group_by(state) %>% filter(confirmed > 0) %>%
   mutate(first_date = min(date)) %>%
-  mutate(rel_date = date - first_date)
+  mutate(rel_date = date - first_date )
   
-ggplot(data = data, aes(x = rel_date, y = confirmed / pop, group = state)) + 
+ggplot(data = data, aes(x = rel_date, y = confirmed / population, group = state,
+                        col = state)) + 
   geom_line() +
-  xlim(c(0, max(data$rel_date) + 3)) +
+  xlim(c(0, max(data$rel_date) + 10)) +
   geom_text(data = . %>% filter(date == max(date)),
             aes(label = state), vjust = .001, hjust = 0)  +
-  labs(x = "Days relative to first case in state", y = "(Cumulative Confirmed Cases) / (Population Size)")
+  labs(x = "Days relative to first case in state", 
+       y = "(Cumulative Confirmed Cases) / (Population Size)") + 
+    scale_colour_manual(values=rep(brewer.pal(5,"Set1"),
+                                times= ceiling(length(unique(hagelloch_raw$HN)) / 5)),
+                      guide = FALSE)
 ```
 
 This view looks a little different from the raw-time version and now New York does not look to be completely dominant.  On the other hand, this view makes it hard to compare states like MA, Illinois, CA, and AZ -- states which all had an early case but did not have a sustained outbreak until much later.
@@ -103,16 +117,20 @@ This view looks a little different from the raw-time version and now New York do
 Another idea is to standardize the time relative to the first time the .0005 cumulative cases per population threshold is crossed.
 
 ```{r}
-data2 <- data %>% group_by(state) %>% filter(confirmed/pop > 0.0005) %>%
+data2 <- data %>% group_by(state) %>% filter(confirmed/population > 0.0005) %>%
   mutate(first_date = min(date)) %>%
   mutate(rel_date = date - first_date)
   
-ggplot(data = data2, aes(x = rel_date, y = confirmed / pop, group = state)) + 
+ggplot(data = data2, aes(x = rel_date, y = confirmed / population, group = state,
+                         col = state)) + 
   geom_line() +
   xlim(c(0, max(data2$rel_date) + 5)) +
   geom_text(data = . %>% filter(date == max(date)),
             aes(label = state), vjust = .001, hjust = 0)  +
-  labs(x = "Days relative to .0005 Cases/Pop threshold", y = "(Cumulative Confirmed Cases) / (Population Size)")
+  labs(x = "Days relative to .0005 Cases/Pop threshold", y = "(Cumulative Confirmed Cases) / (Population Size)") + 
+    scale_colour_manual(values=rep(brewer.pal(5,"Set1"),
+                                times= ceiling(length(unique(hagelloch_raw$HN)) / 5)),
+                      guide = FALSE)
 ```
 
 
@@ -140,7 +158,7 @@ states <- c("New York", "New Jersey", "Louisiana",
                                           "District of Columbia", "Rhode Island",
                                           "Michigan", "Pennsylvania")
 
-ggplot(data = data %>% filter(state %in% states), aes(x = confirmed / pop,
+ggplot(data = data %>% filter(state %in% states), aes(x = confirmed / population,
                         y= state,
                         group = state, col = date)) +
   geom_point(size = 4, alpha = .4)  
@@ -156,9 +174,9 @@ ggplot(data = data %>% filter(state %in% states), aes(x = confirmed / pop,
 ```{r}
 deaths <- data %>% group_by(state) %>%
   mutate(time = date,
-        S = (pop - confirmed) / pop * 100,
-         I = (confirmed - deaths) / pop * 100,
-        Deaths = deaths / pop * 100) %>%
+        S = (population - confirmed) / population * 100,
+         I = (confirmed - deaths) / population * 100,
+        Deaths = deaths / population * 100) %>%
   select(state, time, S, I, Deaths) %>% na.omit()
 
 sub <- deaths %>% filter(state == "Pennsylvania")
@@ -166,7 +184,7 @@ sub <- deaths %>% filter(state == "Pennsylvania")
 
 ggplot(data = deaths %>% filter(state %in% states),
        aes(x = S, y = I, z = Deaths, group = state, col = state)) +  
-  geom_point(aes = .3) + coord_tern() + theme_zoom_L(.02) + geom_point() +
+  geom_point(alpha = .7) + coord_tern() + theme_zoom_L(.02)  +
   labs(title = "Ternary")
 
 
@@ -176,7 +194,7 @@ ggplot(data = deaths %>% filter(state %in% states),
 
 ```{r}
 data_grouped <- data %>% group_by(state) %>%
-  rename(t = date, N = pop)
+  rename(t = date, N = population)
 
 out <- cases_to_SIR(data_grouped, par = c("gamma" = 1/14)) %>%
   rename(S = X0, I = X1, R = X2)

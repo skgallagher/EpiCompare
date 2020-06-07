@@ -22,6 +22,7 @@
 fortify_aggregate.epimodel_inner <- function(data,
                                              states,
                                              package_source = NULL){
+    
 
     states <- unname(tidyselect::vars_select(names(data$epi),
                                              !!states))
@@ -66,7 +67,14 @@ fortify_aggregate.epimodel_inner <- function(data,
 
     ## Put it all together
     agg_df <-  state_list %>%
-        dplyr::bind_cols() %>%
+        dplyr::bind_cols()
+
+    if(!("sim" %in% colnames(agg_df))){  ## fix for dplyr 1.0.0 breaking change to bind_cols()
+      
+        agg_df <- suppressMessages(agg_df %>% dplyr::rename(sim = "sim...1"))
+    }
+
+    agg_df <- agg_df %>% 
         dplyr::select(.data$sim, dplyr::starts_with("X")) %>%
         dplyr::mutate(sim = factor(.data$sim))
     agg_df$t <- t

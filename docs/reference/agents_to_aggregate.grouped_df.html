@@ -110,6 +110,9 @@ provides the columns associated with the grouping." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
+    </li>
+    <li>
       <a href="../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -170,7 +173,7 @@ provides the columns associated with the grouping.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for grouped_df</span>
-<span class='fu'>agents_to_aggregate</span>(
+<span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(
   <span class='no'>agents</span>,
   <span class='no'>states</span>,
   <span class='kw'>death</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -228,11 +231,11 @@ classes "<code>X{i}</code>" for i in <code>0:(length(states))</code>.</p>
 <span class='no'>max_time</span> <span class='kw'>&lt;-</span> <span class='fl'>100</span>
 <span class='no'>agents_g</span> <span class='kw'>&lt;-</span> <span class='no'>hagelloch_raw</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"female"</span>, <span class='st'>"male"</span>)) <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>SEX</span>)
-<span class='no'>sir_group</span> <span class='kw'>&lt;-</span> <span class='fu'>agents_to_aggregate</span>(<span class='no'>agents_g</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
+<span class='no'>sir_group</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(<span class='no'>agents_g</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
                                  <span class='kw'>min_max_time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='no'>max_time</span>))
 <span class='no'>agents</span> <span class='kw'>&lt;-</span> <span class='no'>agents_g</span> <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>==</span> <span class='st'>"female"</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>ungroup</a></span>()
-<span class='no'>sir_group1</span> <span class='kw'>&lt;-</span> <span class='fu'>agents_to_aggregate</span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
+<span class='no'>sir_group1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(<span class='no'>agents</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>tI</span>, <span class='no'>tR</span>),
                                  <span class='kw'>min_max_time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='no'>max_time</span>))
 <span class='no'>sir_group_1</span> <span class='kw'>&lt;-</span> <span class='no'>sir_group</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>==</span> <span class='st'>"female"</span>)
 <span class='kw pkg'>assertthat</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/assertthat/man/are_equal.html'>are_equal</a></span>(<span class='no'>sir_group1</span>,

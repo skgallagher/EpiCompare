@@ -61,6 +61,7 @@ get_epimodel_icm_states <- function(data){
 #' @param epi list of matrcies from icm output
 #' @return a tibble
 extract_icm_cols <- function(nm, ii, epi){
+
     mat <- epi[[nm]]
     nm <- paste0("X", ii)
     if(tidyr_new_interface()){

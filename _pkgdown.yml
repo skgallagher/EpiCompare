@@ -67,6 +67,11 @@ reference:
 
 
 articles:
+- title: 'A longform vignette:  Hagelloch measles 1861-1862'
+  desc: A look at the epidemic data analysis pipeline with EpiCompare
+  navbar: ~
+  contents: #this order
+    - 'not-built-vignettes/hagelloch-eda'
 - title: Learning EpiCompare
   desc: Vignettes aimed at getting you started and aware of the tools available
   navbar: ~

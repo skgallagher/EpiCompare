@@ -15,3 +15,5 @@
 ^shannon_thesis/.*
 ^jss/.*
 ^skg/.*
+skg/*
+^skg$
