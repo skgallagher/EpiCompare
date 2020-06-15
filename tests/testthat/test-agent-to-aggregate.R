@@ -178,6 +178,49 @@ test_that("expanding_info", {
                                                state = as.numeric(state)))
 })
 
+test_that("distinct_time", {
+  # something interesting
+  df <- data.frame(t = 1:100, x = rep(c(1,1,2,2,3,3),
+                                      length = 100),
+                   y = rep(c(1,1,1,2,2,2,3,3,3),
+                           length = 100))
+  
+  df_filtered <- distinct_time(df, 1)
+  testthat::expect_equal(dim(df_filtered), c(67,3))                     
+  testthat::expect_equal(df_filtered, 
+                         df[!(1:100 %in% cumsum(rep(c(2,4), length = 33))),])
+  
+  df_all <- distinct_time(df, NULL)
+  testthat::expect_equal(df_all, df)
+  
+  df_x <- distinct_time(df, c(1,3))
+  testthat::expect_equal(df_x, df[1:100 %% 2 == 1,])
+  
+  df_y <- distinct_time(df, c(1,2))
+  testthat::expect_equal(df_y, df[1:100 %% 3 == 1,])
+  
+  # nothing interesting
+  df <- data.frame(t =1:100, x = rep(1:3, length = 100),
+                   y = rep(1:4, length = 100))
+  
+  df_filtered <- distinct_time(df, 1)
+  testthat::expect_equal(df_filtered, df)
+  
+  df_all <- distinct_time(df, NULL)
+  testthat::expect_equal(df_all, df)
+  
+  df_x <- distinct_time(df, c(1,3))
+  testthat::expect_equal(df_x, df)
+  
+  df_y <- distinct_time(df, c(1,2))
+  testthat::expect_equal(df_y, df)
+  
+  
+  df_single <- distinct_time(df, 1:3)
+  testthat::expect_equal(nrow(df_single), 1)
+  testthat::expect_equal(df_single, df[1,])
+})
+
 test_that("agents_to_aggregate.data.frame, data_example_s example",{
   data_example_s <- data.frame(group1 = c(.1,0),
                                group2 = c(2.1,2),
@@ -857,5 +900,46 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks, strings", {
       testthat::expect_equal(unique_rows_after_max, 1)
     }
   }
+
+})
+
+test_that("agents_to_aggregate + integer_time_expansion = FALSE -- more basic",{
+  data_example_s <- data.frame(group1 = c(.1,0),
+                               group2 = c(2.1,2),
+                               group3 = c(3.1,3))
+  
+  data_example_e <- data.frame(group1 = c(-1.1, -.1,-1),
+                               group2 = c(2.1,2.1,2),
+                               group3 = c(3.1,3.1,3))
+  
+  data_example_i <- data.frame(group1 = c(NA, -2.1, NA, -2.1, NA, -2),
+                               group2 = c(-1.1,-1.1,-.1,-.1,-1,-1),
+                               group3 = c(3.1,3.1,3.1,3.1,3,3))
+  
+  data_example_r_cont <- data.frame(group1 = c(-3.1, -3.1, NA , NA  , -3.1, -3.1, NA  , NA),
+                                    group2 = c(-2.1, -2.1,-2.1, -2.1,   NA, NA  , NA  , NA),
+                                    group3 = c(-1.1, -.1, -1.1, -.1 , -1.1, -.1 , -1.1, -.1))
+  
+  data_example_r_disc <- data.frame(group1 = c(-3, NA, -3, NA),
+                                    group2 = c(-2, -2, NA, NA),
+                                    group3 = c(-1, -1, -1, -1))
+  
+  mult <- 3
+  all_data <- rbind(data_example_s,
+                    data_example_e,
+                    data_example_i,
+                    data_example_r_cont,
+                    data_example_r_disc) %>%
+    dplyr::mutate(birth = rep(c(0,1,NA), length = 23)) * mult
+  
+  all_out <- agents_to_aggregate(agents = all_data,
+                                 birth = birth,
+                                 states = c(group1, group2, group3))
+  
+  all_out_filter <- agents_to_aggregate(agents = all_data,
+                                        birth = birth,
+                                        states = c(group1, group2, group3),
+                                        integer_time_expansion = FALSE)
+  testthat::expect_equal(all_out_filter, all_out[!(all_out$t %in% c(2,4,5,8)),])
 
 })

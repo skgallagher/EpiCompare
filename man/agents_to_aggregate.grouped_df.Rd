@@ -10,7 +10,8 @@ for grouped_data (preforms per group)}
   states,
   death = NULL,
   birth = NULL,
-  min_max_time = c(0, NA)
+  min_max_time = c(0, NA),
+  integer_time_expansion = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,11 @@ infected and recovered (respectively), we want "\code{states = c(tI, tR)}".}
 \item{min_max_time}{vector (length 2) of minimum and maximum integer time,
 the second value can be \code{NA} - and if so, we estimate maximum time from
 the data.}
+
+\item{integer_time_expansion}{boolean if every integer time point in the 
+range of \code{min_max_time} should be presented in the aggregation output.
+If \code{FALSE} (default is \code{TRUE}), then lines will only include those
+time points where}
 }
 \value{
 grouped dataset with aggregated information per group, We label

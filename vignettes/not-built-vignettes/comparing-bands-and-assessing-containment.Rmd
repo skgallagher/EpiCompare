@@ -22,7 +22,6 @@ library(EpiCompare)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-theme_set(theme_sir())
 ```
 
 ```{r echo = F, message = F, warning = F}
@@ -31,7 +30,6 @@ library(devtools)
 library(dplyr)
 library(tidyr)
 devtools::load_all()
-ggplot2::theme_set(theme_sir())
 ```
 
 # Overview
@@ -56,7 +54,8 @@ pretend_actual_data %>%
   ggplot() +
   geom_aggregate(aes(y = tI, z = tR),
                  color = "blue") +
-  coord_tern()   
+  coord_tern() +
+  theme_sir()
 ```
 ```{r}
 # another approach for the same visual
@@ -101,7 +100,8 @@ ggplot() +
   geom_aggregate(data = pretend_actual_data,
                  aes(y = tI, z = tR), color = "blue") +
   coord_tern() +
-  labs(x = "S", y = "I", z = "R") 
+  labs(x = "S", y = "I", z = "R") +
+  theme_sir()
 ```
 
 ```{r eval = F}
@@ -111,7 +111,8 @@ ggplot(df_group) +
             alpha = .1) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
   coord_tern() + 
-  labs(x = "S", y = "I", z = "R") 
+  labs(x = "S", y = "I", z = "R") +
+  theme_sir()
 ```
 
 ## How close is this model? 
@@ -139,7 +140,8 @@ ggplot() +
                        conf_level = .6, pb_type = "delta_ball",
                        grid_size = rep(50,2)) +
   geom_path(data = df_single, aes(x = S, y = I, z = R), color = "blue") +
-  coord_tern() 
+  coord_tern() +
+  theme_sir()
 ```
 
 Is it contained in the above delta ball?
@@ -199,7 +201,8 @@ ggplot() +
                            sim_group = as.numeric(sim)), alpha = .5,
                        conf_level = .9, pb_type = "delta_ball",
                        grid_size = rep(50, 2))  +
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 ```
 
 ### Second 
@@ -220,7 +223,8 @@ ggplot() +
                        fill = "red", alpha = .5,
                        conf_level = .9, pb_type = "delta_ball",
                        grid_size = rep(50, 2)) +
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 ```
 
 
@@ -239,7 +243,8 @@ ggplot() +
             aes(x = S, y = I, z = R, color = epi_model,
                 group = factor(paste(epi_model,sim))), 
                 alpha = .1)  +
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 ```
 
 ```{r eval = F}
@@ -253,7 +258,8 @@ ggplot() +
                 group = factor(paste(epi_model,sim))), 
                 alpha = .1)  +
   coord_tern() + 
-  labs(x = "S", y = "I", z = "R")
+  labs(x = "S", y = "I", z = "R") +
+  theme_sir()
 ```
 
 

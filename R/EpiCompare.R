@@ -34,7 +34,6 @@
 #' aggregate framework described above.
 #' }
 #' }
-#' @import ggtern
 #' @importFrom rlang .data
 #'
 #' @docType package
