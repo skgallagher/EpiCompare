@@ -1,5 +1,20 @@
 context("tests for agents_to_aggregate")
 
+
+test_that("checking agents_to_aggregate works for SI model",{
+  
+  agents <- data.frame(agent_id = 1:5,
+                       S = c(1, 1, 1, 1, NA),
+                       I = c(NA, NA, NA, 6, 10))
+  
+  exp_agg_df <- agents_to_aggregate(agents,
+                                    states = I)
+  
+  
+  
+  
+})
+
 test_that("check_min_max_time", {
   # correct formats
   mm_t <- c(0, 1)

@@ -111,10 +111,16 @@ check_min_max_time <- function(min_max_time){
 #' @export
 check_ordered <- function(df, states, assert_error = TRUE){
 
+    ## Note to @Ben
+    ## I return TRUE if length(states) == 1 because they should be trivially ordered
+    if(length(states) == 1){
+        return(TRUE)
+    }
+    
   if(c("tbl_df") %in% class(df)){
     df <- as.data.frame(df)
   }
-  df_select <- df[, states]
+  df_select <- df[, states]  
   K <- length(states)
 
   if(sum(is.na(df_select[, states])) > 0 & K > 1){
@@ -546,7 +552,7 @@ agents_to_aggregate.data.frame <- function(agents,
 
     change_of_state_before_birth[is.na(change_of_state_before_birth)] <- FALSE
 
-    inner <- info_only[non_na_birth,states]
+    inner <- info_only[non_na_birth,states, drop = FALSE] ## Change here
     inner[change_of_state_before_birth] <-
       matrix(rep(info_only[non_na_birth,birth], 3), ncol = 3)[
         change_of_state_before_birth
