@@ -178,7 +178,8 @@ provides the columns associated with the grouping.</p>
   <span class='no'>states</span>,
   <span class='kw'>death</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>birth</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>min_max_time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>NA</span>)
+  <span class='kw'>min_max_time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>NA</span>),
+  <span class='kw'>integer_time_expansion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -212,6 +213,13 @@ infected and recovered (respectively), we want "<code>states = c(tI, tR)</code>"
       <td><p>vector (length 2) of minimum and maximum integer time,
 the second value can be <code>NA</code> - and if so, we estimate maximum time from
 the data.</p></td>
+    </tr>
+    <tr>
+      <th>integer_time_expansion</th>
+      <td><p>boolean if every integer time point in the 
+range of <code>min_max_time</code> should be presented in the aggregation output.
+If <code>FALSE</code> (default is <code>TRUE</code>), then lines will only include those
+time points where</p></td>
     </tr>
     </table>
 

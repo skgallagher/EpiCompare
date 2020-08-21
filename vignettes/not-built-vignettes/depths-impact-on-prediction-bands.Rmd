@@ -88,14 +88,12 @@ df_all_vis <- df_all %>%
 
 
 ```{r warning = F}
-
-theme_set(theme_sir())
-
 all_curves <- ggplot(df_all_vis) +
   geom_path(aes(x = S, y = I, z = R, color = id, group = id2),
             alpha = .1) + 
   coord_tern() +
-  labs(color = "Group")
+  labs(color = "Group") +
+  theme_sir()
 
 all_curves
 ```
@@ -111,7 +109,8 @@ global_depth_pb <- all_curves +
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
                        pb_type = "delta_ball", conf_level = .6) +
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 
 global_depth_pb
 ```
@@ -178,7 +177,8 @@ df_all_ld %>%
   ggplot(aes(x = S, y = I, z = R, color = global_depth, group = id2)) +
   geom_path() +
   coord_tern() +
-  labs(title = "Global Depth", color = "global depth")
+  labs(title = "Global Depth", color = "global depth") +
+  theme_sir()
 ```
 
 ```{r}
@@ -186,7 +186,8 @@ df_all_ld %>%
   ggplot(aes(x = S, y = I, z = R, color = local_depth^2, group = id2)) +
   geom_path() +
   coord_tern() +
-  labs(title = "Local Depth", color = "(local depth)^2") 
+  labs(title = "Local Depth", color = "(local depth)^2") +
+  theme_sir()
 ```
 
 *Although currently not built in*, we can still visualize prediction band based on local depth would look like. Notice how the local depth seems to equally emphasis the centers of both mixtures in the scores and the prediction band.
@@ -200,8 +201,8 @@ local_depth_pb <- all_curves +
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
                        pb_type = "delta_ball", conf_level = 1) +
-  
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 
 grid.arrange(global_depth_pb + labs(title = "global-based prediction band"),
              local_depth_pb + labs(title = "local-based prediction band"),
@@ -257,7 +258,8 @@ df_all_pd %>%
   ggplot(aes(x = S, y = I, z = R, color = psuedo_density^2, group = id2)) +
   geom_path() +
   coord_tern() +
-  labs(title = "Psuedo Density", color = "(psuedo density)^2") 
+  labs(title = "Psuedo Density", color = "(psuedo density)^2") +
+  theme_sir()
 ```
 
 
@@ -271,8 +273,8 @@ psuedo_density_pb <- all_curves +
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
                        pb_type = "delta_ball", conf_level = 1) +
-  
-  coord_tern()
+  coord_tern() +
+  theme_sir()
 
 layout_mat <- matrix(c(rep(c(rep(1,4), rep(2, 4)),4),
                        rep(c(4,4, rep(3,4), 4,4), 4)), nrow = 8, byrow = T)

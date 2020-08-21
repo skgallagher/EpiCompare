@@ -1,54 +1,3 @@
-# Comments for Shannon:
-# # not sure about how I'm dealing with the start (t_min -1 vs t_min) in example
-# (difference between the below examples. - this may correspond to comment:
-# EpiCompare::agents_to_aggregate_SIR.data.frame statement "## Ben, I think this
-# is part of the problem...") additionally, this doesn't cost us anything in
-# the filament visualization as the data points are the same.
-#
-# # example code:
-# agents <- EpiCompare::hagelloch_raw
-# states <- c("tI", "tR")
-# death <- "tDEAD"
-# birth <- NULL
-# min_max_time <- c(0, NA)
-# b <- agents_to_aggregate(agents, states, death, birth = birth)
-# a <- EpiCompare::hagelloch_raw %>%
-# EpiCompare::fortify_agents() %>%
-# EpiCompare::agents_to_aggregate_SIR() %>%
-# as.matrix
-#
-# #look at:
-# b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#
-# # keeping in mind:
-# EpiCompare::hagelloch_raw %>% dplyr::filter(!is.na(.data$tDEAD)) %>%
-# dplyr::pull(.data$tDEAD) %>% ceiling() %>% sort
-#
-# ### example 2 of code:
-# agents <- EpiCompare::hagelloch_raw
-# # making babies
-# set.seed(5)
-# babies <- sample(nrow(agents),size = 5)
-# agents$tBIRTH <- NA
-# agents$tBIRTH[babies] <- agents$tI[babies] - 5
-# states <- c("tI", "tR")
-# death <- NULL
-# birth <- "tBIRTH"
-# min_max_time <- c(0, NA)
-#
-# b <- agents_to_aggregate(agents, states, death, birth = birth)
-# a <- EpiCompare::hagelloch_raw %>%
-# EpiCompare::fortify_agents() %>%
-# EpiCompare::agents_to_aggregate_SIR() %>%
-# as.matrix
-#
-# b[1:(nrow(b)-2),] - a[2:nrow(a),]
-#
-# agents %>% dplyr::filter(!is.na(.data$tBIRTH)) %>%
-# dplyr::pull(.data$tBIRTH) %>% ceiling() %>% sort
-
-
-
 #' min_max_time vector check
 #'
 #' this is an internal function
@@ -176,6 +125,53 @@ check_ordered <- function(df, states, assert_error = TRUE){
 }
 
 
+#' select distinct rows (relative to time)
+#' 
+#' This function is like \code{\link[dplyr]{distinct}} but it is only relative
+#' to the row ordering (it is also an internal function)  
+#'
+#' @param df data frame, which row index related to ordering of time
+#' @param ignore_idx index of columns of data frame that shouldn't be examined
+#' relative to the "distinct" decision.
+#'
+#' @return \code{df_updated} an updated data frame with only rows with new 
+#' information relative to time ordering
+#'
+#' @examples
+#' df <- data.frame(t = 1:100, x = rep(c(1,1,2,2,3,3),
+#'                                     length = 100),
+#'                  y = rep(c(1,1,1,2,2,2,3,3,3),
+#'                          length = 100))
+#' 
+#' df_filtered <- EpiCompare:::distinct_time(df, 1)
+#' dim(df_filtered) # c(67,3)                  
+#' df_filtered 
+#' # same as: 
+#' df[!(1:100 %in% cumsum(rep(c(2,4), length = 33))),]
+#' 
+distinct_time <- function(df, ignore_idx = NULL){
+  # assumes that the 't' column is the column to remove 
+  # default is that the 't' column is the first one...
+  # also assumes that data frame is ordered
+  
+  r_idx_keep <- rep(TRUE, nrow(df))
+  if (is.null(ignore_idx)){
+    for (r_idx in 2:nrow(df)){
+      if (all(df[r_idx,] == df[r_idx-1,])){
+        r_idx_keep[r_idx] <- FALSE
+      }
+    }
+  } else {
+    for (r_idx in 2:nrow(df)){
+      if (all(df[r_idx,-ignore_idx] == df[r_idx-1,-ignore_idx])){
+        r_idx_keep[r_idx] <- FALSE
+      }
+    }
+  }
+  return (df[r_idx_keep,])
+}
+
+
 #' expanding aggregate data to desirable format
 #'
 #' This internal function specifically takes a data frame the contains rows that
@@ -297,6 +293,11 @@ expanding_info <- function(df, t_min, t_max, K){
 #'   from the data. Note that if this is done relative to a \code{grouped_df}
 #'   then \code{NA} means we take the maximum from all groups and give that to
 #'   each subgroup.
+#' @param integer_time_expansion boolean if every integer time point in the 
+#' range of \code{min_max_time} should be presented in the aggregation output.
+#' If \code{FALSE} (default is \code{TRUE}), then lines will only include those
+#' time points where 
+#'
 #'
 #' @return dataset with aggregated information, we label classes \code{X\{i\}}
 #'   for i in \code{0:(length(states))}. Potentially calculated per group of a
@@ -405,7 +406,8 @@ agents_to_aggregate <- function(agents,
                                 states,
                                 death = NULL,
                                 birth = NULL,
-                                min_max_time = c(0, NA)
+                                min_max_time = c(0, NA),
+                                integer_time_expansion = TRUE
 ){
   UseMethod("agents_to_aggregate")
 }
@@ -437,6 +439,10 @@ agents_to_aggregate <- function(agents,
 #' @param min_max_time vector (length 2) of minimum and maximum integer time,
 #'   the second value can be \code{NA} - and if so, we estimate maximum time
 #'   from the data.
+#' @param integer_time_expansion boolean if every integer time point in the 
+#' range of \code{min_max_time} should be presented in the aggregation output.
+#' If \code{FALSE} (default is \code{TRUE}), then lines will only include those
+#' time points where 
 #'
 #' @return dataset with aggregated information, We label classes "\code{X\{i\}}"
 #'   for i in \code{0:(length(states))}.
@@ -476,8 +482,8 @@ agents_to_aggregate.data.frame <- function(agents,
                                            states,
                                            death = NULL,
                                            birth = NULL,
-                                           min_max_time = c(0, NA)
-                                           ){
+                                           min_max_time = c(0, NA),
+                                           integer_time_expansion = TRUE){
   # columns states - converting to strings ------------
   # this code mirrors tidyr::nest's and tidyr::pivot_wider code
 
@@ -595,7 +601,7 @@ agents_to_aggregate.data.frame <- function(agents,
     info_only_int[, only_states] <- info_only_int_na
   }
 
-  # getting new counts of state membership (not 0) --------------------
+  # getting new counts of state membership (not state 0) --------------------
   if (tidyr_new_interface()){
     info_only_into_long <- info_only_int[,states] %>%
       tidyr::pivot_longer(cols = dplyr::everything(),
@@ -617,8 +623,12 @@ agents_to_aggregate.data.frame <- function(agents,
     dplyr::group_by(.data$state, .data$t) %>%
     dplyr::summarize(count = dplyr::n())
 
+  # expand data to include times with no change in counts to a new state ------
+  # for one_plus states only
+  #if (integer_time_expansion){
   one_plus_state_count <- expanding_info(one_plus_state_count, t_min = t_min,
                                          t_max = t_max, K = K)
+  #}
 
   # getting new counts of state membership for 0 class --------------------
 
@@ -627,7 +637,7 @@ agents_to_aggregate.data.frame <- function(agents,
                                  t = t_min:t_max,
                                  count = c(init_0_cum, rep(0, t_max-t_min)))
 
-  # applying births to state member counts ----------------------
+  # applying births to 0 state member counts ----------------------
 
   if(!is.null(birth)){
     if(sum(!is.na(info_only_int[, birth]))){
@@ -649,6 +659,14 @@ agents_to_aggregate.data.frame <- function(agents,
 
     }
   }
+  
+  # correct if not including times with no change in counts to a zero state ----
+  # for zero_state only 
+  # if (!integer_time_expansion){
+  #   zero_state_count <- zero_state_count %>% 
+  #     dplyr::filter(count != 0)
+  # }
+  
 
   # population counts from cummulative counts -------------------
   state_count <- one_plus_state_count %>% as.data.frame %>%
@@ -689,6 +707,15 @@ agents_to_aggregate.data.frame <- function(agents,
       dplyr::filter(.data$t >= t_min) %>%
       dplyr::select(.data$t, dplyr::one_of(paste0("X", 0:K)))
     }
+
+  
+  cum_state_count <- cum_state_count %>% 
+    dplyr::mutate(t = as.numeric(.data$t)) %>%
+    dplyr::arrange(t)
+    
+  if (!integer_time_expansion) {
+    cum_state_count <- distinct_time(cum_state_count, ignore_idx = 1)
+  }
 
 
 
@@ -744,7 +771,11 @@ agents_to_aggregate.data.frame <- function(agents,
 #' @param min_max_time vector (length 2) of minimum and maximum integer time,
 #' the second value can be \code{NA} - and if so, we estimate maximum time from
 #' the data.
-#'
+#' @param integer_time_expansion boolean if every integer time point in the 
+#' range of \code{min_max_time} should be presented in the aggregation output.
+#' If \code{FALSE} (default is \code{TRUE}), then lines will only include those
+#' time points where 
+#' 
 #' @return grouped dataset with aggregated information per group, We label
 #' classes "\code{X\{i\}}" for i in \code{0:(length(states))}.
 #' @export
@@ -770,7 +801,8 @@ agents_to_aggregate.grouped_df <- function(agents,
                                            states,
                                            death = NULL,
                                            birth = NULL,
-                                           min_max_time = c(0, NA)
+                                           min_max_time = c(0, NA),
+                                           integer_time_expansion = TRUE
                                            ){
 
   # states ---------
@@ -823,7 +855,9 @@ agents_to_aggregate.grouped_df <- function(agents,
                                         states = !!!dplyr::enquos(states),
                                         death = !!dplyr::enquo(death),
                                         birth = !!dplyr::enquo(birth),
-                                        min_max_time = min_max_time_all)) %>%
+                                        min_max_time = min_max_time_all,
+                                        integer_time_expansion = integer_time_expansion)
+                    ) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(cols = c(.data$update)) # only change
   } else {
@@ -834,7 +868,9 @@ agents_to_aggregate.grouped_df <- function(agents,
                                         states = !!!dplyr::enquos(states),
                                         death = !!dplyr::enquo(death),
                                         birth = !!dplyr::enquo(birth),
-                                        min_max_time = min_max_time_all)) %>%
+                                        min_max_time = min_max_time_all,
+                                        integer_time_expansion = integer_time_expansion)
+      ) %>%
       dplyr::select(-.data$data) %>%
       tidyr::unnest(.drop = FALSE)
 

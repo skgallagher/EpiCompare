@@ -1,4 +1,4 @@
-pandoc: 2.9.2.1
+pandoc: 2.3.1
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
@@ -11,5 +11,5 @@ articles:
   example-epimodel: not-built-vignettes/example-epimodel.html
   hagelloch-eda: not-built-vignettes/hagelloch-eda.html
   ternary-plots-explained: not-built-vignettes/ternary-plots-explained.html
-last_built: 2020-06-07T18:39Z
+last_built: 2020-06-15T00:38Z
 

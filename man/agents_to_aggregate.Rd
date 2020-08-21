@@ -9,7 +9,8 @@ agents_to_aggregate(
   states,
   death = NULL,
   birth = NULL,
-  min_max_time = c(0, NA)
+  min_max_time = c(0, NA),
+  integer_time_expansion = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,11 @@ the second value can be \code{NA} - and if so, we estimate maximum time
 from the data. Note that if this is done relative to a \code{grouped_df}
 then \code{NA} means we take the maximum from all groups and give that to
 each subgroup.}
+
+\item{integer_time_expansion}{boolean if every integer time point in the 
+range of \code{min_max_time} should be presented in the aggregation output.
+If \code{FALSE} (default is \code{TRUE}), then lines will only include those
+time points where}
 }
 \value{
 dataset with aggregated information, we label classes \code{X\{i\}}
