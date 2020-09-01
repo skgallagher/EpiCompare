@@ -64,6 +64,12 @@
       <a href="articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
     </li>
     <li>
+      <a href="articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
+    </li>
+    <li>
+      <a href="articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
+    </li>
+    <li>
       <a href="articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -107,9 +113,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="epicompare" class="section level1">
+<div id="epicompare-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#epicompare" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="EpiCompare" width="120"></a>
+<a href="#epicompare-" class="anchor"></a>EpiCompare <a href="https://skgallagher.github.io/EpiCompare/"><img src="reference/figures/logo.png" align="right" alt="EpiCompare" width="120"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -151,10 +157,10 @@
 <p>The following example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>)) +
-    <span class="fu"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() +
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>() +
     <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Town Analysis"</span>) +
-    <span class="fu"><a href="reference/theme_sir.html">theme_sir</a></span>()
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 <p>Previous work has suggested that the class (<code>CL</code>) the student was in effected how the experienced the outbreak. The below figure shows differences in the outbreak relative to this grouping.</p>
@@ -171,12 +177,12 @@
 
 <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">CL</span>)) +
-       <span class="fu"><a href="reference/stat_aggregate.html">geom_aggregate</a></span>() +
+       <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>() +
        <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>,
             <span class="kw">color</span> <span class="kw">=</span> <span class="st">"School Grade"</span>,
             <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Town analysis by grade"</span>) +
-       <span class="fu"><a href="reference/theme_sir.html">theme_sir</a></span>()
+       <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
 <div id="simulate-sir-data" class="section level3">
@@ -188,21 +194,21 @@
 <span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="fl">.03</span>
 <span class="no">init_SIR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
                            <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="no">n_time_steps</span>,
                            <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                            <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="no">init_SIR</span>)
 
 <span class="no">df_groups</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 <span class="no">df_groups</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
-    <span class="fu"><a href="reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                          <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">sim</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.1</span>) +
     <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
-    <span class="fu"><a href="reference/theme_sir.html">theme_sir</a></span>()
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>()
 <span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span>
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
@@ -217,13 +223,12 @@
 <ol>
 <li><p><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></p></li>
 <li><p><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></p></li>
-<li>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/pkg/ggtern/man">library(ggtern); EpiCompare:::update_approved_layers()</a></code>
-</li>
+<li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/pkg/ggtern/man">library(ggtern);     EpiCompare:::update_approved_layers()</a></code></p></li>
 </ol>
 </li>
 <li>
-<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
-<li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
+<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color =     var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1,     group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
+<li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">

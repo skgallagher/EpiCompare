@@ -64,6 +64,12 @@
       <a href="../../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
     </li>
     <li>
+      <a href="../../articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
+    </li>
+    <li>
+      <a href="../../articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
+    </li>
+    <li>
       <a href="../../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -105,7 +111,7 @@
 
       
 
-      </header><script src="example-covid-19-us_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="example-covid-19-us_files/header-attrs-2.3/header-attrs.js"></script><script src="example-covid-19-us_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>COVID-19 and EpiCompare</h1>
@@ -412,7 +418,7 @@ Minnesota
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">data_grouped</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">state</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">t</span> <span class="kw">=</span> <span class="no">date</span>, <span class="kw">N</span> <span class="kw">=</span> <span class="no">population</span>)
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/cases_to_SIR.html">cases_to_SIR</a></span>(<span class="no">data_grouped</span>, <span class="kw">par</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span> <span class="kw">=</span> <span class="fl">1</span>/<span class="fl">14</span>)) <span class="kw">%&gt;%</span>
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/cases_to_SIR.html">cases_to_SIR</a></span>(<span class="no">data_grouped</span>, <span class="kw">par</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"gamma"</span> <span class="kw">=</span> <span class="fl">1</span>/<span class="fl">14</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 
@@ -432,9 +438,9 @@ Minnesota
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 <div id="ref-dong2020">
-<p>Dong, Ensheng, Hongru Du, and Lauren Gardner. 2020. “An Interactive Web-Based Dashboard to Track Covid-19 in Real Time.” <em>The Lancet Infectious Diseases</em>. Elsevier.</p>
+<p>Dong, Ensheng, Hongru Du, and Lauren Gardner. 2020. “An Interactive Web-Based Dashboard to Track Covid-19 in Real Time.” <em>The Lancet Infectious Diseases</em>.</p>
 </div>
 <div id="ref-covid19-kaggle-r">
 <p>Guidotti, Emanuele. n.d. “Coronavirus Covid-19 (2019-nCoV) Epidemic Datasets.” Kaggle. <a href="https://doi.org/10.34740/KAGGLE/DS/574488">https://doi.org/10.34740/KAGGLE/DS/574488</a>.</p>

@@ -106,6 +106,12 @@
       <a href="../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
     </li>
     <li>
+      <a href="../articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
+    </li>
+    <li>
+      <a href="../articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
+    </li>
+    <li>
       <a href="../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -160,7 +166,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for grouped_df</span>
-<span class='fu'><a href='cases_to_SIR.html'>cases_to_SIR</a></span>(<span class='no'>data</span>, <span class='no'>par</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"chain-binomial"</span>)</pre>
+<span class='fu'>cases_to_SIR</span>(<span class='no'>data</span>, <span class='no'>par</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"chain-binomial"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,7 +204,7 @@
     <pre class="examples"><div class='input'>  <span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>t</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>4</span>,
                     <span class='kw'>confirmed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>9</span>, <span class='fl'>9</span>),
                     <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>10</span>)
-   <span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='cases_to_SIR.html'>cases_to_SIR</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>df</span>,
+   <span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'>cases_to_SIR</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>df</span>,
                        <span class='kw'>par</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

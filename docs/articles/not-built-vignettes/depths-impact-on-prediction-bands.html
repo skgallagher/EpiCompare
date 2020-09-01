@@ -64,6 +64,12 @@
       <a href="../../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
     </li>
     <li>
+      <a href="../../articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
+    </li>
+    <li>
+      <a href="../../articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
+    </li>
+    <li>
       <a href="../../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -105,7 +111,7 @@
 
       
 
-      </header><script src="depths-impact-on-prediction-bands_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="depths-impact-on-prediction-bands_files/jquery-1.12.4/jquery.min.js"></script><link href="depths-impact-on-prediction-bands_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+      </header><script src="depths-impact-on-prediction-bands_files/header-attrs-2.3/header-attrs.js"></script><script src="depths-impact-on-prediction-bands_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="depths-impact-on-prediction-bands_files/jquery-1.12.4/jquery.min.js"></script><link href="depths-impact-on-prediction-bands_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
 <script src="depths-impact-on-prediction-bands_files/datatables-binding-0.13/datatables.js"></script><link href="depths-impact-on-prediction-bands_files/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="depths-impact-on-prediction-bands_files/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="depths-impact-on-prediction-bands_files/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="depths-impact-on-prediction-bands_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
@@ -145,13 +151,13 @@
 <span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fl">.1</span>
 <span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="fl">.03</span>
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu">simulate_SIR_agents</span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
                            <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="fl">100</span>,
                            <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                            <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>))
 
 <span class="no">df_group</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>),
+  <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">100</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)
 
@@ -160,13 +166,13 @@
 <span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fl">.15</span>
 <span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="fl">.05</span>
 
-<span class="no">out2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
+<span class="no">out2</span> <span class="kw">&lt;-</span> <span class="fu">simulate_SIR_agents</span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
                             <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="fl">100</span>,
                             <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                             <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>))
 
 <span class="no">df_group2</span> <span class="kw">&lt;-</span> <span class="no">out2</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>),
+  <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">100</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)
 
@@ -181,7 +187,7 @@
             <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.1</span>) +
   <span class="fu">coord_tern</span>() +
   <span class="fu">labs</span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"Group"</span>) +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
 <span class="no">all_curves</span></pre></body></html></div>
@@ -192,12 +198,12 @@
 <a href="#creation-of-prediction-bands" class="anchor"></a>Creation of prediction bands</h1>
 <p>Our current framework through <code>geom_prediction_band</code> uses a global distance-based depth based on work from Geenens &amp; Nieto-Reyes’s distance depth (directly explorably with the function <code>distance_depth_function</code>) <span class="citation">(Geenens and Nieto-Reyes 2017)</span>. Below you’ll see that, the visualized prediction band using this global depth doesn’t actually capture the area of the simplex we might want - specifically it seems to like the interior between these two groups a little bit more than what you and I might want. This is largely associated with the global nature of depth.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">global_depth_pb</span> <span class="kw">&lt;-</span> <span class="no">all_curves</span> +
-  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_vis</span>,
+  <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_vis</span>,
                        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                           <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">id2</span>),
                        <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>, <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.6</span>) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
 <span class="no">global_depth_pb</span></pre></body></html></div>
@@ -214,13 +220,13 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/dist_matrix_innersq_direction.html">dist_matrix_innersq_direction</a></span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">2</span>:<span class="fl">4</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+  <span class="fu">dist_matrix_innersq_direction</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">2</span>:<span class="fl">4</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">0</span>:<span class="fl">10</span>/<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="no">t</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">check.names</span> <span class="kw">=</span> <span class="no">F</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">DT</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span>(<span class="kw">options</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">dom</span> <span class="kw">=</span> <span class="st">'t'</span>))</pre></body></html></div>
-<div id="htmlwidget-d0e187d878fd2d396424" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d0e187d878fd2d396424">{"x":{"filter":"none","data":[["1"],[0],[76305.2],[140003.2],[266901.4],[565044.800000001],[2900321],[5382463.6],[6990497.4],[8408332.4],[9914220.2],[22485268]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
+<div id="htmlwidget-8cd3945ce1bd44e80d2a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8cd3945ce1bd44e80d2a">{"x":{"filter":"none","data":[["1"],[0],[72869.4],[129272],[219721.6],[414130.8],[2060079],[5206239.6],[6376866.6],[7364360.8],[8741839.6],[15531376]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0%<\/th>\n      <th>10%<\/th>\n      <th>20%<\/th>\n      <th>30%<\/th>\n      <th>40%<\/th>\n      <th>50%<\/th>\n      <th>60%<\/th>\n      <th>70%<\/th>\n      <th>80%<\/th>\n      <th>90%<\/th>\n      <th>100%<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><html><body><pre class="r">
 <span class="no">tau</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>,<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.3</span>)[<span class="st">"30%"</span>]
 
 <span class="no">dist_mat</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">dist</span> <span class="kw">=</span> <span class="no">.</span>) <span class="kw">%&gt;%</span>
@@ -237,18 +243,18 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/filament_distance_depth.html">filament_distance_depth</a></span>(<span class="kw">depth_func</span> <span class="kw">=</span>
+  <span class="fu">filament_distance_depth</span>(<span class="kw">depth_func</span> <span class="kw">=</span>
     <span class="kw">function</span>(<span class="no">dist_mat</span>) {
-      <span class="fu"><a href="../../reference/local_distance_depth_function.html">local_distance_depth_function</a></span>(<span class="no">dist_mat</span>, <span class="kw">tau</span> <span class="kw">=</span> <span class="no">tau</span>)
+      <span class="fu">local_distance_depth_function</span>(<span class="no">dist_mat</span>, <span class="kw">tau</span> <span class="kw">=</span> <span class="no">tau</span>)
       }, <span class="kw">data_columns</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>,<span class="st">"I"</span>,<span class="st">"R"</span>))
 
 <span class="no">global_depth</span> <span class="kw">&lt;-</span> <span class="no">df_all</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/filament_distance_depth.html">filament_distance_depth</a></span>(<span class="kw">depth_func</span> <span class="kw">=</span>
+  <span class="fu">filament_distance_depth</span>(<span class="kw">depth_func</span> <span class="kw">=</span>
     <span class="kw">function</span>(<span class="no">dist_mat</span>) {
-      <span class="fu"><a href="../../reference/distance_depth_function.html">distance_depth_function</a></span>(<span class="no">dist_mat</span>)
+      <span class="fu">distance_depth_function</span>(<span class="no">dist_mat</span>)
       }, <span class="kw">data_columns</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>,<span class="st">"I"</span>,<span class="st">"R"</span>))
 
 <span class="no">df_all_ld</span> <span class="kw">&lt;-</span> <span class="no">df_all_vis</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
@@ -263,7 +269,7 @@
   <span class="fu">geom_path</span>() +
   <span class="fu">coord_tern</span>() +
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Global Depth"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"global depth"</span>) +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">df_all_ld</span> <span class="kw">%&gt;%</span>
@@ -271,7 +277,7 @@
   <span class="fu">geom_path</span>() +
   <span class="fu">coord_tern</span>() +
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Local Depth"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"(local depth)^2"</span>) +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p><em>Although currently not built in</em>, we can still visualize prediction band based on local depth would look like. Notice how the local depth seems to equally emphasis the centers of both mixtures in the scores and the prediction band.</p>
@@ -279,12 +285,12 @@
 <span class="no">local_cutoff</span> <span class="kw">&lt;-</span> <span class="no">df_all_ld</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="no">local_depth</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.4</span>)
 
 <span class="no">local_depth_pb</span> <span class="kw">&lt;-</span> <span class="no">all_curves</span> +
-  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_ld</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">local_depth</span> <span class="kw">&gt;</span> <span class="no">local_cutoff</span>),
+  <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_ld</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">local_depth</span> <span class="kw">&gt;</span> <span class="no">local_cutoff</span>),
                        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                           <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">id2</span>),
                        <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>, <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">1</span>) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
 <span class="fu">grid.arrange</span>(<span class="no">global_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"global-based prediction band"</span>),
@@ -301,7 +307,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/dist_matrix_innersq_direction.html">dist_matrix_innersq_direction</a></span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">2</span>:<span class="fl">4</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+  <span class="fu">dist_matrix_innersq_direction</span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">2</span>:<span class="fl">4</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 
 <span class="no">psuedo_density_function</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">dist_mat</span>, <span class="no">bw</span>){
@@ -313,7 +319,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">id</span>, <span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/filament_distance_depth.html">filament_distance_depth</a></span>(<span class="kw">depth_func</span> <span class="kw">=</span>
+  <span class="fu">filament_distance_depth</span>(<span class="kw">depth_func</span> <span class="kw">=</span>
     <span class="kw">function</span>(<span class="no">dist_mat</span>) {
       <span class="fu">psuedo_density_function</span>(<span class="no">dist_mat</span>, <span class="kw">bw</span> <span class="kw">=</span> <span class="no">tau</span>)
       }, <span class="kw">data_columns</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>,<span class="st">"I"</span>,<span class="st">"R"</span>))
@@ -336,14 +342,14 @@
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r">
 <span class="no">psuedo_density_data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span>()
-<span class="co">#&gt; [1] 0.002302895 0.012932965</span>
+<span class="co">#&gt; [1] 0.00165113 0.01406961</span>
 
 <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span>
   <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">psuedo_density</span>^<span class="fl">2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">id2</span>)) +
   <span class="fu">geom_path</span>() +
   <span class="fu">coord_tern</span>() +
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Psuedo Density"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"(psuedo density)^2"</span>) +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-2.png" width="700"></p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">local_cutoff_pd</span> <span class="kw">&lt;-</span> <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span>(<span class="no">psuedo_density</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.4</span>)
@@ -351,12 +357,12 @@
 
 
 <span class="no">psuedo_density_pb</span> <span class="kw">&lt;-</span> <span class="no">all_curves</span> +
-  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">psuedo_density</span> <span class="kw">&gt;</span> <span class="no">local_cutoff_pd</span>),
+  <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">psuedo_density</span> <span class="kw">&gt;</span> <span class="no">local_cutoff_pd</span>),
                        <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                           <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">id2</span>),
                        <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>, <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">1</span>) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+  <span class="fu">theme_sir</span>()
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
 <span class="no">layout_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>,<span class="fl">4</span>), <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">2</span>, <span class="fl">4</span>)),<span class="fl">4</span>),
@@ -372,9 +378,9 @@
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 <div id="ref-Agostinelli2011">
-<p>Agostinelli, Claudio, and Mario Romanazzi. 2011. “Local depth.” <em>Journal of Statistical Planning and Inference</em> 141 (2). Elsevier B.V.: 817–30. <a href="https://doi.org/10.1016/j.jspi.2010.08.001">https://doi.org/10.1016/j.jspi.2010.08.001</a>.</p>
+<p>Agostinelli, Claudio, and Mario Romanazzi. 2011. “Local depth.” <em>Journal of Statistical Planning and Inference</em> 141 (2): 817–30. <a href="https://doi.org/10.1016/j.jspi.2010.08.001">https://doi.org/10.1016/j.jspi.2010.08.001</a>.</p>
 </div>
 <div id="ref-Ciollaro2014">
 <p>Ciollaro, Mattia, Christopher Genovese, Jing Lei, and Larry Wasserman. 2014. “The functional mean-shift algorithm for mode hunting and clustering in infinite dimensions” 1 (Figure 2). <a href="http://arxiv.org/abs/1408.1187">http://arxiv.org/abs/1408.1187</a>.</p>

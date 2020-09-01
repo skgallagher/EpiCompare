@@ -106,6 +106,12 @@
       <a href="../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
     </li>
     <li>
+      <a href="../articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
+    </li>
+    <li>
+      <a href="../articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
+    </li>
+    <li>
       <a href="../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -197,7 +203,7 @@ string or a promisary symbol</p></td>
 <span class='kw'>E</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>),
 <span class='kw'>I</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>),
 <span class='kw'>R</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>20</span>))
-<span class='no'>seir_xyz</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='SEIR_to_XYZ.html'>SEIR_to_XYZ</a></span>(<span class='no'>seir</span>)
+<span class='no'>seir_xyz</span> <span class='kw'>&lt;-</span> <span class='fu'>SEIR_to_XYZ</span>(<span class='no'>seir</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>seir_xyz</span>)</div><div class='output co'>#&gt;   t  t  l  r  f     x         y          z
 #&gt; 1 0 90  0 10  0 0.055 0.7794229 0.00000000
 #&gt; 2 1 80 10 10  0 0.005 0.6928203 0.00000000

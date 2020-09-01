@@ -72,6 +72,8 @@ articles:
   navbar: ~
   contents: #this order
     - 'not-built-vignettes/hagelloch-eda'
+    - 'not-built-vignettes/hagelloch-mods'
+    - 'not-built-vignettes/hagelloch-sir-fit'
 - title: Learning EpiCompare
   desc: Vignettes aimed at getting you started and aware of the tools available
   navbar: ~

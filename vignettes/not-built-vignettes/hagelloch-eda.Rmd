@@ -32,9 +32,15 @@ In this series of vignettes, we will demonstrate epidemic analysis pipeline from
 
 ## Hagelloch series vignettes
 
-[Hagelloch 1 Pre-processing and EDA]()
+**[Hagelloch 1 Pre-processing and EDA](hagelloch-eda.html)**
 
-[Hagelloch 2]()
+[Hagelloch 2.1 Modeling and Simulation: the SIR model](hagelloch-mods.html)
+
+[Hagelloch 2.2 Modeling and Simulation: fitting a SIR model](hagelloch-sir-fit.html)
+
+[Hagelloch 2.3 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)
+
+[Hagelloch 2.4 Modeling and Simulation with other packages](hagelloch-other-mods.html)
 
 ## Goals in this vignette
 
@@ -128,7 +134,7 @@ ggplot2::ggplot(aes(y = new_id, col = CL))+
   labs(x = "Date",
        y = "Child ID",
        title = "Infection time of children",
-       subtitle = "Colored by household ID (with recycled colors)") +
+       subtitle = "Colored by school grade range") +
   viridis::scale_color_viridis(discrete = TRUE, end = .8)
 ```
 
