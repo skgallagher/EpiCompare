@@ -34,11 +34,14 @@ devtools::load_all()
 
 # Overview
 
+<details>
+<summary>Unfold </summary>
 This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.
 
 To  motivate these tools we're actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we've generated a `pretend_actual_data`-set and a set of simulations. 
 
 Look at this beautify pretend data. A good peak. We're able to use `geom_aggregate` on our data (though we also could have used `agents_to_aggregate` + `geom_path`).
+</details>
 
 ```{r}
 set.seed(1)

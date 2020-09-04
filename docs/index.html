@@ -61,15 +61,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
-    </li>
-    <li>
-      <a href="articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
-    </li>
-    <li>
-      <a href="articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
-    </li>
-    <li>
       <a href="articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -223,11 +214,11 @@
 <ol>
 <li><p><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></p></li>
 <li><p><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></p></li>
-<li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/pkg/ggtern/man">library(ggtern);     EpiCompare:::update_approved_layers()</a></code></p></li>
+<li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/pkg/ggtern/man">library(ggtern); EpiCompare:::update_approved_layers()</a></code></p></li>
 </ol>
 </li>
 <li>
-<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color =     var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1,     group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
+<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
 <li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
 </ol>
 </div>

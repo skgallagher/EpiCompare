@@ -1,17 +1,6 @@
-pandoc: 2.10.1
+pandoc: 2.7.3
 pkgdown: 1.5.1
 pkgdown_sha: ~
-articles:
-  getting-started: getting-started.html
-  Comparing-Depth-and-Density: not-built-vignettes/Comparing-Depth-and-Density.html
-  basic-abm: not-built-vignettes/basic-abm.html
-  comparing-bands-and-assessing-containment: not-built-vignettes/comparing-bands-and-assessing-containment.html
-  depths-impact-on-prediction-bands: not-built-vignettes/depths-impact-on-prediction-bands.html
-  example-covid-19-us: not-built-vignettes/example-covid-19-us.html
-  example-epimodel: not-built-vignettes/example-epimodel.html
-  hagelloch-eda: not-built-vignettes/hagelloch-eda.html
-  hagelloch-mods: not-built-vignettes/hagelloch-mods.html
-  hagelloch-sir-fit: not-built-vignettes/hagelloch-sir-fit.html
-  ternary-plots-explained: not-built-vignettes/ternary-plots-explained.html
-last_built: 2020-09-01T19:28Z
+articles: []
+last_built: 2020-09-04T16:25Z
 

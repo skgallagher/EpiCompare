@@ -61,15 +61,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/not-built-vignettes/hagelloch-eda.html">Hagelloch Measles -- Pre-processing and EDA</a>
-    </li>
-    <li>
-      <a href="../../articles/not-built-vignettes/hagelloch-mods.html">Hagelloch Measles -- Modeling and Simulation</a>
-    </li>
-    <li>
-      <a href="../../articles/not-built-vignettes/hagelloch-sir-fit.html">Hagelloch Measles -- Fitting the deterministic, continuous time SIR model</a>
-    </li>
-    <li>
       <a href="../../articles/getting-started.html">Getting started</a>
     </li>
     <li>
@@ -111,7 +102,7 @@
 
       
 
-      </header><script src="comparing-bands-and-assessing-containment_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Comparing Models (to Models) and Epidemics (to Models)</h1>
@@ -135,10 +126,10 @@
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.</p>
+<details><p><summary>Unfold </summary> This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.</p>
 <p>To motivate these tools we’re actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we’ve generated a <code>pretend_actual_data</code>-set and a set of simulations.</p>
-<p>Look at this beautify pretend data. A good peak. We’re able to use <code>geom_aggregate</code> on our data (though we also could have used <code>agents_to_aggregate</code> + <code>geom_path</code>).</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
+Look at this beautify pretend data. A good peak. We’re able to use <code>geom_aggregate</code> on our data (though we also could have used <code>agents_to_aggregate</code> + <code>geom_path</code>).
+</details><div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">pretend_actual_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(
                           <span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">1</span>,
                           <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="fl">1000</span>,

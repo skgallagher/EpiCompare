@@ -67,13 +67,6 @@ reference:
 
 
 articles:
-- title: 'A longform vignette:  Hagelloch measles 1861-1862'
-  desc: A look at the epidemic data analysis pipeline with EpiCompare
-  navbar: ~
-  contents: #this order
-    - 'not-built-vignettes/hagelloch-eda'
-    - 'not-built-vignettes/hagelloch-mods'
-    - 'not-built-vignettes/hagelloch-sir-fit'
 - title: Learning EpiCompare
   desc: Vignettes aimed at getting you started and aware of the tools available
   navbar: ~
@@ -84,6 +77,12 @@ articles:
   - 'not-built-vignettes/depths-impact-on-prediction-bands'
   - 'not-built-vignettes/example-epimodel'
   - 'not-built-vignettes/basic-abm'
+- title: 'A longform vignette:  Hagelloch measles 1861-1862'
+  desc: A look at the epidemic data analysis pipeline with EpiCompare
+  contents: #this order
+    - 'not-built-vignettes/hagelloch-eda'
+    - 'not-built-vignettes/hagelloch-mods'
+    - 'not-built-vignettes/hagelloch-sir-fit'
 - title: Data examples
   desc: Vignettes that take a dive into different datasets
   contents:

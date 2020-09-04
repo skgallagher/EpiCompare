@@ -31,7 +31,6 @@ library(dplyr)
 library(tidyr)
 library(ggtern)
 library(purrr)
-#theme_set(theme_minimal())
 ```
 
 # Introduction to Ternary plots
@@ -51,7 +50,7 @@ In many epidemic models, even beyond SIR models (e.g. SEIR), examining the follo
 Our ternary plots are a specific case where \(p\) is equal to 3. In 3d the unit simplex actually looks like the following:
 
 <center>
-```{r echo = F, message = F, warning = F}
+```{r echo = F, message = F, warning = F, eval = F}
 library(plotly)
 
 mult <- 1.5
@@ -77,6 +76,22 @@ fig <- plot_ly() %>%
             line = list(width = 6, color = "black")) 
   
 fig
+```
+
+```{r echo = F}
+#### this line was run once off-line in the console
+# htmlwidgets::saveWidget(fig, file = "man/figures/3d_simplex.html",
+#                         selfcontained=TRUE, 
+#                         libdir = "man/figures/not_a_real_directory_name")
+
+htmltools::tags$iframe(
+  src = "../../reference/figures/3d_simplex.html",
+  scrolling = "no", 
+  seamless = "seamless",
+  frameBorder = "0",
+  width="100%", 
+  height="400"
+)
 ```
 </center>
 
@@ -139,12 +154,12 @@ ggplot(data) +
 ```{r eval = F, echo = F}
 #```{r x-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005}
 walk(x_growth_plots, print)
-# note the below gif needs to be manually saved for the document...
+# note the below gif needs to be manually to `man/figures/` to be used
 ```
 
 ```{asis}
 <center>
-![](https://benjaminleroy.github.io/documents/epicompare_gif/x_vis.gif)
+![](../../reference/figures/x_vis.gif)
 </center>
 ```
 
@@ -192,13 +207,13 @@ all_growth_plots <- lapply(1-seq(0,1, by = .01), function(cut){
 ```{r eval = F, echo = F}
 #```{r all-stretch, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval = .005, echo = F,  fig.width= 7}
 walk(all_growth_plots, function(x) grid.arrange(grobs = x, nrow = 1, top = "Grey represents:"))
-# note the below gif needs to be manually saved for the document...
+# note the below gif needs to be manually to `man/figures/` to be used
 ```
 
 
 ```{asis}
 <center>
-![](https://benjaminleroy.github.io/documents/epicompare_gif/all_vis.gif)
+![](../../reference/figures/all_vis.gif)
 </center>
 ```
 
