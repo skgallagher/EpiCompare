@@ -2,9 +2,9 @@
 
 \subsection{Motivation through $R_0$}
 
-$R_0$, the initial reproduction number, has been called the ``most important quantity in epdiemiology'' \citep[\ben{are you ok being cited here?}][]{Gallagher2020}. To see the importance of $R_0$, one need only read the newspaper \citep{Fisher2020} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{Aronson2020}. $R_0$ is also, maybe, the most famous \textit{time-free} numerical summary of an epidemic, and is commonly associated with the Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework, composed of data and statistical models where individuals pass from Susceptible to Infectious to Recovered states is a common, if not the most common, modeling framework in infectious disease epidemiology (seen in examples of recent published works in \cite{FILL IN}).
+$R_0$, the initial reproduction number, has been called the ``most important quantity in epdiemiology'' \citep[][]{Gallagher2020}. To see the importance of $R_0$, one need only read the newspaper \citep{Fisher2020} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{Aronson2020}. $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, and is commonly associated with the Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework, composed of data and statistical models where individuals pass from Susceptible to Infectious to Recovered states is a common, if not the most common, modeling framework in infectious disease epidemiology (seen in examples of recent published works in \cite{FILL IN}).
 
-In regards to traditional $X$ vs. time plots, $R_0$ is difficult to visualize. For example, in a SIR simulation with two models have the same value of $R_0$, one can see in Fig. \ref{fig:different-scales-standard} that there is no way of knowing that from looking at the graph.
+In regards to traditional $X$ vs. time plots, $R_0$ is difficult to visualize. For example, in a SIR simulation with two models have the same value of $R_0$, one can see in Fig. \ref{fig:different-scales-standard} that there is no way of knowing that from looking at the graph (this figure will be commented on more below).
 
 <<echo = F>>=
 # \@Shannon: Make this figure reproducible here plz
@@ -15,6 +15,7 @@ In regards to traditional $X$ vs. time plots, $R_0$ is difficult to visualize. F
 %% Code to reproduce is in inst/paper_figs/different-time-scales.R
     \centering
     \includegraphics[width = .5\textwidth]{images/diff-time-standard.pdf}%\includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.\ben{We probably need to define $\beta/\gamma$.}}
+    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.\ben{We probably need to define $\beta/\gamma$.}
+\ben{NEW: recommendation - make this plot actually have 3 examples (the current one), one where we have an affine transformation of the time scale, and one with the halleolof data.}}
     \label{fig:different-scales-standard}
 \end{figure}

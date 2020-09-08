@@ -79,15 +79,16 @@ We do something, possibly useful
 }
 
 \begin{document}
+\SweaveOpts{concordance=FALSE}
 
 \SweaveInput{chapters/ch1-intro-v2.Rnw}
 
 %\SweaveInput{chapters/ch1-intro.Rnw}
 
-\section{Literature review}
+\section{Literature review} \label{sec:lit}
 \SweaveInput{chapters/ch2-lit-review.Rnw}
 
-\section{Reasons and tools for time-free analysis} \label{sec:time-free}
+\section{Reasons and tools for time-invariant analysis} \label{sec:time-invariant}
 \SweaveInput{chapters/ch3-time-free.Rnw}
 
 %\SweaveInput{chapters/ch2-vis.Rnw} % this file still exists

@@ -17,3 +17,7 @@
 \end{enumerate}
 }
 
+---
+
+\ben{Maybe "drop" the "In practice" section and just use Hagollogh's full pipeline in the presentation?}
+

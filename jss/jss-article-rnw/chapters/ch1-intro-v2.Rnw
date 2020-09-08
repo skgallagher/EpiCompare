@@ -2,11 +2,10 @@
 
 \section[Introduction]{Introduction} \label{sec:skg_intro}
 
-As the availability of scientific resources has increased through the decades, the number of models to analyze a particular disease outbreak has also increased.  This phenomenon is evidenced by the appearance of dozens of publicly available estimates of the reproduction number $R_0$ for COVID-19 \ben{\citep[e.g.][]{Sanche2020a}}, \ben{and is well documented in many literature reviews in epidemology \citep[e.g.][]{Canzani2015}}.  As both the quantity of data and models increase, so does the need for standard and fair comparisons of models, as according to the data analysis pipeline of infectious diseases. 
-
+As the availability of scientific resources has increased through the decades, the number of models to analyze a particular disease outbreak has also increased.  This phenomenon is evidenced by the appearance of dozens of publicly available estimates of the reproduction number $R_0$ for COVID-19 \citep[e.g.][]{Sanche2020a}, and is well documented in many literature reviews in epidemology \citep[e.g.][]{Canzani2015}.  As both the quantity of data and models increase, so does the need for standard and fair comparisons of models, as according to the data analysis pipeline of infectious diseases.\footnote{\ben{Is our tool more a "after the fact" analysis than some works?}} 
 
 We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhance the available tools for every part of the infectious disease analysis pipeline, with special emphasis on tools to compare multiple infectious disease data sets or infectious disease models to one another  and to harmonize input and output data.
-  In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. In Figure \ref{fig:pipeline} we also highlight where \pkg{EpiCompare} can aid in this pipeline.
+  In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. In Figure \ref{fig:pipeline} we also highlight where \pkg{EpiCompare} can aid in this pipeline\footnote{\ben{We haven't done thee part of highlighting what EpiCompare can do...}}.
 
 \begin{figure}[!ht]
 %% Code to reproduce is in inst/paper_figs/different-time-scales.R
@@ -16,17 +15,17 @@ We introduce \pkg{EpiCompare}, a \texttt{R} package used to complement and enhan
     \label{fig:pipeline}
 \end{figure}
 
-The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-free tools (motivated in more detail in Section \ref{sec:time-free}).More broadly, \pkg{EpiCompare} aids the data analysis pipeline for infecetious diseases by
+The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \pkg{EpiCompare}'s major unique contribution to the existing approaches is a set of time-invariant tools (motivated in more detail in Section \ref{sec:time-invariant}).More broadly, \pkg{EpiCompare} aids the data analysis pipeline for infecetious diseases by
 \begin{enumerate}
   \item Standardizing outputs from common \proglang{R}-based infectious disease model software and common data storage types
-  \item Expanding upon existing data visualization and EDA tools
-  \item \ben{\sout{Provides support for modeling and simulation} Providing a interface for simple ODE-style agent based modeling.}
-  \item Aiding in comparison and assessment of models through time free analysis and conformal prediction bands and comparisons.
+  \item Expanding upon existing data visualization and EDA tools (especially in 3 state models like SIR models).
+  \item Providing a interface for simple ODE-style agent based modeling.
+  \item Aiding in comparison and assessment of models through time invariant analysis and conformal prediction bands and comparisons.
 \end{enumerate}
-Although \pkg{EpiCompare} aids in every part of the pipeline, our tools especially emphasize improvements for pipeline parts (1), (4), and (5) which can be summarized as data input and output harmonization and contributions to fairly comparing models and data to one another.
+Although \pkg{EpiCompare} aids in every part of the pipeline, our tools especially emphasize improvements for pipeline parts (1) and (4) which can be summarized as data input and output harmonization and contributions to fairly comparing models and data to one another.
 
 
-The paper is arranged as follows.  In Section \ref{sec:lit}, we review some of the prior work in the infectious disease data analysis pipeline and describe how \pkg{EpiCompare} improves this process\ben{\footnote{\ben{Currently we break this into sections 2 and 3 - discuss?}}}.  In Section \ref{sec:data-harmony}, we describe how we use \pkg{tidyverse}-style tools to harmonize data for work in a usable format.  In Section \ref{sec:assess}, we discuss our novel contributions of comparing and assessing outbreak data and models.  In Section \ref{sec:vignette}, we provide a full pipeline analysis of a measles outbreak, including code.  Finally, in Section \ref{sec:discuss}, we summarize our contributions and discuss future work.
+The paper is arranged as follows.\footnote{\ben{Looks like this whole paragraph will need a rewrite down the road.}}  In Section \ref{sec:lit}, we review some of the prior work in the infectious disease data analysis pipeline and describe how \pkg{EpiCompare} improves this process. In Section \ref{sec:data-harmony}, we describe how we use \pkg{tidyverse}-style tools to harmonize data for work in a usable format.  In Section \ref{sec:assess}, we discuss our novel contributions of comparing and assessing outbreak data and models.  In Section \ref{sec:vignette}, we provide a full pipeline analysis of a measles outbreak, including code.  Finally, in Section \ref{sec:discuss}, we summarize our contributions and discuss future work.
 
 
 

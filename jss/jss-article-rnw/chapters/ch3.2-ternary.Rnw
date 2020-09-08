@@ -1,15 +1,13 @@
 % !Rnw root = ../article.Rnw
 
 
-\subsection{Ternary and time-free visualizations for $R_0$} \label{sec:ternary}
+\subsection{Ternary and time-invariant visualizations for $R_0$} \label{sec:ternary}
 
-\ben{My original notes for this section note: ``Ternary plots (pitch from Shannon’s thesis) - being useful to assess. `Peak shows corresponds to the same event in the time analysis' (maybe?)''. I don't necessarily think this section perfectly does that - so I'm open to having it include that or just deciding this is better.}
+It is possible to identify, at a glance, which SIR epidemic paths, like those in Fig. \ref{fig:different-scales-tern}  have the same value of $R_0$ via ``time-invariant'' visualizations, under some circumstances. Specifically, for SIR models we propose using ternary to examine an epidemic's trajectory in a more time-invariant manner. 
 
-It is possible to identify, at a glance, which SIR epidemic paths, like those in Fig. \ref{fig:different-scales-tern}  have the same value of $R_0$ via ``time-free'' visualizations, under some circumstances. Specifically, for SIR models we propose using ternary to examine an epidemic's trajectory in a more time-free manner. 
+Ternary plots are sometimes used in chemistry \citep[][]{Gillespie1976} but only rarely seen in the field of infectious disease epidemiology (to our knowledge, only seen in \cite{}).  Ternary plots illustrate the relationship of constrained 3D data, namely of points $(a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]$ with $a_i+ b_i + c_i =1$ and as such, are situational.  The SIR framework happens to be of the situational format required for ternary plots where $(S(t), I(t), R(t))$ are the number of susceptible, infectious, and recovered individuals in each state at time $t$ and $S(t) + I(t) + R(t) = N(t)$ where $N(t)$ is the population size at time $t$.
 
-Ternary plots are sometimes used in chemistry \citep[\ben{shannon: is this a good reference? - was in your thesis.}][]{Gillespie1976} but only rarely seen in the field of infectious disease epidemiology (to our knowledge, only seen in \cite{}).  Ternary plots illustrate the relationship of constrained 3D data, namely of points $(a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]$ with $a_i+ b_i + c_i =1$ and as such, are situational.  The SIR framework happens to be of the situational format required for ternary plots where $(S(t), I(t), R(t))$ are the number of susceptible, infectious, and recovered individuals in each state at time $t$ and $S(t) + I(t) + R(t) = N(t)$ where $N(t)$ is the population size at time $t$.
-
-Ternary plots are time-free in the sense that the temporal scale does not explicitly apear in the visualization and as a consequence, allow for direct comparisons of outbreaks on different time scales (e.g. days vs. years) or of SIR data of the same disease in different areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
+Ternary plots are time-invariant in the sense that the temporal scale does not explicitly apear in the visualization and as a consequence, allow for direct comparisons of outbreaks on different time scales (e.g. days vs. years) or of SIR data of the same disease in different areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
 
 
 To show that ternary plots have to potential to aid in the comparison of different epidemic's $R_0$s -in certain circumstances- we first need to introduce the classic, deterministic Kermack and McKendrick \cite{CITE THIS?} SIR model where the initial number in each state $(S(0), I(0), R(0))$ are known and $N$ the population size is constant.  The movement of individuals among the states is given by the following differential equations (Eq. \eqref{eq:sir-ode}) where $\beta$ is the average infection rate and $\gamma$ is the average recovery rate,
@@ -18,6 +16,8 @@ To show that ternary plots have to potential to aid in the comparison of differe
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
       R^\prime(t) &= \gamma I(t) \nonumber.
   \end{align}
+  
+\ben{SUGGESTION: define $R_0$ mathematically here (though referred to in figure 2 - which still needs to be defined there).}
   
 If we have two SIR models that follow the Kermack and McKendrick SIR model, have the same percentage of individuals in the initial states, and the same value of $R_0$ then the two models will create exactly overlapping paths in a ternary plot. 
 
@@ -38,8 +38,8 @@ The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \
 %% Code to reproduce is in inst/paper_figs/different-time-scales.R
     \centering
     \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \ben{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view.}
+    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \ben{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view. \ben{I might suggest using opacity to show time scale here?}}
     \label{fig:different-scales-tern}
 \end{figure}
 
-In \pkg{EpiCompare}, we also provide visualization tools to aid in comparing models in the ternary / time-free space, which is presented in more details in Section \ref{sec:time-free-in-simplex}.
+In \pkg{EpiCompare}, we also provide visualization tools to aid in comparing models in the ternary / time-invariant space, which is presented in more details in Section \ref{sec:time-invariant-in-simplex}.
