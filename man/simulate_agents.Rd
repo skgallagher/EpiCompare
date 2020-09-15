@@ -36,7 +36,8 @@ simulate_agents(
 \item{out_format}{Format of the output data frame.
 Wide corresponds to one row to each agent and "long" corresponds to one row being a state change.
 Generally, 'wide' is more readable and slightly easier to use with other EpiCompare functions.  However,
-there is a problem when agents can enter a state more than once.  This will trigger an error.}
+With the 'wide' format, there is a problem when agents can enter a state more than once.
+This will trigger an error.}
 }
 \value{
 a data frame with the following columns
@@ -57,4 +58,31 @@ A (fairly) generic, simple agent-based model based on multinomial/categorical dr
   it does not support random births, they must be pre-specified. 
   Random deaths may be supported by adding a compartment for them.
  Please see the 'basic-abm' vignette for more details on usage.
+}
+\examples{
+## SI example
+## In this example, agents start out susceptible and then become infected
+
+trans_mat <- matrix(c("X0 * (1 - X1 * par1/N)", "X0 * X1 * par1 / N",
+"0", "X1"), byrow = TRUE, nrow = 2)
+rownames(trans_mat) <- c("S", "I")
+init_vals <- c(999, 1)
+par_vals <- c(par1 = .01)
+max_T <- 100
+n_sims <- 5
+
+abm <- simulate_agents(trans_mat,
+init_vals,
+par_vals,
+max_T,n_sims,
+verbose = FALSE)
+
+head(abm)
+table(abm$I)
+library(ggplot2)
+library(dplyr)
+abm \%>\% dplyr::group_by(sim) \%>\%
+agents_to_aggregate(states = I) \%>\%
+ggplot(aes( x= t, y = X1, group = sim, col = factor(sim))) +
+geom_line()
 }

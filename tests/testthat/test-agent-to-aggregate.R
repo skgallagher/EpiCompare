@@ -8,7 +8,8 @@ test_that("checking agents_to_aggregate works for SI model",{
                        I = c(NA, NA, NA, 6, 10))
   
   exp_agg_df <- agents_to_aggregate(agents,
-                                    states = I)
+                                    states = "I")
+  expect_equal(dim(exp_agg_df), c(11, 3))
   
   
   

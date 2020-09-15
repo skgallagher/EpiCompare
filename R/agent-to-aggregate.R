@@ -228,14 +228,13 @@ expanding_info <- function(df, t_min, t_max, K){
     my_spec <- tibble::tibble(.name = as.character(t_min:t_max),
                               .value = "count",
                               t = as.integer(t_min:t_max))
-
     hold <- df %>% dplyr::mutate(t = as.integer(t)) %>%
       tidyr::pivot_wider_spec(my_spec, values_fill = list(count = 0)) %>%
       t()
 
     names(hold) <- hold[1,]
     hold <- hold %>% as.data.frame()
-    hold <- hold[-1,] %>% tibble::rownames_to_column() %>%
+    hold <- hold[-1,, drop = FALSE] %>% tibble::rownames_to_column() %>%
       dplyr::rename(t = "rowname") %>%
       tidyr::pivot_longer(cols = dplyr::one_of(paste0("V",1:K)),
                           names_to = "state",
@@ -252,7 +251,7 @@ expanding_info <- function(df, t_min, t_max, K){
 
     names(hold) <- hold[1,]
     hold <- hold %>% as.data.frame()
-    hold <- hold[-1,] %>% tibble::rownames_to_column() %>%
+    hold <- hold[-1,, drop = FALSE] %>% tibble::rownames_to_column() %>%
       dplyr::rename(t = "rowname") %>%
       tidyr::gather(dplyr::one_of(paste0("V",1:K)),
                     key = "state",
@@ -488,6 +487,7 @@ agents_to_aggregate.data.frame <- function(agents,
   # this code mirrors tidyr::nest's and tidyr::pivot_wider code
 
   # states ---------
+
   state_cols <- dplyr::enquos(states)
   states <- unname(tidyselect::vars_select(dplyr::tbl_vars(agents),
                                                     !!!state_cols))
@@ -530,8 +530,12 @@ agents_to_aggregate.data.frame <- function(agents,
   # ordering of states check --------------------------
   check_ordered(agents, states)
 
-  info_only <- agents[,c(states, death, birth)] %>% sapply(as.numeric) %>%
-    as.data.frame
+
+    info_only <- agents[,c(states, death, birth),
+                        drop = FALSE] %>%
+        sapply(as.numeric) %>%
+        as.data.frame
+    
 
 
   # beyond death and before birth ----------------------
@@ -564,6 +568,7 @@ agents_to_aggregate.data.frame <- function(agents,
         change_of_state_before_birth
         ]
 
+
     info_only[non_na_birth,states] <- inner
 
     N_born <- sum(info_only[birth] >= t_min, na.rm = TRUE)
@@ -571,8 +576,8 @@ agents_to_aggregate.data.frame <- function(agents,
     N_born <- 0
   }
 
-  # beyond time max and time min -----------------------
-  # if t_state is strictly less than t_min, convert to t_min
+    ## beyond time max and time min -----------------------
+    ## if t_state is strictly less than t_min, convert to t_min
   info_only[,states][info_only[,states] < t_min] <- t_min
 
   # if t_state is strictly more than t_max, convert to NA
@@ -603,7 +608,7 @@ agents_to_aggregate.data.frame <- function(agents,
 
   # getting new counts of state membership (not state 0) --------------------
   if (tidyr_new_interface()){
-    info_only_into_long <- info_only_int[,states] %>%
+    info_only_into_long <- info_only_int[,states, drop = FALSE] %>%
       tidyr::pivot_longer(cols = dplyr::everything(),
                           names_to = "state",
                           values_to = "t") %>%
@@ -611,7 +616,7 @@ agents_to_aggregate.data.frame <- function(agents,
                                               levels = states))) %>%
       dplyr::arrange(.data$state)
   } else {
-    info_only_into_long <- info_only_int[,states] %>%
+    info_only_into_long <- info_only_int[,states, drop = FALSE] %>%
       tidyr::gather(dplyr::everything(),
                     key = "state",
                     value = "t") %>%
