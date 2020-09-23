@@ -1,0 +1,423 @@
+---
+title: "Examining the Flu through wILI"
+author: "Benjamin LeRoy"
+output: 
+  html_document:
+    number_sections: true
+---
+
+```{r include = F, warning = F, message = F}
+library(tidyverse)
+library(stringr)
+library(ISOweek)
+```
+# Introduction
+
+The common flu, although different from year to year often exhibits common patterns from year to year. We use [CMU's Delphi](https://delphi.cmu.edu/) group's API to collect data from 2000 to 2018 flu seasons in the United States. We will specifically focus on a weekly "wILI" value, which captures a **w**eighted percent of **i**nfluenza-**l**ike **i**llness cases seen in the hospital in that given week.
+
+# Pulling in the Data
+
+## API Logistics 
+
+[CMU's Delphi](https://delphi.cmu.edu/) group's API can be sourced by running the following command.
+
+```{r}
+source(paste0("https://raw.githubusercontent.com/",
+              "cmu-delphi/delphi-epidata/main/src/client/delphi_epidata.R"))
+```
+
+This file provides a lists of functions in a more `python`ic way - all functions are avaiable in the `Epidata` list, and can be accessed through the notation `Epidata$function_name`.
+
+## Which data to pull?
+
+We aim to examine flu seasons from 2001 to 2018. Although the API can pull data from as far back as 2001. Note that influenza death estimation (which we are not looking at), change in 2010^[CDC: https://www.cdc.gov/flu/about/burden/faq.htm]. Additionally, flu seasons often are examined October of the previous year to August of the year. 
+
+
+```{r}
+flu_data_raw <- Epidata$fluview(list('nat'), Epidata$range(200010, 
+                                                           201809))
+```
+
+Delphi has documentation on the outcome of the [`fluview`](https://cmu-delphi.github.io/delphi-epidata/api/fluview.html) function (and other functions),
+on their [website](https://cmu-delphi.github.io/delphi-epidata/api/README.html). Regions can be found [here](https://github.com/cmu-delphi/delphi-epidata/blob/main/src/acquisition/fluview/fluview_locations.py) and is related to [this](https://gis.cdc.gov/grasp/flu2/GetPhase02InitApp?appVersion=Public). 
+
+We can extract the desired information from the second item in the list (under the `epidata` name), into a data.frame with the following function `extract_df`. We've folded the code as it's messy and not that informative.
+
+<details><summary> **`extract_df` code:** </summary>
+
+```{r}
+#' extract data frame from delphi's epidata "fluview" function
+#'
+#' @param epidata "epidata" output as desired by the fluview function (see https://cmu-delphi.github.io/delphi-epidata/api/fluview.html)
+#'
+#' returns data.frame with the same information
+extract_df <- function(epidata){
+  # basic structure of data frame -----------------
+  nr <- length(epidata)
+  nc <- length(epidata[[1]])
+  colnames <- names(epidata[[1]])
+  
+  # creating an empty data frame ------------------
+  ## character and numeric columns
+  c_idx <- which(sapply(epidata[[1]], class) %in% c("character", "factor"))
+  n_idx <- (1:nc)[!(1:nc %in% c_idx)]
+  
+  data <- data.frame(matrix(nrow = nr, ncol = 0))
+  for (col_idx in 1:nc){
+    if (col_idx %in% c_idx){
+      data <- cbind(data, data.frame(matrix("c", nrow = nr, ncol = 1)))
+    } else {
+      data <- cbind(data, data.frame(matrix(0, nrow = nr, ncol = 1)))
+    }
+  }
+  names(data) <- colnames
+
+  for (row_idx in 1:nr){
+    inner <- epidata[[row_idx]]
+    inner[sapply(inner, function(x) length(x) == 0L)] <- NA
+    
+    # breaking into parts
+    data[row_idx,c_idx] <- unlist(inner[c_idx])
+    data[row_idx,n_idx] <- unlist(inner[n_idx])
+  }
+  
+  return(data)
+}
+
+```
+
+</details>
+
+We create a data.frame for the flu data (percent of new cases) and clean it up a bit to emphasis the week of the year we're looking at.
+
+```{r echo= F}
+flu_data <- extract_df(flu_data_raw$epidata)
+# convert epiweek to day
+flu_data <- flu_data %>% rowwise() %>%
+  mutate(epiweek_year = str_sub(epiweek, start = 1L, end = 4L),
+         epiweek_week = str_sub(epiweek, start = 5L, end = 6L),
+         epiweek2 = paste0(epiweek_year, "-W", epiweek_week,"-1"),
+         epiweek_date = ISOweek2date(epiweek2))
+```
+
+## Data Example
+
+Below is an example of the data.
+
+```{r echo = F}
+flu_data %>% head() %>% DT::datatable(options = list(scrollX = TRUE))
+```
+
+## wILI visualization
+
+
+```{r season-df_vis, echo = F}
+start_year = 1999
+end_year = 2017
+flu_season_info_df <- data.frame(year = start_year:end_year) %>%
+  mutate(start_date = paste0(as.character(year), "-10-01"),
+         end_date = paste0(as.character(year+1), "-08-30"),
+         even_year = c( "odd", "even")[(year %% 2) + 1]) %>%
+  mutate(start_date = as.Date(start_date, format= "%Y-%m-%d"),
+         end_date = as.Date(end_date, format= "%Y-%m-%d"))
+```
+
+
+```{r eval = F, echo = F}
+# visual
+flu_data %>%
+ggplot() +
+  geom_line(aes(x = epiweek_date, y = wili)) +
+  labs(x = "time",
+       y = "wILI percentage",
+       title = "wILI percentage across multiple seasons") +
+  geom_rect(data = flu_season_info_df %>% filter(even_year == "even"), 
+            mapping = aes(xmin = start_date, xmax = end_date, ymin = 0, ymax = 8),
+            alpha = .1) +
+  theme_minimal()
+```
+
+```{r echo = F, message = F, warning = F, fig.align="center"}
+library(dygraphs)
+
+periods_df <- flu_season_info_df %>% filter(even_year == "even")
+
+add_shades <- function(x, periods_df, ...) {
+  for( r_idx in 1:nrow(periods_df) ) {
+    x <- dyShading(x, from = periods_df[r_idx, "start_date"] , 
+                   to = periods_df[r_idx, "end_date"], ... )
+  }
+  x
+}
+
+flu_xts <- xts::xts(x = flu_data$wili,
+           order.by = flu_data$epiweek_date) 
+names(flu_xts) <- "wILI percentage"
+flu_xts %>% 
+  dygraph(data = ., main = "wILI percentage across multiple seasons", 
+        ylab = "wILI percentage", width = "100%") %>%
+  dyRangeSelector() %>% 
+  add_shades(periods_df = periods_df)
+```
+
+## wILI visualization (per season)
+
+```{r eval = T, echo = F, message = F, warning = F}
+
+season_index <- rep(0, nrow(flu_data))
+for (start_date in flu_season_info_df$start_date){
+  season_index <- season_index + 1*(flu_data$epiweek_date > start_date)
+}
+flu_data$season_index <- season_index
+flu_data$after_start <- flu_data$epiweek_date - flu_season_info_df$start_date[flu_data$season_index]
+flu_data$season_year <- flu_season_info_df$year[season_index]
+
+# visual
+by_season_vis <- flu_data %>%
+  mutate(season_year = factor(season_year)) %>%
+ggplot() +
+  geom_line(aes(x = after_start, y = wili, color = season_year)) +
+  labs(x = "Days after start of season",
+       y = "wILI percentage",
+       title = "wILI percentage across multiple seasons \n (2008 & 2009 odd season)",
+       color = "") +
+  theme_minimal()
+  
+by_season_vis %>% plotly::ggplotly()
+```
+
+# EpiCompare with the Data
+
+The set of code below is messing but let's talk about a few things.
+
+
+
+```{r}
+df <- flu_data %>% tibble::rownames_to_column() 
+
+#df
+
+# usa population (by month) from https://fred.stlouisfed.org/series/POPTHM
+pop <- read.csv("POPTHM.csv") %>%
+  mutate(MONTH = lubridate::month(DATE),
+         YEAR = lubridate::year(DATE))
+
+df <- df %>% mutate(epiweek_month = lubridate::month(epiweek_date))
+
+df_plus <- df %>% mutate(epiweek_year = as.numeric(epiweek_year)) %>% 
+  left_join(pop, by = c("epiweek_month" = "MONTH", "epiweek_year" = "YEAR")) %>%
+  mutate(scaled_num_ili = POPTHM * wili/100)
+
+```
+
+```{r message = F, warning = F}
+# needs to be updated to do tidyverse also what is par?
+# and what is confirmed (cumulated relative to what?)
+# negative values for some output...
+devtools::load_all(path = "../")
+#?EpiCompare::cases_to_SIR
+```
+
+```{r}
+# change to days (to get 3 day flu)
+
+# expand?
+df2 <- df_plus %>% mutate(n_wili = round(POPTHM * wili / 100),
+                          rowname = as.numeric(rowname)*7,
+                          d_wili = wili/7) %>% 
+  select(d_wili, epiweek_date)
+
+
+
+stepwise_fill_in <- function(df2, step = 7){
+  # fill in with zeros 
+  df_new <- data.frame(df2[1,])
+  
+  for (r_idx in 1:nrow(df2)){
+    inner_df <- data.frame(d_wili = df2$d_wili[r_idx],
+                           epiweek_date = df2$epiweek_date[r_idx] + 0:(step-1))
+    
+    df_new <- rbind(df_new, inner_df)
+  }
+  
+  df_new <- df_new[-1,]
+  
+  return(df_new)
+}
+
+df3 <- stepwise_fill_in(df2)
+df3 %>% head()
+
+df4 <- df3 %>% mutate(month = lubridate::month(epiweek_date),
+               year = lubridate::year(epiweek_date)) %>% 
+  left_join(pop, by = c("month" = "MONTH", "year" = "YEAR")) %>% 
+  mutate(n_wili = round(POPTHM * d_wili / 100))
+
+new <- df4 %>% tibble::rownames_to_column() %>%
+  rename(t = rowname, N = POPTHM, current = n_wili) %>%
+  mutate(confirmed = cumsum(current)) %>%
+  EpiCompare::cases_to_SIR(data = ., par = c("gamma" = 1/3)) %>% #unit relative to days (3 days)
+  select(t, X0, X1, X2)
+
+
+new %>% mutate(t = as.numeric(t)) %>% 
+  pivot_longer(cols = c(X0, X1, X2)) %>% 
+  filter(name == "X1") %>% 
+  ggplot2::ggplot() + ggplot2::geom_line(ggplot2::aes(x = t, y = value, color = name)) +
+  ggplot2::theme_minimal()
+
+
+
+new2 <- new %>%
+  mutate(N = X0 + X1 + X2,
+         confirmed = X2) 
+
+new2_R_to_S <- new2 %>% select(t, confirmed, N) %>%
+  cases_to_SIR(par = c("gamma" = 1/60)) # 3 months to be suspectible again (to the flu)
+new2_R_to_S %>% head
+
+new$X3 <- new2_R_to_S$X2
+
+new_SIRS <- new
+new_SIRS <- new_SIRS %>% mutate(
+  X0 = X0 + X3) %>%
+  dplyr::select(t, X0, X1, X2) %>%
+  dplyr::rename(S = X0, I = X1, R = X2)
+
+new_SIRS %>% 
+ggplot(aes(x = S, y = I, z = R)) +
+  geom_path() +
+  coord_tern() +
+  theme_minimal()
+
+
+new_SIRS %>% pivot_longer(cols = c(S, I, R)) %>%
+  ggplot() + geom_line(aes(x = as.numeric(t), 
+                           y = value, group = name, color = name)) +
+  theme_minimal()
+
+new %>% pivot_longer(cols = c(X0, X1, X2)) %>%
+  filter(name == "X1") %>%
+  ggplot() + geom_line(aes(x = as.numeric(t), 
+                           y = value, group = name, color = name)) +
+  theme_minimal()
+```
+
+
+```{r}
+# change to days (to get 3 day flu)
+
+# expand?
+df2 <- df_plus %>% mutate(n_wili = round(POPTHM * wili / 100),
+                          rowname = as.numeric(rowname)*7,
+                          d_wili = wili/7) %>% 
+  select(d_wili, epiweek_date, season_year)
+
+
+
+stepwise_fill_in <- function(df2, step = 7){
+  # fill in with zeros 
+  df_new <- data.frame(df2[1,])
+  
+  for (r_idx in 1:nrow(df2)){
+    inner_df <- data.frame(d_wili = df2$d_wili[r_idx],
+                           epiweek_date = df2$epiweek_date[r_idx] + 0:(step-1),
+                           season_year = df2$season_year[r_idx])
+    
+    df_new <- rbind(df_new, inner_df)
+  }
+  
+  df_new <- df_new[-1,]
+  
+  return(df_new)
+}
+
+df3 <- df2 %>% group_by(season_year) %>% stepwise_fill_in()
+
+df4 <- df3 %>% mutate(month = lubridate::month(epiweek_date),
+               year = lubridate::year(epiweek_date)) %>% 
+  left_join(pop, by = c("month" = "MONTH", "year" = "YEAR")) %>% 
+  mutate(n_wili = round(POPTHM * d_wili / 100))
+
+new <- df4 %>% tibble::rownames_to_column() %>%
+  rename(t = rowname, N = POPTHM, current = n_wili) %>% 
+  group_by(season_year) %>% 
+  mutate(confirmed = cumsum(current)) %>%
+  EpiCompare::cases_to_SIR(data = ., par = c("gamma" = 1/3)) %>% #unit relative to days (3 days)
+  select(t, X0, X1, X2)
+
+new_other <- df4 %>% tibble::rownames_to_column() %>%
+  rename(t = rowname, N = POPTHM, current = n_wili) %>%
+  mutate(confirmed = cumsum(current)) %>% 
+  EpiCompare::cases_to_SIR(data = ., par = c("gamma" = 1/3)) %>% #unit relative to days (3 days)
+  select(t, X0, X1, X2)
+```
+```{r}
+new %>% mutate(t = as.numeric(t)) %>% 
+  pivot_longer(cols = c(X0, X1, X2)) %>% 
+  filter(name == "X1") %>% 
+  ggplot2::ggplot() + ggplot2::geom_line(ggplot2::aes(x = t, y = value, color = name)) +
+  ggplot2::theme_minimal()
+
+new_other %>% mutate(t = as.numeric(t)) %>% 
+  pivot_longer(cols = c(X0, X1, X2)) %>% 
+  filter(name == "X1") %>% 
+  ggplot2::ggplot() + ggplot2::geom_line(ggplot2::aes(x = t, y = value, color = name)) +
+  ggplot2::theme_minimal()
+```
+
+```{r}
+new2 <- new %>%
+  mutate(N = X0 + X1 + X2,
+         confirmed = X2) 
+
+new2_R_to_S <- new2 %>% select(t, confirmed, N) %>%
+  cases_to_SIR(par = c("gamma" = 1/60)) # 3 months to be suspectible again (to the flu)
+new2_R_to_S %>% head
+
+new$X3 <- new2_R_to_S$X2
+
+new_SIRS <- new
+new_SIRS <- new_SIRS %>% mutate(
+  X0 = X0 + X3) %>%
+  dplyr::select(t, X0, X1, X2) %>%
+  dplyr::rename(S = X0, I = X1, R = X2)
+
+
+df_lims = data.frame(S = c(1,.4,.4), I = c(0,.6,0), R = c(0,0,.6))
+
+new_SIRS %>% 
+ggplot(aes(x = S, y = I, z = R, 
+           color = factor(season_year))) +
+  geom_path() +
+  coord_tern() +
+  theme_minimal() +
+  tern_limits(T=max(df_lims$I), 
+              L=max(df_lims$S), 
+              R=max(df_lims$R))
+
+```
+
+
+```{r}
+plotly::ggplotly(new_SIRS %>% pivot_longer(cols = c(S, I, R)) %>%
+  ggplot() + geom_line(aes(x = as.numeric(t), 
+                           y = value, group = name, color = name)) +
+  theme_minimal() )
+```
+
+```{r}
+new %>% pivot_longer(cols = c(X0, X1, X2)) %>%
+  filter(name == "X1") %>%
+  ggplot() + geom_line(aes(x = as.numeric(t), 
+                           y = value, group = name, color = name)) +
+  theme_minimal()
+
+new_other %>% pivot_longer(cols = c(X0, X1, X2)) %>%
+  filter(name == "X1") %>%
+  ggplot() + geom_line(aes(x = as.numeric(t), y = value, group = name, color = name)) +
+  theme_minimal() 
+```
+
+
+how to connect wILI to the total US (https://www.cdc.gov/flu/about/burden/how-cdc-estimates.htm)
