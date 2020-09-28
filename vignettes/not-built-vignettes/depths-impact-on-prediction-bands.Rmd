@@ -26,6 +26,7 @@ devtools::load_all()
 library(EpiModel)
 library(dplyr)
 library(tidyr)
+library(EpiCompare)
 ```
 
 # Overview

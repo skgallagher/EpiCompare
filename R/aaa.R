@@ -56,3 +56,28 @@ update_approved_layers()
 r_new_interface <- function() {
   as.numeric(R.version$major) >= 4
 }
+
+
+#' Explicitly draw plot (\code{ggtern} and \code{ggplot2} compatible)
+#'
+#' Makes sure both \code{\link[ggtern:::print.ggplot]{ggtern}} and 
+#' \code{\link[ggplot2:::print.ggplot]{ggplot2}} objects 
+#' display correctly.
+#'
+#' @param x plot to display
+#' @param newpage draw new (empty) page first?
+#' @param vp viewport to draw plot in
+#' @param ... other arguments not used by this method
+#'
+#' @return Invisibly returns the result of \code{ggplot_build()}, which is a 
+#' list with components that contain the plot itself, the data, information 
+#' about the scales, panels etc.
+#' @export
+print.ggplot <- function(x, newpage = is.null(vp), vp = NULL, ...){
+  if(inherits(x$coordinates, "CoordTern")){
+    ggtern:::print.ggplot(x, newpage = newpage, vp = vp, ...)
+    
+  } else {
+    ggplot2:::print.ggplot(x, newpage = newpage, vp = vp, ...)
+  }
+}

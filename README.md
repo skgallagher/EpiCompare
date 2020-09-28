@@ -90,6 +90,7 @@ hagelloch_raw %>%
   rename(`school grade` = CL) %>%
   group_by(`school grade`) %>%
   summarize(`number of students` = n())
+#> `summarise()` ungrouping output (override with `.groups` argument)
 #> # A tibble: 3 x 2
 #>   `school grade` `number of students`
 #>   <fct>                         <int>
@@ -177,8 +178,14 @@ df_groups %>% ggplot() +
     grouped together.
 4.  Now that `R` have come out with version \>= 4.0.0, we now need to
     call `.S3method("method", "class")` to define the connection for
-    `S3` methods (e.g. `method.class` function), which we have for the
+    `S3` methods (e.g. `method.class` function), which we have for the
     `contained` function.
+5.  **Does 2 wrongs make a right?** As of 9/23 `ggtern` had an
+    [issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot)
+    that it messed with `ggplot2`’s legends when loaded (it over-wrote
+    the `print.ggplot` and other functions). To “correct” this, we’ve
+    over-wrote `ggtern`’s `print.ggplot` to correct this problem when
+    not producing ternary plots (code in `aaa.R`).
 
 ## Contributors
 
