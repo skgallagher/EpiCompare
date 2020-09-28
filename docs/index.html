@@ -159,6 +159,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">`school grade`</span> <span class="kw">=</span> <span class="no">CL</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">`school grade`</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">`number of students`</span> <span class="kw">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span>())
+<span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span>
 <span class="co">#&gt; # A tibble: 3 x 2</span>
 <span class="co">#&gt;   `school grade` `number of students`</span>
 <span class="co">#&gt;   &lt;fct&gt;                         &lt;int&gt;</span>
@@ -220,6 +221,8 @@
 <li>
 <code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
 <li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
+<li>
+<strong>Does 2 wrongs make a right?</strong> As of 9/23 <code>ggtern</code> had an <a href="https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot">issue</a> that it messed with <code>ggplot2</code>’s legends when loaded (it over-wrote the <code>print.ggplot</code> and other functions). To “correct” this, we’ve over-wrote <code>ggtern</code>’s <code>print.ggplot</code> to correct this problem when not producing ternary plots (code in <code>aaa.R</code>).</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">
