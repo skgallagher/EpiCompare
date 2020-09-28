@@ -1,0 +1,182 @@
+---
+title: "Hagelloch Measles -- Fitting the deterministic, continuous time SIR model"
+output: 
+  html_document:
+    code_folding: show
+bibliography: our-bib.bib
+vignette: >
+  %\VignetteIndexEntry{Hagelloch Measles 1 - EDA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+devtools::load_all()
+library(EpiModel)
+library(dplyr)
+library(ggtern)
+```
+
+
+## Overview
+
+In this series of vignettes, we will demonstrate epidemic analysis pipeline from EDA to dissemination using a case study of measles.
+
+## The Epidemic Analysis Pipeline
+
+![](images/pipeline1.png)
+
+## Hagelloch series vignettes
+
+[Hagelloch 1 Pre-processing and EDA](hagelloch-eda.html)
+
+[Hagelloch 2.1 Modeling and Simulation: the SIR model](hagelloch-mods.html)
+
+[Hagelloch 2.2 Modeling and Simulation: fitting a SIR model](hagelloch-sir-fit.html)
+
+**[Hagelloch 2.3 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)**
+
+[Hagelloch 2.4 Modeling and Simulation with other packages](hagelloch-other-mods.html)
+
+## Goals in this vignette
+
+1. Introduce a discrete time, stochastic SIR model.
+
+2. Derive the likelihood
+
+3. Find parameters that maximize the likelihood for the Hagelloch data.
+
+4. Simulate SIR models from the best fit model
+
+## A discrete time, stochastic SIR model
+
+In the [previous vignette](hagelloch-sir-fit.html), we looked at the continuous time Kermack and McKendrick SIR model.  This model described how individuals moved from susceptible to infectious to recovered states, according to a series of ordinary differential equations.
+
+We transform this continuous time, deterministic SIR model to a discrete time, stochastic one.  The first step is changing the $d$s to $\Delta$s, or more formally using a first order approximation of ODEs.
+
+$$
+\frac{\Delta S(t)}{\Delta t} = \frac{S(t) - S(t-1)}{\Delta t} = - \beta S(t-1)I(t-1)\\
+\frac{\Delta I(t)}{\Delta t} = \frac{I(t) - I(t-1)}{\Delta t} =  \beta S(t-1)I(t-1) - \gamma I(t-1)\\
+\frac{\Delta R(t)}{\Delta t} = \frac{R(t) - R(t-1)}{\Delta t} = \gamma I(t-1)
+$$
+
+We will assume $\Delta t = 1$.  The next step is introducing random error to the model.  Specifically, we refer to process error, which is error inherent in the transmission process, as opposed to error introduced by systemic error in measuring the data.
+
+There are a number of ways to model the number of individuals moving from state to state from one time step to the next, but some of most common are Binomial and Poisson random variables.  We analyze the process with Binomial random variables, conditioned on the previous state values.  Given an initial set of values $(X_S(0), X_I(0), X_R(0)$, the number of individuals moving from one state to another from time $t-1$ to $t$ for $t >0$ are given by the following equations
+$$
+Z_{SI}(t)| X_S(t-1), X_I(t-1) \sim Binomial \left (X_S(t-1), \beta X_I(t-1) \right )\\
+Z_{IR}(t)|  X_I(t-1) \sim Binomial \left (X_I(t-1), \gamma \right ).
+$$
+The number of individuals moving from the susceptible state to the infectious state from time $t-1$ to $t$, $Z_{SI}(t)$ is choosing from the $X_S(t-1)$ susceptibles and with probability of $\beta I(t-1)$ draws a number of them to become infectious.  Similarly, $Z_{IR}(t)$ chooses from the $X_I(t-1)$ infected individuals with probability $\gamma$ to recover.  This means $\beta I(t-1)$ and $\gamma$ have to be constrained between zero and one, to have a properly specified distribution.
+
+The new number in each state is then given by the following:
+$$
+X_S(t) = X_S(t-1) - Z_{SI}\\
+X_I(t) = X_I(t-1) + Z_{SI} - Z_{IR}\\
+X_R(t) = X_R(t-1) + Z_{IR}.
+$$
+
+One benefit of this approach, is that $E[(X_S(t), X_I(t), X_R(t))] = (S(t), I(t), R(t))$ for all $t$, and the variance can be calculated.  More details of this are shown in @gallagher2019.
+
+## Calculating the likelihood
+
+We denote the set of observed data (the number of individuals in each state at time $t$ for $t=0, \dots, T$) as $\boldsymbol{x}$. We let $p_t = \beta X_I(t)$ be the probability of becoming infected from time $t-1$ to $t$.  The likelihood is then proportional to
+$$
+\mathcal{L}(\beta, \gamma; \boldsymbol{x}) = \prod_{t=1}^T p_{t-1}^{S(t-1) - S(t)} \left [1-p_{t-1} \right ]^{S(t)} \times \gamma^{R(t) - R(t-1)}(1-\gamma)^{I(t-1) - (R(t)-R(t-1))},
+$$
+where the exponents are *non-random* quantities, but rather completely determined by the initial values and $\beta$ and $\gamma$. The log likelihood is then
+
+$$
+\ell(\beta, \gamma, x) = \sum_{t=1}^T \left (S(t-1) - S(t) \right)\log(p_{t-1}) + S(t)\log\left (1-p_{t-1} \right )  + \left ({R}(t) - R(t-1) \right)\log(\gamma)  + \left (I(t-1) - (R(t) - R(t-1)) \right )\log(1 - \gamma).
+$$
+
+An approximation to the above log likelihood is substituting the *data* $x_S(t)$, $x_I(t)$, and $x_R(t)$ for $S(t), I(t)$, and $R(t)$, respectively, which is what we do below (because it is easier to compute for demonstrative purposes).
+
+
+After loading the libraries,
+
+```{r, echo = FALSE}
+devtools::load_all()
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(forcats)
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+library(deSolve)
+```
+
+```{r eval = FALSE}
+library(tidyerse)
+library(EpiCompare)
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+library(deSolve)
+```
+we get the aggregate SIR data from `hagelloch_raw` and define our deterministic, continuous time SIR model.
+
+
+
+
+```{r}
+## Getting aggregate data
+aggregate_hag <- hagelloch_raw %>% 
+  agents_to_aggregate(states = c(tI, tR),
+                      min_max_time = c(0, 55)) %>%
+   rename(time = t, S = X0, I = X1, R = X2)
+```
+
+
+
+
+```{r}
+
+#' Calculate the SIR log like from above eq.
+#' 
+#' @param par parameters to optimize
+#' @param data a data frame containing columns time, S, I, and R
+#' return log like for given parameters
+sir_loglike <- function(par, data){
+  data$beta <- par[1]
+  data$gamma <- par[2]
+  data$N <- data$S + data$I + data$R
+  data_new <- data %>%
+    dplyr::mutate(delta_S = c(NA, diff(S)),
+           delta_R = c(NA, diff(R)),
+           prev_S = dplyr::lag(S), 
+           prev_I = dplyr::lag(I),
+           prev_R = dplyr::lag(R),
+           prob_inf = beta / N * prev_I,
+           loglike_SI_init = (-delta_S) * log(prob_inf) + 
+              S * log(1 - prob_inf),
+           loglike_SI = ifelse(prev_I == 0, 0, 
+                                loglike_SI_init),
+           loglike_IR = (delta_R) * log(gamma) + (prev_I - delta_R) * log(1 - gamma),
+           loglike =  loglike_SI + loglike_IR
+           )  %>%
+    dplyr::filter(time != 0)
+  return(sum(data_new$loglike))
+}
+
+
+```
+
+
+```{r}
+init_params <- c(.1, .05)
+
+best_params <- optim(par = init_params, fn = sir_loglike,
+                     control = list(fnscale = -1), # switches from minimizing function to maximizing it
+                     data = aggregate_hag)
+
+print(best_params$par, digits = 2)
+
+```
+## References
