@@ -61,6 +61,7 @@ reference:
   - matches("tidyr_new_interface")
   - matches("update_approved_layers")
   - matches("r_new_interface")
+  - matches("print.ggplot")
 - title: everything
   contents:
   - matches(".*")
@@ -69,7 +70,7 @@ reference:
 articles:
 - title: Learning EpiCompare
   desc: Vignettes aimed at getting you started and aware of the tools available
-  navbar: ~
+  navbar: ~ #include in navbar
   contents: #this order
   - 'getting-started'
   - 'not-built-vignettes/ternary-plots-explained'
