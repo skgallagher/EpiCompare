@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare — fortify_aggregate.pompList • EpiCompare</title>
+<title>Explicitly draw plot (<code>ggtern</code> and <code>ggplot2</code> compatible) — print.ggplot • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -47,10 +46,10 @@ puts it in SIR format for EpiCompare — fortify_aggregate.pompList • EpiCompa
 
 
 
-<meta property="og:title" content="Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare — fortify_aggregate.pompList" />
-<meta property="og:description" content="Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare" />
+<meta property="og:title" content="Explicitly draw plot (<code>ggtern</code> and <code>ggplot2</code> compatible) — print.ggplot" />
+<meta property="og:description" content="Makes sure both ggtern and 
+ggplot2 objects 
+display correctly." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -150,63 +149,47 @@ puts it in SIR format for EpiCompare" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/fortify-aggregate-pomp-pompList.R'><code>R/fortify-aggregate-pomp-pompList.R</code></a></small>
-    <div class="hidden name"><code>fortify_aggregate.pompList.Rd</code></div>
+    <h1>Explicitly draw plot (<code>ggtern</code> and <code>ggplot2</code> compatible)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/aaa.R'><code>R/aaa.R</code></a></small>
+    <div class="hidden name"><code>print.ggplot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Takes in data from the R pomp package  where the output is a data frame and
-puts it in SIR format for EpiCompare</p>
+    <p>Makes sure both <code>ggtern</code> and 
+<code>ggplot2</code> objects 
+display correctly.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for pompList</span>
-<span class='fu'><a href='fortify_aggregate.html'>fortify_aggregate</a></span>(<span class='no'>data</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for ggplot</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span>(<span class='no'>vp</span>), <span class='kw'>vp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>Output from a pomp simulation where the output is a data frame,
-<code><a href='https://rdrr.io/pkg/pomp/man/simulate.html'>pomp::simulate()</a></code></p></td>
+      <th>x</th>
+      <td><p>plot to display</p></td>
     </tr>
     <tr>
-      <th>states</th>
-      <td><p>vector of state names</p></td>
+      <th>newpage</th>
+      <td><p>draw new (empty) page first?</p></td>
     </tr>
     <tr>
-      <th>package_source</th>
-      <td><p>optional package name</p></td>
+      <th>vp</th>
+      <td><p>viewport to draw plot in</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>other arguments not used by this method</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame with the following columns</p><dl'>
-<dt>t</dt><dd><p>the time</p></dd>
-<dt>sim</dt><dd><p>simulation number (factor variable) (optional column)</p></dd>
-<dt>Xk</dt><dd><p>where k = 0, ..., K</p></dd>
+    <p>Invisibly returns the result of <code>ggplot_build()</code>, which is a 
+list with components that contain the plot itself, the data, information 
+about the scales, panels etc.</p>
 
-</dl>
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The default variables that are retained are SIR, but can be modified
-  with the <code>states</code> argument.  If codestates = NULL, we will attempt
-  to find all single letter names in POMP and output those.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fortify_aggregate.html'>fortify_aggregate</a></span>(<span class='no'>pomp_arr</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='st'>"pomp"</span>,
-<span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"S"</span>, <span class='st'>"I"</span>, <span class='st'>"R"</span>))
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>out</span>)</div><div class='output co'>#&gt;   t sim  X0 X1 X2
-#&gt; 1 0   1 950 50  0
-#&gt; 2 1   1 946 52  2
-#&gt; 3 2   1 944 54  2
-#&gt; 4 3   1 941 57  2
-#&gt; 5 4   1 937 60  3
-#&gt; 6 5   1 931 65  4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>out</span>[, <span class='fl'>3</span>:<span class='fl'>5</span>]))</div><div class='output co'>#&gt; [1] 1000</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

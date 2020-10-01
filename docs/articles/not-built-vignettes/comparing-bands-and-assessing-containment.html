@@ -132,7 +132,11 @@ Unfold
 <p>To motivate these tools we’re actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we’ve generated a <code>pretend_actual_data</code>-set and a set of simulations.</p>
 Look at this beautify pretend data. A good peak. We’re able to use <code>geom_aggregate</code> on our data (though we also could have used <code>agents_to_aggregate</code> + <code>geom_path</code>).
 </details><div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
+<<<<<<< HEAD
 <span class="no">pretend_actual_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu">simulate_SIR_agents</span>(
+=======
+<span class="no">pretend_actual_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="../../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                           <span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">1</span>,
                           <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="fl">1000</span>,
                           <span class="kw">beta</span> <span class="kw">=</span> <span class="fl">.0099</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="fl">.0029</span>,
@@ -142,20 +146,35 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
 
 <span class="no">pretend_actual_data</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+<<<<<<< HEAD
   <span class="fu">geom_aggregate</span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>),
                  <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
   <span class="fu">coord_tern</span>() +
   <span class="fu">theme_sir</span>()
+=======
+  <span class="fu"><a href="../../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>),
+                 <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
+  <span class="fu">coord_tern</span>() +
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># another approach for the same visual</span>
 <span class="no">df_single</span> <span class="kw">&lt;-</span> <span class="no">pretend_actual_data</span> <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+=======
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)</pre></body></html></div>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># visual not run...</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="no">df_single</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
+<<<<<<< HEAD
   <span class="fu">coord_tern</span>() + <span class="fu">theme_sir</span>()</pre></body></html></div>
+=======
+  <span class="fu">coord_tern</span>() + <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <p>Now, suppose, without having read our paper, you don’t have a proof of @Shannon’s at the top of your head, but you still think the following model fits decently well for the above data.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">50</span>
 <span class="no">n_time_steps</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
@@ -164,12 +183,17 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
 <span class="no">init_SIR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
 
 
+<<<<<<< HEAD
 <span class="no">sim50</span> <span class="kw">&lt;-</span> <span class="fu">simulate_SIR_agents</span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
+=======
+<span class="no">sim50</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                              <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="no">n_time_steps</span>,
                              <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                              <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="no">init_SIR</span>)
 
 <span class="no">df_group</span> <span class="kw">&lt;-</span> <span class="no">sim50</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
                       <span class="co">#min_max_time = c(0,100)) %&gt;% </span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)</pre></body></html></div>
@@ -181,6 +205,19 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
   <span class="fu">coord_tern</span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) +
   <span class="fu">theme_sir</span>()
+=======
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+                      <span class="co">#min_max_time = c(0,100)) %&gt;% </span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+  <span class="fu"><a href="../../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">sim50</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">sim</span>),
+                 <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.1</span>) +
+  <span class="fu"><a href="../../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">pretend_actual_data</span>,
+                 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>), <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
+  <span class="fu">coord_tern</span>() +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) +
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># again, aggregate version (visual not run):</span>
@@ -190,7 +227,11 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_single</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>), <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
   <span class="fu">coord_tern</span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()</pre></body></html></div>
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <div id="how-close-is-this-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-close-is-this-model" class="anchor"></a>How close is this model?</h2>
@@ -201,23 +242,39 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">grab_top_depth_filaments</span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.6</span>) <span class="kw">%&gt;%</span>
   <span class="fu">create_delta_ball_structure</span>()</pre></body></html></div>
 <p>Which is just a data version (not exactly, but close) to this:</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
   <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
+=======
+  <span class="fu"><a href="../../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.6</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</pre></body></html></div>
+<p>Which is just a data version (not exactly, but close) to this:</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                            <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.6</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">50</span>,<span class="fl">2</span>)) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_single</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>), <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>) +
   <span class="fu">coord_tern</span>() +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span>
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Is it contained in the above delta ball?</p>
+<<<<<<< HEAD
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu">contained</span>(<span class="no">delta_ball_cb</span>,
+=======
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../../reference/contained.html">contained</a></span>(<span class="no">delta_ball_cb</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
          <span class="no">df_single</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>)) <span class="co"># aggregate version</span>
 <span class="co">#&gt; [1] FALSE</span></pre></body></html></div>
 <p>What about a less strigent ruling (maybe a normal prediction band with 90% confidence)?</p>
@@ -225,9 +282,15 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">grab_top_depth_filaments</span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>) <span class="kw">%&gt;%</span>
   <span class="fu">create_delta_ball_structure</span>()</pre></body></html></div>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu">contained</span>(<span class="no">delta_ball_cb1</span>,
+=======
+  <span class="fu"><a href="../../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../../reference/contained.html">contained</a></span>(<span class="no">delta_ball_cb1</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
          <span class="no">df_single</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>)) <span class="co"># aggregate version</span>
 <span class="co">#&gt; [1] TRUE</span></pre></body></html></div>
 </div>
@@ -240,13 +303,21 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
 <span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="fl">.05</span>
 
 
+<<<<<<< HEAD
 <span class="no">sim50_2</span> <span class="kw">&lt;-</span> <span class="fu">simulate_SIR_agents</span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
+=======
+<span class="no">sim50_2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">50</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                                <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="fl">100</span>,
                                <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                                <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>))
 
 <span class="no">df_group2</span> <span class="kw">&lt;-</span> <span class="no">sim50_2</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+=======
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)</pre></body></html></div>
 <div id="motivating-visuals" class="section level2 tabset">
 <h2 class="hasAnchor">
@@ -259,13 +330,21 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
                 <span class="no">df_group2</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>() <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">sim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">sim</span>),
                                                    <span class="kw">epi_model</span> <span class="kw">=</span> <span class="st">"second"</span>))
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+<<<<<<< HEAD
   <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all</span>,
+=======
+  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="no">epi_model</span>,
                            <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>,
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">50</span>, <span class="fl">2</span>))  +
   <span class="fu">coord_tern</span>() +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
 <p><img src="comparing-bands-and-assessing-containment_files/figure-html/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
@@ -274,14 +353,22 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
 <a href="#second" class="anchor"></a>Second</h3>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="co"># visual not run</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+<<<<<<< HEAD
   <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
+=======
+  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                            <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                        <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>,
                        <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>,
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">50</span>, <span class="fl">2</span>)) +
+<<<<<<< HEAD
   <span class="fu">geom_prediction_band</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group2</span>,
+=======
+  <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group2</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                            <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                        <span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>,
@@ -289,7 +376,11 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">50</span>, <span class="fl">2</span>)) +
   <span class="fu">coord_tern</span>() +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()</pre></body></html></div>
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 </div>
 <div id="third" class="section level3">
 <h3 class="hasAnchor">
@@ -307,33 +398,55 @@ Look at this beautify pretend data. A good peak. We’re able to use <code>geom_
                 <span class="kw">group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="no">epi_model</span>,<span class="no">sim</span>))),
                 <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.1</span>)  +
   <span class="fu">coord_tern</span>() +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()</pre></body></html></div>
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="co"># this would also work (and is not run)</span>
 <span class="no">df_all_agg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">sim50</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">epi_model</span> <span class="kw">=</span> <span class="st">"first"</span>),
                 <span class="no">sim50_2</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">epi_model</span> <span class="kw">=</span> <span class="st">"second"</span>))
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
+<<<<<<< HEAD
   <span class="fu">geom_aggregate</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_agg</span>,
+=======
+  <span class="fu"><a href="../../reference/stat_aggregate.html">geom_aggregate</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_all_agg</span>,
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
             <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">epi_model</span>,
                 <span class="kw">group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="no">epi_model</span>,<span class="no">sim</span>))),
                 <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.1</span>)  +
   <span class="fu">coord_tern</span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) +
+<<<<<<< HEAD
   <span class="fu">theme_sir</span>()</pre></body></html></div>
+=======
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 </div>
 </div>
 <div id="numerical-comparison-good-for-higher-dimensional-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#numerical-comparison-good-for-higher-dimensional-models" class="anchor"></a>Numerical comparison (good for higher dimensional models)</h2>
 <p>Above we saw how to compare a epidemic to a model (through simulations), and how to visually compare simulations in a time-free manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.</p>
+<<<<<<< HEAD
 <p>We provide one such metric, the <a href="https://en.wikipedia.org/wiki/Hausdorff_distance"><strong>Hausdorff Distance</strong></a>, which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically <code>hausdorff_dist()</code> can calculate this distance between <code>delta_ball</code> and <code>convex_hull</code> based prediction bands (with classes <code>delta_ball_structure</code> and <code>convex_hull_structure</code> respectively.</p>
+=======
+<p>We provide one such metric, the <a href="https://en.wikipedia.org/wiki/Hausdorff_distance"><strong>Hausdorff Distance</strong></a>, which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically <code><a href="../../reference/hausdorff_dist.html">hausdorff_dist()</a></code> can calculate this distance between <code>delta_ball</code> and <code>convex_hull</code> based prediction bands (with classes <code>delta_ball_structure</code> and <code>convex_hull_structure</code> respectively.</p>
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">delta_ball_cb_group2</span> <span class="kw">&lt;-</span> <span class="no">df_group2</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="co"># just to be safe</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">t</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+<<<<<<< HEAD
   <span class="fu">grab_top_depth_filaments</span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>) <span class="kw">%&gt;%</span>
   <span class="fu">create_delta_ball_structure</span>()</pre></body></html></div>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu">hausdorff_dist</span>(<span class="no">delta_ball_cb1</span>, <span class="no">delta_ball_cb_group2</span>)
+=======
+  <span class="fu"><a href="../../reference/grab_top_depth_filaments.html">grab_top_depth_filaments</a></span>(<span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/create_delta_ball_structure.html">create_delta_ball_structure</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="../../reference/hausdorff_dist.html">hausdorff_dist</a></span>(<span class="no">delta_ball_cb1</span>, <span class="no">delta_ball_cb_group2</span>)
+>>>>>>> 4dc72c36bf420d97f2d39126bcd15b61ecaaff19
 <span class="co">#&gt; [1] 0.2294748</span></pre></body></html></div>
 </div>
 </div>
