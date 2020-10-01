@@ -297,7 +297,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
                                                       .data$piece_old,
                                                       .data$group_old,
                                                       sep = "*"))),
-                                       group = piece)
+                                       group = .data$piece)
 
     return(data_cleaned_up)
   },
