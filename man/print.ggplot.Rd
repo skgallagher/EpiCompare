@@ -21,7 +21,7 @@ list with components that contain the plot itself, the data, information
 about the scales, panels etc.
 }
 \description{
-Makes sure both \code{\link[ggtern:::print.ggplot]{ggtern}} and 
-\code{\link[ggplot2:::print.ggplot]{ggplot2}} objects 
-display correctly.
+Makes sure both \code{\link[ggtern]{ggtern}} and 
+\code{\link[ggplot2]{ggplot2}} objects 
+display correctly with the \code{print.ggplot} function.
 }

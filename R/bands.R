@@ -287,8 +287,9 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
   ggplot2::Stat,
   compute_layer = function(self, data, params, layout){
     # first run the regular layer calculation to infer densities
+    #browser()
     data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
-
+    #browser()
     # required piece and group to be cleaned up
     data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                        group_old = .data$group,
@@ -297,7 +298,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
                                                       .data$piece_old,
                                                       .data$group_old,
                                                       sep = "*"))),
-                                       group = .data$piece)
+                                       group = piece)
 
     return(data_cleaned_up)
   },
@@ -311,7 +312,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
 
     info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
 
-    data <- data %>% mutate(sim_group = factor(sim_group))
+    data <- data %>% dplyr::mutate(sim_group = factor(sim_group))
 
     data2d <- data %>% get_xy_coord(xyz_col = c("x", "y", "z"))
 
@@ -328,7 +329,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
       dplyr::bind_rows(.id = "kde_poly")
 
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
-                                   select(-kde_poly, -level),
+                                   dplyr::select(-kde_poly, -level),
                                  coord = ggtern::coord_tern()) %>%
       cbind(., piece = as.integer(kde_ci_df$kde_poly)) %>%
       dplyr::mutate(PANEL = info_inner[1],
@@ -352,7 +353,7 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
       data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
       # required piece and group to be cleaned up
-      data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+      data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                          group_old = .data$group,
                                          piece = as.numeric(
                                            factor(paste(.data$PANEL,
@@ -467,7 +468,7 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
 
        #browser()
        # required piece and group to be cleaned up
-       data_cleaned_up <- data %>% mutate(piece_old = .data$piece,
+       data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                           group_old = .data$group,
                                           piece = as.numeric(
                                             factor(paste(.data$PANEL,

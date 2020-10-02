@@ -102,7 +102,7 @@
 
       
 
-      </header><script src="hagelloch-sir-stochastic_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
+      </header><script src="hagelloch-sir-stochastic_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Hagelloch Measles – Fitting the deterministic, continuous time SIR model</h1>
@@ -175,7 +175,7 @@ X_R(t) = X_R(t-1) + Z_{IR}.
 <p><span class="math display">\[
 \ell(\beta, \gamma, x) = \sum_{t=1}^T \left (S(t-1) - S(t) \right)\log(p_{t-1}) + S(t)\log\left (1-p_{t-1} \right )  + \left ({R}(t) - R(t-1) \right)\log(\gamma)  + \left (I(t-1) - (R(t) - R(t-1)) \right )\log(1 - \gamma).
 \]</span></p>
-<p>An alternative to the above log likelihood is substituting the <em>data</em> <span class="math inline">\(x_S(t)\)</span>, <span class="math inline">\(x_I(t)\)</span>, and <span class="math inline">\(x_R(t)\)</span> for <span class="math inline">\(S(t), I(t)\)</span>, and <span class="math inline">\(R(t)\)</span>, respectively, which is what we do below (because it is easier to compute for demonstrative purposes).</p>
+<p>An approximation to the above log likelihood is substituting the <em>data</em> <span class="math inline">\(x_S(t)\)</span>, <span class="math inline">\(x_I(t)\)</span>, and <span class="math inline">\(x_R(t)\)</span> for <span class="math inline">\(S(t), I(t)\)</span>, and <span class="math inline">\(R(t)\)</span>, respectively, which is what we do below (because it is easier to compute for demonstrative purposes).</p>
 <p>After loading the libraries,</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyerse</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EpiCompare</span>)
@@ -186,10 +186,9 @@ X_R(t) = X_R(t-1) + Z_{IR}.
 <p>we get the aggregate SIR data from <code>hagelloch_raw</code> and define our deterministic, continuous time SIR model.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co">## Getting aggregate data</span>
 <span class="no">aggregate_hag</span> <span class="kw">&lt;-</span> <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
-  <span class="fu">agents_to_aggregate</span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">55</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)</pre></body></html></div>
-<p>We make a little function to calculate the log likelihood of our data below. Note that this function is ‘cheating’ in the sense that it double</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co">#' Calculate the SIR log like from above eq.</span>
 <span class="co">#' </span>
 <span class="co">#' @param par parameters to optimize</span>
@@ -220,15 +219,109 @@ X_R(t) = X_R(t-1) + Z_{IR}.
 
 <span class="no">best_params</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span>(<span class="kw">par</span> <span class="kw">=</span> <span class="no">init_params</span>, <span class="kw">fn</span> <span class="kw">=</span> <span class="no">sir_loglike</span>,
                      <span class="kw">control</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">fnscale</span> <span class="kw">=</span> -<span class="fl">1</span>), <span class="co"># switches from minimizing function to maximizing it</span>
-                     <span class="kw">data</span> <span class="kw">=</span> <span class="no">aggregate_hag</span>)
+                     <span class="kw">data</span> <span class="kw">=</span> <span class="no">aggregate_hag</span>,
+                     <span class="kw">hessian</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">best_params</span>$<span class="no">par</span>, <span class="kw">digits</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
 <pre><code>## [1] 0.36 0.13</code></pre>
 </div>
+<div id="simulating-new-outbreaks" class="section level2">
+<h2 class="hasAnchor">
+<a href="#simulating-new-outbreaks" class="anchor"></a>Simulating new outbreaks</h2>
+<p>Now that we have the best (point) estimate for <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span>, we can simulate new data.</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
+<span class="co">## This is the SIR representation</span>
+<span class="no">trans_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"X0 * (1 - X1 * par1 / N)"</span>, <span class="st">"X0 * X1  * par1 / N"</span>, <span class="st">"0"</span>,
+                  <span class="st">"0"</span>, <span class="st">"X1 * (1 - par2)"</span>, <span class="st">"par2 * X1"</span>,
+                  <span class="st">"0"</span>, <span class="st">"0"</span>, <span class="st">"X2"</span>), <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">trans_mat</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"R"</span>)
+<span class="no">init_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">187</span>, <span class="fl">1</span>, <span class="fl">0</span>)
+<span class="no">par_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">par1</span> <span class="kw">=</span> <span class="no">best_params</span>$<span class="no">par</span>[<span class="fl">1</span>], <span class="kw">par2</span> <span class="kw">=</span> <span class="no">best_params</span>$<span class="no">par</span>[<span class="fl">2</span>])
+<span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">55</span>
+<span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
+
+<span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_agents.html">simulate_agents</a></span>(<span class="no">trans_mat</span>,
+                       <span class="no">init_vals</span>,
+                       <span class="no">par_vals</span>,
+                       <span class="no">max_T</span>,
+                       <span class="no">n_sims</span>,
+                       <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+
+<span class="no">agg_model</span> <span class="kw">&lt;-</span> <span class="no">abm</span> <span class="kw">%&gt;%</span> <span class="fu">group_by</span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu">ggplot</span>() +
+    <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">agg_model</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">t</span> <span class="kw">!=</span> <span class="fl">0</span>),
+         <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>,
+              <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">sim</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>,
+                         <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>,
+                         <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"cornflowerblue"</span>) +
+    <span class="fu">coord_tern</span>() + <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>() +
+  <span class="fu">geom_point</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">aggregate_hag</span>,
+             <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span><span class="no">R</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>) +
+  <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Prediction band for best parameters and original data"</span>)</pre></body></html></div>
+<p>The result of this is a prediction band that does not fit the data well.</p>
+<p>However, the above prediction band only contains the simulations resulting from the point estimates of <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span>.</p>
+<p>We will repeat this process by first simulating <span class="math display">\[
+(\beta, \gamma)^{sim} \sim MVN\left ((\hat{\beta}, \hat{\gamma}), \hat{\boldsymbol{\Sigma}}\right )
+\]</span> where <span class="math inline">\((\hat{\beta}, \hat{\gamma})\)</span> is the MLE and <span class="math inline">\(\hat{\boldsymbol{\sigma}}\)</span> is the variance-covariance (estimated from the Fisher Information approximation from the optimization process)</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)</pre></body></html></div>
+<pre><code>## 
+## Attaching package: 'MASS'</code></pre>
+<pre><code>## The following object is masked from 'package:dplyr':
+## 
+##     select</code></pre>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span>(-<span class="no">best_params</span>$<span class="no">hessian</span>)
+<span class="no">mu</span> <span class="kw">&lt;-</span> <span class="no">best_params</span>$<span class="no">par</span>
+
+<span class="no">B</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
+<span class="no">sim_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span>(<span class="kw">mode</span> <span class="kw">=</span> <span class="st">"list"</span>, <span class="kw">length</span> <span class="kw">=</span> <span class="no">B</span>)
+<span class="no">par_val_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="no">B</span>, <span class="kw">mu</span> <span class="kw">=</span> <span class="no">mu</span>, <span class="kw">Sigma</span> <span class="kw">=</span> <span class="no">sigma</span>)
+
+<span class="kw">for</span>(<span class="no">bb</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">B</span>){
+
+  <span class="no">par_vals</span> <span class="kw">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"par1"</span> <span class="kw">=</span> <span class="no">par_val_mat</span>[<span class="no">bb</span>, <span class="fl">1</span>],
+                 <span class="st">"par2"</span> <span class="kw">=</span> <span class="no">par_val_mat</span>[<span class="no">bb</span>, <span class="fl">2</span>])
+
+
+  <span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_agents.html">simulate_agents</a></span>(<span class="kw">trans_mat</span> <span class="kw">=</span> <span class="no">trans_mat</span>,
+                       <span class="kw">init_vals</span> <span class="kw">=</span> <span class="no">init_vals</span>,
+                       <span class="kw">par_vals</span> <span class="kw">=</span> <span class="no">par_vals</span>,
+                       <span class="no">max_T</span>,
+                       <span class="kw">n_sims</span> <span class="kw">=</span> <span class="fl">2</span>,
+                       <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+  <span class="no">agg_model</span> <span class="kw">&lt;-</span> <span class="no">abm</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))
+  <span class="no">agg_model</span>$<span class="no">sim</span> <span class="kw">&lt;-</span> <span class="no">bb</span>
+  <span class="no">agg_model</span>$<span class="no">beta</span> <span class="kw">&lt;-</span> <span class="no">par_vals</span>[<span class="fl">1</span>]
+  <span class="no">agg_model</span>$<span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="no">par_vals</span>[<span class="fl">2</span>]
+  <span class="no">sim_list</span><span class="kw">[[</span><span class="no">bb</span>]] <span class="kw">&lt;-</span> <span class="no">agg_model</span>
+
+}
+
+<span class="no">sim_df</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(<span class="no">sim_list</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">plot_df</span> <span class="kw">&lt;-</span> <span class="no">sim_df</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">t</span> <span class="kw">!=</span> <span class="fl">0</span>) <span class="kw">%&gt;%</span>
+                           <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">sim</span>, <span class="no">t</span>, <span class="no">X0</span>, <span class="no">X1</span>, <span class="no">X2</span>)
+
+<span class="co">#bad_cat &lt;- names(table(plot_df$sim)[table(plot_df$sim) &lt; 55])</span>
+
+<span class="fu">ggplot</span>() +
+    <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">plot_df</span>,
+                         <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>,
+                             <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
+                         <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>, <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>,
+                         <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"cornflowerblue"</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"kde"</span>) +
+    <span class="fu">coord_tern</span>() + <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>() +
+  <span class="fu">geom_point</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">aggregate_hag</span>,
+             <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span><span class="no">R</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>) +
+  <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Prediction band for best parameters and original data"</span>)</pre></body></html></div>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: z</code></pre>
+<p><img src="hagelloch-sir-stochastic_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+</div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 <div id="ref-gallagher2019">
 <p>Gallagher, Shannon K. 2019. “Catalyst: Agents of Change. Integration of Compartment and Agent-Based Models for Use in Infectious Disease Methodology.” PhD thesis, Carnegie Mellon University. <a href="https://skgallagher.github.io/papers/gallagher_dissertation.pdf">https://skgallagher.github.io/papers/gallagher_dissertation.pdf</a>.</p>
 </div>

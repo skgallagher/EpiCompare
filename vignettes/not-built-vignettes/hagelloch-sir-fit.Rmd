@@ -12,7 +12,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      cache = TRUE,
+#                      cache = TRUE,
                       message = FALSE,
                       warning = FALSE)
 ```
@@ -51,7 +51,7 @@ In this series of vignettes, we will demonstrate epidemic analysis pipeline from
 After loading the libraries,
 
 ```{r, echo = FALSE}
-devtools::load_all()
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -61,16 +61,19 @@ library(knitr)
 library(kableExtra)
 library(RColorBrewer)
 library(deSolve)
+devtools::load_all()
+
 ```
 
 ```{r eval = FALSE}
-library(tidyerse)
+library(tidyverse)
 library(EpiCompare)
 library(knitr)
 library(kableExtra)
 library(RColorBrewer)
 library(deSolve)
 ```
+
 we get the aggregate SIR data from `hagelloch_raw` and define our deterministic, continuous time SIR model.
 
 

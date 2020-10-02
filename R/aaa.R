@@ -60,9 +60,9 @@ r_new_interface <- function() {
 
 #' Explicitly draw plot (\code{ggtern} and \code{ggplot2} compatible)
 #'
-#' Makes sure both \code{\link[ggtern:::print.ggplot]{ggtern}} and 
-#' \code{\link[ggplot2:::print.ggplot]{ggplot2}} objects 
-#' display correctly.
+#' Makes sure both \code{\link[ggtern]{ggtern}} and 
+#' \code{\link[ggplot2]{ggplot2}} objects 
+#' display correctly with the \code{print.ggplot} function.
 #'
 #' @param x plot to display
 #' @param newpage draw new (empty) page first?

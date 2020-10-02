@@ -11,14 +11,14 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      cache = TRUE,
-                      message = FALSE,
-                      warning = FALSE)
-devtools::load_all()
-library(EpiModel)
-library(dplyr)
-library(ggtern)
+# knitr::opts_chunk$set(echo = TRUE,
+#                       cache = TRUE,
+#                       message = FALSE,
+#                       warning = FALSE)
+# devtools::load_all()
+# library(EpiModel)
+# library(dplyr)
+# library(ggtern)
 ```
 
 
@@ -99,7 +99,8 @@ An approximation to the above log likelihood is substituting the *data* $x_S(t)$
 
 After loading the libraries,
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = F, warning = F}
+library(devtools)
 devtools::load_all()
 library(dplyr)
 library(tidyr)
@@ -205,7 +206,7 @@ abm <- simulate_agents(trans_mat,
                        n_sims,
                        verbose = FALSE)
 
-agg_model <- abm %>% dplyr::group_by(sim) %>%
+agg_model <- abm %>% group_by(sim) %>%
   agents_to_aggregate(states = c(I, R)) 
 ```
 
@@ -246,6 +247,7 @@ mu <- best_params$par
 B <- 100
 sim_list <- vector(mode = "list", length = B)
 par_val_mat <- mvrnorm(n = B, mu = mu, Sigma = sigma)
+
 for(bb in 1:B){
   
   par_vals <-  c("par1" = par_val_mat[bb, 1],
@@ -272,16 +274,17 @@ sim_df <- dplyr::bind_rows(sim_list)
 ```
 
 ```{r}
-
 plot_df <- sim_df %>% dplyr::filter(t != 0) %>%
                            dplyr::select(sim, t, X0, X1, X2)
 
+#bad_cat <- names(table(plot_df$sim)[table(plot_df$sim) < 55])
 
 ggplot() +
-    geom_prediction_band(data = plot_df,
-                aes(x = X0, y = X1, z = X2, 
-              sim_group = as.numeric(sim)), alpha = .5,
-                         fill = "cornflowerblue") +
+    geom_prediction_band(data = plot_df, 
+                         aes(x = X0, y = X1, z = X2,
+                             sim_group = as.numeric(sim)), 
+                         alpha = .5, conf_level = .95,
+                         fill = "cornflowerblue", pb_type = "kde") +
     coord_tern() + theme_sir() +
   geom_point(data = aggregate_hag,
              aes(x = S, y = I, z =R), col = "red") +
