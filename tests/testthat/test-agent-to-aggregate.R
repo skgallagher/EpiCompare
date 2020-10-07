@@ -789,18 +789,19 @@ test_that("agents_to_aggregate.group_df passes basic checks", {
   # similar test as in the example string
   max_time <- 100
   new_raw <- hagelloch_raw %>%
-    mutate(AGE2 = as.numeric(cut(AGE,3)))
-  agents_g <- new_raw %>% group_by(AGE2)
+    dplyr::mutate(AGE2 = as.numeric(cut(AGE,3)))
+  agents_g <- new_raw %>% dplyr::group_by(AGE2)
 
   sir_group <- agents_to_aggregate(agents_g, states = c(tI, tR),
                                    min_max_time = c(0, max_time))
   agents <- agents_g %>%
-    filter(AGE2 == 1) %>% ungroup()
+    dplyr::filter(AGE2 == 1) %>% dplyr::ungroup()
   sir_group1 <- agents_to_aggregate(agents, states = c(tI, tR),
                                    min_max_time = c(0, max_time))
-  sir_group_1 <- sir_group %>% filter(AGE2 == 1)
+  sir_group_1 <- sir_group %>% dplyr::filter(AGE2 == 1)
   testthat::expect_equal(sir_group1,
-                         sir_group_1 %>% ungroup %>% select(t, X0, X1, X2))
+                         dplyr::select(dplyr::ungroup(sir_group_1),
+                                       t, X0, X1, X2))
 })
 
 test_that("agents_to_aggregate.group_df -string passes basic checks", {
@@ -811,18 +812,19 @@ test_that("agents_to_aggregate.group_df -string passes basic checks", {
   # similar test as in the example string
   max_time <- 100
   new_raw <- hagelloch_raw %>%
-    mutate(AGE2 = as.numeric(cut(AGE,3)))
-  agents_g <- new_raw %>% group_by(AGE2)
+    dplyr::mutate(AGE2 = as.numeric(cut(AGE,3)))
+  agents_g <- new_raw %>% dplyr::group_by(AGE2)
 
   sir_group <- agents_to_aggregate(agents_g, states = c("tI", "tR"),
                                    min_max_time = c(0, max_time))
   agents <- agents_g %>%
-    filter(AGE2 == 1) %>% ungroup()
+    dplyr::filter(AGE2 == 1) %>% dplyr::ungroup()
   sir_group1 <- agents_to_aggregate(agents, states = c("tI", "tR"),
                                     min_max_time = c(0, max_time))
-  sir_group_1 <- sir_group %>% filter(AGE2 == 1)
+  sir_group_1 <- sir_group %>% dplyr::filter(AGE2 == 1)
   testthat::expect_equal(sir_group1,
-                         sir_group_1 %>% ungroup %>% select(t, X0, X1, X2))
+                         dplyr::select(dplyr::ungroup(sir_group_1),
+                                       t, X0, X1, X2))
 })
 
 test_that("agents_to_aggregate.group_df, max_t = NA basic checks", {
@@ -833,9 +835,10 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks", {
   # similar test as in the example string
   new_raw <- hagelloch_raw %>%
     mutate(AGE2 = as.numeric(cut(AGE,3)))
-  agents_g <- new_raw %>% group_by(AGE2)
+  agents_g <- new_raw %>% dplyr::group_by(AGE2)
 
-  max_time_each <- agents_g %>% summarize(nmax = ceiling(max(tR)))
+  max_time_each <- agents_g %>% 
+    dplyr::summarize(nmax = ceiling(max(tR)))
 
   max_time <- max_time_each %>% pull(nmax) %>% max()
 
@@ -843,12 +846,13 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks", {
                                    min_max_time = c(0, NA))
 
   # should all share max value if min_max_time[2] = NA
-  testthat::expect_equal(sum((sir_group %>% summarize(maxt = max(t)) %>%
-                           pull(maxt)) == max_time), 3)
+  testthat::expect_equal(sum((sir_group %>% 
+                                dplyr::summarize(maxt = max(t)) %>%
+                                dplyr::pull(maxt)) == max_time), 3)
 
   for (age2_value in 1:3){
     agents <- agents_g %>%
-      filter(AGE2 == age2_value) %>% ungroup()
+      dplyr::filter(AGE2 == age2_value) %>% dplyr::ungroup()
     sir_group_sub_id <- agents_to_aggregate(agents, states = c(tI, tR),
                                             min_max_time = c(0, NA))
     sir_group_sub_g <- sir_group %>% filter(AGE2 == age2_value)

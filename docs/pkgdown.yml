@@ -12,6 +12,7 @@ articles:
   hagelloch-eda: not-built-vignettes/hagelloch-eda.html
   hagelloch-mods: not-built-vignettes/hagelloch-mods.html
   hagelloch-sir-fit: not-built-vignettes/hagelloch-sir-fit.html
+  hagelloch-sir-stochastic: not-built-vignettes/hagelloch-sir-stochastic.html
   ternary-plots-explained: not-built-vignettes/ternary-plots-explained.html
-last_built: 2020-09-28T23:48Z
+last_built: 2020-10-07T01:51Z
 

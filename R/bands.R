@@ -276,6 +276,41 @@ get_grid_elipsoid_containment <- function(inside_func_list,
 }
 
 
+#' checks the provided dist_params to make sure they are what is expected 
+#'
+#' @param dist_params named list of parameters
+#' @param data data for visual 
+#'
+#' @return error or updated dist_params
+check_dist_params <- function(dist_params, data){
+  if (dist_params[["dist_approach"]] == "auto"){
+    dist_params[["dist_approach"]] <- "equa_dist"
+  }
+  if (dist_params[["dist_approach"]] == "equa_dist" & 
+      dist_params[["num_steps"]] == "auto"){
+    dist_params[["num_steps"]] <- 20
+  }
+  if (dist_params[["dist_approach"]] == "equa_dist"){
+    x <- dist_params[["num_steps"]]
+    tol <- 2*.Machine$double.eps
+    assertthat::assert_that(min(abs(c(x %% 1, x %% 1-1))) < tol,
+                            msg = paste("'dist_params$num_steps' must
+                                          be an positive integer or string 
+                                          'auto'."))
+  }
+  
+  if (dist_params[["dist_approach"]] == "temporal"){
+    counts <- data %>% as.data.frame() %>% 
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::summarize(total = dplyr::n())
+    assertthat::assert_that(length(unique(counts$total)) == 1,
+                            msg = paste("if dist_params$dist_approach is 
+                                          'temporal', then every path must
+                                          have the same number of points."))
+  }
+  return(dist_params)
+}
+
 
 # stats and geoms -------------------------
 
@@ -287,9 +322,9 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
   ggplot2::Stat,
   compute_layer = function(self, data, params, layout){
     # first run the regular layer calculation to infer densities
-    #browser()
+
     data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
-    #browser()
+
     # required piece and group to be cleaned up
     data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                        group_old = .data$group,
@@ -306,7 +341,8 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
                            pb_type = NULL,
                            #^ needed to match same format as stat/geom_prediction_band
                            grid_size = rep(100,2),
-                           conf_level = .9, over_delta = NULL){
+                           conf_level = .9, over_delta = NULL,
+                           dist_params = NULL){
     assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
 
@@ -350,6 +386,7 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
   compute_layer =
     function(self, data, params, layout){
       # first run the regular layer calculation to infer densities
+      
       data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
       # required piece and group to be cleaned up
@@ -369,9 +406,16 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
            pb_type = NULL,
            #^ needed to match same format as stat/geom_prediction_band
            grid_size = rep(100,2),
-           conf_level = .9, over_delta = .1){
+           conf_level = .9, over_delta = .1,
+           dist_params = list("dist_approach"= "auto",
+                          "num_steps" = "auto")){
+    ## Checks
+    # sim_group input
     assertthat::assert_that(!is.factor(data$sim_group),
                             msg = paste("'sim_group' cannot be a factor"))
+    # distance parameters 
+    dist_params <- check_dist_params(dist_params, data)
+    
 
     info_inner <- data[, c("PANEL", "group")] %>%
       sapply(unique) %>% unname
@@ -379,12 +423,34 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
     data2d <- data %>% as.data.frame() %>%
       get_xy_coord(xyz_col = c("x", "y", "z"))
 
-    data2d_list <- split(x = data2d, f = data2d$sim_group)
-    xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+    if (dist_params$dist_approach == "equa_dist"){ 
+      data2d_equa_dist <- data2d %>%
+        dplyr::group_by(.data$sim_group) %>%
+        filament_compression(data_columns = c("x","y"), 
+                             number_points = dist_params$num_steps) 
+      
+      data2d_list <- split(x = data2d_equa_dist, f = data2d_equa_dist$sim_group)
+      xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+      
+      
+      dist_mat <- dist_matrix_innersq_direction(data2d_list,
+                                                position = xy_position,
+                                                verbose = FALSE)
+      
+      data2d_list <- split(x = data2d, f = data2d$sim_group)
+      
+    } else {
+      
+      data2d_list <- split(x = data2d, f = data2d$sim_group)
+      xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+      
+      
+      dist_mat <- dist_matrix_innersq_direction(data2d_list,
+                                                position = xy_position,
+                                                verbose = FALSE)
+    }
+    
 
-    dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                    position = xy_position,
-                                    verbose = FALSE)
     data_deep_points <- depth_curves_to_points(data2d_list,
                                                alpha = 1 - conf_level, # switch from alpha to conf_level
                                                dist_mat = dist_mat)
@@ -466,7 +532,6 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
        # first run the regular layer calculation to infer densities
        data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
-       #browser()
        # required piece and group to be cleaned up
        data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
                                           group_old = .data$group,
@@ -484,7 +549,8 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
               pb_type = NULL,
               #^ needed to match same format as stat/geom_prediction_band
               grid_size = rep(100,2),
-              conf_level = .9, over_delta = .1){
+              conf_level = .9, over_delta = .1,
+              dist_params = NULL){
         assertthat::assert_that(!is.factor(data$t),
                                 msg = paste("'t' cannot be a factor"))
 
@@ -572,9 +638,16 @@ StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
     ggplot2::Stat,
     compute_group =
       function(data, scales, pb_type = NULL, grid_size = NULL,
-               conf_level = .9, over_delta = NULL){
+               conf_level = .9, over_delta = NULL,
+               dist_params = list("dist_approach"= "auto",
+                               "num_steps" = "auto")){
+        ## Checks
+        # sim_group input
         assertthat::assert_that(!is.factor(data$sim_group),
                                 msg = paste("'sim_group' cannot be a factor"))
+        # distance parameters 
+        dist_params <- check_dist_params(dist_params, data)
+        
 
         info_inner <- data[, c("PANEL", "group")] %>%
           sapply(unique)
@@ -582,12 +655,35 @@ StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
         data2d <- data %>% as.data.frame() %>%
           get_xy_coord(xyz_col = c("x", "y", "z"))
 
-        data2d_list <- split(x = data2d, f = data2d$sim_group)
-        xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-
-        dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                        position = xy_position,
-                                        verbose = FALSE)
+        
+        if (dist_params$dist_approach == "equa_dist"){ 
+          data2d_equa_dist <- data2d %>%
+            dplyr::group_by(.data$sim_group) %>%
+            filament_compression(data_columns = c("x","y"), 
+                                 number_points = dist_params$num_steps) 
+          
+          data2d_list <- split(x = data2d_equa_dist, 
+                               f = data2d_equa_dist$sim_group)
+          xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+          
+          
+          dist_mat <- dist_matrix_innersq_direction(data2d_list,
+                                                    position = xy_position,
+                                                    verbose = FALSE)
+          
+          data2d_list <- split(x = data2d, f = data2d$sim_group)
+          
+        } else {
+          
+          data2d_list <- split(x = data2d, f = data2d$sim_group)
+          xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+          
+          
+          dist_mat <- dist_matrix_innersq_direction(data2d_list,
+                                                    position = xy_position,
+                                                    verbose = FALSE)
+        }
+        
         data_deep_points <- depth_curves_to_points(
           data2d_list, alpha = 1 - conf_level, # switch from alpha to conf_level
           dist_mat = dist_mat) %>%
@@ -615,37 +711,39 @@ StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
 stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  position = "identity", na.rm = FALSE,
                                  show.legend = NA, inherit.aes = TRUE,
-                                 pb_type = c("kde", "delta_ball",
+                                 pb_type = c("delta_ball", "kde", 
                                              "spherical_ball",
                                              "convex_hull"),
                                  grid_size = rep(100, 2),
                                  conf_level = .9,
                                  over_delta = .1,
+                                 dist_params = list("dist_approach"= "auto",
+                                                 "num_steps" = "auto"),
                                  ...) {
 
   if (length(pb_type) > 1){
     pb_type <- pb_type[1]
   }
 
-  assertthat::assert_that(pb_type %in% c("kde", "delta_ball",
+  assertthat::assert_that(pb_type %in% c("delta_ball", "kde", 
                                          "spherical_ball", "convex_hull"),
                           msg = paste("bc_type needs to either be 'kde' or",
                                       "'delta_ball' or 'spherical_ball' or",
                                       "'convex_hull'."))
 
   ggplot2::layer(
-    stat = list(StatPredBandKDE,
-                StatPredBandDeltaBall,
+    stat = list(StatPredBandDeltaBall,
+                StatPredBandKDE,
                 StatPredBandSpherical,
                 StatPredBandConvexHull)[
-                  which(c("kde", "delta_ball",
+                  which(c("delta_ball", "kde", 
                           "spherical_ball", "convex_hull") == pb_type)
                   ][[1]],
     data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, conf_level = conf_level,
-                  grid_size = grid_size, ...)
+                  grid_size = grid_size, dist_params = dist_params, ...)
   )
 }
 
@@ -700,6 +798,10 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'   the paired \code{geom}/\code{stat}.
 #' @param over_delta defines small extension of box around actual points to define
 #' contour.
+#' @param dist_params list of parameters for distance based approaches (convex 
+#' hull and delta ball). Named parameters are \code{dist_approach} with options
+#' \code{c("auto", "temporal", "equa_dist")}, and \code{num_steps} as either
+#' an integer or "auto". 
 #'
 #' @details
 #'
@@ -824,11 +926,11 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'             vis_delta_ball, vis_kde,
 #'             vis_convex_hull, nrow = 2)
 geom_prediction_band <- function(mapping = NULL, data = NULL,
-                                 stat = list("PredBandKDE",
-                                             "PredBandDeltaBall",
+                                 stat = list("PredBandDeltaBall",
+                                             "PredBandKDE",
                                              "PredBandSpherical",
                                              "PredBandConvexHull")[
-                                               c("kde", "delta_ball",
+                                               c("delta_ball", "kde", 
                                                  "spherical_ball",
                                                  "convex_hull") == pb_type
                                                ][[1]],
@@ -836,12 +938,14 @@ geom_prediction_band <- function(mapping = NULL, data = NULL,
                                  na.rm = FALSE,
                                  show.legend = NA,
                                  inherit.aes = TRUE,
-                                 pb_type = c("kde", "delta_ball",
+                                 pb_type = c("delta_ball", "kde", 
                                              "spherical_ball",
                                              "convex_hull"),
                                  grid_size = rep(100, 2),
                                  conf_level = .9,
                                  over_delta = .1,
+                                 dist_params = list("dist_approach"= "auto",
+                                                 "num_steps" = "auto"),
                                  ...) {
   ggplot2::layer(
     data = data,
@@ -852,8 +956,9 @@ geom_prediction_band <- function(mapping = NULL, data = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
-      na.rm = na.rm, grid_size = grid_size, conf_level = conf_level ,
+      na.rm = na.rm, grid_size = grid_size, conf_level = conf_level,
       over_delta = over_delta,
+      dist_params = dist_params,
       ...
     )
   )

@@ -164,27 +164,29 @@
   <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>pb_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"kde"</span>, <span class='st'>"delta_ball"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>),
+  <span class='kw'>pb_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"delta_ball"</span>, <span class='st'>"kde"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>),
   <span class='kw'>grid_size</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>100</span>, <span class='fl'>2</span>),
   <span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>over_delta</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>),
   <span class='no'>...</span>
 )
 
 <span class='fu'>geom_prediction_band</span>(
   <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>stat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"PredBandKDE"</span>, <span class='st'>"PredBandDeltaBall"</span>, <span class='st'>"PredBandSpherical"</span>,
-    <span class='st'>"PredBandConvexHull"</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"kde"</span>, <span class='st'>"delta_ball"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>) <span class='kw'>==</span>
+  <span class='kw'>stat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"PredBandDeltaBall"</span>, <span class='st'>"PredBandKDE"</span>, <span class='st'>"PredBandSpherical"</span>,
+    <span class='st'>"PredBandConvexHull"</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"delta_ball"</span>, <span class='st'>"kde"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>) <span class='kw'>==</span>
     <span class='no'>pb_type</span>]<span class='kw'>[[</span><span class='fl'>1</span>]],
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
   <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>pb_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"kde"</span>, <span class='st'>"delta_ball"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>),
+  <span class='kw'>pb_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"delta_ball"</span>, <span class='st'>"kde"</span>, <span class='st'>"spherical_ball"</span>, <span class='st'>"convex_hull"</span>),
   <span class='kw'>grid_size</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>100</span>, <span class='fl'>2</span>),
   <span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>over_delta</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>),
   <span class='no'>...</span>
 )</pre>
 
@@ -262,6 +264,13 @@ speed-up computation.</p></td>
       <th>over_delta</th>
       <td><p>defines small extension of box around actual points to define
 contour.</p></td>
+    </tr>
+    <tr>
+      <th>dist_params</th>
+      <td><p>list of parameters for distance based approaches (convex 
+hull and delta ball). Named parameters are <code>dist_approach</code> with options
+<code><a href='https://rdrr.io/r/base/c.html'>c("auto", "temporal", "equa_dist")</a></code>, and <code>num_steps</code> as either
+an integer or "auto".</p></td>
     </tr>
     <tr>
       <th>...</th>

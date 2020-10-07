@@ -113,6 +113,8 @@ The data also includes $tI$ and $tR$ which are estimated times of infection and 
 ```{r class.source = 'fold-hide', fig.height = 8}
 hagelloch_raw %>% arrange(HN, NAME) %>%
   mutate(new_id = paste(HN, NAME, PN, sep = "-")) %>%
+  group_by(HN) %>%
+  mutate(new_id = forcats::fct_reorder(new_id, -tI)) %>%
 ggplot2::ggplot(aes(y = new_id, col = factor(HN))) +
   scale_colour_manual(values=rep(brewer.pal(5,"Set1"),
                                 times= ceiling(length(unique(hagelloch_raw$HN)) / 5)),
@@ -121,7 +123,8 @@ ggplot2::ggplot(aes(y = new_id, col = factor(HN))) +
   labs(x = "Date",
        y = "Child ID",
        title = "Infection time of children",
-       subtitle = "Colored by household ID (with recycled colors)") 
+       subtitle = "Colored by household ID (with recycled colors)") +
+  theme(axis.text.y = element_text(size = 4))
 ```
 
 ### By School Grade
@@ -129,13 +132,16 @@ ggplot2::ggplot(aes(y = new_id, col = factor(HN))) +
 ```{r class.source = 'fold-hide', fig.height = 8}
 hagelloch_raw %>% arrange(CL) %>%
   mutate(new_id = paste(CL, PN, sep = "-")) %>%
+  group_by(CL) %>%
+  mutate(new_id = forcats::fct_reorder(new_id, -tI)) %>%
 ggplot2::ggplot(aes(y = new_id, col = CL))+
   geom_errorbarh(aes(xmax = tR, xmin = tI), size  = 1) + theme_bw() + 
   labs(x = "Date",
        y = "Child ID",
        title = "Infection time of children",
-       subtitle = "Colored by school grade range") +
-  viridis::scale_color_viridis(discrete = TRUE, end = .8)
+       color = "School Grade") +
+  viridis::scale_color_viridis(discrete = TRUE, end = .8) +
+  theme(axis.text.y = element_text(size = 4))
 ```
 
 ## {-}
@@ -155,7 +161,8 @@ hagelloch_raw %>% filter(inf_trans > 0) %>%
   coord_flip() + 
    viridis::scale_fill_viridis(discrete = TRUE, end = .8) +
   labs(x = "ID", y = "Number of (suspected) transmissions",
-       title = "(Suspected) Number of infections caused by child") + theme_bw()
+       title = "(Suspected) Number of infections caused by child") + 
+  theme_bw()
 
 ```
 
