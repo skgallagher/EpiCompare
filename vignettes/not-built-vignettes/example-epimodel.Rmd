@@ -172,7 +172,7 @@ fortified_net %>%
   ggplot() +
     geom_prediction_band(aes(x = X0, y = X1, z = X2, t = t, sim_group = as.numeric(sim)),
                          alpha = .2, fill = "blue", color = "blue",
-                         conf_level = .9, pb_type = "kde") +
+                         conf_level = .9, pb_type = "delta_ball") +
     geom_line(aes(x = X0, y = X1, z = X2, group = sim), alpha = .2) +
     coord_tern() + theme_zoom_L(.45)
 ```

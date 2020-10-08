@@ -722,7 +722,126 @@ test_that(paste("geom_prediction_band correctly deals with multiple groups,",
             }
           })
 
+# different length time series
+
+trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
+                      "0", "X1 * (1 - par2)", "par2 * X1",
+                      "0", "0", "X2"), byrow = TRUE, nrow = 3)
+rownames(trans_mat) <- c("S", "I", "R")
+init_vals <- c(187, 1, 0)
+par_vals <- c("par1" = .2, "par2" = .1)
+max_T <- 55
+n_sims <- 20
+
+B <- 5
+
+sigma <- matrix(c(6.401576e-04, 2.706480e-15,
+                  2.706480e-15, 7.437683e-05),
+                nrow = 2, byrow = T)
+mu <- c(0.362442, 0.126167)
+
+par_val_mat <- MASS::mvrnorm(n = B, mu = mu, Sigma = sigma)
 
 
+set.seed(11)
+sim_list <- vector(mode = "list", length = B)
+for(bb in 1:B){
+  
+  par_vals <-  c("par1" = par_val_mat[bb, 1],
+                 "par2" = par_val_mat[bb, 2])
+  
+  
+  abm <- simulate_agents(trans_mat = trans_mat,
+                         init_vals = init_vals,
+                         par_vals = par_vals,
+                         max_T = max_T,
+                         n_sims = 2,
+                         verbose = FALSE)
+  agg_model <- abm %>% dplyr::group_by(sim) %>% 
+    agents_to_aggregate(states = c(I, R)) %>%
+    ungroup()
+  agg_model$batch <- bb
+  agg_model$beta <- par_vals[1]
+  agg_model$gamma <- par_vals[2]
+  sim_list[[bb]] <- agg_model
+  
+}
+
+sim_df <- dplyr::bind_rows(sim_list)
+sim_df2 <- sim_df
+#table(sim_df$batch, sim_df$sim) # shouldn't all be the same for check
+sim_df$id <- paste0(sim_df$batch, ".",
+                    sim_df$sim)
+
+plot_df <- sim_df %>% dplyr::filter(t != 0) %>%
+  dplyr::select(id, t, X0, X1, X2)
+
+
+test_that(paste("'delta_ball' geom_prediction_band works with different length",
+                "simulations."), {
+  tab_sdf <- table(sim_df2$batch, sim_df2$sim)
+  testthat::expect_gt(length(unique(tab_sdf)), 1)
+  
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull")[1]
+  ggplot() +
+    geom_prediction_band(data = plot_df,
+                         aes(x = X0, y = X1, z = X2, 
+                             sim_group = as.numeric(id)), alpha = .5,
+                         fill = "cornflowerblue",
+                         pb_type = pb_type) +
+    coord_tern() + theme_sir() +
+    labs(title = "Prediction band for best parameters")   
+
+})
+
+
+test_that(paste("'kde' geom_prediction_band works with different length",
+                "simulations."), {
+  tab_sdf <- table(sim_df2$batch, sim_df2$sim)
+  testthat::expect_gt(length(unique(tab_sdf)), 1)
+  
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull")[2]
+  ggplot() +
+    geom_prediction_band(data = plot_df,
+                         aes(x = X0, y = X1, z = X2, 
+                             sim_group = as.numeric(id)), alpha = .5,
+                         fill = "cornflowerblue",
+                         pb_type = pb_type) +
+    coord_tern() + theme_sir() +
+    labs(title = "Prediction band for best parameters")
+})
+
+
+test_that(paste("'spherical_ball' geom_prediction_band works with different",
+                "length simulations."), {
+  tab_sdf <- table(sim_df2$batch, sim_df2$sim)
+  testthat::expect_gt(length(unique(tab_sdf)), 1)
+  
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull")[3]
+  ggplot() +
+    geom_prediction_band(data = plot_df,
+                         aes(x = X0, y = X1, z = X2, 
+                             t = as.numeric(t)), alpha = .5,
+                         fill = "cornflowerblue",
+                         pb_type = pb_type) +
+    coord_tern() + theme_sir() +
+    labs(title = "Prediction band for best parameters")
+})
+
+test_that(paste("'convex_hull' geom_prediction_band works with different",
+                "length simulations."), {
+  tab_sdf <- table(sim_df2$batch, sim_df2$sim)
+  testthat::expect_gt(length(unique(tab_sdf)), 1)
+    
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull")[4]
+  ggplot() +
+    geom_prediction_band(data = plot_df,
+                         aes(x = X0, y = X1, z = X2, 
+                             sim_group = as.numeric(id)), alpha = .5,
+                         fill = "cornflowerblue",
+                         pb_type = pb_type) +
+    coord_tern() + theme_sir() +
+    labs(title = "Prediction band for best parameters")
+})
 
 

@@ -115,8 +115,8 @@ flu_data %>% head() %>% DT::datatable(options = list(scrollX = TRUE))
 start_year = 1999
 end_year = 2017
 flu_season_info_df <- data.frame(year = start_year:end_year) %>%
-  mutate(start_date = paste0(as.character(year), "-10-01"),
-         end_date = paste0(as.character(year+1), "-08-30"),
+  mutate(start_date = paste0(as.character(year), "-09-16"), # splitting september equally
+         end_date = paste0(as.character(year+1), "-09-15"),
          even_year = c( "odd", "even")[(year %% 2) + 1]) %>%
   mutate(start_date = as.Date(start_date, format= "%Y-%m-%d"),
          end_date = as.Date(end_date, format= "%Y-%m-%d"))

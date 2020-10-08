@@ -13,27 +13,29 @@ stat_prediction_band(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  pb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
   conf_level = 0.9,
   over_delta = 0.1,
+  dist_params = list(dist_approach = "auto", num_steps = "auto"),
   ...
 )
 
 geom_prediction_band(
   mapping = NULL,
   data = NULL,
-  stat = list("PredBandKDE", "PredBandDeltaBall", "PredBandSpherical",
-    "PredBandConvexHull")[c("kde", "delta_ball", "spherical_ball", "convex_hull") ==
+  stat = list("PredBandDeltaBall", "PredBandKDE", "PredBandSpherical",
+    "PredBandConvexHull")[c("delta_ball", "kde", "spherical_ball", "convex_hull") ==
     pb_type][[1]],
   position = "identity",
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  pb_type = c("kde", "delta_ball", "spherical_ball", "convex_hull"),
+  pb_type = c("delta_ball", "kde", "spherical_ball", "convex_hull"),
   grid_size = rep(100, 2),
   conf_level = 0.9,
   over_delta = 0.1,
+  dist_params = list(dist_approach = "auto", num_steps = "auto"),
   ...
 )
 }
@@ -89,6 +91,11 @@ speed-up computation.}
 
 \item{over_delta}{defines small extension of box around actual points to define
 contour.}
+
+\item{dist_params}{list of parameters for distance based approaches (convex 
+hull and delta ball). Named parameters are \code{dist_approach} with options
+\code{c("auto", "temporal", "equa_dist")}, and \code{num_steps} as either
+an integer or "auto".}
 
 \item{...}{Other arguments passed on to \code{\link[ggplot2]{layer}}. These
 are often aesthetics, used to set an aesthetic to a fixed value, like

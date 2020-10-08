@@ -75,9 +75,12 @@ r_new_interface <- function() {
 #' @export
 print.ggplot <- function(x, newpage = is.null(vp), vp = NULL, ...){
   if(inherits(x$coordinates, "CoordTern")){
-    ggtern:::print.ggplot(x, newpage = newpage, vp = vp, ...)
-    
+    #ggtern:::print.ggplot(x, newpage = newpage, vp = vp, ...)
+    print.ggplot <- imports_hidden_from("ggtern", "print.ggplot")
+    print.ggplot(x, newpage = newpage, vp = vp, ...)
   } else {
-    ggplot2:::print.ggplot(x, newpage = newpage, vp = vp, ...)
+    #ggplot2:::print.ggplot(x, newpage = newpage, vp = vp, ...)
+    print.ggplot <- imports_hidden_from("ggplot2", "print.ggplot")
+    print.ggplot(x, newpage = newpage, vp = vp, ...)
   }
 }

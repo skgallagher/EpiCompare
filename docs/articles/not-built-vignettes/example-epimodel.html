@@ -102,7 +102,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="example-epimodel_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using EpiModel models with EpiCompare</h1>
@@ -390,7 +390,7 @@
   <span class="fu">ggplot</span>() +
     <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>, <span class="kw">t</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                          <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>,
-                         <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"kde"</span>) +
+                         <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>) +
     <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">sim</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>) +
     <span class="fu">coord_tern</span>() + <span class="fu">theme_zoom_L</span>(<span class="fl">.45</span>)</pre></body></html></div>
 <pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>

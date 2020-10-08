@@ -84,6 +84,7 @@ articles:
     - 'not-built-vignettes/hagelloch-eda'
     - 'not-built-vignettes/hagelloch-mods'
     - 'not-built-vignettes/hagelloch-sir-fit'
+    - 'not-built-vignettes/hagelloch-sir-stochastic'
 - title: Data examples
   desc: Vignettes that take a dive into different datasets
   contents:
