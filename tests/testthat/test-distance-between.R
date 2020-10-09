@@ -377,3 +377,38 @@ test_that("get_xy_coord tests", {
                               y = c(0, .5*sqrt(3),0))
   testthat::expect_equivalent(df2d, df2d_expected)
 })
+
+
+# COME HERE
+test_that(paste("equa_dist_points_direction",
+                "should be able to deal with a path of length 0"), {
+    x <- rnorm(n = 1)
+    y <- rnorm(n = 1)
+    
+    df <- data.frame(x = rep(x, 100), y  = rep(y, 100))
+    
+    n_split <- sample(x = 5:25, size = 1)
+    
+    df_equa <- equa_dist_points_direction(df, num_splits = n_split)
+    
+    testthat::expect_equal(df_equa, data.frame(x = rep(x, n_split),
+                                               y = rep(y, n_split)))
+    
+    
+})
+
+test_that(paste("equa_dist_points_angle",
+                "should be able to deal with a path of length 0"), {
+    x <- rnorm(n = 1)
+    y <- rnorm(n = 1)
+    
+    df <- data.frame(x = rep(x, 100), y  = rep(y, 100))
+    
+    n_split <- sample(x = 5:25, size = 1)
+    
+    df_equa <- equa_dist_points_angle(df, num_splits = n_split)
+    
+    testthat::expect_equal(df_equa, data.frame(x = rep(x, n_split),
+                                               y = rep(y, n_split)))
+                  
+})

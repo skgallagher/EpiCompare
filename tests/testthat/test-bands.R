@@ -700,7 +700,6 @@ test_that(paste("spherical_ball correctly seperates subsections,",
   }
 })
 
-
 test_that(paste("geom_prediction_band correctly deals with multiple groups,",
                 "(spherical)"),
           {
@@ -722,7 +721,7 @@ test_that(paste("geom_prediction_band correctly deals with multiple groups,",
             }
           })
 
-# different length time series
+# different length time series ----------------------
 
 trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
                       "0", "X1 * (1 - par2)", "par2 * X1",
@@ -845,3 +844,6 @@ test_that(paste("'convex_hull' geom_prediction_band works with different",
 })
 
 
+
+
+# 

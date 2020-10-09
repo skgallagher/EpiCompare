@@ -287,7 +287,8 @@
 
 <span class="fu">grid.arrange</span>(<span class="no">global_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"global-based prediction band"</span>),
              <span class="no">local_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"local-based prediction band"</span>),
-             <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+             <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1</span>)
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 <div id="beyond-depth-a-psuedo-density-approach" class="section level1">
@@ -334,7 +335,7 @@
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r">
 <span class="no">psuedo_density_data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span>()
-<span class="co">#&gt; [1] 0.0009835356 0.0130760907</span>
+<span class="co">#&gt; [1] 0.001644933 0.013273369</span>
 
 <span class="no">df_all_pd</span> <span class="kw">%&gt;%</span>
   <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">psuedo_density</span>^<span class="fl">2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">id2</span>)) +
@@ -364,7 +365,9 @@
              <span class="no">local_depth_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"local depth based prediction band"</span>),
              <span class="no">psuedo_density_pb</span> + <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"psuedo-density based prediciton band"</span>),
              <span class="fu">ggplot</span>() + <span class="fu">theme_minimal</span>(),
-             <span class="kw">layout_matrix</span> <span class="kw">=</span> <span class="no">layout_mat</span>)</pre></body></html></div>
+             <span class="kw">layout_matrix</span> <span class="kw">=</span> <span class="no">layout_mat</span>)
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span>
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></pre></body></html></div>
 <p><img src="depths-impact-on-prediction-bands_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 </div>
 <div id="references" class="section level1 unnumbered">

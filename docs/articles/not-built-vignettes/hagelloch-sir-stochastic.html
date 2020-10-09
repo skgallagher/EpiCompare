@@ -262,19 +262,20 @@ X_R(t) = X_R(t-1) + Z_{IR}.
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Prediction band for best parameters and original data"</span>)</pre></body></html></div>
 <pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
 <pre><code>## Warning: Ignoring unknown aesthetics: z</code></pre>
+<pre><code>## Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</code></pre>
 <p><img src="hagelloch-sir-stochastic_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The result of this is a prediction band that does not fit the data well.</p>
 <p>However, the above prediction band only contains the simulations resulting from the point estimates of <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span>.</p>
 <p>We will repeat this process by first simulating <span class="math display">\[
 (\beta, \gamma)^{sim} \sim MVN\left ((\hat{\beta}, \hat{\gamma}), \hat{\boldsymbol{\Sigma}}\right )
 \]</span> where <span class="math inline">\((\hat{\beta}, \hat{\gamma})\)</span> is the MLE and <span class="math inline">\(\hat{\boldsymbol{\sigma}}\)</span> is the variance-covariance (estimated from the Fisher Information approximation from the optimization process)</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)</pre></body></html></div>
 <pre><code>## 
 ## Attaching package: 'MASS'</code></pre>
 <pre><code>## The following object is masked from 'package:dplyr':
 ## 
 ##     select</code></pre>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span>(-<span class="no">best_params</span>$<span class="no">hessian</span>)
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span>(-<span class="no">best_params</span>$<span class="no">hessian</span>)
 <span class="no">mu</span> <span class="kw">&lt;-</span> <span class="no">best_params</span>$<span class="no">par</span>
 
 <span class="no">B</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
@@ -303,7 +304,7 @@ X_R(t) = X_R(t-1) + Z_{IR}.
 }
 
 <span class="no">sim_df</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span>(<span class="no">sim_list</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">plot_df</span> <span class="kw">&lt;-</span> <span class="no">sim_df</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">t</span> <span class="kw">!=</span> <span class="fl">0</span>) <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">plot_df</span> <span class="kw">&lt;-</span> <span class="no">sim_df</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">t</span> <span class="kw">!=</span> <span class="fl">0</span>) <span class="kw">%&gt;%</span>
                            <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">sim</span>, <span class="no">t</span>, <span class="no">X0</span>, <span class="no">X1</span>, <span class="no">X2</span>)
 
 <span class="co">#bad_cat &lt;- names(table(plot_df$sim)[table(plot_df$sim) &lt; 55])</span>
@@ -322,6 +323,7 @@ X_R(t) = X_R(t-1) + Z_{IR}.
   <span class="fu">labs</span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Prediction band for best parameters and original data"</span>)</pre></body></html></div>
 <pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
 <pre><code>## Warning: Ignoring unknown aesthetics: z</code></pre>
+<pre><code>## Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</code></pre>
 <p><img src="hagelloch-sir-stochastic_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div id="references" class="section level2 unnumbered">

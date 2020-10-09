@@ -409,6 +409,7 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
            conf_level = .9, over_delta = .1,
            dist_params = list("dist_approach"= "auto",
                           "num_steps" = "auto")){
+    
     ## Checks
     # sim_group input
     assertthat::assert_that(!is.factor(data$sim_group),
@@ -416,7 +417,6 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
     # distance parameters 
     dist_params <- check_dist_params(dist_params, data)
     
-
     info_inner <- data[, c("PANEL", "group")] %>%
       sapply(unique) %>% unname
 
@@ -424,6 +424,11 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
       get_xy_coord(xyz_col = c("x", "y", "z"))
 
     if (dist_params$dist_approach == "equa_dist"){ 
+      message(paste("Due to dist_params$dist_approach = \"equa_dist\",",
+                     "this may take a little while - see",
+                     "`filament_compression` examples for a work-around",
+                     "if you're making this plot multiple times"))
+      
       data2d_equa_dist <- data2d %>%
         dplyr::group_by(.data$sim_group) %>%
         filament_compression(data_columns = c("x","y"), 
@@ -657,6 +662,11 @@ StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
 
         
         if (dist_params$dist_approach == "equa_dist"){ 
+          message(paste("Due to dist_params$dist_approach = \"equa_dist\",",
+                         "this may take a little while - see",
+                         "`filament_compression` examples for a work-around",
+                         "if you're making this plot multiple times"))
+          
           data2d_equa_dist <- data2d %>%
             dplyr::group_by(.data$sim_group) %>%
             filament_compression(data_columns = c("x","y"), 
