@@ -498,7 +498,8 @@ preschool
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_ave</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>()
 <span class="co">#&gt; Warning: Ignoring unknown aesthetics: z</span>
-<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
+<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></pre></body></html></div>
 <p><img src="getting-started_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"># note: the error message actually comes from the geom_path</pre></body></html></div>
 <p>Here’s a demo of all current geometric tools to create prediction bands:</p>
@@ -554,7 +555,9 @@ preschool
 
 <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/arrangeGrob.html">grid.arrange</a></span>(<span class="no">vis_data</span>, <span class="no">vis_spherical</span>,
              <span class="no">vis_delta_ball</span>, <span class="no">vis_kde</span>,
-             <span class="no">vis_convex_hull</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
+             <span class="no">vis_convex_hull</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>)
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span>
+<span class="co">#&gt; Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></pre></body></html></div>
 <p><img src="getting-started_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>

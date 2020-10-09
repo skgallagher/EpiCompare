@@ -160,7 +160,6 @@ equa_dist_points_angle <- function(df, num_splits = 13){
 #' my_df_compression <- equa_dist_points_direction(my_df)
 #' my_df_compression
 equa_dist_points_direction <- function(df, num_splits = 13){
-
   d <- ncol(df)
 
   dist_and_direct <- dist_along_path_direction(df)
@@ -171,29 +170,41 @@ equa_dist_points_direction <- function(df, num_splits = 13){
   step_all <- total_dist/(num_splits - 1) # n-1 equa-distance points along path
   cum_steps <- step_all*(1:(num_splits - 2))
   cum_dist <- cumsum(dist)[c(-length(dist))]
-
-  new_compression <- data.frame(matrix(0, nrow = num_splits, ncol = d))
-  index <- 2
-  for (step in 1:length(cum_steps)) {
-    step_full_dist <- cum_steps[step]
-    start <- sum(cum_dist <= step_full_dist) + 1
-    start_point <- df[start,]
-    start_direction <- direction[start,]
-    if (start != 1) {
-      step_dist <- step_full_dist - cum_dist[start - 1]
-    }else{ # if no points other than the first is correct
-      step_dist <- step_full_dist
+  
+  if (total_dist > 0){
+    new_compression <- data.frame(matrix(0, nrow = num_splits, ncol = d))
+    index <- 2
+    for (step in 1:length(cum_steps)) {
+      step_full_dist <- cum_steps[step]
+      start <- sum(cum_dist <= step_full_dist) + 1
+      start_point <- df[start,]
+      start_direction <- direction[start,]
+      if (start != 1) {
+        step_dist <- step_full_dist - cum_dist[start - 1]
+      }else{ # if no points other than the first is correct
+        step_dist <- step_full_dist
+      }
+      new_point <- step_along_direction(start_point,
+                                        start_direction, step_dist)
+  
+      new_compression[index,] <- new_point
+      index <- index + 1
     }
-    new_point <- step_along_direction(start_point,
-                                      start_direction, step_dist)
-
-    new_compression[index,] <- new_point
-    index <- index + 1
+    new_compression[1,] <- df[1,]
+    new_compression[num_splits,] <- df[nrow(df),]
+  
+    names(new_compression) <- names(df)
+  } else {
+    ## if there is no distance traveled, then just return a matrix with
+    ## the same point `num_splits` number of times.
+    new_compression <- data.frame(matrix(0, nrow = num_splits, ncol = d))
+    for (step in 1:nrow(new_compression)){
+      new_compression[step,] <- df[1,]
+    }
+    names(new_compression) <- names(df)
+    
+      
   }
-  new_compression[1,] <- df[1,]
-  new_compression[num_splits,] <- df[nrow(df),]
-
-  names(new_compression) <- names(df)
 
   return(new_compression)
 }

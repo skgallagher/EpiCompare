@@ -44,6 +44,7 @@ filament_compression <- function(grouped_df, data_columns = NULL,
   }
 
   if (tidyr_new_interface()){
+    
     compression_df <- grouped_df %>%
       tidyr::nest() %>%
       dplyr::mutate(data =
@@ -51,6 +52,7 @@ filament_compression <- function(grouped_df, data_columns = NULL,
                                  function(df) {equa_dist_points_direction(
                                    df[, data_columns],num_splits = number_points)})) %>%
       tidyr::unnest(cols = c(.data$data))
+    
   } else {
 
     compression_df <- grouped_df %>%
