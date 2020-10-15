@@ -2,7 +2,6 @@
 ## May 15, 2020
 
 
-
 test_that("multinomial_updater", {
     ## This is the SIR representation
     D_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",

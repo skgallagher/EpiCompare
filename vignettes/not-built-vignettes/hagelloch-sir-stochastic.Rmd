@@ -1,5 +1,5 @@
 ---
-title: "Hagelloch Measles -- Fitting the deterministic, continuous time SIR model"
+title: "Hagelloch Measles -- Fitting a Stochastic SIR Model"
 output: 
   html_document:
     code_folding: show
@@ -38,7 +38,9 @@ In this series of vignettes, we will demonstrate epidemic analysis pipeline from
 
 [Hagelloch 2.2 Modeling and Simulation: fitting a SIR model](hagelloch-sir-fit.html)
 
-**[Hagelloch 2.3 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)**
+**[Hagelloch 2.3.1 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)**
+
+[Hagelloch 2.3.2 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic-three-groups.html)
 
 [Hagelloch 2.4 Modeling and Simulation with other packages](hagelloch-other-mods.html)
 
