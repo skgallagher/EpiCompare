@@ -226,11 +226,9 @@ ggplot() +
   labs(title = "Prediction band for best parameters and original data")
 ```
 
-The result of this is a prediction band that does not fit the data well.
+The result of this is a prediction band that fits the data fairly well, but misses the peak infection point, a key aspect of the outbreak.
 
-However, the above prediction band only contains the simulations resulting from the point estimates of $\beta$ and $\gamma$.
-
-We will repeat this process by first simulating
+The above prediction band only contains the simulations resulting from the point estimates of $\beta$ and $\gamma$, it may make more sense to simulate a prediction band over a range of $\beta$ and $\gamma$ values.  We will repeat this process by first simulating
 $$
 (\beta, \gamma)^{sim} \sim MVN\left ((\hat{\beta}, \hat{\gamma}), \hat{\boldsymbol{\Sigma}}\right )
 $$
@@ -240,6 +238,8 @@ where $(\hat{\beta}, \hat{\gamma})$ is the MLE and $\hat{\boldsymbol{\sigma}}$ i
 library(MASS)
 sigma <- solve(-best_params$hessian)
 mu <- best_params$par
+
+set.seed(2020)
 
 B <- 100
 sim_list <- vector(mode = "list", length = B)

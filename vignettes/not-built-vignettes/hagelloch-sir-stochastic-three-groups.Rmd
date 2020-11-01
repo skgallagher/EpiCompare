@@ -100,7 +100,7 @@ aggregate_hag <- hagelloch_raw %>%
                       min_max_time = c(0, 55)) %>%
    rename(time = t, S = X0, I = X1, R = X2) %>%
   tidyr::pivot_wider(id_cols = time,
-                     names_from = class, values_from = c(S, I, R))
+                     names_from = class, values_from = c(S, I, R)) 
 ```
 
 
@@ -226,12 +226,12 @@ trans_mat[9, 9] <- "X8" ## R2 -> R2
 rownames(trans_mat) <- c("S_0", "S_1", "S_2",
                          "I_0", "I_1", "I_2",
                          "R_0", "R_1", "R_2")
-init_vals <- c(30, 90, 67,
+init_vals <- c(90, 30, 67,
                0, 0, 1,
                0, 0, 0)
 par_vals <- best_params$par
 max_T <- 55
-n_sims <- 100
+n_sims <- 500
 
 abm <- simulate_agents(trans_mat,
                        init_vals,
@@ -245,23 +245,31 @@ grouped_agents <- abm %>%
                                        names_to = c(".value", "group"), names_sep = "_") %>%
   filter(!(is.na(S) & is.na(I) & is.na(R)))
   
-agg <- grouped_agents %>% group_by(sim) %>%
+agg <- grouped_agents %>% group_by(sim, group) %>%
   agents_to_aggregate(states = c(I, R)) 
 ```
 
 ```{r}
 
+## TODO
+## geom_prediction_band problem??
+
 obs_groups <- hagelloch_raw %>%
+    mutate(class = ifelse(CL == "1st class",
+                        1,
+                        ifelse(CL == "2nd class",
+                               2, 0))) %>%
   agents_to_aggregate(states = c(tI, tR),
                       min_max_time = c(0, 55)) %>%
    rename(time = t, S = X0, I = X1, R = X2)
 
+
+
 ggplot() +
     geom_prediction_band(data = agg,
          aes(x = X0, y = X1, z = X2,
-              sim_group = sim),
-             fill = "orange", alpha = .5,
-                         conf_level = .95) +
+              sim_group = sim), alpha = .5,
+                         conf_level = .8, fill = "orange") +
     coord_tern() + theme_sir() +
   geom_point(data = obs_groups,
              aes(x = S, y = I, z = R))
@@ -270,80 +278,45 @@ ggplot() +
 
 ```
 
-The result of this is a prediction band that does capture the shape of the data.  In fact, it is even a worse approximation (by eye) than in the SIR group.  This is partially because we are looking at simulation error for a fixed estimate and not factoring in the uncertainty from the estimate itself. 
 
 
 ```{r}
-library(MASS)
-sigma <- solve(-best_params$hessian)
-mu <- best_params$par
 
-B <- 100
-sim_list <- vector(mode = "list", length = B)
-par_val_mat <- mvrnorm(n = B, mu = mu, Sigma = sigma)
+obs_groups <- hagelloch_raw %>%
+    mutate(class = ifelse(CL == "1st class",
+                        1,
+                        ifelse(CL == "2nd class",
+                               2, 0))) %>%
+  group_by(class) %>%
+  agents_to_aggregate(states = c(tI, tR),
+                      min_max_time = c(0, 55)) %>%
+   rename(time = t, S = X0, I = X1, R = X2)
 
-for(bb in 1:B){
+grouped_agents <- abm %>% 
+  tidyr::pivot_longer(cols = -c(sim, agent_id),
+                                       names_to = c(".value", "group"), names_sep = "_") %>%
+  filter(!(is.na(S) & is.na(I) & is.na(R)))
   
-  par_vals <-  c("par1" = par_val_mat[bb, 1],
-                 "par2" = par_val_mat[bb, 2],
-                 "par3" = par_val_mat[bb, 3],
-                 "par4" = par_val_mat[bb, 4])
-  par_vals <- ifelse(par_vals > 1, .999,
-                     ifelse(par_vals < 0, .001, par_vals))  ## have to truncate
-  
-  abm <- simulate_agents(trans_mat = trans_mat,
-                       init_vals = init_vals,
-                       par_vals = par_vals,
-                       max_T,
-                       n_sims = 2,
-                       verbose = FALSE)
-  
-    grouped_agents <- abm %>% 
-    tidyr::pivot_longer(cols = -c(sim, agent_id),
-                                         names_to = c(".value", "group"), names_sep = "_") %>%
-    filter(!(is.na(S) & is.na(I) & is.na(R)))
-    
-  agg_model <- grouped_agents %>% group_by(sim) %>%
-     agents_to_aggregate(states = c(I, R)) 
-  
-  agg_model$sim <- bb
-  agg_model$beta1 <- par_vals[1]
-  agg_model$beta2 <- par_vals[2]
-  agg_model$beta3 <- par_vals[3]
-  agg_model$gamma <- par_vals[4]
-  sim_list[[bb]] <- agg_model
-  
-}
-
-sim_df <- dplyr::bind_rows(sim_list)
-
-```
+agg <- grouped_agents %>% group_by(sim, group) %>%
+  agents_to_aggregate(states = c(I, R)) 
 
 
-```{r}
-plot_df <- sim_df %>% dplyr::filter(t != 0) %>%
-                           dplyr::select(sim, t, X0, X1, X2)
-
-#bad_cat <- names(table(plot_df$sim)[table(plot_df$sim) < 55])
 
 ggplot() +
-    geom_prediction_band(data = plot_df, 
-                         aes(x = X0, y = X1, z = X2,
-                             sim_group = as.numeric(sim)), 
-                         alpha = .5, 
-                         conf_level = .9,
-                         fill = "orange",
-                         pb_type = "delta_ball") +
+    geom_prediction_band(data = agg,
+         aes(x = X0, y = X1, z = X2,
+              sim_group = sim,
+             fill = group),
+            alpha = .5,
+                         conf_level = .95) +
     coord_tern() + theme_sir() +
   geom_point(data = obs_groups,
-             aes(x = S, y = I, z =R), col = "red") +
-  labs(title = "Prediction band for best parameters and original data")
+             aes(x = S, y = I, z = R,
+                 col = factor(class))) + 
+  labs(title = "Prediction band for best parameters and original data") 
 
 
 ```
-
-
-This is perhaps equivalent to or moderately better than simulation produced by the SIR simulation that includes estimation and simulation error, but it is still clear that our model has difficulty in capturing the second peak in the data.
 
 
 ## References

@@ -148,6 +148,8 @@ control <- control.net(type = "SIR", nsteps = 100,
                        nsims = 100, epi.by = "race")
 sim_output <- netsim(est1, param, init, control)
 ```
+
+
 ```{r eval = FALSE, echo = FALSE}
 saveRDS(sim_output, "sim_output.RDS")
 ```
