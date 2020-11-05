@@ -12,10 +12,10 @@ tidy_dist_mat <- function(dist_mat, rownames_df = NULL, colnames_df = NULL){
   dimnames(object) <- NULL
   
   if (is.null(rownames_df)){
-    rowname_df <- data.frame(id = 1:nrow(object))
+    rownames_df <- data.frame(id = 1:nrow(object))
   }
   if (is.null(colnames_df)){
-    rowname_df <- data.frame(id = 1:ncol(object))
+    colnames_df <- data.frame(id = 1:ncol(object))
   }
   
   check_tidy_dist_mat_dimensions(object, rownames_df, colnames_df)
@@ -64,11 +64,11 @@ check_tidy_dist_mat_dimensions <- function(dist_mat, rownames_df, colnames_df){
 #' @return either a error or \code{TRUE}
 check_tidy_dist_names_distinct <- function(rownames_df, colnames_df){
   rn_df_distinct <- dplyr::distinct(rownames_df)
-  assertthat::assert_that(identical(rownames_df, rn_df_distinct),
+  assertthat::assert_that(all(rownames_df == rn_df_distinct),
                           msg = paste("rownames_df is not distinct",
                                       "(see dplyr::distinct) for help"))
   cn_df_distinct <- dplyr::distinct(colnames_df)
-  assertthat::assert_that(identical(colnames_df, cn_df_distinct),
+  assertthat::assert_that(all(colnames_df == cn_df_distinct),
                           msg = paste("colnames_df is not distinct",
                                       "(see dplyr::distinct) for help"))
   

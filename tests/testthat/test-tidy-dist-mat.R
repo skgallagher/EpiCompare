@@ -12,6 +12,14 @@ testthat::test_that("tidy_dist_mat basic checks", {
   testthat::expect_true(
     all(c("rownames_df", "colnames_df") %in% names(attributes(my_tidy_dm))))
   
+  # no names_dfs
+  my_tidy_dm <- tidy_dist_mat(my_dist_mat)
+  testthat::expect_equal(dim(rownames(my_tidy_dm)), c(3,1))
+  testthat::expect_equal(rownames(my_tidy_dm), data.frame(id = 1:3))
+  
+  testthat::expect_equal(dim(colnames(my_tidy_dm)), c(3,1))
+  testthat::expect_equal(colnames(my_tidy_dm), data.frame(id = 1:3))
+
 })
 
 testthat::test_that("check_tidy_dist_mat_dimensions basic", {
