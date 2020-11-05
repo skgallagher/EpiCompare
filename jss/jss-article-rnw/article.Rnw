@@ -1,4 +1,4 @@
-\documentclass[article, shortnames]{jss} 
+\documentclass[article,shortnames]{jss} 
 %^note: Ben changed this to get shortnames for references ("shortnames")
 
 %% -- LaTeX packages and custom commands ---------------------------------------
@@ -10,12 +10,12 @@
 %% new custom commands
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
-\newcommand{\sup}{\mathop{\mathrm{sup}}}
-\newcommand{\inf}{\mathop{\mathrm{inf}}}
+%\newcommand{\sup}{\mathop{\mathrm{sup}}}
+%\newcommand{\inf}{\mathop{\mathrm{inf}}}
 
 
 \usepackage{amsfonts,amsmath,amssymb,amsthm}
-\newtheorem{theorem}{Theorem}
+%\newtheorem{theorem}{Theorem}
 
 % note making commands
 \newcommand{\ben}{\textcolor{blue}}
@@ -81,9 +81,17 @@ We do something, possibly useful
 \begin{document}
 \SweaveOpts{concordance=FALSE}
 
+
+\section{Outline}
+
+\SweaveInput{chapters/outline.Rnw}
+
 \SweaveInput{chapters/ch1-intro-v2.Rnw}
 
 %\SweaveInput{chapters/ch1-intro.Rnw}
+
+
+
 
 \section{Literature review} \label{sec:lit}
 \SweaveInput{chapters/ch2-lit-review.Rnw}

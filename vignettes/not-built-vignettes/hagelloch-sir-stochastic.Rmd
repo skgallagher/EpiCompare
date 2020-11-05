@@ -1,5 +1,5 @@
 ---
-title: "Hagelloch Measles -- Fitting the deterministic, continuous time SIR model"
+title: "Hagelloch Measles -- Fitting a Stochastic SIR Model"
 output: 
   html_document:
     code_folding: show
@@ -38,7 +38,9 @@ In this series of vignettes, we will demonstrate epidemic analysis pipeline from
 
 [Hagelloch 2.2 Modeling and Simulation: fitting a SIR model](hagelloch-sir-fit.html)
 
-**[Hagelloch 2.3 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)**
+**[Hagelloch 2.3.1 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic.html)**
+
+[Hagelloch 2.3.2 Modeling and Simulation: a stochastic SIR model](hagelloch-sir-stochastic-three-groups.html)
 
 [Hagelloch 2.4 Modeling and Simulation with other packages](hagelloch-other-mods.html)
 
@@ -224,11 +226,9 @@ ggplot() +
   labs(title = "Prediction band for best parameters and original data")
 ```
 
-The result of this is a prediction band that does not fit the data well.
+The result of this is a prediction band that fits the data fairly well, but misses the peak infection point, a key aspect of the outbreak.
 
-However, the above prediction band only contains the simulations resulting from the point estimates of $\beta$ and $\gamma$.
-
-We will repeat this process by first simulating
+The above prediction band only contains the simulations resulting from the point estimates of $\beta$ and $\gamma$, it may make more sense to simulate a prediction band over a range of $\beta$ and $\gamma$ values.  We will repeat this process by first simulating
 $$
 (\beta, \gamma)^{sim} \sim MVN\left ((\hat{\beta}, \hat{\gamma}), \hat{\boldsymbol{\Sigma}}\right )
 $$
@@ -238,6 +238,8 @@ where $(\hat{\beta}, \hat{\gamma})$ is the MLE and $\hat{\boldsymbol{\sigma}}$ i
 library(MASS)
 sigma <- solve(-best_params$hessian)
 mu <- best_params$par
+
+set.seed(2020)
 
 B <- 100
 sim_list <- vector(mode = "list", length = B)

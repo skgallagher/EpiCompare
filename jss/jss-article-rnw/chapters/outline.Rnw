@@ -1,0 +1,58 @@
+% !Rnw root = ../article.Rnw
+
+
+\begin{enumerate}
+
+\item Intro
+
+\begin{enumerate}
+
+\item Lots of epidemic \textit{infectious disease} models.  How do we handle them all
+
+\item Pipeline of analysis
+
+\item past work - many things under the wider umbrella of compartment models / multi state models (where one state is susceptible and one state is infectious)
+
+\begin{itemize}
+\item surveillance  -- one of the first major infectious disease R packages ED (kinda like it's own whole pipeline?)
+
+\item pomp, epinet -- standardized frameworks of large classes of infectious disease models - modeling and simulation
+
+\item MIDAS has done some work to catalogue different tools and models post- processing and comparison
+
+\item Bring in tidyverse - standardization (plz throw spew a bone) pre-process, EDA and post processing
+
+\item Patient vs. aggregate data (data pre-processing and EDA)
+
+\item conformal bands and visualization for model assessment (skree plots, your hurricanes)
+
+\end{itemize}
+\end{enumerate}
+
+\item EpiCompare qualities
+
+\begin{enumerate}
+
+\item standardizing outputs
+
+\item TERNARY PLOTS
+
+\item simple ode-style (also tidy-style) abms
+
+\item time variant and analysis and conformal prediction bands
+
+\end{enumerate}
+
+
+\item Tour of EpiCompare
+
+\begin{enumerate}
+\item Highlights of Hagelloch
+\item EDA by class
+\item Simulation
+\item Comparison with EpiNet model
+\end{enumerate}
+
+\end{enumerate}
+
+
