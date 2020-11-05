@@ -1,6 +1,3 @@
 % !Rnw root = ../article.Rnw
 
-
-
-
-
+\section{Things done in the past}

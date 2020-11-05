@@ -10,7 +10,7 @@ Ternary plots are sometimes used in chemistry \citep[][]{Gillespie1976} but only
 Ternary plots are time-invariant in the sense that the temporal scale does not explicitly apear in the visualization and as a consequence, allow for direct comparisons of outbreaks on different time scales (e.g. days vs. years) or of SIR data of the same disease in different areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
 
 
-To show that ternary plots have to potential to aid in the comparison of different epidemic's $R_0$s -in certain circumstances- we first need to introduce the classic, deterministic Kermack and McKendrick \cite{CITE THIS?} SIR model where the initial number in each state $(S(0), I(0), R(0))$ are known and $N$ the population size is constant.  The movement of individuals among the states is given by the following differential equations (Eq. \eqref{eq:sir-ode}) where $\beta$ is the average infection rate and $\gamma$ is the average recovery rate,
+To show that ternary plots have to potential to aid in the comparison of different epidemic's $R_0$s -in certain circumstances- we first need to introduce the classic, deterministic Kermack and McKendrick \cite{CITETHIS?} SIR model where the initial number in each state $(S(0), I(0), R(0))$ are known and $N$ the population size is constant.  The movement of individuals among the states is given by the following differential equations (Eq. \eqref{eq:sir-ode}) where $\beta$ is the average infection rate and $\gamma$ is the average recovery rate,
 \begin{align}\label{eq:sir-ode}
       S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
