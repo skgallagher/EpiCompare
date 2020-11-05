@@ -1,12 +1,14 @@
 context("containment and band creation tests")
 
+library(tidyverse)
+
 test_that("test filament_compression, no data_columns", {
   # basic check:
   t13compression <- EpiCompare::pomp_sir %>%
-    arrange(time) %>%
-    select(-H, -cases, -time) %>%
-    filter(.id <= 5) %>%
-    group_by(.id) %>%
+    dplyr::arrange(time) %>%
+    dplyr::select(-H, -cases, -time) %>%
+    dplyr::filter(.id <= 5) %>%
+    dplyr::group_by(.id) %>%
     filament_compression()
 
   # correct number of rows
@@ -34,33 +36,33 @@ test_that("test filament_compression, no data_columns", {
   grouped_df <- rbind(first_group, second_group, third_group) %>%
     group_by(.id)
 
-  test_compression <- grouped_df %>% arrange(t) %>%
-    select(-t) %>%
-    group_by(.id) %>%
+  test_compression <- grouped_df %>% dplyr::arrange(t) %>%
+    dplyr::select(-t) %>%
+    dplyr::group_by(.id) %>%
     filament_compression(number_points = 9)
 
   unique_values_per <- test_compression %>%
-    summarize(count = n()) %>% pull(count) %>% unique
+    dplyr::summarize(count = n()) %>% dplyr::pull(count) %>% unique
 
   testthat::expect_equal(unique_values_per, 9)
   # group1:
 
-  still_linear <- test_compression %>% filter(.id == 1) %>%
-    ungroup(.id) %>% select(-.id) %>%
+  still_linear <- test_compression %>% dplyr::filter(.id == 1) %>%
+    dplyr::ungroup(.id) %>% dplyr::select(-.id) %>%
     apply(1, function(row) length(unique(row)) == 1)
   testthat::expect_equal(still_linear, rep(TRUE, 9))
 
   # group2:
-  xx2 <- test_compression %>% filter(.id == 2) %>%
-    ungroup(.id) %>%
-    pull(x)
+  xx2 <- test_compression %>% dplyr::filter(.id == 2) %>%
+    dplyr::ungroup(.id) %>%
+    dplyr::pull(x)
   testthat::expect_equal(xx2, (0:8)*2)
 
   # group3:
-  xx3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(x)
-  yy3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(y)
+  xx3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% pull(x)
+  yy3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% pull(y)
 
   testthat::expect_equal(xx2, xx3)
   testthat::expect_equal(yy3, c((0:4)*2,(3:0)*2))
@@ -70,10 +72,10 @@ test_that("test filament_compression, no data_columns", {
 test_that("test filament_compression, data_columns string", {
   # basic check:
   t13compression <- EpiCompare::pomp_sir %>%
-    arrange(time) %>%
-    select(-H, -cases, -time) %>%
-    filter(.id <= 5) %>%
-    group_by(.id) %>%
+    dplyr::arrange(time) %>%
+    dplyr::select(-H, -cases, -time) %>%
+    dplyr::filter(.id <= 5) %>%
+    dplyr::group_by(.id) %>%
     filament_compression(data_columns = c("S", "I","R"))
 
   # correct number of rows
@@ -99,36 +101,36 @@ test_that("test filament_compression, data_columns string", {
                             .id = 3)
 
   grouped_df <- rbind(first_group, second_group, third_group) %>%
-    group_by(.id)
+    dplyr::group_by(.id)
 
-  test_compression <- grouped_df %>% arrange(t) %>%
-    select(-t) %>%
-    group_by(.id) %>%
+  test_compression <- grouped_df %>% dplyr::arrange(t) %>%
+    dplyr::select(-t) %>%
+    dplyr::group_by(.id) %>%
     filament_compression(number_points = 9,
                          data_columns = c("x","y","z"))
 
   unique_values_per <- test_compression %>%
-    summarize(count = n()) %>% pull(count) %>% unique
+    dplyr::summarize(count = n()) %>% dplyr::pull(count) %>% unique
 
   testthat::expect_equal(unique_values_per, 9)
   # group1:
 
-  still_linear <- test_compression %>% filter(.id == 1) %>%
-    ungroup(.id) %>% select(-.id) %>%
+  still_linear <- test_compression %>% dplyr::filter(.id == 1) %>%
+    dplyr::ungroup(.id) %>% dplyr::select(-.id) %>%
     apply(1, function(row) length(unique(row)) == 1)
   testthat::expect_equal(still_linear, rep(TRUE, 9))
 
   # group2:
-  xx2 <- test_compression %>% filter(.id == 2) %>%
-    ungroup(.id) %>%
-    pull(x)
+  xx2 <- test_compression %>% dplyr::filter(.id == 2) %>%
+    dplyr::ungroup(.id) %>%
+    dplyr::pull(x)
   testthat::expect_equal(xx2, (0:8)*2)
 
   # group3:
-  xx3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(x)
-  yy3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(y)
+  xx3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% dplyr::pull(x)
+  yy3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% dplyr::pull(y)
 
   testthat::expect_equal(xx2, xx3)
   testthat::expect_equal(yy3, c((0:4)*2,(3:0)*2))
@@ -138,10 +140,10 @@ test_that("test filament_compression, data_columns string", {
 test_that("test filament_compression, data_columns tidified", {
   # basic check:
   t13compression <- EpiCompare::pomp_sir %>%
-    arrange(time) %>%
-    select(-H, -cases, -time) %>%
-    filter(.id <= 5) %>%
-    group_by(.id) %>%
+    dplyr::arrange(time) %>%
+    dplyr::select(-H, -cases, -time) %>%
+    dplyr::filter(.id <= 5) %>%
+    dplyr::group_by(.id) %>%
     filament_compression(data_columns = c(S,I,R))
 
   # correct number of rows
@@ -167,36 +169,36 @@ test_that("test filament_compression, data_columns tidified", {
                             .id = 3)
 
   grouped_df <- rbind(first_group, second_group, third_group) %>%
-    group_by(.id)
+    dplyr::group_by(.id)
 
-  test_compression <- grouped_df %>% arrange(t) %>%
-    select(-t) %>%
-    group_by(.id) %>%
+  test_compression <- grouped_df %>% dplyr::arrange(t) %>%
+    dplyr::select(-t) %>%
+    dplyr::group_by(.id) %>%
     filament_compression(number_points = 9,
                          data_columns = c(x,y,z))
 
   unique_values_per <- test_compression %>%
-    summarize(count = n()) %>% pull(count) %>% unique
+    dplyr::summarize(count = n()) %>% dplyr::pull(count) %>% unique
 
   testthat::expect_equal(unique_values_per, 9)
   # group1:
 
-  still_linear <- test_compression %>% filter(.id == 1) %>%
-    ungroup(.id) %>% select(-.id) %>%
+  still_linear <- test_compression %>% dplyr::filter(.id == 1) %>%
+    dplyr::ungroup(.id) %>% dplyr::select(-.id) %>%
     apply(1, function(row) length(unique(row)) == 1)
   testthat::expect_equal(still_linear, rep(TRUE, 9))
 
   # group2:
   xx2 <- test_compression %>% filter(.id == 2) %>%
-    ungroup(.id) %>%
-    pull(x)
+    dplyr::ungroup(.id) %>%
+    dplyr::pull(x)
   testthat::expect_equal(xx2, (0:8)*2)
 
   # group3:
-  xx3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(x)
-  yy3 <- test_compression %>% filter(.id == 3) %>%
-    ungroup(.id) %>% pull(y)
+  xx3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% dplyr::pull(x)
+  yy3 <- test_compression %>% dplyr::filter(.id == 3) %>%
+    dplyr::ungroup(.id) %>% dplyr::pull(y)
 
   testthat::expect_equal(xx2, xx3)
   testthat::expect_equal(yy3, c((0:4)*2,(3:0)*2))
@@ -204,8 +206,8 @@ test_that("test filament_compression, data_columns tidified", {
 })
 
 test_that("filament_distance_depth correct depth, no data_columns",{
-  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>% dplyr::select(-time, -H, -cases) %>%
     filament_distance_depth()
 
   testthat::expect_equal(length(dd_pomp_df),
@@ -232,10 +234,10 @@ test_that("filament_distance_depth correct depth, no data_columns",{
   grouped_df <- rbind(first_group, second_group, third_group) %>%
     group_by(.id)
 
-  testthat::expect_message(grouped_df %>% select(-t) %>%
+  testthat::expect_message(grouped_df %>% dplyr::select(-t) %>%
                              filament_distance_depth())
 
-  depth_3 <- suppressMessages(grouped_df %>% select(-t) %>%
+  depth_3 <- suppressMessages(grouped_df %>% dplyr::select(-t) %>%
                                 filament_distance_depth())
 
   # global distance-depth expectation:
@@ -245,8 +247,8 @@ test_that("filament_distance_depth correct depth, no data_columns",{
 })
 
 test_that("filament_distance_depth correct depth, string",{
-  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     filament_distance_depth(data_columns =c("S","I","R"))
 
   testthat::expect_equal(length(dd_pomp_df),
@@ -288,8 +290,8 @@ test_that("filament_distance_depth correct depth, string",{
 })
 
 test_that("filament_distance_depth correct depth, tidified",{
-  dd_pomp_df <-  EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  dd_pomp_df <-  EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     filament_distance_depth(data_columns =c(S,I,R))
 
   testthat::expect_equal(length(dd_pomp_df),
@@ -332,56 +334,57 @@ test_that("filament_distance_depth correct depth, tidified",{
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
           ", no data_columns)"), {
-  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+  top_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>% dplyr::select(-time, -H, -cases) %>%
     grab_top_depth_filaments(conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>% dplyr::select(-time, -H, -cases) %>%
     grab_top_depth_filaments(conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
-                              top_filaments %>% select(-.id))
+                              top_filaments %>% dplyr::select(-.id))
 
 
-  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>% dplyr::select(-time, -H, -cases) %>%
     grab_top_depth_filaments(conf_level = 1,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
-                           filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+                           dplyr::filter(.id <= 10) %>% 
+                           dplyr::select(-time, -H, -cases) %>%
                            grab_top_depth_filaments(conf_level = 0))
 
 })
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
           ", string)"), {
-  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  top_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
                              conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c("S","I","R"),
                              conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
-                              top_filaments %>% select(-.id))
+                              top_filaments %>% dplyr::select(-.id))
 
 
-  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c("S","I","R"),
                              conf_level = 1,
                              .remove_group = FALSE)
@@ -389,8 +392,8 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
-                           filter(.id <= 10) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+                           dplyr::filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c("S","I","R"),
                              conf_level = 0))
@@ -399,25 +402,25 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
 test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                 ", tidified)"), {
-  top_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  top_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
                              conf_level = .5,
                              .remove_group = FALSE)
 
   testthat::expect_equal(length(unique(top_filaments$.id)), 5)
 
-  top_filaments_points <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  top_filaments_points <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns =c(S,I,R),
                              conf_level = .5)
 
   testthat::expect_equivalent(top_filaments_points,
-                              top_filaments %>% select(-.id))
+                              top_filaments %>% dplyr::select(-.id))
 
 
-  all_but_exteme_filaments <- EpiCompare::pomp_df %>% group_by(.id) %>%
-    filter(.id <= 10) %>%
+  all_but_exteme_filaments <- EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+    dplyr::filter(.id <= 10) %>%
     grab_top_depth_filaments(data_columns = c(S,I,R),
                              conf_level = 1,
                              .remove_group = FALSE)
@@ -425,8 +428,8 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
   testthat::expect_equal(length(unique(all_but_exteme_filaments$.id)),
                          8)
 
-  testthat::expect_error(EpiCompare::pomp_df %>% group_by(.id) %>%
-                           filter(.id <= 10) %>%
+  testthat::expect_error(EpiCompare::pomp_df %>% dplyr::group_by(.id) %>%
+                           dplyr::filter(.id <= 10) %>%
                            grab_top_depth_filaments(
                              data_columns =c(S,I,R),
                              conf_level = 0))
@@ -439,22 +442,25 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
                    # no column names
                    testthat::expect_error(
                      top_filaments <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE))
 
                    testthat::expect_error(
                      top_filaments_points <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0))
 
                    # string column names
                    testthat::expect_error(
                      top_filaments <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE,
                                                 data_columns = c("S","I","R")
@@ -462,15 +468,17 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
                    testthat::expect_error(
                      top_filaments_points <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0,
                                                 data_columns = c("S","I","R")))
                    # promise column names
                    testthat::expect_error(
                      top_filaments <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0,
                                                 .remove_group = FALSE,
                                                 data_columns = c(S,I,R)
@@ -478,8 +486,9 @@ test_that(paste0("test grab_top_depth_filaments (.remove_group = both",
 
                    testthat::expect_error(
                      top_filaments_points <- EpiCompare::pomp_df %>%
-                       group_by(.id) %>%
-                       filter(.id <= 10) %>% select(-time, -H, -cases) %>%
+                       dplyr::group_by(.id) %>%
+                       dplyr::filter(.id <= 10) %>% 
+                       dplyr::select(-time, -H, -cases) %>%
                        grab_top_depth_filaments(conf_level = 0,
                                                 data_columns = c(S,I,R)))
                  })
@@ -614,8 +623,8 @@ test_that(paste("test create_convex_hull_structure",
                                                             .lower_simplex_project = FALSE)
 
                   testthat::expect_equivalent(just_box1, just_box2)
-                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
-                                              box_data[-5,] %>% arrange(x,y))
+                  testthat::expect_equivalent(just_box1 %>% dplyr::arrange(x,y),
+                                              box_data[-5,] %>% dplyr::arrange(x,y))
 
                 })
 
@@ -636,8 +645,8 @@ test_that(paste("test create_convex_hull_structure",
                                                             .lower_simplex_project = FALSE)
 
                   testthat::expect_equivalent(just_box1, just_box2)
-                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
-                                              box_data[-5,] %>% arrange(x,y))
+                  testthat::expect_equivalent(just_box1 %>% dplyr::arrange(x,y),
+                                              box_data[-5,] %>% dplyr::arrange(x,y))
 
                 })
 
@@ -658,8 +667,8 @@ test_that(paste("test create_convex_hull_structure",
                                                             .lower_simplex_project = FALSE)
 
                   testthat::expect_equivalent(just_box1, just_box2)
-                  testthat::expect_equivalent(just_box1 %>% arrange(x,y),
-                                              box_data[-5,] %>% arrange(x,y))
+                  testthat::expect_equivalent(just_box1 %>% dplyr::arrange(x,y),
+                                              box_data[-5,] %>% dplyr::arrange(x,y))
 
                 })
 

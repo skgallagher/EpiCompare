@@ -1,5 +1,6 @@
 context("tests for agents_to_aggregate")
 
+library(tidyverse)
 
 test_that("checking agents_to_aggregate works for SI model",{
   
@@ -863,13 +864,13 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks", {
 
     testthat::expect_equal(sir_group_sub_id,
                            sir_group_sub_g %>% ungroup %>%
-                             select(t, X0, X1, X2) %>%
+                             dplyr::select(t, X0, X1, X2) %>%
                              filter(t <= individual_max_t))
 
     if (individual_max_t < max_time){
       unique_rows_after_max <- sir_group_sub_g %>% ungroup %>%
         filter(t > individual_max_t) %>%
-        select(X0, X1, X2)  %>% distinct() %>% nrow()
+        dplyr::select(X0, X1, X2)  %>% distinct() %>% nrow()
       testthat::expect_equal(unique_rows_after_max, 1)
     }
   }
@@ -910,13 +911,13 @@ test_that("agents_to_aggregate.group_df, max_t = NA basic checks, strings", {
 
     testthat::expect_equal(sir_group_sub_id,
                            sir_group_sub_g %>% ungroup %>%
-                             select(t, X0, X1, X2) %>%
+                             dplyr::select(t, X0, X1, X2) %>%
                              filter(t <= individual_max_t))
 
     if (individual_max_t < max_time){
       unique_rows_after_max <- sir_group_sub_g %>% ungroup %>%
         filter(t > individual_max_t) %>%
-        select(X0, X1, X2)  %>% distinct() %>% nrow()
+        dplyr::select(X0, X1, X2)  %>% distinct() %>% nrow()
       testthat::expect_equal(unique_rows_after_max, 1)
     }
   }
