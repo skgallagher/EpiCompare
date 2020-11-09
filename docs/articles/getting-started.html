@@ -70,7 +70,7 @@
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -143,7 +143,7 @@
 <p>Our first example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child’s information relative to when they were reported to be infected and recovered, information on their school class.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co">## Visualizing epidemic progression using EpiCompare</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">kableExtra</span>)
-<span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/hagelloch_raw.html">hagelloch_raw</a></span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>() <span class="kw">%&gt;%</span>
+<span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/hagelloch_raw.html">hagelloch_raw</a></span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">PN</span>, <span class="no">NAME</span>, <span class="no">AGE</span>, <span class="no">SEX</span>,
          <span class="no">tPRO</span>, <span class="no">tERU</span>, <span class="no">tI</span>, <span class="no">tR</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>() <span class="kw">%&gt;%</span>
@@ -335,11 +335,11 @@ male
 </tbody>
 </table>
 <p>To understand to epidemic we can examine it through an “aggregate” lense (using <code>geom_aggregate</code>), which aggregates across agents to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="fu"><a href="../reference/theme_sir.html">theme_sir</a></span>())
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>())
 
 <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>)) +
-    <span class="fu"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>() +
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>() +
     <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Town analysis"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></pre></body></html></div>
@@ -390,7 +390,7 @@ preschool
 </table>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">y</span> <span class="kw">=</span> <span class="no">tI</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">tR</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">CL</span>)) +
-       <span class="fu"><a href="../reference/stat_aggregate.html">geom_aggregate</a></span>() +
+       <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/stat_aggregate.html">geom_aggregate</a></span>() +
        <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>,
             <span class="kw">color</span> <span class="kw">=</span> <span class="st">"School grade"</span>,
@@ -412,18 +412,18 @@ preschool
 <span class="no">gamma</span> <span class="kw">&lt;-</span> <span class="fl">.03</span>
 <span class="no">init_SIR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
                                  <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="no">n_time_steps</span>,
                                  <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                                  <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="no">init_SIR</span>)
 
-<span class="no">df_ave</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
+<span class="no">df_ave</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">t</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">S</span>), <span class="kw">I</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">I</span>), <span class="kw">R</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">R</span>))
 <span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span>
 
 
-<span class="kw">if</span> (<span class="fu"><a href="../reference/tidyr_new_interface.html">tidyr_new_interface</a></span>()){ <span class="co"># if tidyr version &gt; 0.8.99</span>
+<span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/tidyr_new_interface.html">tidyr_new_interface</a></span>()){ <span class="co"># if tidyr version &gt; 0.8.99</span>
   <span class="no">df_ave_lines</span> <span class="kw">&lt;-</span> <span class="no">df_ave</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="kw">names_to</span> <span class="kw">=</span> <span class="st">"State"</span>,
                                           <span class="kw">values_to</span> <span class="kw">=</span> <span class="st">"Value"</span>,
                                           <span class="kw">cols</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">S</span>, <span class="no">I</span>, <span class="no">R</span>))
@@ -460,13 +460,13 @@ preschool
 <span class="no">init_SIR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">950</span>, <span class="fl">50</span>, <span class="fl">0</span>)
 
 
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="../reference/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_SIR_agents.html">simulate_SIR_agents</a></span>(<span class="kw">n_sims</span> <span class="kw">=</span> <span class="no">n_sims</span>,
                                  <span class="kw">n_time_steps</span> <span class="kw">=</span> <span class="no">n_time_steps</span>,
                                  <span class="kw">beta</span> <span class="kw">=</span> <span class="no">beta</span>, <span class="kw">gamma</span> <span class="kw">=</span> <span class="no">gamma</span>,
                                  <span class="kw">init_SIR</span> <span class="kw">=</span> <span class="no">init_SIR</span>)</pre></body></html></div>
 <p>We then use the <code>agents_to_aggregate</code> function to do the same thing (note that it preforms different for <code>grouped_df</code>s and standard <code>data.frame</code>s - as it’s a method):</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">df_group</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">sim</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"tI"</span>, <span class="st">"tR"</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="st">"X0"</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="st">"X1"</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="st">"X2"</span>)
 
 
@@ -488,7 +488,7 @@ preschool
 <p><img src="getting-started_files/figure-html/unnamed-chunk-10-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>How extreme is the first simulation compared to the rest? Let’s create a empirical 95% prediction band from the later simulations.</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() +
-  <span class="fu"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">df_group</span>,
                        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                            <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="no">sim</span>))),
                        <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="fl">NA</span>, <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>,
@@ -503,7 +503,7 @@ preschool
 <p><img src="getting-started_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"># note: the error message actually comes from the geom_path</pre></body></html></div>
 <p>Here’s a demo of all current geometric tools to create prediction bands:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">vis_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">vis_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span><span class="no">y</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">z</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">.id</span>)) +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.03</span>) +
@@ -511,43 +511,43 @@ preschool
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Actually data paths"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
-<span class="no">vis_spherical</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
+<span class="no">vis_spherical</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>, <span class="kw">t</span> <span class="kw">=</span> <span class="st">"time"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">z</span>, <span class="kw">t</span> <span class="kw">=</span> <span class="no">t</span>)) +
-  <span class="fu"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"spherical_ball"</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"spherical_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">100</span>,<span class="fl">2</span>),
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Spherical CB"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
-<span class="no">vis_delta_ball</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
+<span class="no">vis_delta_ball</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">.id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">.id</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">z</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">.id</span>)) +
-  <span class="fu"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">100</span>,<span class="fl">2</span>),
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Delta-ball CB"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
-<span class="no">vis_kde</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
+<span class="no">vis_kde</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">.id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">.id</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">z</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">.id</span>)) +
-  <span class="fu"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"kde"</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"kde"</span>,
                        <span class="kw">grid_size</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">100</span>,<span class="fl">2</span>),
                        <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"KDE CB"</span>)
 <span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
 
-<span class="no">vis_convex_hull</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="../reference/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
+<span class="no">vis_convex_hull</span> <span class="kw">&lt;-</span> <span class="kw pkg">EpiCompare</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/EpiCompare/man/pomp_df.html">pomp_df</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"S"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"I"</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="st">"R"</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">.id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">.id</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">z</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">.id</span>)) +
-  <span class="fu"><a href="../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"convex_hull"</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"convex_hull"</span>,
             <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>) +
   <span class="fu"><a href="https://rdrr.io/pkg/ggtern/man/coord_tern.html">coord_tern</a></span>() +
  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span> <span class="kw">=</span> <span class="st">"Convex hull CB"</span>)

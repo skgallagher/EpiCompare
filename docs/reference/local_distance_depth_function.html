@@ -115,7 +115,7 @@ and define our local distance-based depth as:" />
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -162,24 +162,39 @@ a local depth similar to Agostinelli &amp; Romanazzi (2011) localized approach,
 and define our local distance-based depth as:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</pre>
+    <pre class="usage"><span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='st'>"auto"</span>)
+
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>F</span>)
+
+<span class='co'># S3 method for tidy_dist_mat</span>
+<span class='fu'>local_distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>tau</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dist_mat</th>
-      <td><p>a n x n square positive symmetric matrix</p></td>
+      <td><p>a n x n square positive symmetric matrix or a tidy_dist_mat</p></td>
     </tr>
     <tr>
       <th>tau</th>
-      <td><p>localizing parameter (default is Inf)</p></td>
+      <td><p>localizing parameter (default is Inf) Can either by a standard
+numerical value or a string as a percentage (e.g. "20%")</p></td>
+    </tr>
+    <tr>
+      <th>df_out</th>
+      <td><p>indicates if one should return a data.frame our a vector, by
+default returns data.frame if dist_mat is a tidy_dist_mat, and a vector if
+dist_mat is a matrix.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>depth vector length n with depth values associated with indices in
+  <code>dist_mat</code> or a data.frame with a column called <code>local_depth</code></p>
+<p>depth vector length n with depth values associated with indices in
   <code>dist_mat</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -187,13 +202,13 @@ and define our local distance-based depth as:</p>
 I(d(X_i, X_j) &gt; max(d(X_i,x), d(X_j,x)))\)</p>
 <p>where \(S = {i : D(X_i,x) &lt; \tau}\).</p>
 <p>Note that if \(|S| = 1\), then we say that <code>LDD(x) = 0</code>.</p>
-
-<p>This function (renamed as <code>depth_function</code>) is shared with
-<span class="pkg">TCpredictionbands</span> on github:
+<p>This matrix function (renamed as <code>depth_function</code>) is shared
+with <span class="pkg">TCpredictionbands</span> on github:
 <a href='https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands'>TCpredictionbands</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dist_mat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,   <span class='fl'>1</span>, <span class='fl'>1.5</span>,
+    <pre class="examples"><div class='input'><span class='co'>## matrix-only examples</span>
+<span class='no'>dist_mat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,   <span class='fl'>1</span>, <span class='fl'>1.5</span>,
                      <span class='fl'>1</span>,   <span class='fl'>0</span>, <span class='fl'>2</span>,
                      <span class='fl'>1.5</span>, <span class='fl'>2</span>, <span class='fl'>0</span>   ),
                    <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>,

@@ -17,7 +17,8 @@ stat_prediction_band(
   grid_size = rep(100, 2),
   conf_level = 0.9,
   over_delta = 0.1,
-  dist_params = list(dist_approach = "auto", num_steps = "auto"),
+  dist_params = list(dist_approach = "auto", num_steps = "auto", quantile_approach =
+    "depth", quantile_approach_params = list()),
   ...
 )
 
@@ -35,7 +36,8 @@ geom_prediction_band(
   grid_size = rep(100, 2),
   conf_level = 0.9,
   over_delta = 0.1,
-  dist_params = list(dist_approach = "auto", num_steps = "auto"),
+  dist_params = list(dist_approach = "auto", num_steps = "auto", quantile_approach =
+    "depth", quantile_approach_params = list()),
   ...
 )
 }

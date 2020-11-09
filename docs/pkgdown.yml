@@ -11,8 +11,10 @@ articles:
   example-epimodel: not-built-vignettes/example-epimodel.html
   hagelloch-eda: not-built-vignettes/hagelloch-eda.html
   hagelloch-mods: not-built-vignettes/hagelloch-mods.html
+  hagelloch-other-models: not-built-vignettes/hagelloch-other-models.html
   hagelloch-sir-fit: not-built-vignettes/hagelloch-sir-fit.html
+  hagelloch-sir-stochastic-three-groups: not-built-vignettes/hagelloch-sir-stochastic-three-groups.html
   hagelloch-sir-stochastic: not-built-vignettes/hagelloch-sir-stochastic.html
   ternary-plots-explained: not-built-vignettes/ternary-plots-explained.html
-last_built: 2020-10-09T01:09Z
+last_built: 2020-11-09T08:28Z
 

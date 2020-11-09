@@ -114,7 +114,7 @@ defined as:" />
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -160,21 +160,33 @@ Specifically we use Geenens &amp; Nieto-Reyes's global distance-based depth
 defined as:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>)</pre>
+    <pre class="usage"><span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='st'>"auto"</span>)
+
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>F</span>)
+
+<span class='co'># S3 method for tidy_dist_mat</span>
+<span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dist_mat</th>
-      <td><p>a n x n square positive symmetric matrix</p></td>
+      <td><p>a n x n square positive symmetric matrix or a tidy_dist_mat</p></td>
+    </tr>
+    <tr>
+      <th>df_out</th>
+      <td><p>indicates if one should return a data.frame our a vector,
+by default returns data.frame if dist_mat is a tidy_dist_mat, and a vector
+if dist_mat is a matrix.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>depth vector length n with depth values associated with indices in
-  <code>dist_mat</code></p>
+  <code>dist_mat</code> or a data.frame with a column called <code>depth</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>\(DD(x, \hat{P}) = 1/(n choose 2) \cdot \sum_{i!=j} I(d(X_i, X_j) &gt;
@@ -191,7 +203,10 @@ max(d(X_i,x), d(X_j,x)))\)</p>
                    <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>3</span>,
                    <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='no'>dd_vec</span> <span class='kw'>&lt;-</span> <span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>) <span class='co'># c(1,0,0)</span></div></pre>
+<span class='no'>dd_vec</span> <span class='kw'>&lt;-</span> <span class='fu'>distance_depth_function</span>(<span class='no'>dist_mat</span>) <span class='co'># c(1,0,0)</span>
+
+<span class='no'>tidy_dm</span> <span class='kw'>&lt;-</span> <span class='fu'>tidy_dist_mat</span>(<span class='no'>dist_mat</span>)
+<span class='no'>dd_df</span> <span class='kw'>&lt;-</span> <span class='fu'>distance_depth_function</span>(<span class='no'>tidy_dm</span>) <span class='co'># depth = c(1,0,0)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

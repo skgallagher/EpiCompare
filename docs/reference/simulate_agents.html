@@ -112,7 +112,7 @@
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -263,7 +263,7 @@ This will trigger an error.</p></td>
 #&gt;  5  1  1  1  1  1  1 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='no'>abm</span> <span class='kw'>%&gt;%</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>sim</span>) <span class='kw'>%&gt;%</span>
-<span class='fu'><a href='agents_to_aggregate.html'>agents_to_aggregate</a></span>(<span class='kw'>states</span> <span class='kw'>=</span> <span class='no'>I</span>) <span class='kw'>%&gt;%</span>
+<span class='fu'>agents_to_aggregate</span>(<span class='kw'>states</span> <span class='kw'>=</span> <span class='no'>I</span>) <span class='kw'>%&gt;%</span>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>( <span class='kw'>x</span><span class='kw'>=</span> <span class='no'>t</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>X1</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='no'>sim</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>sim</span>))) +
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_line</a></span>()</div><div class='img'><img src='simulate_agents-1.png' alt='' width='700' height='433' /></div></span></pre>
   </div>

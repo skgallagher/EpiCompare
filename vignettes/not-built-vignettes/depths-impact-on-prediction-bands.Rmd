@@ -1,9 +1,9 @@
 ---
-title: "Understanding Prediction Bands and the Impact of Quantile Functions"
+title: "Understanding Prediction Bands and Impact of Quantile/Ordering Functions"
 output: rmarkdown::html_document
 bibliography: our-bib.bib
 vignette: >
-  %\VignetteIndexEntry{Understanding Prediction Bands and the Impact of Quantile Functions}
+  %\VignetteIndexEntry{Understanding Prediction Bands and the Impact of Quantile/Ordering Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 
@@ -31,29 +31,368 @@ library(EpiCompare)
 
 # Overview
 
-This vignette focusing on understanding the use of diffeerent conformal scores (current different quantile functions) and how they aid in creating the best prediction bands for epidemic models. In this example, we present some SIR data (see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html) for examples that can quickly apply to higher dimensions.), that contains interesting group structure, and we explore how local vs global depth, and psuedo-densities creates different prediction bands.
+Creating prediction regions and quantifying uncertainty in epidemiological function space is a complicated endeavor. In this vignette we focus on providing the reader some background for the approach presented in this package. Although our work was is based on work in [@Dalmasso2019]^[Ben is a co-author in that paper.] \cite*{Dalmasso2019},  we provide more statistical grounding for our shared approaches as well as smarter approaches for simulation based prediction regions for multivariate functional data (functions with output in multi-dimensional space). 
 
-The next step of this package will be to provide conformal inference [@Vovk2005] wrappers around these quantile functions (conformal scores) to make the prediction intervals valid in a finit sense (which they are currently not).
+The first section of this vignette is a literature review of some useful tools and related literature to create prediction regions for Euclidean space. We focus on creating rudimentary level sets for for conditional density estimates.
+
+The second part of this vignette demonstrates how we leverage level set estimate to define a prediction region for simulated epidemics. We demonstrate our prediction region on a mixture of SIR epidemic models, and examine different ranking/quantile functions to create a prediction region.
+
+# Section 1: An introduction to creating prediction regions with level sets
+
+There are many ways to create prediction regions. The most famous prediction region (interval) comes from linear regression. Under assumptions about the linearity of $y|X$ and the normality of the residuals, we can define a prediction interval for $y_i|X_i$ as 
+
+\[
+X_i^T\beta \pm z_{\alpha/2} \cdot \hat{\sigma} \sqrt{1 + X_i^T \hat{\Sigma}X_i} \;,
+\]
+which should contain $y_i$ $(1-\alpha)100\%$ of the time. 
+
+Such a prediction region relies heavily on the strict assumptions of the linear model. It is often useful to assume less strict assumptions for the generative distribution, potentially as far as fitting some  black models  that return an estimate of the conditional density to $y|x$ to define prediction regions [e.g. @Izbicki2017].
+
+For models that can estimate conditional densities, density level sets provide a great tool to create a prediction region. Level sets are know to be the best (most efficient) prediction regions given a density is known (mentioned in passing in [@Lei2013]). Although lvel ets are often visualized by just evaluating the density over a grid, there are many ways to estimate density level sets, especially when one has a sampling from the underlying distribution. [@Grenander1981a; @Walther1997; @Jiang2017], all present possible ways to use a union of balls to represent level sets for densities for simulations/random samples. @Walther1997's more efficient approach is visualized below in the below visuals.
+
+```{r interal-data, echo = F, message = F, warning = F, eval = F}
+library(tidyverse)
+library(ks)
+library(latex2exp)
+# data ------
+set.seed(1)
+data <- data.frame(x = runif(10000),
+                   y = runif(10000))
+
+#plot(data$x, data$y)
+#id_vals <- identify(data$x, data$y)
+id_vals <- c(545, 800, 1090, 1659, 1750, 1886, 2374, 2692,
+             2901, 3411, 3839, 4018, 5023, 5341, 5505,
+             5523, 7983, 8273, 8706, 9025, 9401)
+
+data_select <- data[id_vals,]
+data_select$x[data_select$y < .55] <-
+    data_select$x[data_select$y < .55] + .05
+
+data_select$y[data_select$y > .5 & data_select$y < .65] <-
+    data_select$y[data_select$y > .5 & data_select$y < .65] + .04
+
+data_select$x[data_select$x < .3] <-
+    data_select$x[data_select$x  < .3] + .05
+
+my_kde_similar_mass_kde2 <- function(data, h){
+    x <- data$x 
+    y <- data$y
+    nx <- length(x)
+    
+    h <- rep(h, 2L)
+    
+    gx <- x
+    gy <- y
+    
+    if (any(h <= 0)) {
+        stop("bandwidths must be strictly positive")
+    }
+    h <- h/4
+    
+    ax <- outer(gx, x, "-")/h[1L]
+    ay <- outer(gy, y, "-")/h[2L]
+    z <- diag(tcrossprod(matrix(dnorm(ax), , nx), matrix(dnorm(ay), , nx))/(nx * h[1L] * h[2L]))
+    return(z)
+}
+
+dist_x <- dist(data_select %>% select(x,y)) %>% as.matrix()
+rank_prob_range <- (1:nrow(data_select))/nrow(data_select) + .5/nrow(data_select)
+```
 
 
-# Data generation 
+```{r internal-functions, echo = F, eval = F}
+split_threshold_sims <- function(probs, threshold = NA, rank_prob = NA){
 
-Here's our visualization of simulations (actually from 2 different models), but we can imagine that we believe that the true epidemic comes from a mixture of these two models. That is
+    if (is.na(threshold) & is.na(rank_prob)){
+        stop("either 'threshold' or 'rank_prop' must be specified")
+    }
+
+    if (is.na(threshold)){
+        proportion_rank <- rank(probs)/ length(probs)
+        id <- 2*(proportion_rank > rank_prob) - 1
+    } else{
+        id <- 2*(probs < threshold) - 1
+    }
+
+    return(id)
+}
+
+plus_update <- function(dist_x, group_id, r_n = 1){
+    group_id_inner <- group_id
+    plus_dist_to_minus <- dist_x[group_id == 1,][,group_id == -1]
+    group_id_inner[group_id == 1] <- 2*(apply(plus_dist_to_minus, 1, min) > r_n) - 1
+    return(group_id_inner)
+}
+
+
+contour_vis_df <- function(correct_plus_data, r_n = 1, over_delta = .1, grid_size = c(200,200)){
+    # code similar to EpiCompare::StatPredBandDeltaBall's compute_group function
+    data_deep_points <- correct_plus_data
+
+    delta_info <- EpiCompare::delta_structure(data_deep_points, xy_columns = c("x", "y"))
+
+
+    structure <- delta_info$structure
+
+    inner_df <- dplyr::setdiff(data_deep_points %>%
+                                   dplyr::select(x,y),
+                               structure %>%
+                                   dplyr::select(x,y))
+
+    border_points <- structure %>% dplyr::select(x,y)
+    inner_points <- inner_df
+
+    xrange <- seq(min(border_points$x) - over_delta,
+                  max(border_points$x) + over_delta,
+                  length.out = grid_size[1])
+
+    yrange <- seq(min(border_points$y) - over_delta,
+                  max(border_points$y) + over_delta,
+                  length.out = grid_size[2])
+
+    updated_gridpoints <- EpiCompare:::get_closest(border_points, inner_points,
+                                                  r_n,
+                                                  xrange = xrange,
+                                                  yrange = yrange,
+                                                  gridbreaks = NULL)
+
+
+    update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
+                                                names_from = "y",
+                                                values_from = "z") %>%
+        dplyr::select(-x) %>% as.matrix
+
+
+    cl <- grDevices::contourLines(x = xrange, y = yrange,
+                                  z = update_gridpoints_mat,levels = c(2))
+
+    lengths <- vapply(cl, function(x) length(x$x), integer(1))
+    xs <- unlist(lapply(cl, "[[", "x"), use.names = FALSE)
+    ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
+    pieces <- rep(seq_along(cl), lengths)
+
+    vis_df <- data.frame(
+        x = xs,
+        y = ys,
+        piece = pieces)
+
+    return(vis_df)
+}
+
+
+contour_density_vis_df <- function(data, h = .1, 
+                                   over_delta = .1, 
+                                   grid_size = c(200,200),
+                                   lambda = 1){
+
+
+    kde_estimate <- MASS::kde2d(x = data$x, y = data$y, h = h, n = grid_size, 
+                lims = c(min(data$x) - over_delta, 
+                         max(data$x) + over_delta,
+                         min(data$y) - over_delta,
+                         max(data$y) + over_delta))
+
+    cl <- grDevices::contourLines(x = kde_estimate$x, y = kde_estimate$y,
+                                  z = kde_estimate$z,levels = c(lambda))
+
+    lengths <- vapply(cl, function(x) length(x$x), integer(1))
+    xs <- unlist(lapply(cl, "[[", "x"), use.names = FALSE)
+    ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
+    pieces <- rep(seq_along(cl), lengths)
+
+    vis_df <- data.frame(
+        x = xs,
+        y = ys,
+        piece = pieces)
+
+    return(vis_df)
+}
+
+
+```
+
+
+```{r sequence-of-plots, echo = F, eval = F}
+arrangeGrob2 <- gridExtra::arrangeGrob
+h <- .1
+n <- nrow(data_select)
+prop_cutoff <- c(seq(.5/n, 1 +  .5/n, by =1/n )[4:18],
+                 seq(.5/n, 1 +  .5/n, by =1/n )[18:8],
+                 rep(seq(.5/n, 1 +  .5/n, by =1/n )[8], 23),
+                 seq(.5/n, 1 +  .5/n, by =1/n )[8:4]) # come back to .35
+radius <- c(rep(.035, 26) , seq(.035, .02, by = -.005),
+            seq(.02, .1, by = .005),
+            seq(.1, .035, by = -.05), rep(.035, 5))
+
+prop_cutoff_level <- c(seq(.5/n, 1 +  .5/n, by = 1/n )[4:18],
+                       seq(.5/n, 1 +  .5/n, by = 1/n )[18:4])
+radius_level <- rep(.035, length(prop_cutoff_level))
+
+radius_rad <- c(seq(.1, .02, by = -.005), seq(.02,.1, by = .005))
+prop_cutoff_rad <- rep(seq(.5/n, 1 +  .5/n, by =1/n )[8], length(radius_rad))
+
+parameters_list_level <- lapply(1:length(radius_level), 
+                                function(idx) list("r_n" = radius_level[idx],
+                                                   "rank_prob" = prop_cutoff_level[idx]))
+parameters_list_rad <- lapply(1:length(radius_rad), 
+                              function(idx) list("r_n" = radius_rad[idx],
+                                                 "rank_prob" = prop_cutoff_rad[idx]))
+
+walther_plot_func <- function(input, range_name = "r_n"){
+  my_data_select <- data_select
+  my_prob <- my_kde_similar_mass_kde2(my_data_select, h = h)
+  
+  my_data_select$my_prob <- my_prob
+  my_data_select$rank <- rank(my_data_select$my_prob)
+  
+  rank_prob <- input$rank_prob
+  r_n <- input$r_n
+  probs <- my_data_select$my_prob
+
+  
+  group_id <- split_threshold_sims(my_data_select$my_prob, 
+                                   rank_prob = rank_prob)
+  group_id_clean <- plus_update(dist_x, group_id, r_n = r_n)
+  
+  data_select_inner <- my_data_select %>%
+      mutate(raw_id = group_id,
+             cleaned_id = group_id_clean)
+  
+  lambda <- min(probs[group_id == 1])
+  
+  lambda_range <- range(probs)
+  r_n_range <- c(.02,.1)
+  
+  vis0 <- ggplot(data.frame(lambda = lambda, r_n = r_n)) +
+      geom_point(aes(y = r_n, x = lambda)) +
+      ggrepel::geom_label_repel(aes(y = r_n, x = lambda,
+                                    label = paste0("(", round(r_n,4),
+                                                       ",", round(lambda,4),
+                                                       ")")),
+                                nudge_x = 3, nudge_y = .003) + 
+      labs(x = TeX("$\\lambda$, threshold cutoff"),
+           y = TeX("$r_n$, radius")) +
+      ylim(r_n_range) + xlim(lambda_range) +
+      theme_minimal()
+  
+
+    
+  vis_df <- contour_vis_df(data_select_inner[group_id_clean == 1,], r_n = r_n)
+  
+  vis1 <- vis_df %>%
+     ggplot() +
+     geom_polygon(aes(x = x , y = y, group = piece), fill = NA, color = "red") +
+     geom_point(data = data_select_inner, aes(x = x , y= y,
+                                        color = factor(cleaned_id),
+                                        shape = factor(raw_id))) +
+     theme_minimal() +
+     theme(aspect.ratio = 1) +
+     labs(title = "Data Visualization",
+          subtitle = "ranked by estimated probability value",
+          y = TeX("$y_2$"),
+          x = TeX("$y_1$"),
+          color = TeX("In defining set"),
+          shape = TeX("$\\hat{f}(x) \\geq \\lambda$")) +
+  xlim(c(.15, .65)) +
+  ylim(c(.3,.9)) +
+  scale_shape_manual(values = c(16, 1))
+  
+  vis_df2 <- contour_density_vis_df(data = data_select_inner %>% dplyr::select(x,y), 
+                                    h = h,
+                                    grid_size = c(200,200),
+                                    lambda = lambda) 
+    
+  vis2 <- vis_df2 %>%
+        ggplot() +
+        geom_density_2d(data = data_select_inner, aes(x = x , y= y), h = h,
+                        alpha = .3) + 
+        geom_polygon(aes(x = x , y = y, group = piece), fill = NA, 
+                     color = "red") +
+        geom_point(data = data_select_inner, aes(x = x , y= y,
+                                           color = factor(cleaned_id),
+                                           shape = factor(raw_id))) +
+
+        theme_minimal() +
+        theme(aspect.ratio = 1) +
+        labs(title = "Data Visualization",
+                subtitle = "Kernel Density Estimates",
+                y = TeX("$y_2$"),
+                x = TeX("$y_1$"),
+                color = TeX("In defining set"),
+                shape = TeX("$\\hat{f}(x) \\geq \\lambda$")) +
+        xlim(c(.15, .65)) +
+        ylim(c(.3,.9)) +
+        scale_shape_manual(values = c(16, 1))
+  
+  layout_matrix <- matrix(c(1,2,2,2,3,3,3,
+                            1,2,2,2,3,3,3,
+                            1,2,2,2,3,3,3), nrow = 3, ncol = 7, byrow = T)
+  
+  return(arrangeGrob2(grobs = list(vis0, vis1, vis2),
+                     layout_matrix = layout_matrix))
+}
+
+walther_plots_level <- lapply(parameters_list_level, walther_plot_func, range_name = "level")
+walther_plots_rad <- lapply(parameters_list_rad, walther_plot_func)
+```
+
+
+```{r eval = F, echo = F}
+#```{r walther-plots-level, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval=.25, fig.width=14, fig.height=5}
+walk(walther_plots_level, plot)
+# note the below gif needs to be manually to `man/figures/` to be used , run this file in a different location that vignettes - will not save the gifs otherwise
+```
+
+```{r eval = F, echo = F}
+#```{r walther-plots-rad, fig.show='animate', ffmpeg.format='gif', dev='jpeg', interval=.25, fig.width=14, fig.height=5}
+walk(walther_plots_rad, plot)
+# note the below gif needs to be manually to `man/figures/` to be used, run this file in a different location that vignettes - will not save the gifs otherwise
+```
+
+
+```{asis}
+<center>
+![test](../../reference/figures/walther-plots-level.gif)
+</center>
+```
+
+```{asis}
+<center>
+![test](../../reference/figures/walther-plots-rad.gif)
+</center>
+```
+
+
+Our approach builds off of prediction regions through level sets from low-dimensional Euclidean space to multivariate functional epidemics.
+
+# Section 2: Prediction bands from epidemic simulations
+
+In order to demonstrate our approaches to building prediction regions for epidemics, we start with a data example, examining the structure and then look at different approaches to contain a desired region in the space.
+
+## Data example
+
+To understand how we create prediction regions (and a few options we provide), we will examine a generative model that sees the true epidemic comes from a mixture of these two models. Specially, 
 
 $$
-\text{Epidemic} \sim .5 \cdot \text{Model}_1 + .5 \cdot \text{Model}_2
+\text{Epidemic} \sim .7 \cdot \text{Model}_1 + .3 \cdot \text{Model}_2
 $$
 where 
 $$
 \text{Model}_1 = SIR(\beta = .1, \gamma = .03) \\
 \text{Model}_2 = SIR(\beta = .15, \gamma = .05)
 $$
+
+
 ```{r}
+set.seed(11)
 ## first group -----------
 beta <- .1
 gamma <- .03
+n <- 100
+prop_class_1 <- .7
 
-out <- simulate_SIR_agents(n_sims = 50,
+out <- simulate_SIR_agents(n_sims = round(.7*n),
                            n_time_steps = 100,
                            beta = beta, gamma = gamma,
                            init_SIR = c(950, 50, 0))
@@ -68,7 +407,7 @@ df_group <- out %>% group_by(sim) %>%
 beta <- .15
 gamma <- .05
 
-out2 <- simulate_SIR_agents(n_sims = 50,
+out2 <- simulate_SIR_agents(n_sims = round((1-.7)*n),
                             n_time_steps = 100,
                             beta = beta, gamma = gamma,
                             init_SIR = c(950, 50, 0))
@@ -86,12 +425,12 @@ df_all_vis <- df_all %>%
   mutate(id2 = as.numeric(id2)) 
 ```
 
+The following figure shows these curves on the unit simplex. Notice that is hard for the eye to tell that the second group only contains 30\% of simulations (this observation will be important later).
 
-
-```{r warning = F}
+```{r warning = F, message = F}
 all_curves <- ggplot(df_all_vis) +
   geom_path(aes(x = S, y = I, z = R, color = id, group = id2),
-            alpha = .1) + 
+            alpha = .2) + 
   coord_tern() +
   labs(color = "Group") +
   theme_sir()
@@ -99,82 +438,155 @@ all_curves <- ggplot(df_all_vis) +
 all_curves
 ```
 
+### Distances between epidemic simulations
 
-# Creation of prediction bands
+If we imagine each epidemic simulation as it's own object, we can naturally imagine comparing simulations, and - if we treat these simulations like functional data, we might approach comparing the simulations with a distance metric ($d_\mathcal{F}$ ). $d_\mathcal{F}$ can be defined in different ways [e.g. @Chiou2014; @Chen2012; @Buchman2011], For concreteness, one potential distance between multivariate random functions from @Buchman2011 is defined as:
+\[
+d_\mathcal{F}(f_1, f_2) = \int_{c \in C} d_Y(\mathbf{f}_1(c), \mathbf{f}_2(c)) dc
+\]
 
-Our current framework through `geom_prediction_band` uses a global distance-based depth based on work from Geenens \& Nieto-Reyes's distance depth (directly explorably with the function `distance_depth_function`) [@Geenens2017]. Below you'll see that, the visualized prediction band using this global depth doesn't actually capture the area of the simplex we might want - specifically it seems to like the interior between these two groups a little bit more than what you and I might want. This is largely associated with the global nature of depth.
+This distance (if $C$ is indexing time), doesn't really align with our goal of "time-invariant" analysis, and we provide other distances that try to be more "time-invariant", including 
+\[
+d_\mathcal{F}^\text{equa}(f_1,f_2,n) = \frac{1}{n} \sum_{i=1}^n d_Y(f_1(c_{1(i)}), f_2(c_{2(i)}))\;,
+\]
+where $c_{j(i)}$ relates to equally spaced, order points along the function^[In line with treating the function as a filament.].
+
+
+## Psuedo-density
+
+To summarize these curves we want wish capture a representation of highly likely curves through a prediction region. Although one cannot define a density for multivariate functions, there's a long practice of defining psuedo-densities [e.g. @Ferraty2012; @Ciollaro2014] by with kernels and the distance between observations, e.g. 
+\[
+\hat{f}(X) = \frac{1}{n}\sum_{i=1}^n K(\text{dist}(X, X_i)^2/\sigma) \;,
+\]
+
+often with $K$ being the standard Gaussian kernel. We can calculate the psuedo-density for the set of simulations, and we visualize them below. In both figures below we can see that the the estimated density for most simulations from the second mixture is above the maximum density estimated for the density from the second simulation.
+
+```{r}
+# this requires keeping track of the names in this way (sadly)
+compression_df <- df_all %>%
+  arrange(t) %>% # just to be safe
+  dplyr::select(-t) %>%
+  group_by(id, sim) %>% 
+  filament_compression(data_columns = c(S,I,R), 
+                       number_points = 20) 
+
+compression_list <- compression_df %>% group_split()
+
+compression_list_names <- compression_df %>%
+  group_keys() 
+
+
+dist_mat <- compression_list %>%
+  dist_matrix_innersq_direction(position = 3:5, verbose = TRUE)
+
+tidy_dm <- tidy_dist_mat(dist_mat, compression_list_names, 
+                         compression_list_names)
+
+sigma <-  quantile(dist_mat, probs = .3)
+```
+
+```{r warning = F, message = F}
+psuedo_density <- distance_psuedo_density_function(tidy_dm, sigma)
+
+group_names <- names(psuedo_density)[names(psuedo_density) != "psuedo_density"]
+
+df_all_pd <- df_all_vis %>%
+  left_join(psuedo_density, by = c("sim", "id")) %>%
+  ungroup() %>% 
+  mutate(psuedo_density2 = cut(.data$psuedo_density, breaks = 5),
+         id2 = factor(paste0(id, sim), 
+                      levels = paste0(rep(c("first", "second"), each = 100),
+                                      rep(1:100, length = 200)))) %>%
+  mutate(id2 = as.numeric(id2)) 
+
+```
+
+```{r message = F}
+psuedo_density %>%
+  ggplot() +
+  geom_histogram(aes(x = psuedo_density, fill = id)) +
+  facet_grid(id ~.) +
+  labs(fill = "mixture membership", x = "psuedo-density")
+```
+
+```{r}
+df_all_pd %>% 
+  ggplot(aes(x = S, y = I, z = R, color = psuedo_density, group = id2)) +
+  geom_path() +
+  coord_tern() +
+  labs(title = "Psuedo Density", color = "psuedo density") +
+  theme_sir() 
+```
+
+
+```{r echo = F, eval = F}
+# not needed to be presented 
+df_all_pd %>% 
+  ggplot(aes(x = S, y = I, z = R, color = psuedo_density, group = id2)) +
+  geom_path() +
+  coord_tern() +
+  labs(title = "Psuedo Density", color = "psuedo density") +
+  theme_sir() +
+  facet_wrap(~psuedo_density2)
+```
+
+
+### Creating a prediction region
+
+bBy extending off union-of-balls based level set estimation techniques as described in the first section, we try to wrap each function in a small tube to represent the level set^[This is approximated by what [@Dalmasso2019] describes as the $\delta$-ball approach, but with a more statistically valid approach using the psuedo-density.]. The final result with the psuedo-density estimate is presented below (with a $\alpha$ level of $.5$).
 
 ```{r cache = T}
-global_depth_pb <- all_curves + 
+psuedo_density_pb <- all_curves + 
   geom_prediction_band(data = df_all_vis,
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
-                       pb_type = "delta_ball", conf_level = .6) +
+                       pb_type = "delta_ball", conf_level = .5,
+                       dist_params = list(dist_approach = "auto", 
+                                          num_steps = "auto", 
+                                          quantile_approach = "psuedo_density", 
+                                          quantile_approach_params = list("sigma" = "30%"))) +
   coord_tern() +
   theme_sir()
 
-global_depth_pb
+psuedo_density_pb
+```
+
+```{r echo = F, eval = F}
+# removed as not needed 
+p_bound <- quantile(psuedo_density$psuedo_density, 1 - .5)
+df_all_pd %>% 
+  filter(psuedo_density > p_bound) %>% 
+  ggplot() +
+  geom_path(aes(x = S, y = I, z = R, group = id2), alpha = 1) + 
+  coord_tern() +
+  theme_sir() + geom_prediction_band(data = df_all_vis,
+                       aes(x = S, y = I, z = R, 
+                          sim_group = id2),
+                       pb_type = "delta_ball", conf_level = .5, color = "blue",
+                       dist_params = list(dist_approach = "auto", 
+                                          num_steps = "auto", 
+                                          quantile_approach = "psuedo_density", 
+                                          quantile_approach_params = list("sigma" = "30%"))) 
 ```
 
 
-# A local approach
+## Global depth
 
-Agostinelli \& Romanazzi (2011) proposed an approach to create local depth, and we have extended their ideas to Geenens \& Nieto-Reyes into a local distance based depth (directly explorably with the function `local_distance_depth_function`) [@Agostinelli2011]. Agostinelli \& Romanazzi (2011) recommended a localized parameter $\tau$ around the 20-30% quantile of the distance distribution - which we explore here.
+If we look at the above confidence interval we might feel like second branch captured in the prediction region doesn't really capture the true structure of the data in the way we want - specifically we might imagine that a more "central" curve in the second mixture should be highlighted first. Naturally, we could change the $\sigma$ for the psuedo-density or redefine the distance function we use, but depth also provides a different way to think about the geometric structure of a distribution. At it's core, depth focuses on defining the "centrality" of observations.
 
-## Tau selection
-
-```{r eval = T, cache = T}
-dist_mat <- df_all %>%
-  arrange(t) %>% # just to be safe
-  select(-t) %>%
-  group_by(id, sim) %>% group_split() %>%
-  dist_matrix_innersq_direction(position = 2:4, verbose = TRUE)
-
-quantile(dist_mat,probs = 0:10/10) %>% t %>%
-  data.frame(check.names = F) %>%
-  DT::datatable(options = list(dom = 't'))
-
-tau <- quantile(dist_mat,probs = .3)["30%"]
-
-dist_mat %>% c() %>% data.frame(dist = .) %>%
-  ggplot(aes(x = dist)) + geom_histogram(bins = 30) +
-  geom_vline(xintercept = tau)
-```
-
-# Building an understanding
-
-To gain a bit of understanding, we the below code allows us to explore the depth of each curve relative to global depth and local depth.
+Because we have a space with a distance defined between observations we use Geenens \& Nieto-Reyes's distance depth (directly explorably with the function `distance_depth_function`) [@Geenens2017]. @Geenens2017's distance depth is a global measure, and depth in general doesn't capture density structure - so level sets aren't the best to capture a true level set of density^[See Figure 2 in @Lei2013 for a Euclidean comparison of global depth vs density]. None the less, depth can be used to define an ordering / ranking of the curves to create a prediction region. Depth is a very common tool in functional data analysis. Below we present the estimated "depth" of all the simulated curves using @Geenens2017's distance depth. Note that a simulation that had a similar shape and ended with $\approx 83\%$ in the recovery state would actually be seen as the most deep curve (and included in this prediction interval).
 
 ```{r}
-local_depth <- df_all %>%
-  arrange(t) %>% # just to be safe
-  select(-t) %>%
-  group_by(id, sim) %>%
-  filament_distance_depth(depth_func = 
-    function(dist_mat) {
-      local_distance_depth_function(dist_mat, tau = tau)
-      }, data_columns = c("S","I","R"))
+global_depth <- distance_depth_function(tidy_dm)
 
-global_depth <- df_all %>%
-  arrange(t) %>% # just to be safe
-  select(-t) %>%
-  group_by(id, sim) %>%
-  filament_distance_depth(depth_func = 
-    function(dist_mat) {
-      distance_depth_function(dist_mat)
-      }, data_columns = c("S","I","R"))
-
-df_all_ld <- df_all_vis %>% group_by(id, sim) %>%
-  nest() %>% 
-  ungroup() %>% mutate(local_depth = local_depth,
-                       global_depth) %>%
-  unnest(col = c(data)) %>%
-  mutate(local_depth2 = cut(local_depth, breaks = 5),
-         global_depth2 = cut(global_depth, breaks = 5)) 
+df_all_gd <- df_all_vis %>%
+  left_join(global_depth, by = c("sim", "id")) %>% 
+  rename(global_depth = depth) %>%
+  mutate(global_depth2 = cut(global_depth, breaks = 5)) 
 ```
 
 ```{r}
-df_all_ld %>% 
+df_all_gd %>% 
   ggplot(aes(x = S, y = I, z = R, color = global_depth, group = id2)) +
   geom_path() +
   coord_tern() +
@@ -182,112 +594,110 @@ df_all_ld %>%
   theme_sir()
 ```
 
-```{r}
-df_all_ld %>% 
-  ggplot(aes(x = S, y = I, z = R, color = local_depth^2, group = id2)) +
-  geom_path() +
+Below you'll see a prediction region defined by the global depth. The visualized prediction band using this global depth captures different structure of the simulations - specifically it seems to like the interior between these two groups a little bit more than what you and I might want. This is largely associated with the global nature of depth. 
+
+```{r cache = T, message = F}
+global_depth_pb <- all_curves + 
+  geom_prediction_band(data = df_all_vis,
+                       aes(x = S, y = I, z = R, 
+                          sim_group = id2),
+                       pb_type = "delta_ball", conf_level = .5,
+                       dist_params = list(dist_approach = "auto", 
+                                          num_steps = "auto", 
+                                          quantile_approach ="depth", 
+                                          quantile_approach_params = list())) +
   coord_tern() +
-  labs(title = "Local Depth", color = "(local depth)^2") +
   theme_sir()
+
+global_depth_pb
 ```
 
-*Although currently not built in*, we can still visualize prediction band based on local depth would look like. Notice how the local depth seems to equally emphasis the centers of both mixtures in the scores and the prediction band.
+## Local depth
+
+If we are interested in highlighting "central" curves in a more local way, we can use local depth. Agostinelli \& Romanazzi (2011) proposed an approach to create local depth, and we have extended their ideas to Geenens \& Nieto-Reyes into a local distance based depth (directly explorably with the function `local_distance_depth_function`) [@Agostinelli2011]. @Agostinelli2011 recommended a localized parameter $\tau$ around the 20-30% quantile of the distance distribution - which we explore here.
+
+### Tau selection
+
+```{r eval = T, cache = T}
+quantile(dist_mat,probs = 0:10/10) %>%
+  round(2) %>% t %>%
+  data.frame(check.names = F) %>%
+  DT::datatable(options = list(dom = 't'))
+
+tau <- quantile(tidy_dm,probs = .30)["30%"]
+
+tidy_dm %>% c() %>% data.frame(dist = .) %>%
+  ggplot(aes(x = dist)) + geom_histogram(bins = 30) +
+  geom_vline(xintercept = tau)
+```
+
+Unlike the global depth, local depth "localizes" what it means to be central. It's not the same as a density estimate (see [vignette for Euclidean examples](https://skgallagher.github.io/EpiCompare/articles/Comparing-Depth-and-Density.html)), the below visual of this local depth emphasises that we're not focused as much at the probablistic level, but given the local nature of the the approach we might expect the union of balls to better capture the level set structure of local depth.
 
 ```{r}
+local_depth <- local_distance_depth_function(tidy_dm, tau = tau)
+```
 
-local_cutoff <- df_all_ld %>% pull(local_depth) %>% quantile(probs = .4)
+```{r}
+df_all_ld <- df_all_vis %>% 
+  left_join(local_depth, by = c("sim", "id"))
+```
 
+```{r cache = T}
+all_vis <- df_all_ld %>% 
+  ggplot(aes(x = S, y = I, z = R, color = local_depth, group = id2)) +
+  geom_path() +
+  coord_tern() +
+  labs(title = "Local Depth", color = "local depth") +
+  theme_sir()
+all_vis_minus1 <- df_all_ld %>% 
+  filter(local_depth != 1) %>%
+  ggplot(aes(x = S, y = I, z = R, color = local_depth, group = id2)) +
+  geom_path() +
+  coord_tern() +
+  labs(title = "Local Depth", color = "local depth",
+       subtitle = "removed extreme point") +
+  theme_sir()
+
+grid.arrange(all_vis, all_vis_minus1, nrow = 1)
+```
+
+We can then create prediction regions using this local depth, below are the visuals from such an approach. Notice that it doesn't agree with the pseudo-density approach, but better captures the central portion of each mixture.
+
+```{r cache = T, message = F}
 local_depth_pb <- all_curves + 
-  geom_prediction_band(data = df_all_ld %>% filter(local_depth > local_cutoff),
+  geom_prediction_band(data = df_all_vis,
                        aes(x = S, y = I, z = R, 
                           sim_group = id2),
-                       pb_type = "delta_ball", conf_level = 1) +
+                       pb_type = "delta_ball", conf_level = .5,
+                       dist_params = list(dist_approach = "auto", 
+                                          num_steps = "auto", 
+                                          quantile_approach ="local_depth", 
+                                          quantile_approach_params = list(tau = "30%"))) +
   coord_tern() +
   theme_sir()
 
-grid.arrange(global_depth_pb + labs(title = "global-based prediction band"),
-             local_depth_pb + labs(title = "local-based prediction band"),
-             nrow = 1)
-```
-
-# Beyond Depth: A psuedo-density approach
-
-Depth based metrics focus on "centrality" of observations, which is different than densities, [Comparing Depth and Density](https://skgallagher.github.io/EpiCompare/articles/not-built-vignettes/Comparing-Depth-and-Density.html) provides a introduction into how to think about the differences between densities and depth.
-
-Papers like  [@Ferraty2012] and [@Ciollaro2014] provide us this ways to estimate "psuedo-densities" for each point. *Although also not included in this package*, the below code sketched how one could approach using the Guassian Kernel based psuedo-densities proposed in these papers.
-
-```{r}
-dist_mat <- df_all %>%
-  arrange(t) %>% # just to be safe
-  select(-t) %>%
-  group_by(id, sim) %>% group_split() %>%
-  dist_matrix_innersq_direction(position = 2:4, verbose = TRUE)
-
-
-psuedo_density_function <- function(dist_mat, bw){
-  dmat <- dnorm(dist_mat, sd = bw)
-  estimated_density <- rowSums(dmat)/sum(dmat)
-}
-
-psuedo_density_data <- df_all %>%
-  arrange(t) %>% # just to be safe
-  select(-t) %>%
-  group_by(id, sim) %>%
-  filament_distance_depth(depth_func = 
-    function(dist_mat) {
-      psuedo_density_function(dist_mat, bw = tau)
-      }, data_columns = c("S","I","R"))
-
-
-df_all_pd <- df_all_vis %>% group_by(id, sim) %>%
-  nest() %>% 
-  ungroup() %>% mutate(psuedo_density = psuedo_density_data) %>%
-  unnest(col = c(data)) %>%
-  mutate(psuedo_density2 = cut(psuedo_density, breaks = 5),
-         id2 = factor(paste0(id, sim), 
-                      levels = paste0(rep(c("first", "second"), each = 100),
-                                      rep(1:100, length = 200)))) %>%
-  mutate(id2 = as.numeric(id2)) 
-
-data.frame(psuedo_density = psuedo_density_data) %>%
-  ggplot() +
-  geom_histogram(aes(x = psuedo_density))
-
-psuedo_density_data %>% range()
-
-df_all_pd %>% 
-  ggplot(aes(x = S, y = I, z = R, color = psuedo_density^2, group = id2)) +
-  geom_path() +
-  coord_tern() +
-  labs(title = "Psuedo Density", color = "(psuedo density)^2") +
-  theme_sir()
+local_depth_pb
 ```
 
 
-```{r}
-local_cutoff_pd <- df_all_pd %>% pull(psuedo_density) %>% quantile(probs = .4)
+## Wrap-up
 
+Overall, we have presented 3 ways to use different rank / orderings of epidemic simulations to create prediction regions. Although we've demonstrated they all capture different geometric structures we hope they can demonstrate different ways to represet simulation's structure and our uncertainty about complex epidemic systems and our attempts to represent them. The figure below shows these different approaches for our rather contrived confidence level of $1-\alpha = .5$.
 
+```{r cache = T, message = F}
+layout_mat <- matrix(c(rep(c(4,4, rep(3,4), 4,4), 4),
+                       rep(c(rep(1,4), rep(2, 4)),4)), nrow = 8, byrow = T)
 
-psuedo_density_pb <- all_curves + 
-  geom_prediction_band(data = df_all_pd %>% filter(psuedo_density > local_cutoff_pd),
-                       aes(x = S, y = I, z = R, 
-                          sim_group = id2),
-                       pb_type = "delta_ball", conf_level = 1) +
-  coord_tern() +
-  theme_sir()
-
-layout_mat <- matrix(c(rep(c(rep(1,4), rep(2, 4)),4),
-                       rep(c(4,4, rep(3,4), 4,4), 4)), nrow = 8, byrow = T)
-
-grid.arrange(global_depth_pb + labs(title = "global depth based prediction band"),
-             local_depth_pb + labs(title = "local depth based prediction band"),
-             psuedo_density_pb + labs(title = "psuedo-density based prediciton band"),
+grid.arrange(global_depth_pb + 
+               labs(title = "global depth based prediction band"),
+             local_depth_pb + 
+               labs(title = "local depth based prediction band"),
+             psuedo_density_pb + 
+               labs(title = "psuedo-density based prediction band"),
              ggplot() + theme_minimal(),
              layout_matrix = layout_mat)
 ```
 
-
-
+For examples of tools in our package that work for higher dimensional epidemic models please see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html). Our vignette on the [differences between density estimates and depth (local and global)](https://skgallagher.github.io/EpiCompare/articles/Comparing-Depth-and-Density.html) may also help aid your understanding of the differences between these ordering approaches.
 
 # References

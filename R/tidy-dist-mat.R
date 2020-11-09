@@ -120,13 +120,11 @@ dimnames.tidy_dist_mat <- function(x){
 }
 
 #' assign rownames for tidy_dist_mat
-#' 
-#' \url{https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu}
 #'
 #' @param x tidy_dist_mat
 #' @param value updated rownames
 #' 
-#' @usage \\method{rownames}{tidy_dist_mat}(x) <- value
+#' @usage \method{rownames}{tidy_dist_mat}(x) <- value
 #' 
 #' @export
 `rownames<-.tidy_dist_mat` <- function(x, value){
@@ -144,12 +142,10 @@ dimnames.tidy_dist_mat <- function(x){
 
 #' assign colnames
 #' 
-#' \url{https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu}
-#' 
 #' @param x tidy_dist_mat
 #' @param value updated rownames
 #' 
-#' @usage \\method{colnames}{tidy_dist_mat}(x) <- value
+#' @usage \method{colnames}{tidy_dist_mat}(x) <- value
 #' 
 #' @export
 `colnames<-.tidy_dist_mat` <- function(x, value){

@@ -115,7 +115,7 @@ is actually d^2" />
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -161,14 +161,43 @@ is actually d^2</h1>
 is actually d^2</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dist_matrix_innersq_direction</span>(<span class='no'>path_list</span>, <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>dist_matrix_innersq_direction</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
+
+<span class='co'># S3 method for list</span>
+<span class='fu'>dist_matrix_innersq_direction</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>dist_matrix_innersq_direction</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
+
+<span class='co'># S3 method for grouped_df</span>
+<span class='fu'>dist_matrix_innersq_direction</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path_list</th>
-      <td><p>list of paths (data frames) - need to have the same num rows</p></td>
+      <th>x</th>
+      <td><p>list of paths (data frames) - need to have the same num rows or a nested_df</p></td>
     </tr>
     <tr>
       <th>position</th>
@@ -179,11 +208,15 @@ is actually d^2</p>
       <td><p>boolean logic if should have print outs while computing
 distance matrix</p></td>
     </tr>
+    <tr>
+      <th>id_as_columns</th>
+      <td><p>boolean - DESCRIBE</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>distance matrix of dimension n x n</p>
+    <p>distance matrix of dimension n x n or data.frame - DESCRIBE</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

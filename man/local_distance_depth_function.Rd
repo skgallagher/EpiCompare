@@ -2,16 +2,30 @@
 % Please edit documentation in R/distance-depth.R
 \name{local_distance_depth_function}
 \alias{local_distance_depth_function}
+\alias{local_distance_depth_function.matrix}
+\alias{local_distance_depth_function.tidy_dist_mat}
 \title{Localized version of Geenens & Nieto-Reyes functional distance-based depth}
 \usage{
-local_distance_depth_function(dist_mat, tau = Inf)
+local_distance_depth_function(dist_mat, tau = Inf, df_out = "auto")
+
+\method{local_distance_depth_function}{matrix}(dist_mat, tau = Inf, df_out = F)
+
+\method{local_distance_depth_function}{tidy_dist_mat}(dist_mat, tau = Inf, df_out = T)
 }
 \arguments{
-\item{dist_mat}{a n x n square positive symmetric matrix}
+\item{dist_mat}{a n x n square positive symmetric matrix or a tidy_dist_mat}
 
-\item{tau}{localizing parameter (default is Inf)}
+\item{tau}{localizing parameter (default is Inf) Can either by a standard
+numerical value or a string as a percentage (e.g. "20\%")}
+
+\item{df_out}{indicates if one should return a data.frame our a vector, by
+default returns data.frame if dist_mat is a tidy_dist_mat, and a vector if
+dist_mat is a matrix.}
 }
 \value{
+depth vector length n with depth values associated with indices in
+  \code{dist_mat} or a data.frame with a column called \code{local_depth}
+
 depth vector length n with depth values associated with indices in
   \code{dist_mat}
 }
@@ -29,12 +43,12 @@ where \eqn{S = {i : D(X_i,x) < \tau}}.
 
 Note that if \eqn{|S| = 1}, then we say that \code{LDD(x) = 0}.
 
-
-This function (renamed as \code{depth_function}) is shared with
-\pkg{TCpredictionbands} on github:
+This matrix function (renamed as \code{depth_function}) is shared
+with \pkg{TCpredictionbands} on github:
 \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
 }
 \examples{
+## matrix-only examples
 dist_mat <- matrix(c(0,   1, 1.5,
                      1,   0, 2,
                      1.5, 2, 0   ),

@@ -70,7 +70,7 @@
       <a href="../../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -149,7 +149,7 @@
 <center>
 <img src="../../reference/figures/all_vis.gif">
 </center>
-<p>In this way, we should be able to think about the midway point with these 3 plots in mind (also note that the following plots use <code><a href="../../reference/theme_sir.html">theme_sir()</a></code> which provides useful arrows for your axes):</p>
+<p>In this way, we should be able to think about the midway point with these 3 plots in mind (also note that the following plots use <code>theme_sir()</code> which provides useful arrows for your axes):</p>
 <p><img src="ternary-plots-explained_files/figure-html/point-shade-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="how-to-do-this-with-ggtern" class="section level2">
@@ -172,7 +172,7 @@
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+  <span class="fu">theme_sir</span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example1-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="regular-data-ggtern-base" class="section level3">
@@ -180,7 +180,7 @@
 <a href="#regular-data-ggtern-base" class="anchor"></a>Regular data, ggtern base</h3>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggtern</span>(<span class="no">data</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+  <span class="fu">theme_sir</span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example2-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="unscaled-regular-data-ggplot-base-coord_tern" class="section level3">
@@ -189,7 +189,7 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data_unscaled</span>) +
   <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
   <span class="fu">coord_tern</span>() +
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
+  <span class="fu">theme_sir</span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example3-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>

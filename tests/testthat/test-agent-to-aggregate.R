@@ -1,6 +1,7 @@
 context("tests for agents_to_aggregate")
 
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 
 test_that("checking agents_to_aggregate works for SI model",{
   

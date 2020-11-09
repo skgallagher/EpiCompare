@@ -137,6 +137,7 @@ df_groups %>% ggplot() +
     theme_sir()
 #> Warning: Ignoring unknown aesthetics: z
 #> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+#> Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
@@ -186,6 +187,12 @@ df_groups %>% ggplot() +
     the `print.ggplot` and other functions). To “correct” this, we’ve
     over-wrote `ggtern`’s `print.ggplot` to correct this problem when
     not producing ternary plots (code in `aaa.R`).
+6.  Useful Rstudio shortcuts for `Roxygen2`: (a) create `Roxygen2`
+    comments template with `option` + `command` + `shift` + `R` (b) In
+    `Roxygen2` comments do `control` + `shift` + `/` to format relative
+    to 80 char limit. 7.[stack
+    overflow](https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu)
+    post on how to pass `check` for `rownames<-.tidy_dist_mat`.
 
 ## Contributors
 

@@ -112,7 +112,7 @@
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -168,7 +168,8 @@
   <span class='kw'>grid_size</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>100</span>, <span class='fl'>2</span>),
   <span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>over_delta</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>),
+  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>quantile_approach</span> <span class='kw'>=</span>
+    <span class='st'>"depth"</span>, <span class='kw'>quantile_approach_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()),
   <span class='no'>...</span>
 )
 
@@ -186,7 +187,8 @@
   <span class='kw'>grid_size</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>100</span>, <span class='fl'>2</span>),
   <span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
   <span class='kw'>over_delta</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>),
+  <span class='kw'>dist_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dist_approach</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>num_steps</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>quantile_approach</span> <span class='kw'>=</span>
+    <span class='st'>"depth"</span>, <span class='kw'>quantile_approach_params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()),
   <span class='no'>...</span>
 )</pre>
 
@@ -352,11 +354,11 @@ prediction band as such.</p></li>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>); <span class='kw pkg'>EpiCompare</span><span class='kw ns'>:::</span><span class='fu'><a href='update_approved_layers.html'>update_approved_layers</a></span>()
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>); <span class='kw pkg'>EpiCompare</span><span class='kw ns'>:::</span><span class='fu'>update_approved_layers</span>()
 <span class='co'>#                ^ this doesn't generally need to be done</span>
 
 <span class='co'># for speed purposes</span>
-<span class='no'>smaller_pomp_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='pomp_df.html'>pomp_df</a></span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;</span> <span class='fl'>10</span>)
+<span class='no'>smaller_pomp_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>pomp_df</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;</span> <span class='fl'>10</span>)
 
 <span class='no'>vis_data</span> <span class='kw'>&lt;-</span> <span class='no'>smaller_pomp_df</span> <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"S"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"I"</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='st'>"R"</span>) <span class='kw'>%&gt;%</span>

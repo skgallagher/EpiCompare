@@ -70,7 +70,7 @@
       <a href="../../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -102,7 +102,7 @@
 
       
 
-      </header><script src="hagelloch-eda_files/header-attrs-2.3/header-attrs.js"></script><script src="hagelloch-eda_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="hagelloch-eda_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="hagelloch-eda_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Hagelloch Measles – Pre-processing and EDA</h1>
@@ -167,7 +167,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">knitr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">kableExtra</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">RColorBrewer</span>)</pre></body></html></div>
-<p>you can look at the raw data using <code><a href="https://rdrr.io/r/utils/data.html">data(hagelloch_raw)</a></code> and see the details with <code><a href="../../reference/hagelloch_raw.html">?hagelloch_raw</a></code>.</p>
+<p>you can look at the raw data using <code><a href="https://rdrr.io/r/utils/data.html">data(hagelloch_raw)</a></code> and see the details with <code><a href="https://rdrr.io/pkg/EpiCompare/man/hagelloch_raw.html">?hagelloch_raw</a></code>.</p>
 <p>A piece of the raw data is displayed in the following table</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span> <span class="fu">select</span>(<span class="no">PN</span>, <span class="no">NAME</span>, <span class="no">AGE</span>, <span class="no">SEX</span>, <span class="no">HN</span>, <span class="no">PRO</span>, <span class="no">ERU</span>, <span class="no">IFTO</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fl">10</span>) <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>() <span class="kw">%&gt;%</span>
@@ -506,7 +506,7 @@ female
 </div>
 </div>
 <div id="section" class="section level2 unnumbered">
-<h2 class="unnumbered"></h2>
+<h2></h2>
 </div>
 <div id="infectors" class="section level2">
 <h2 class="hasAnchor">
@@ -533,7 +533,7 @@ female
 <p>Viewing interesting information at the agent-level is interesting, but we would also like to visualize information at the aggreate level, i.e. the total number of children in a given infection state over time.</p>
 <p>The funnction <code>EpiCompare::agent_to_aggregate()</code> converts the agent level data to an aggregate view. This is demonstrated below.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">aggregate_hag</span> <span class="kw">&lt;-</span> <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 <span class="no">aggregate_hag</span> <span class="kw">%&gt;%</span> <span class="no">head</span> <span class="kw">%&gt;%</span>
@@ -655,7 +655,7 @@ R
 <p><code>EpiCompare::agent_to_aggregate()</code> also works on grouped data frames, meaning that we can aggregate the children by groups such as their class.</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">aggregate_hag_class</span> <span class="kw">&lt;-</span> <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
   <span class="fu">group_by</span>(<span class="no">CL</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 <span class="no">aggregate_hag_class</span> <span class="kw">%&gt;%</span> <span class="no">head</span> <span class="kw">%&gt;%</span>
@@ -807,7 +807,7 @@ R
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 <div id="ref-anderson1992">
 <p>Anderson, R, and R. May. 1992. <em>Infectious Diseases of Humans</em>. Oxford: Oxford University Press.</p>
 </div>

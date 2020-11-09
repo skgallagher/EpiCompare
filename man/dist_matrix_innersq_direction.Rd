@@ -2,21 +2,52 @@
 % Please edit documentation in R/distance-between.R
 \name{dist_matrix_innersq_direction}
 \alias{dist_matrix_innersq_direction}
+\alias{dist_matrix_innersq_direction.list}
+\alias{dist_matrix_innersq_direction.data.frame}
+\alias{dist_matrix_innersq_direction.grouped_df}
 \title{Calculates the distance matrix between a set of paths (Euclidean based). This
 is actually d^2}
 \usage{
-dist_matrix_innersq_direction(path_list, position = NULL, verbose = FALSE)
+dist_matrix_innersq_direction(
+  x,
+  position = NULL,
+  verbose = FALSE,
+  id_as_columns = FALSE
+)
+
+\method{dist_matrix_innersq_direction}{list}(
+  x,
+  position = NULL,
+  verbose = FALSE,
+  id_as_columns = NA
+)
+
+\method{dist_matrix_innersq_direction}{data.frame}(
+  x,
+  position = NULL,
+  verbose = FALSE,
+  id_as_columns = FALSE
+)
+
+\method{dist_matrix_innersq_direction}{grouped_df}(
+  x,
+  position = NULL,
+  verbose = FALSE,
+  id_as_columns = FALSE
+)
 }
 \arguments{
-\item{path_list}{list of paths (data frames) - need to have the same num rows}
+\item{x}{list of paths (data frames) - need to have the same num rows or a nested_df}
 
 \item{position}{column index of (x,y) euclidean coords.}
 
 \item{verbose}{boolean logic if should have print outs while computing
 distance matrix}
+
+\item{id_as_columns}{boolean - DESCRIBE}
 }
 \value{
-distance matrix of dimension n x n
+distance matrix of dimension n x n or data.frame - DESCRIBE
 }
 \description{
 Calculates the distance matrix between a set of paths (Euclidean based). This

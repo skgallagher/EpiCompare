@@ -111,7 +111,7 @@
       <a href="../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -465,6 +465,12 @@ discrete representation)</p></td>
           <p><code><a href="print.ggplot.html">print(<i>&lt;ggplot&gt;</i>)</a></code> </p>
         </td>
         <td><p>Explicitly draw plot (<code>ggtern</code> and <code>ggplot2</code> compatible)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.tidy_dist_mat.html">print(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>print tidy_dist_mat objects</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -505,6 +511,36 @@ discrete representation)</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="check_tidy_dist_mat_dimensions.html">check_tidy_dist_mat_dimensions()</a></code> </p>
+        </td>
+        <td><p>check_tidy_dist_mat_dimensions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_tidy_dist_names_distinct.html">check_tidy_dist_names_distinct()</a></code> </p>
+        </td>
+        <td><p>check_tidy_dist_names_distinct</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="colnames-set-.tidy_dist_mat.html">`colnames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>assign colnames</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dimnames-set-.tidy_dist_mat.html">`dimnames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>assign dimnames for tidy_dist_mat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dimnames.tidy_dist_mat.html">dimnames(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>return dimnames for tidy_dist_mat</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="dist_along_path_angle.html">dist_along_path_angle()</a></code> </p>
         </td>
         <td><p>Distance/angle between points along path relative to eculidean distance (2d
@@ -535,6 +571,12 @@ is actually d^2 (2d)</p></td>
         </td>
         <td><p>Calculates the distance matrix between a set of paths (Euclidean based). This
 is actually d^2</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="distance_psuedo_density_function.html">distance_psuedo_density_function()</a></code> </p>
+        </td>
+        <td><p>psuedo-density for objects with a distance between them</p></td>
       </tr><tr>
         
         <td>
@@ -574,15 +616,45 @@ is actually d^2</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="format.tidy_dist_mat.html">format(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Fomat tidy_dist_mat for printing</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="hausdorff_dist.html">hausdorff_dist()</a></code> </p>
         </td>
         <td><p>Calculates the Hausdorff distance between 2 sets</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="is.tidy_dist_mat.html">is.tidy_dist_mat()</a></code> </p>
+        </td>
+        <td><p>checks if object is a tidy_dist_mat</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="local_distance_depth_function.html">local_distance_depth_function()</a></code> </p>
         </td>
         <td><p>Localized version of Geenens &amp; Nieto-Reyes functional distance-based depth</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.tidy_dist_mat.html">print(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>print tidy_dist_mat objects</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rownames-set-.tidy_dist_mat.html">`rownames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>assign rownames for tidy_dist_mat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tidy_dist_mat.html">tidy_dist_mat()</a></code> </p>
+        </td>
+        <td><p>creates tidy_dist_mat objects</p></td>
       </tr><tr>
         
         <td>
@@ -809,6 +881,12 @@ for grouped_data (preforms per group)</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="check_character_percent.html">check_character_percent()</a></code> </p>
+        </td>
+        <td><p>check if a character is a desirable percentage value</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="check_dist_params.html">check_dist_params()</a></code> </p>
         </td>
         <td><p>checks the provided dist_params to make sure they are what is expected</p></td>
@@ -839,10 +917,34 @@ for grouped_data (preforms per group)</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="check_tidy_dist_mat_dimensions.html">check_tidy_dist_mat_dimensions()</a></code> </p>
+        </td>
+        <td><p>check_tidy_dist_mat_dimensions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_tidy_dist_names_distinct.html">check_tidy_dist_names_distinct()</a></code> </p>
+        </td>
+        <td><p>check_tidy_dist_names_distinct</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="colnames-set-.tidy_dist_mat.html">`colnames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>assign colnames</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="contained.html">contained()</a></code> </p>
         </td>
         <td><p>Method to check if a filament is completely contained in a set (relative to
 discrete representation)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="convex_hull_compute_group_paths_to_points.html">convex_hull_compute_group_paths_to_points()</a></code> </p>
+        </td>
+        <td><p>convex hull function for compute_group ggplot object (for top paths' points)</p></td>
       </tr><tr>
         
         <td>
@@ -858,16 +960,27 @@ discrete representation)</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="delta_ball_compute_group_paths_to_points.html">delta_ball_compute_group_paths_to_points()</a></code> </p>
+        </td>
+        <td><p>delta ball function for compute_group ggplot object (for top paths' points)</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="delta_structure.html">delta_structure()</a></code> </p>
         </td>
         <td><p>Performs delta ball approach (2d approach)</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="depth_curves_to_points.html">depth_curves_to_points()</a></code> </p>
+          <p><code><a href="dimnames-set-.tidy_dist_mat.html">`dimnames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Global Distance Depth
-pulling out data points from curves that are the most deep</p></td>
+        <td><p>assign dimnames for tidy_dist_mat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dimnames.tidy_dist_mat.html">dimnames(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>return dimnames for tidy_dist_mat</p></td>
       </tr><tr>
         
         <td>
@@ -907,6 +1020,12 @@ is actually d^2</p></td>
           <p><code><a href="distance_depth_function.html">distance_depth_function()</a></code> </p>
         </td>
         <td><p>Geenens &amp; Nieto-Reyes functional distance-based depth</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="distance_psuedo_density_function.html">distance_psuedo_density_function()</a></code> </p>
+        </td>
+        <td><p>psuedo-density for objects with a distance between them</p></td>
       </tr><tr>
         
         <td>
@@ -980,6 +1099,12 @@ linearly space compared to original filament definition)</p></td>
           <p><code><a href="fit_kde_object.html">fit_kde_object()</a></code> </p>
         </td>
         <td><p>Fit kernel density estimator (KDE) object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="format.tidy_dist_mat.html">format(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Fomat tidy_dist_mat for printing</p></td>
       </tr><tr>
         
         <td>
@@ -1164,9 +1289,21 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="inner_compute_group_paths_to_points.html">inner_compute_group_paths_to_points()</a></code> </p>
+        </td>
+        <td><p>inner function to compute points of top paths</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="inner_delta_ball_wrapper.html">inner_delta_ball_wrapper()</a></code> </p>
         </td>
         <td><p>Run delta ball analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="is.tidy_dist_mat.html">is.tidy_dist_mat()</a></code> </p>
+        </td>
+        <td><p>checks if object is a tidy_dist_mat</p></td>
       </tr><tr>
         
         <td>
@@ -1218,6 +1355,12 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="print.tidy_dist_mat.html">print(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>print tidy_dist_mat objects</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="project_onto_simplex.html">project_onto_simplex()</a></code> </p>
         </td>
         <td><p>Project onto a simplex where observations in the unit simplex x</p></td>
@@ -1227,6 +1370,12 @@ puts it in SIR format for EpiCompare.</p></td>
           <p><code><a href="project_to_simplex.html">project_to_simplex()</a></code> </p>
         </td>
         <td><p>project onto a standard 3d simplex.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="quantile_curves_to_points.html">quantile_curves_to_points()</a></code> </p>
+        </td>
+        <td><p>Pull top (1-alpha)% quantile percent of curves points.</p></td>
       </tr><tr>
         
         <td>
@@ -1245,6 +1394,12 @@ puts it in SIR format for EpiCompare.</p></td>
           <p><code><a href="remove_incomplete_tri.html">remove_incomplete_tri()</a></code> </p>
         </td>
         <td><p>Remove triangles with edges that need removal</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rownames-set-.tidy_dist_mat.html">`rownames&lt;-`(<i>&lt;tidy_dist_mat&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>assign rownames for tidy_dist_mat</p></td>
       </tr><tr>
         
         <td>
@@ -1326,6 +1481,12 @@ puts it in SIR format for EpiCompare.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="tidy_dist_mat.html">tidy_dist_mat()</a></code> </p>
+        </td>
+        <td><p>creates tidy_dist_mat objects</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="tidyr_new_interface.html">tidyr_new_interface()</a></code> </p>
         </td>
         <td><p>logic to check if tidyverse (and tidyr specifically is up to version 1.0)</p></td>
@@ -1335,6 +1496,24 @@ puts it in SIR format for EpiCompare.</p></td>
           <p><code><a href="to_lower_simplex.html">to_lower_simplex()</a></code> </p>
         </td>
         <td><p>move df to simplex representation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="top_curves_to_points.html">top_curves_to_points()</a></code> </p>
+        </td>
+        <td><p>Pull the points from the top (1-alpha)% percent of curves.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="top_curves_to_points.grouped_df.html">top_curves_to_points(<i>&lt;grouped_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Pull the points from the top (1-alpha)% percent of curves (LIST)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="top_curves_to_points.list.html">top_curves_to_points(<i>&lt;list&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Pull the points from the top (1-alpha)% percent of curves (LIST)</p></td>
       </tr><tr>
         
         <td>

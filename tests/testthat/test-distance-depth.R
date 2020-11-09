@@ -197,7 +197,7 @@ test_that("test for top_curves_to_points.grouped_df, depth (bivariate ordering)"
   
   #quantile_scores <- distance_depth_function(tidy_dm, df_out = T)
   
-  testthat::expect_equal(as.data.frame(combined_points_list), 
+  testthat::expect_equal(as.data.frame(combined_points_gd), 
                          rbind(random_data_list[[1]],
                                random_data_list[[4]]))
   
@@ -205,13 +205,13 @@ test_that("test for top_curves_to_points.grouped_df, depth (bivariate ordering)"
   rownames_df2 <- rownames_df[c(2,1,3,4),]
   tidy_dm2 <- tidy_dist_mat(dist_mat, rownames_df2, rownames_df2)
   
-  combined_points_list2 <- top_curves_to_points(random_data_list,
+  combined_points_gd2 <- top_curves_to_points(random_data_df,
                                                 alpha = .2,
-                                                tidy_dm = tidy_dm,
-                                                x_names_df = x_names_df2)
+                                                tidy_dm = tidy_dm2)
   
-  testthat::expect_equal(combined_points_list2, rbind(random_data_list[[2]],
-                                                      random_data_list[[4]]))
+  testthat::expect_equal(as.data.frame(combined_points_gd2), 
+                         rbind(random_data_list[[2]],
+                               random_data_list[[4]]))
   
 })
 
@@ -595,8 +595,50 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_o
 })
 
 
+test_that("test for local_distance_depth_function (tau percentage)", {
+  dist_mat <- matrix(c(0,   1, 1.5,
+                       1,   0, 2,
+                       1.5, 2, 0   ),
+                     nrow = 3,
+                     byrow = TRUE)
+  
+  rownames_df2 <- data.frame(id = c(1,2,1),
+                            id2 = c("a","a", "b"))
+  
+   for (df_out in c(T, F)) {
+    for (rownames_df in list(NULL, rownames_df2)){
+      for (tidy_approach in c(T, F)) {
+        if (tidy_approach) {
+          dist_info <- tidy_dist_mat(dist_mat, rownames_df, rownames_df)
+        } else {
+          dist_info <- dist_mat
+        }
+        
+        for (attempts in 1:5){
+          percentage <- round(runif(1, min = .1), 5)
+          string_percentage <- sprintf("%.3f%%",percentage*100)
+          tau <- stats::quantile(dist_info, percentage)
+          
+          ldd_vec_perc <- local_distance_depth_function(dist_info, 
+                                                        tau = string_percentage, 
+                                                        df_out = df_out) 
+          ldd_vec_tau <- local_distance_depth_function(dist_info, 
+                                                       tau = tau, 
+                                                       df_out = df_out) 
+          
+          testthat::expect_equal(ldd_vec_perc, ldd_vec_tau)
+        }
+        
+        
+      }
+    }
+  }
 
-testthat::test_that("distance_depth_function methods, basic",{
+
+})
+
+
+test_that("distance_depth_function methods, basic",{
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),

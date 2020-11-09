@@ -1,6 +1,7 @@
 context("containment and band creation tests")
 
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 
 test_that("test filament_compression, no data_columns", {
   # basic check:

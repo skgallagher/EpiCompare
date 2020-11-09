@@ -70,7 +70,7 @@
       <a href="../../articles/not-built-vignettes/comparing-bands-and-assessing-containment.html">Comparing Models (to Models) and Epidemics (to Models)</a>
     </li>
     <li>
-      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and the Impact of Quantile Functions</a>
+      <a href="../../articles/not-built-vignettes/depths-impact-on-prediction-bands.html">Understanding Prediction Bands and Impact of Quantile/Ordering Functions</a>
     </li>
     <li>
       <a href="../../articles/not-built-vignettes/example-epimodel.html">Using EpiModel models with EpiCompare</a>
@@ -129,7 +129,7 @@
 <div id="deterministic-compartment-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#deterministic-compartment-model" class="anchor"></a>Deterministic Compartment Model</h2>
-<p>EpiModel allows the user to make a variety of compartment models with different disease parameters. We have stored one such example in <code><a href="../../reference/EpiModel_det.html">EpiCompare::EpiModel_det</a></code>. You can find more details about this prepared data set with <code><a href="../../reference/EpiModel_det.html">?EpiCompare::EpiModel_det</a></code>.</p>
+<p>EpiModel allows the user to make a variety of compartment models with different disease parameters. We have stored one such example in <code><a href="https://rdrr.io/pkg/EpiCompare/man/EpiModel_det.html">EpiCompare::EpiModel_det</a></code>. You can find more details about this prepared data set with <code><a href="https://rdrr.io/pkg/EpiCompare/man/EpiModel_det.html">?EpiCompare::EpiModel_det</a></code>.</p>
 <p>The below code loads in the object which is of class <code>dcm</code>, which is a special class from the <code>EpiModel</code> package. The parameter settings are found with <code>EpiModel_det$param</code> and more model specification can be found with <code>EpiModel_det$control</code>.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="no">EpiModel_det</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">EpiModel_det</span>)</pre></body></html></div>
@@ -146,8 +146,8 @@
 ## dr.rate = 0
 ## vital = TRUE
 ## groups = 1</code></pre>
-<p>EpiCompare provides a function, <code><a href="../../reference/fortify_aggregate.html">fortify_aggregate()</a></code> to wrangle the data contained in the class <code>dcm</code> to be used with our pipeline.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">fortified_dcm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>)</pre></body></html></div>
+<p>EpiCompare provides a function, <code><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate()</a></code> to wrangle the data contained in the class <code>dcm</code> to be used with our pipeline.</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">fortified_dcm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>)</pre></body></html></div>
 <pre><code>## New names:
 ## * sim -&gt; sim...1
 ## * sim -&gt; sim...3
@@ -194,7 +194,7 @@
 <pre><code>##  [1] "s.num"   "i.num"   "r.num"   "si.flow" "ir.flow" "a.flow"  "ds.flow"
 ##  [8] "di.flow" "dr.flow" "num"</code></pre>
 <p>If we want to look at only the number of infectious at each time step, we can look at</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">dcm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i.num"</span>))
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">dcm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"i.num"</span>))
 <span class="no">dcm1</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fl">3</span>) <span class="kw">%&gt;%</span> <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>()</pre></body></html></div>
 <table class="table">
 <thead><tr class="header">
@@ -225,7 +225,7 @@
 </tbody>
 </table>
 <p>The function <code>fortify_aggregate</code> is a <code>tidyverse</code> styled function meaning it can take as arguments for states either strings or symbolic variables. Note that the variable names are assigned by order given in <code>states</code>.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">dcm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">r.num</span>, <span class="no">i.num</span>, <span class="no">s.num</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">dcm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_det</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">r.num</span>, <span class="no">i.num</span>, <span class="no">s.num</span>))</pre></body></html></div>
 <pre><code>## New names:
 ## * sim -&gt; sim...1
 ## * sim -&gt; sim...3
@@ -274,7 +274,7 @@
 <div id="individual-contact-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#individual-contact-model" class="anchor"></a>Individual Contact Model</h2>
-<p>EpiModel also allows the user to create stochastic simulations of SIR models. Like before, we have prepared a pre-made object, <code><a href="../../reference/EpiModel_icm.html">EpiCompare::EpiModel_icm</a></code>, details of which can be found with <code><a href="../../reference/EpiModel_icm.html">?EpiCompare::EpiModel_icm</a></code>. More parameter settings can be found by looking at the <code>EpiModel_icm$control</code> settings.</p>
+<p>EpiModel also allows the user to create stochastic simulations of SIR models. Like before, we have prepared a pre-made object, <code><a href="https://rdrr.io/pkg/EpiCompare/man/EpiModel_icm.html">EpiCompare::EpiModel_icm</a></code>, details of which can be found with <code><a href="https://rdrr.io/pkg/EpiCompare/man/EpiModel_icm.html">?EpiCompare::EpiModel_icm</a></code>. More parameter settings can be found by looking at the <code>EpiModel_icm$control</code> settings.</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="no">EpiModel_icm</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">EpiModel_icm</span>)</pre></body></html></div>
 <pre><code>## [1] "icm"</code></pre>
@@ -291,7 +291,7 @@
 ## vital = TRUE
 ## groups = 1</code></pre>
 <p>Again, we wrangle the data with <code>fortify_aggregate</code>, which will automatically detect the <span class="math inline">\(S\)</span>, <span class="math inline">\(I\)</span>, and <span class="math inline">\(R\)</span> compartments by default. We also add an identifier for this model.</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">fortified_icm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_icm</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">fortified_icm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">EpiModel_icm</span>)</pre></body></html></div>
 <pre><code>## New names:
 ## * sim -&gt; sim...1
 ## * sim -&gt; sim...3
@@ -380,7 +380,7 @@
 <pre><code>##  [1] "s.num"       "s.num.race0" "s.num.race1" "i.num"       "i.num.race0"
 ##  [6] "i.num.race1" "r.num"       "r.num.race0" "r.num.race1" "num"        
 ## [11] "num.race0"   "num.race1"   "ir.flow"     "si.flow"</code></pre>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">fortified_net</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">sim_output</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"s.num"</span>, <span class="st">"i.num"</span>, <span class="st">"r.num"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">fortified_net</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/fortify_aggregate.html">fortify_aggregate</a></span>(<span class="no">sim_output</span>, <span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"s.num"</span>, <span class="st">"i.num"</span>, <span class="st">"r.num"</span>))</pre></body></html></div>
 <pre><code>## New names:
 ## * sim -&gt; sim...1
 ## * sim -&gt; sim...3
@@ -388,7 +388,7 @@
 <p>We can then plot the simulations and a 95% confidence band.</p>
 <div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">fortified_net</span> <span class="kw">%&gt;%</span>
   <span class="fu">ggplot</span>() +
-    <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>, <span class="kw">t</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>, <span class="kw">t</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">sim_group</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">sim</span>)),
                          <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"blue"</span>,
                          <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.9</span>, <span class="kw">pb_type</span> <span class="kw">=</span> <span class="st">"delta_ball"</span>) +
     <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">sim</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.2</span>) +

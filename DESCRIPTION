@@ -22,6 +22,7 @@ Imports:
     dplyr,
     geometry,
     ggplot2,
+    igraph,
     ks,
     magrittr,
     purrr,
@@ -33,7 +34,8 @@ Imports:
     tidyr,
     tidyselect,
     tibble,
-    sp
+    sp,
+    stringr
 Suggests:
     coronavirus,
     COVID19,
