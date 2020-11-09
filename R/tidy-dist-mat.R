@@ -4,7 +4,7 @@
 #' @param rownames_df data.frame with row identifying information
 #' @param colnames_df data.frame with column identifying information
 #'
-#' @return
+#' @return \code{tidy_dist_mat} object
 #' @export
 tidy_dist_mat <- function(dist_mat, rownames_df = NULL, colnames_df = NULL){
   object <- dist_mat
@@ -80,18 +80,31 @@ check_tidy_dist_names_distinct <- function(rownames_df, colnames_df){
 #'
 #' @param x any old object
 #'
-#' @return
+#' @return boolean logic if object is a \code{tidy_dist_mat} object
 #' @export
 is.tidy_dist_mat <- function(x){
   inherits(x, "tidy_dist_mat")
 }
 
+
+#' return dimnames for tidy_dist_mat
+#' 
+#' @param x tidy_dist_mat object
+#' @return list of rowname and colnames data.frames
+#'
 #' @export
 dimnames.tidy_dist_mat <- function(x){
   dimnames <- list("rownames" = attr(x, "rownames_df"),
                    "colnames" = attr(x, "colnames_df"))
+  return(dimnames)
 }
 
+#' assign dimnames for tidy_dist_mat
+#' 
+#' @param x tidy_dist_mat
+#' @param value list of rowname and colnames data.frame to override the 
+#' \code{dimnames} of x with.
+#' 
 #' @export
 `dimnames<-.tidy_dist_mat` <- function(x, value){
   
@@ -106,6 +119,15 @@ dimnames.tidy_dist_mat <- function(x){
   x
 }
 
+#' assign rownames for tidy_dist_mat
+#' 
+#' \url{https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu}
+#'
+#' @param x tidy_dist_mat
+#' @param value updated rownames
+#' 
+#' @usage \\method{rownames}{tidy_dist_mat}(x) <- value
+#' 
 #' @export
 `rownames<-.tidy_dist_mat` <- function(x, value){
   
@@ -120,6 +142,15 @@ dimnames.tidy_dist_mat <- function(x){
   x
 }
 
+#' assign colnames
+#' 
+#' \url{https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu}
+#' 
+#' @param x tidy_dist_mat
+#' @param value updated rownames
+#' 
+#' @usage \\method{colnames}{tidy_dist_mat}(x) <- value
+#' 
 #' @export
 `colnames<-.tidy_dist_mat` <- function(x, value){
   
@@ -134,8 +165,24 @@ dimnames.tidy_dist_mat <- function(x){
   x
 }
 
+
+#' Fomat tidy_dist_mat for printing
+#'
+#' @param x tid_dist_mat
+#' @param ... additional parameter (e.g. \code{digits}) - tells us the number of 
+#' significant digits to present for the distances
+#'
+#' @return format ready information
 #' @export
-format.tidy_dist_mat <- function(x, digits = 6){
+format.tidy_dist_mat <- function(x, ...){
+  
+  additional_params <- list(...)
+  if ("digits" %in% names(additional_params)) {
+    digits <- additional_params["digits"]
+  } else {
+    digits = 6
+  }
+  
   dim_x <- dim(x)
   dim_colnames_x <- dim(colnames(x))
   dim_rownames_x <- dim(rownames(x))
@@ -169,21 +216,21 @@ format.tidy_dist_mat <- function(x, digits = 6){
 #' print tidy_dist_mat objects
 #'
 #' @param x tidy_dist_mat object
-#' @param digits number of significant digits to display (uses \code{signif})
+#' @param ... (like \code{digits = 6}) number of significant digits to display
+#'   (uses \code{signif})
 #'
-#' @return
 #' @export
 #'
 #' @examples
 #' inner_data <- data.frame(x = rnorm(3), y = rnorm(3))
-#' my_dist_mat <- as.matrix(dist(inner_data)) 
+#' my_dist_mat <- as.matrix(dist(inner_data))
 #' rownames_df <- data.frame(id = 1:3)
 #' colnames_df <- data.frame(id = c(1,2,1), id2 = c("f", "f", "s"))
-#' 
+#'
 #' my_tidy_dm <- tidy_dist_mat(my_dist_mat, rownames_df, colnames_df)
 #' print(my_tidy_dm)
-print.tidy_dist_mat <- function(x, digits = 6){
-  print(format(x))
+print.tidy_dist_mat <- function(x, ...){
+  print(format(x,...))
 }
 
 if (r_new_interface()){

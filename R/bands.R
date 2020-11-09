@@ -348,7 +348,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
 
     info_inner <- data[, c("PANEL", "group")] %>% sapply(unique)
 
-    data <- data %>% dplyr::mutate(sim_group = factor(sim_group))
+    data <- data %>% dplyr::mutate(sim_group = factor(.data$sim_group))
 
     data2d <- data %>% get_xy_coord(xyz_col = c("x", "y", "z"))
 
@@ -365,7 +365,7 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
       dplyr::bind_rows(.id = "kde_poly")
 
     kde_ci_df3 <- ggtern::xy2tlr(data = kde_ci_df %>%
-                                   dplyr::select(-kde_poly, -level),
+                                   dplyr::select(-.data$kde_poly, -.data$level),
                                  coord = ggtern::coord_tern()) %>%
       cbind(., piece = as.integer(kde_ci_df$kde_poly)) %>%
       dplyr::mutate(PANEL = info_inner[1],
@@ -376,6 +376,308 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
     return(kde_ci_df3)
   },
   required_aes = c("x", "y", "z", "sim_group"))
+
+
+
+#' inner function to compute points of top paths
+#' 
+#' projects paths to the unit simplex
+#' 
+#' @param data data as passed into geom_prediction_band (ggplot2 style)
+#' @param scales scales as passed into geom_prediction_band (ggplot2 style)
+#' @param params params as passed into geom_prediction_band (ggplot2 style)
+#' @param pb_type string, see ?geom_prediction_band
+#' @param grid_size vector of length 2, see ?geom_prediction_band
+#' @param conf_level scalar (0-1), see ?geom_prediction_band
+#' @param over_delta scalar, see ?geom_prediction_band
+#' @param dist_params list, see ?geom_prediction_band
+#'
+#' @return data frame of points in the top paths (in simplex 3d projection)
+inner_compute_group_paths_to_points <- function(data, scales, params,
+                                          pb_type = NULL,
+                                          #^ needed to match same format as stat/geom_prediction_band
+                                          grid_size = rep(100,2),
+                                          conf_level = .9, over_delta = .1,
+                                          dist_params = list("dist_approach" = "auto",
+                                                             "num_steps" = "auto",
+                                                             "quantile_approach" = "depth",
+                                                             "quantile_approach_params" = 
+                                                               list())){
+  
+  quantile_approach_string <- dist_params[["quantile_approach"]]
+  
+  
+  data2d <- data %>% as.data.frame() %>%
+    get_xy_coord(xyz_col = c("x", "y", "z"))
+  
+  if (dist_params$dist_approach == "equa_dist"){ 
+    message(paste("Due to dist_params$dist_approach = \"equa_dist\",",
+                  "this may take a little while - see",
+                  "`filament_compression` examples for a work-around",
+                  "if you're making this plot multiple times"))
+    
+    data2d_equa_dist <- data2d %>%
+      dplyr::group_by(.data$sim_group) %>%
+      filament_compression(data_columns = c("x","y"), 
+                           number_points = dist_params$num_steps) 
+    
+    data2d_list_eq <- data2d_equa_dist %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_split()
+    data2d_list_eq_order_df <- data2d_equa_dist %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_keys()
+    
+    xy_position <- which(names(data2d_list_eq[[1]]) %in% c("x","y"))
+    
+    
+    dist_mat <- dist_matrix_innersq_direction(data2d_list_eq,
+                                              position = xy_position,
+                                              verbose = FALSE)
+    tidy_dm <- tidy_dist_mat(dist_mat, data2d_list_eq_order_df, 
+                             data2d_list_eq_order_df)
+    
+    data2d_list <- data2d %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_split()
+    data2d_list_order_df <- data2d_equa_dist %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_keys()
+    
+    
+  } else {
+    
+    data2d_list <- data2d %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_split()
+    data2d_list_order_df <- data2d_equa_dist %>%
+      dplyr::group_by(.data$sim_group) %>%
+      dplyr::group_keys()
+    
+    xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
+    
+    
+    dist_mat <- dist_matrix_innersq_direction(data2d_list,
+                                              position = xy_position,
+                                              verbose = FALSE)
+    tidy_dm <- tidy_dist_mat(dist_mat, data2d_list_order_df, 
+                             data2d_list_order_df)
+    
+  }
+  
+  dd_parameters <- list(x = data2d_list,
+                        alpha = 1 - conf_level, # switch from alpha to conf_level
+                        tidy_dm = tidy_dm,
+                        x_names_df = data2d_list_order_df)
+  
+  if (quantile_approach_string == "depth"){
+    dd_parameters$quantile_func <- distance_depth_function
+  } else if (quantile_approach_string == "local_depth"){
+    dd_parameters$quantile_func <- local_distance_depth_function
+    assertthat::assert_that(
+      names(dist_params[["quantile_approach_params"]]) == "tau",
+      msg = paste("expect dist_param to have a element in the",
+                  "quantile_approach_params list named tau."))
+    dd_parameters$tau <- dist_params[["quantile_approach_params"]]$tau
+  } else if (quantile_approach_string == "psuedo_density"){
+    dd_parameters$quantile_func <- distance_psuedo_density_function
+    assertthat::assert_that(
+      names(dist_params[["quantile_approach_params"]]) == "sigma",
+      msg = paste("expect dist_param to have a element in the",
+                  "quantile_approach_params list named sigma"))
+    dd_parameters$sigma <- dist_params[["quantile_approach_params"]]$sigma
+  }
+  
+  #data_deep_points <- do.call(quantile_curves_to_points, dd_parameters)
+  data_deep_points <- do.call(top_curves_to_points, dd_parameters)
+  
+  return(data_deep_points)
+}
+
+#' delta ball function for compute_group ggplot object (for top paths' points)
+#' 
+#' 
+#' @param data data as passed into geom_prediction_band (ggplot2 style)
+#' @param scales scales as passed into geom_prediction_band (ggplot2 style)
+#' @param params params as passed into geom_prediction_band (ggplot2 style)
+#' @param pb_type string, see ?geom_prediction_band
+#' @param grid_size vector of length 2, see ?geom_prediction_band
+#' @param conf_level scalar (0-1), see ?geom_prediction_band
+#' @param over_delta scalar, see ?geom_prediction_band
+#' @param dist_params list, see ?geom_prediction_band
+#' 
+#' @return structure for estimate of delta ball coverage
+delta_ball_compute_group_paths_to_points <- function(data, scales, params,
+                                                     pb_type = NULL,
+                                                     #^ needed to match same format as stat/geom_prediction_band
+                                                     grid_size = rep(100,2),
+                                                     conf_level = .9, over_delta = .1,
+                                                     dist_params = list("dist_approach" = "auto",
+                                                                        "num_steps" = "auto",
+                                                                        "quantile_approach" = "depth",
+                                                                        "quantile_approach_params" = 
+                                                                          list())) {
+  ## Checks
+  # sim_group input
+  assertthat::assert_that(!is.factor(data$sim_group),
+                          msg = paste("'sim_group' cannot be a factor"))
+  # dealing with different quantile approaches
+  
+  quantile_approach_string <- dist_params[["quantile_approach"]]
+  
+  assertthat::assert_that(quantile_approach_string %in% c("depth", 
+                                                          "local_depth",
+                                                          "psuedo_density"),
+                          msg = paste("quantile_approach string needs to",
+                                      "be one of the options."))
+  
+  # distance parameters 
+  dist_params <- check_dist_params(dist_params, data)
+  
+  info_inner <- data[, c("PANEL", "group")] %>%
+    sapply(unique) %>% unname
+  
+  data_deep_points <- inner_compute_group_paths_to_points(data, scales, 
+                                                          params, pb_type,
+                                                          grid_size, conf_level,
+                                                          over_delta,
+                                                          dist_params)
+  
+  
+  delta_info <- delta_structure(data_deep_points)
+  
+  structure <- delta_info$structure
+  
+  delta <- delta_info$delta
+  
+  inner_df <- dplyr::setdiff(data_deep_points %>%
+                               dplyr::select(.data$x,.data$y),
+                             structure %>%
+                               dplyr::select(.data$x,.data$y))
+  
+  border_points <- structure %>% dplyr::select(.data$x,.data$y)
+  inner_points <- inner_df
+  
+  xrange <- seq(min(border_points$x) - over_delta,
+                max(border_points$x) + over_delta,
+                length.out = grid_size[1])
+  
+  yrange <- seq(min(border_points$y) - over_delta,
+                max(border_points$y) + over_delta,
+                length.out = grid_size[2])
+  
+  updated_gridpoints <- get_closest(border_points, inner_points,
+                                    delta,
+                                    xrange = xrange,
+                                    yrange = yrange,
+                                    gridbreaks = NULL)
+  
+  if (tidyr_new_interface()){
+    update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
+                                                names_from = "y",
+                                                values_from = "z") %>%
+      dplyr::select(-.data$x) %>% as.matrix
+  } else {
+    update_gridpoints_mat <- tidyr::spread(updated_gridpoints,
+                                           key = "y",
+                                           value = "z") %>%
+      dplyr::select(-.data$x) %>% as.matrix
+  }
+  
+  
+  
+  cl <- grDevices::contourLines(x = xrange, y = yrange,
+                                z = update_gridpoints_mat,levels = c(2))
+  
+  lengths <- vapply(cl, function(x) length(x$x), integer(1))
+  xs <- unlist(lapply(cl, "[[", "x"), use.names = FALSE)
+  ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
+  pieces <- rep(seq_along(cl), lengths)
+  
+  
+  vis_df <- data.frame(
+    x = xs,
+    y = ys,
+    piece = pieces,
+    group = info_inner[2],
+    PANEL = info_inner[1]
+  ) %>%
+    ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
+    project_to_simplex(column_names = c("x","y","z"))
+  
+  return(vis_df)
+  
+}
+
+
+#' convex hull function for compute_group ggplot object (for top paths' points)
+#' 
+#' 
+#' @param data data as passed into geom_prediction_band (ggplot2 style)
+#' @param scales scales as passed into geom_prediction_band (ggplot2 style)
+#' @param params params as passed into geom_prediction_band (ggplot2 style)
+#' @param pb_type string, see ?geom_prediction_band
+#' @param grid_size vector of length 2, see ?geom_prediction_band
+#' @param conf_level scalar (0-1), see ?geom_prediction_band
+#' @param over_delta scalar, see ?geom_prediction_band
+#' @param dist_params list, see ?geom_prediction_band
+#' 
+#' @return structure for estimate of delta ball coverage
+convex_hull_compute_group_paths_to_points <- function(data, scales, params,
+                                                     pb_type = NULL,
+                                                     #^ needed to match same format as stat/geom_prediction_band
+                                                     grid_size = rep(100,2),
+                                                     conf_level = .9, over_delta = .1,
+                                                     dist_params = list("dist_approach" = "auto",
+                                                                        "num_steps" = "auto",
+                                                                        "quantile_approach" = "depth",
+                                                                        "quantile_approach_params" = 
+                                                                          list())) {
+  
+  
+  ## Checks
+  # sim_group input
+  assertthat::assert_that(!is.factor(data$sim_group),
+                          msg = paste("'sim_group' cannot be a factor"))
+  
+  # dealing with different quantile approaches
+  quantile_approach_string <- dist_params[["quantile_approach"]]
+  
+  assertthat::assert_that(quantile_approach_string %in% c("depth", 
+                                                          "local_depth",
+                                                          "psuedo_density"),
+                          msg = paste("quantile_approach string needs to",
+                                      "be one of the options."))
+  
+  # distance parameters 
+  dist_params <- check_dist_params(dist_params, data)
+  
+  info_inner <- data[, c("PANEL", "group")] %>%
+    sapply(unique) %>% unname
+  
+  data_deep_points <- inner_compute_group_paths_to_points(data, scales, 
+                                                          params, pb_type,
+                                                          grid_size, conf_level,
+                                                          over_delta,
+                                                          dist_params)
+  
+
+  chull_ids <- data_deep_points %>% grDevices::chull()
+
+  chull_ci_df <- data_deep_points[c(chull_ids, chull_ids[1]),]
+
+
+  chull_ci_df3 <- ggtern::xy2tlr(data = as.data.frame(chull_ci_df),
+                                 coord = ggtern::coord_tern()) %>%
+    dplyr::mutate(PANEL = info_inner[1],
+                  piece = info_inner[2],
+                  group = info_inner[2]) %>%
+    project_to_simplex(column_names = c("x","y","z"))
+  
+  return(chull_ci_df3)
+
+}
+
 
 
 #' stat object for use in delta_ball based stat_prediction_band and
@@ -401,129 +703,7 @@ StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
 
       return(data_cleaned_up)
   },
-  compute_group =
-  function(data, scales, params,
-           pb_type = NULL,
-           #^ needed to match same format as stat/geom_prediction_band
-           grid_size = rep(100,2),
-           conf_level = .9, over_delta = .1,
-           dist_params = list("dist_approach"= "auto",
-                          "num_steps" = "auto")){
-    
-    ## Checks
-    # sim_group input
-    assertthat::assert_that(!is.factor(data$sim_group),
-                            msg = paste("'sim_group' cannot be a factor"))
-    # distance parameters 
-    dist_params <- check_dist_params(dist_params, data)
-    
-    info_inner <- data[, c("PANEL", "group")] %>%
-      sapply(unique) %>% unname
-
-    data2d <- data %>% as.data.frame() %>%
-      get_xy_coord(xyz_col = c("x", "y", "z"))
-
-    if (dist_params$dist_approach == "equa_dist"){ 
-      message(paste("Due to dist_params$dist_approach = \"equa_dist\",",
-                     "this may take a little while - see",
-                     "`filament_compression` examples for a work-around",
-                     "if you're making this plot multiple times"))
-      
-      data2d_equa_dist <- data2d %>%
-        dplyr::group_by(.data$sim_group) %>%
-        filament_compression(data_columns = c("x","y"), 
-                             number_points = dist_params$num_steps) 
-      
-      data2d_list <- split(x = data2d_equa_dist, f = data2d_equa_dist$sim_group)
-      xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-      
-      
-      dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                                position = xy_position,
-                                                verbose = FALSE)
-      
-      data2d_list <- split(x = data2d, f = data2d$sim_group)
-      
-    } else {
-      
-      data2d_list <- split(x = data2d, f = data2d$sim_group)
-      xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-      
-      
-      dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                                position = xy_position,
-                                                verbose = FALSE)
-    }
-    
-
-    data_deep_points <- depth_curves_to_points(data2d_list,
-                                               alpha = 1 - conf_level, # switch from alpha to conf_level
-                                               dist_mat = dist_mat)
-
-    delta_info <- delta_structure(data_deep_points)
-
-    structure <- delta_info$structure
-
-    delta <- delta_info$delta
-
-    inner_df <- dplyr::setdiff(data_deep_points %>%
-                                 dplyr::select(x,y),
-                               structure %>%
-                                 dplyr::select(x,y))
-
-    border_points <- structure %>% dplyr::select(x,y)
-    inner_points <- inner_df
-
-    xrange <- seq(min(border_points$x) - over_delta,
-                  max(border_points$x) + over_delta,
-                  length.out = grid_size[1])
-
-    yrange <- seq(min(border_points$y) - over_delta,
-                  max(border_points$y) + over_delta,
-                  length.out = grid_size[2])
-
-    updated_gridpoints <- get_closest(border_points, inner_points,
-                                      delta,
-                                      xrange = xrange,
-                                      yrange = yrange,
-                                      gridbreaks = NULL)
-
-    if (tidyr_new_interface()){
-      update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
-                                                  names_from = "y",
-                                                  values_from = "z") %>%
-        dplyr::select(-x) %>% as.matrix
-    } else {
-      update_gridpoints_mat <- tidyr::spread(updated_gridpoints,
-                                                  key = "y",
-                                                  value = "z") %>%
-        dplyr::select(-x) %>% as.matrix
-    }
-
-
-
-    cl <- grDevices::contourLines(x = xrange, y = yrange,
-                       z = update_gridpoints_mat,levels = c(2))
-
-    lengths <- vapply(cl, function(x) length(x$x), integer(1))
-    xs <- unlist(lapply(cl, "[[", "x"), use.names = FALSE)
-    ys <- unlist(lapply(cl, "[[", "y"), use.names = FALSE)
-    pieces <- rep(seq_along(cl), lengths)
-
-
-    vis_df <- data.frame(
-      x = xs,
-      y = ys,
-      piece = pieces,
-      group = info_inner[2],
-      PANEL = info_inner[1]
-    ) %>%
-      ggtern::xy2tlr(coord = ggtern::coord_tern()) %>%
-      project_to_simplex(column_names = c("x","y","z"))
-
-    return(vis_df)
-
-  },
+  compute_group = delta_ball_compute_group_paths_to_points,
   required_aes = c("x", "y", "z", "sim_group"))
 
 
@@ -571,10 +751,10 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
           tidyr::nest() %>%
           dplyr::mutate(n = purrr::map(data, function(df){nrow(df)}),
                  mean = purrr::map(data,function(df){df %>%
-                     dplyr::select(x,y) %>%
+                     dplyr::select(.data$x,.data$y) %>%
                      sapply(mean)}),
                  Sigma = purrr::map(data, function(df){df %>%
-                     dplyr::select(x,y) %>%
+                     dplyr::select(.data$x,.data$y) %>%
                      cov})
           ) %>%
           dplyr::mutate(
@@ -604,12 +784,12 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
                                                       names_from = "y",
                                                       values_from = "included"
           ) %>%
-            dplyr::select(-x) %>% as.matrix
+            dplyr::select(-.data$x) %>% as.matrix
         } else {
           update_gridpoints_mat <- tidyr::spread(updated_gridpoints,
                                                  key = "y",
                                                  value = "included") %>%
-            dplyr::select(-x) %>% as.matrix
+            dplyr::select(-.data$x) %>% as.matrix
         }
 
         cl <- grDevices::contourLines(x = xrange, y = yrange,
@@ -642,77 +822,7 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
 StatPredBandConvexHull <- ggplot2::ggproto("StatPredBandConvexHull",
     ggplot2::Stat,
     compute_group =
-      function(data, scales, pb_type = NULL, grid_size = NULL,
-               conf_level = .9, over_delta = NULL,
-               dist_params = list("dist_approach"= "auto",
-                               "num_steps" = "auto")){
-        ## Checks
-        # sim_group input
-        assertthat::assert_that(!is.factor(data$sim_group),
-                                msg = paste("'sim_group' cannot be a factor"))
-        # distance parameters 
-        dist_params <- check_dist_params(dist_params, data)
-        
-
-        info_inner <- data[, c("PANEL", "group")] %>%
-          sapply(unique)
-
-        data2d <- data %>% as.data.frame() %>%
-          get_xy_coord(xyz_col = c("x", "y", "z"))
-
-        
-        if (dist_params$dist_approach == "equa_dist"){ 
-          message(paste("Due to dist_params$dist_approach = \"equa_dist\",",
-                         "this may take a little while - see",
-                         "`filament_compression` examples for a work-around",
-                         "if you're making this plot multiple times"))
-          
-          data2d_equa_dist <- data2d %>%
-            dplyr::group_by(.data$sim_group) %>%
-            filament_compression(data_columns = c("x","y"), 
-                                 number_points = dist_params$num_steps) 
-          
-          data2d_list <- split(x = data2d_equa_dist, 
-                               f = data2d_equa_dist$sim_group)
-          xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-          
-          
-          dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                                    position = xy_position,
-                                                    verbose = FALSE)
-          
-          data2d_list <- split(x = data2d, f = data2d$sim_group)
-          
-        } else {
-          
-          data2d_list <- split(x = data2d, f = data2d$sim_group)
-          xy_position <- which(names(data2d_list[[1]]) %in% c("x","y"))
-          
-          
-          dist_mat <- dist_matrix_innersq_direction(data2d_list,
-                                                    position = xy_position,
-                                                    verbose = FALSE)
-        }
-        
-        data_deep_points <- depth_curves_to_points(
-          data2d_list, alpha = 1 - conf_level, # switch from alpha to conf_level
-          dist_mat = dist_mat) %>%
-          dplyr::select(x,y)
-
-        chull_ids <- data_deep_points %>% chull()
-
-        chull_ci_df <- data_deep_points[c(chull_ids, chull_ids[1]),]
-
-
-        chull_ci_df3 <- ggtern::xy2tlr(data = chull_ci_df,
-                                     coord = ggtern::coord_tern()) %>%
-          dplyr::mutate(PANEL = info_inner[1],
-                        piece = info_inner[2],
-                        group = info_inner[2]) %>%
-          # ^this seems like an odd approach, but needed...
-          project_to_simplex(column_names = c("x","y","z"))
-
-        return(chull_ci_df3)            },
+      convex_hull_compute_group_paths_to_points,
     required_aes = c("x", "y", "z", "sim_group"))
 
 
@@ -727,8 +837,10 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
                                  grid_size = rep(100, 2),
                                  conf_level = .9,
                                  over_delta = .1,
-                                 dist_params = list("dist_approach"= "auto",
-                                                 "num_steps" = "auto"),
+                                 dist_params = list("dist_approach" = "auto",
+                                                    "num_steps" = "auto",
+                                                    "quantile_approach" = "depth",
+                                                    "quantile_approach_params" = list()),
                                  ...) {
 
   if (length(pb_type) > 1){
@@ -954,8 +1066,11 @@ geom_prediction_band <- function(mapping = NULL, data = NULL,
                                  grid_size = rep(100, 2),
                                  conf_level = .9,
                                  over_delta = .1,
-                                 dist_params = list("dist_approach"= "auto",
-                                                 "num_steps" = "auto"),
+                                 dist_params = list("dist_approach" = "auto",
+                                                    "num_steps" = "auto",
+                                                    "quantile_approach"="depth",
+                                                    "quantile_approach_params" = 
+                                                      list()),
                                  ...) {
   ggplot2::layer(
     data = data,

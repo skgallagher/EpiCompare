@@ -311,7 +311,8 @@ equa_dist_points_listable_direction <- function(list_df, position = 1:2,
 #' @export
 dist_matrix_innersq_2d <- function(path_list,  position = NULL,
                                    verbose = FALSE){
-
+  rnames <- names(path_list)
+  
   assertthat::assert_that(
     (!is.null(position)) && length(position) == 2 &&
       all(position == floor(position)),
@@ -347,29 +348,48 @@ dist_matrix_innersq_2d <- function(path_list,  position = NULL,
       }
     }
   }
-
+  
+  rownames(output_mat) <- rnames
+  
   return(output_mat)
 }
 
 #'@rdname dist_matrix_innersq_2d
 dist_matrix_innersq_angle <- dist_matrix_innersq_2d
 
+
+
+
 #' Calculates the distance matrix between a set of paths (Euclidean based). This
 #' is actually d^2
 #'
 #'
-#' @param path_list list of paths (data frames) - need to have the same num rows
+#' @param x list of paths (data frames) - need to have the same num rows or a nested_df
 #' @param position column index of (x,y) euclidean coords.
 #' @param verbose boolean logic if should have print outs while computing
 #' distance matrix
+#' @param id_as_columns boolean - DESCRIBE
 #'
-#' @return distance matrix of dimension n x n
+#' @return distance matrix of dimension n x n or data.frame - DESCRIBE
 #' @export
-dist_matrix_innersq_direction <- function(path_list,  position = NULL,
-                                          verbose = FALSE){
+dist_matrix_innersq_direction <- function(x, position = NULL,
+                                          verbose = FALSE,
+                                          id_as_columns = FALSE){
+    UseMethod("dist_matrix_innersq_direction")
+}
 
-  n_mat <- length(path_list)
-  n_row <- nrow(path_list[[1]])
+
+
+
+#' @export
+#' @rdname dist_matrix_innersq_direction
+dist_matrix_innersq_direction.list <- function(x,  position = NULL,
+                                          verbose = FALSE, id_as_columns = NA){
+  
+  rnames <- names(x)
+  
+  n_mat <- length(x)
+  n_row <- nrow(x[[1]])
 
   assertthat::assert_that(
     (!is.null(position)) &&
@@ -377,9 +397,9 @@ dist_matrix_innersq_direction <- function(path_list,  position = NULL,
     msg = paste("this function requires an vector of integer values for",
                 "'position'."))
 
-  number_of_row_lengths <- sapply(path_list, nrow) %>% unique %>% length
+  number_of_row_lengths <- sapply(x, nrow) %>% unique %>% length
   assertthat::assert_that(number_of_row_lengths == 1,
-                          msg = paste("each data frame in 'path_list' needs",
+                          msg = paste("each data frame in 'x' needs",
                                       "to have the same length"))
 
 
@@ -395,11 +415,11 @@ dist_matrix_innersq_direction <- function(path_list,  position = NULL,
     for (j in c(i:n_mat)) {
 
       output_mat[i,j] <- sum(
-        (path_list[[i]][, position] - path_list[[j]][, position])^2
+        (x[[i]][, position] - x[[j]][, position])^2
       )
       # ^ same as:
       # sum(apply(
-      # (path_list[[i]][, position] - path_list[[j]][, position])^2,
+      # (x[[i]][, position] - x[[j]][, position])^2,
       # 1, sum))
       output_mat[j,i] <- output_mat[i,j]
 
@@ -409,7 +429,83 @@ dist_matrix_innersq_direction <- function(path_list,  position = NULL,
     }
   }
 
+  rownames(output_mat) <- rnames
+  
   return(output_mat)
+}
+
+if (r_new_interface()){
+  .S3method("dist_matrix_innersq_direction", "list")
+}
+
+#' @export
+#' @rdname dist_matrix_innersq_direction
+dist_matrix_innersq_direction.data.frame <- function(x, position = NULL,
+                                                     verbose = FALSE, id_as_columns = FALSE){
+  
+  
+  
+  id_info <- x %>% dplyr::select(-.data$data) 
+  path_list <- x$data
+  
+  if (!id_as_columns) {
+    inner_names <- id_info %>% 
+      tidyr::unite(col = "names", dplyr::everything(), sep = "|") %>% 
+      dplyr::pull(.data$names)
+    names(path_list) <- inner_names
+  }
+  
+  dist_mat <- dist_matrix_innersq_direction.list(x = path_list,
+                                                 position = position, 
+                                                 verbose = verbose)
+  
+  if (id_as_columns) {
+    dist_mat_df <- cbind(id_info, dist_mat)
+    return(dist_mat_df)
+  } else {
+    return(dist_mat)
+  }
+  
+}
+
+if (r_new_interface()){
+  .S3method("dist_matrix_innersq_direction", "data.frame")
+}
+
+#' @export
+#' @rdname dist_matrix_innersq_direction
+dist_matrix_innersq_direction.grouped_df <- function(x, position = NULL,
+                                                     verbose = FALSE, id_as_columns = FALSE){
+  
+  id_info <- x %>% dplyr::select(-.data$data) 
+  path_list <- x$data
+  
+  if (!id_as_columns) {
+    inner_names <- id_info %>% 
+      tidyr::unite(col = "names", dplyr::everything(), sep = "|") %>% 
+      dplyr::pull(.data$names)
+    names(path_list) <- inner_names
+  } else {
+    names(path_list) <- 1:length(path_list)
+  }
+  
+  dist_mat <- dist_matrix_innersq_direction.list(x = path_list,
+                                                 position = position, 
+                                                 verbose = verbose)
+  
+  if (id_as_columns) {
+    dist_mat_df <- id_info %>% dplyr::ungroup() 
+    dist_mat_df <- cbind(dist_mat_df, dist_mat) %>%
+      dplyr::group_by(.dots = names(id_info))
+    return(dist_mat_df)
+  } else {
+    return(dist_mat)
+  }
+  
+}
+
+if (r_new_interface()){
+  .S3method("dist_matrix_innersq_direction", "grouped_df")
 }
 
 #' Distance between points

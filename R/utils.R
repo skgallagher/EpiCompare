@@ -101,3 +101,24 @@ SEIR_to_SIR_E <- function(data,
   return(new_df)
 }
 
+
+#' check if a character is a desirable percentage value
+#'
+#' @param x character
+#' @param name name to call \code{x} if there is an error
+#'
+#' @return percentage that x represents
+check_character_percent <- function(x, name = "x"){
+  assertthat::assert_that(stringr::str_detect(x, "%$"),
+                      msg = sprintf("if %s is a character it must be '__%%'",
+                                    name))
+  
+  percentage <- as.numeric(stringr::str_remove(x, "%$"))/100
+  assertthat::assert_that(percentage <= 1 & percentage > 0,
+                          msg = sprintf(paste("if %s is centered as a percent,",
+                                      "it must be a percentage <= 100%% and",
+                                      "greater than 0%%"),
+                                      name))
+  return(percentage)
+}
+

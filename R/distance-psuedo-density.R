@@ -2,14 +2,15 @@
 #'
 #' DESCRIBE MORE
 #'
-#' @param dist_mat a n x n square positive symmetric matrix or a tidy_dist_mat
-#' @param sigma scaling parameter
+#' @param x a n x n square positive symmetric matrix or a \code{tidy_dist_mat}
+#' @param sigma scaling parameter. Can either by a standard numerical value or a
+#' string as a percentage (e.g. "20\%")
 #' @param df_out indicates if one should return a data.frame our a vector,
 #' by default returns data.frame if dist_mat is a tidy_dist_mat, and a vector
 #' if dist_mat is a matrix.
 #' 
 #' @return depth vector length n with depth values associated with indices in
-#'   \code{dist_mat} or a data.frame with a column called \code{psuedo_density}
+#'   \code{x} or a data.frame with a column called \code{psuedo_density}
 #' @export
 #'
 #' @examples
@@ -30,6 +31,10 @@ distance_psuedo_density_function <- function(x, sigma = 1, df_out = "auto"){
   UseMethod("distance_psuedo_density_function")
 }
 
+
+
+
+
 #' @rdname distance_psuedo_density_function
 #' @export
 distance_psuedo_density_function.matrix <- function(x, sigma = 1, df_out = F){
@@ -37,9 +42,14 @@ distance_psuedo_density_function.matrix <- function(x, sigma = 1, df_out = F){
     df_out <- FALSE
   }
   
+  if (inherits(sigma, "character")){
+    percentage <- check_character_percent(sigma, "sigma")
+    sigma <- stats::quantile(x, percentage)
+  }
+
   rnames <- rownames(x)
   
-  kernel_dist_mat <- dnorm(x/sigma)
+  kernel_dist_mat <- stats::dnorm(x/sigma)
   psuedo_density <- apply(kernel_dist_mat, MARGIN = 1, mean)
   
   if (df_out) {
@@ -63,9 +73,15 @@ distance_psuedo_density_function.tidy_dist_mat <- function(x, sigma = 1,
   if (df_out == "auto"){
     df_out <- TRUE
   }
+  
+  if (inherits(sigma, "character")){
+    percentage <- check_character_percent(sigma, "sigma")
+    sigma <- stats::quantile(x, percentage)
+  }
+  
   rnames <- rownames(x) # data.frame
   
-  kernel_dist_mat <- dnorm(x/sigma)
+  kernel_dist_mat <- stats::dnorm(x/sigma)
   psuedo_density <- apply(unclass(kernel_dist_mat), MARGIN = 1, mean)
   
   
@@ -93,7 +109,7 @@ if (r_new_interface()){
 
 
 
-group_identify <- function(dist_mat, threshold = quantile(dist_mat, .2)){
+group_identify <- function(dist_mat, threshold = stats::quantile(dist_mat, .2)){
   
   rnames <- rownames(dist_mat)
   

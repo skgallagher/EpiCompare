@@ -198,8 +198,8 @@ top_curves_to_points.list <- function(x, alpha,
   combined <- x_names_df_i %>% 
     dplyr::left_join(quantile_df, by = names(rownames(tidy_dm)))
   
-  deep_idx <- combined[combined[["tctp_indicator"]], "tctp_index"]
-  
+  deep_idx <- combined[["tctp_index"]][combined[["tctp_indicator"]]]
+
   updated_df <- do.call(rbind, x[deep_idx])
   
   return(updated_df)
@@ -421,7 +421,7 @@ if (r_new_interface()){
 #' Specifically we alter Geenens & Nieto-Reyes's global distance-based depth to
 #' a local depth similar to Agostinelli & Romanazzi (2011) localized approach,
 #' and define our local distance-based depth as:
-#' 
+#'
 #' \eqn{LDD(x, \hat{P}, \tau) = 1/(|S| choose 2) \cdot \sum_{i!=j, i,j \in S}
 #' I(d(X_i, X_j) > max(d(X_i,x), d(X_j,x)))}
 #'
@@ -429,17 +429,17 @@ if (r_new_interface()){
 #'
 #' Note that if \eqn{|S| = 1}, then we say that \code{LDD(x) = 0}.
 #'
-#' @details
-#' This matrix function (renamed as \code{depth_function}) is shared with
-#' \pkg{TCpredictionbands} on github:
+#' @details This matrix function (renamed as \code{depth_function}) is shared
+#' with \pkg{TCpredictionbands} on github:
 #' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
-#' 
+#'
 #' @param dist_mat a n x n square positive symmetric matrix or a tidy_dist_mat
-#' @param tau localizing parameter (default is Inf)
-#' @param df_out indicates if one should return a data.frame our a vector,
-#' by default returns data.frame if dist_mat is a tidy_dist_mat, and a vector
-#' if dist_mat is a matrix.
-#' 
+#' @param tau localizing parameter (default is Inf) Can either by a standard
+#'   numerical value or a string as a percentage (e.g. "20\%")
+#' @param df_out indicates if one should return a data.frame our a vector, by
+#'   default returns data.frame if dist_mat is a tidy_dist_mat, and a vector if
+#'   dist_mat is a matrix.
+#'
 #' @return depth vector length n with depth values associated with indices in
 #'   \code{dist_mat} or a data.frame with a column called \code{local_depth}
 #' @return depth vector length n with depth values associated with indices in
@@ -447,7 +447,7 @@ if (r_new_interface()){
 #' @export
 #'
 #' @examples
-#' ## matrix-only examples 
+#' ## matrix-only examples
 #' dist_mat <- matrix(c(0,   1, 1.5,
 #'                      1,   0, 2,
 #'                      1.5, 2, 0   ),
@@ -455,7 +455,7 @@ if (r_new_interface()){
 #'                    byrow = TRUE)
 #'
 #' dd_vec <- local_distance_depth_function(dist_mat) # c(1,0,0)
-#' 
+#'
 #' ldd_vec1 <- local_distance_depth_function(dist_mat, tau = 2) # c(1,0,0)
 #' ldd_vec2 <- local_distance_depth_function(dist_mat, tau = 1.5) # c(1,0,0)
 #' ldd_vec3 <- local_distance_depth_function(dist_mat, tau = 1) # c(0,0,0)
@@ -470,6 +470,11 @@ local_distance_depth_function.matrix <- function(dist_mat, tau = Inf,
                                                  df_out = F){
   if (df_out == "auto"){
     df_out <- FALSE
+  }
+  
+  if (inherits(tau, "character")){
+    percentage <- check_character_percent(tau, "tau")
+    tau <- stats::quantile(dist_mat, percentage)
   }
   
   if (nrow(dist_mat) != ncol(dist_mat) |
@@ -532,9 +537,14 @@ local_distance_depth_function.matrix <- function(dist_mat, tau = Inf,
 #' @rdname local_distance_depth_function
 #' @export
 local_distance_depth_function.tidy_dist_mat <- function(dist_mat, tau = Inf, 
-                                                        df_out = F){
+                                                        df_out = T){
   if (df_out == "auto"){
-    df_out <- FALSE
+    df_out <- TRUE
+  }
+  
+  if (inherits(tau, "character")){
+    percentage <- check_character_percent(tau, "tau")
+    tau <- stats::quantile(dist_mat, percentage)
   }
   
   if (nrow(dist_mat) != ncol(dist_mat) |
