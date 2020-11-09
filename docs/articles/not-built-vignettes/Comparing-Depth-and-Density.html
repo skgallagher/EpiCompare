@@ -162,7 +162,7 @@
 <div id="local-depth-and-global-depth" class="section level4">
 <h4 class="hasAnchor">
 <a href="#local-depth-and-global-depth" class="anchor"></a>Local Depth and Global Depth</h4>
-<p>I’ve hidden the creation of a python version of <code>EpiCompare::local_distance_depth_function</code> in this document, but it’s coded the same way - just a little faster in <code>python</code> than <code>R</code>.</p>
+<p>I’ve hidden the creation of a python version of <code><a href="../../reference/local_distance_depth_function.html">EpiCompare::local_distance_depth_function</a></code> in this document, but it’s coded the same way - just a little faster in <code>python</code> than <code>R</code>.</p>
 <p>Below are visualization of the different local depth scores (relative to <span class="math inline">\(\tau\)</span>).</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>tau_list <span class="op">=</span> [.<span class="dv">1</span>,.<span class="dv">2</span>,.<span class="dv">4</span>,.<span class="dv">6</span>,.<span class="dv">8</span>,<span class="dv">1</span>,np.inf]</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
@@ -185,16 +185,16 @@ N/A% (0 of 7) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
  42% (3 of 7) |###########               | Elapsed Time: 0:00:05 ETA:   0:00:19
                                                                                
 
- 57% (4 of 7) |##############            | Elapsed Time: 0:00:23 ETA:   0:00:52
+ 57% (4 of 7) |##############            | Elapsed Time: 0:00:21 ETA:   0:00:46
                                                                                
 
- 71% (5 of 7) |##################        | Elapsed Time: 0:00:51 ETA:   0:00:56
+ 71% (5 of 7) |##################        | Elapsed Time: 0:00:49 ETA:   0:00:56
                                                                                
 
- 85% (6 of 7) |######################    | Elapsed Time: 0:01:28 ETA:   0:00:37
+ 85% (6 of 7) |######################    | Elapsed Time: 0:01:22 ETA:   0:00:33
                                                                                
 
-100% (7 of 7) |##########################| Elapsed Time: 0:02:04 Time:  0:02:04</code></pre>
+100% (7 of 7) |##########################| Elapsed Time: 0:01:55 Time:  0:01:55</code></pre>
 <p><img src="Comparing-Depth-and-Density_files/figure-html/unnamed-chunk-10-1.png" width="1152"></p>
 <p>We really want to compare this to smoothing of a Guassian KDE to be able to really examine the differences.</p>
 </div>
@@ -236,19 +236,19 @@ N/A% (0 of 8) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
  25% (2 of 8) |######                    | Elapsed Time: 0:00:01 ETA:   0:00:04
                                                                                
 
- 37% (3 of 8) |#########                 | Elapsed Time: 0:00:04 ETA:   0:00:16
+ 37% (3 of 8) |#########                 | Elapsed Time: 0:00:04 ETA:   0:00:17
                                                                                
 
- 50% (4 of 8) |#############             | Elapsed Time: 0:00:09 ETA:   0:00:21
+ 50% (4 of 8) |#############             | Elapsed Time: 0:00:09 ETA:   0:00:20
                                                                                
 
  62% (5 of 8) |################          | Elapsed Time: 0:00:16 ETA:   0:00:18
                                                                                
 
- 75% (6 of 8) |###################       | Elapsed Time: 0:00:40 ETA:   0:00:48
+ 75% (6 of 8) |###################       | Elapsed Time: 0:00:40 ETA:   0:00:49
                                                                                
 
- 87% (7 of 8) |######################    | Elapsed Time: 0:01:13 ETA:   0:00:33
+ 87% (7 of 8) |######################    | Elapsed Time: 0:01:14 ETA:   0:00:33
                                                                                
 
 100% (8 of 8) |##########################| Elapsed Time: 0:01:45 Time:  0:01:45</code></pre>

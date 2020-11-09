@@ -12,5 +12,5 @@
 \item{value}{updated rownames}
 }
 \description{
-\url{https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu}
+assign rownames for tidy_dist_mat
 }

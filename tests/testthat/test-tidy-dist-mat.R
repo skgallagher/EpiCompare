@@ -199,5 +199,38 @@ testthat::test_that("format.tidy_dist_mat check, static", {
   m <- format(my_tidy_dm)
   testthat::expect_true(inherits(m, "noquote"))
   testthat::expect_equal(dim(m), c(6,6))
+
+  # digits
+  my_dist_mat2 <- matrix(c(0,1,2.1245,
+                           1,0,2,
+                           2.1245,2,0), byrow = T, ncol = 3)
+  
+  my_tdm2 <- tidy_dist_mat(my_dist_mat2, rownames_df, rownames_df)
+  
+  format3digit <- format(my_tdm2, digits = 3)
+  testthat::expect_equal(unclass(format3digit)[4,6], "2.12")
+})
+
+testthat::test_that("rownames and colname assignment for tidy_dist_mat",{
+  my_dist_mat2 <- matrix(c(0,1,2.1245,
+                           1,0,2,
+                           2.1245,2,0), byrow = T, ncol = 3)
+  
+  rownames_df <- data.frame(id = c(1,2,1), id2 = c("f", "f", "s"))
+  colnames_df <- rownames_df
+  
+  my_tdm2 <- tidy_dist_mat(my_dist_mat2, rownames_df, rownames_df)
+  
+  rownames(my_tdm2) <- data.frame(id = 1:3)
+  testthat::expect_equal(attr(my_tdm2, "rownames_df"), data.frame(id = 1:3))
+  testthat::expect_equal(rownames(my_tdm2), data.frame(id = 1:3))
+  testthat::expect_equal(attr(my_tdm2, "colnames_df"), colnames_df)
+  testthat::expect_equal(colnames(my_tdm2), colnames_df)
+  
+  colnames(my_tdm2) <- data.frame(id = 2:4)
+  testthat::expect_equal(attr(my_tdm2, "rownames_df"), data.frame(id = 1:3))
+  testthat::expect_equal(rownames(my_tdm2), data.frame(id = 1:3))
+  testthat::expect_equal(attr(my_tdm2, "colnames_df"), data.frame(id = 2:4))
+  testthat::expect_equal(colnames(my_tdm2), data.frame(id = 2:4))
   
 })

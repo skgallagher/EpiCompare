@@ -6,7 +6,8 @@ vignette: >
   %\VignetteIndexEntry{Understanding Prediction Bands and the Impact of Quantile/Ordering Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-
+nocite: |
+  @Dalmasso2019
 ---
 
 ```{r, include = FALSE, eval = T}
@@ -31,7 +32,7 @@ library(EpiCompare)
 
 # Overview
 
-Creating prediction regions and quantifying uncertainty in epidemiological function space is a complicated endeavor. In this vignette we focus on providing the reader some background for the approach presented in this package. Although our work was is based on work in [@Dalmasso2019]^[Ben is a co-author in that paper.] \cite*{Dalmasso2019},  we provide more statistical grounding for our shared approaches as well as smarter approaches for simulation based prediction regions for multivariate functional data (functions with output in multi-dimensional space). 
+Creating prediction regions and quantifying uncertainty in epidemiological function space is a complicated endeavor. In this vignette we focus on providing the reader some background for the approach presented in this package. Although our work was is based on work in (Dalmasso, Dunn, LeRoy^[Ben is a coauthor in this paper.], Schafer 2019),  we provide more statistical grounding for our shared approaches as well as smarter approaches for simulation based prediction regions for multivariate functional data (functions with output in multi-dimensional space). 
 
 The first section of this vignette is a literature review of some useful tools and related literature to create prediction regions for Euclidean space. We focus on creating rudimentary level sets for for conditional density estimates.
 
@@ -48,7 +49,7 @@ which should contain $y_i$ $(1-\alpha)100\%$ of the time.
 
 Such a prediction region relies heavily on the strict assumptions of the linear model. It is often useful to assume less strict assumptions for the generative distribution, potentially as far as fitting some  black models  that return an estimate of the conditional density to $y|x$ to define prediction regions [e.g. @Izbicki2017].
 
-For models that can estimate conditional densities, density level sets provide a great tool to create a prediction region. Level sets are know to be the best (most efficient) prediction regions given a density is known (mentioned in passing in [@Lei2013]). Although lvel ets are often visualized by just evaluating the density over a grid, there are many ways to estimate density level sets, especially when one has a sampling from the underlying distribution. [@Grenander1981a; @Walther1997; @Jiang2017], all present possible ways to use a union of balls to represent level sets for densities for simulations/random samples. @Walther1997's more efficient approach is visualized below in the below visuals.
+For models that can estimate conditional densities, density level sets provide a great tool to create a prediction region. Level sets are know to be the best (most efficient) prediction regions given a density is known (mentioned in passing in [@Lei2013]). Although lvel ets are often visualized by just evaluating the density over a grid, there are many ways to estimate density level sets, especially when one has a sampling from the underlying distribution. [@Grenander1981a; @Walther1997; @Jiang2017], all present possible ways to use a union of balls to represent level sets for densities for simulations/random samples. @Walther1997's more efficient approach is visualized below in the below visuals. Our approach builds off of prediction regions through level sets from low-dimensional Euclidean space to multivariate functional epidemics.
 
 ```{r interal-data, echo = F, message = F, warning = F, eval = F}
 library(tidyverse)
@@ -355,6 +356,7 @@ walk(walther_plots_rad, plot)
 <center>
 ![test](../../reference/figures/walther-plots-level.gif)
 </center>
+<br>
 ```
 
 ```{asis}
@@ -364,7 +366,7 @@ walk(walther_plots_rad, plot)
 ```
 
 
-Our approach builds off of prediction regions through level sets from low-dimensional Euclidean space to multivariate functional epidemics.
+
 
 # Section 2: Prediction bands from epidemic simulations
 
@@ -460,6 +462,13 @@ To summarize these curves we want wish capture a representation of highly likely
 \]
 
 often with $K$ being the standard Gaussian kernel. We can calculate the psuedo-density for the set of simulations, and we visualize them below. In both figures below we can see that the the estimated density for most simulations from the second mixture is above the maximum density estimated for the density from the second simulation.
+
+<details><summary>*Additional commentary associated with code `tidy_dist_mat`...*</summary>
+
+Although not important for this vignette's message, `EpiCompare` introduces a new class, `tidy_dis_mat` to keep track of the `tidyverse` grouping structure that we have relative to the simulations when we seek to understand the distances between the simulated epidemics. our `tidy_dist_mat` work very similar to distance matrices but also store keys of information for each row and column in the matrix akin to `tidyverse` style grouping. *This was mostly done as `tidyverse` is inconsistent in the order of their groupings `group_by` + `nest` vs `group_nest`/`group_split`/`group_keys`. See `?tidy_dist_mat` for examples. Any function that can take in a `tidy_dist_mat` and also take in a "regular" `matrix.
+
+</details>
+<br>
 
 ```{r}
 # this requires keeping track of the names in this way (sadly)

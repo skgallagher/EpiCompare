@@ -1,4 +1,8 @@
-#' creates tidy_dist_mat objects
+#' tidy_dist_mat objects
+#' 
+#' This function allows the user to transform a distance \code{matrix} into a
+#' \code{tidy_dist_mat} matrix with information about the rows and columns in 
+#' the \code{tidyverse} grouping style.
 #'
 #' @param dist_mat distance matrix 
 #' @param rownames_df data.frame with row identifying information
@@ -6,6 +10,27 @@
 #'
 #' @return \code{tidy_dist_mat} object
 #' @export
+#' 
+#' @examples
+#' # data creation
+#' inner_data <- data.frame(x = rnorm(3), y = rnorm(3))
+#' my_dist_mat <- as.matrix(dist(inner_data))
+#' 
+#' rownames_df <- data.frame(id = 1:3)
+#' colnames_df <- data.frame(id = c(1,2,1), id2 = c("f", "f", "s"))
+#' 
+#' my_tidy_dm <- tidy_dist_mat(my_dist_mat, rownames_df, colnames_df)
+#' 
+#' # visualizing the structure
+#' print(my_tidy_dm)
+#' 
+#' # accessing structure 
+#' rownames(my_tidy_dm)
+#' colnames(my_tidy_dm)
+#' 
+#' # updating structure
+#' rownames(my_tidy_dm) <- colnames_df
+#' my_tidy_dm
 tidy_dist_mat <- function(dist_mat, rownames_df = NULL, colnames_df = NULL){
   object <- dist_mat
   
@@ -174,7 +199,7 @@ format.tidy_dist_mat <- function(x, ...){
   
   additional_params <- list(...)
   if ("digits" %in% names(additional_params)) {
-    digits <- additional_params["digits"]
+    digits <- additional_params[["digits"]]
   } else {
     digits = 6
   }

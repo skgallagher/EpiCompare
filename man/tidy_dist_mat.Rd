@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy-dist-mat.R
 \name{tidy_dist_mat}
 \alias{tidy_dist_mat}
-\title{creates tidy_dist_mat objects}
+\title{tidy_dist_mat objects}
 \usage{
 tidy_dist_mat(dist_mat, rownames_df = NULL, colnames_df = NULL)
 }
@@ -17,5 +17,28 @@ tidy_dist_mat(dist_mat, rownames_df = NULL, colnames_df = NULL)
 \code{tidy_dist_mat} object
 }
 \description{
-creates tidy_dist_mat objects
+This function allows the user to transform a distance \code{matrix} into a
+\code{tidy_dist_mat} matrix with information about the rows and columns in 
+the \code{tidyverse} grouping style.
+}
+\examples{
+# data creation
+inner_data <- data.frame(x = rnorm(3), y = rnorm(3))
+my_dist_mat <- as.matrix(dist(inner_data))
+
+rownames_df <- data.frame(id = 1:3)
+colnames_df <- data.frame(id = c(1,2,1), id2 = c("f", "f", "s"))
+
+my_tidy_dm <- tidy_dist_mat(my_dist_mat, rownames_df, colnames_df)
+
+# visualizing the structure
+print(my_tidy_dm)
+
+# accessing structure 
+rownames(my_tidy_dm)
+colnames(my_tidy_dm)
+
+# updating structure
+rownames(my_tidy_dm) <- colnames_df
+my_tidy_dm
 }

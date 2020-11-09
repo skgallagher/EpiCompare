@@ -180,7 +180,7 @@
 <span class='no'>rownames_df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>3</span>)
 <span class='no'>colnames_df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span>), <span class='kw'>id2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"f"</span>, <span class='st'>"f"</span>, <span class='st'>"s"</span>))
 
-<span class='no'>my_tidy_dm</span> <span class='kw'>&lt;-</span> <span class='fu'>tidy_dist_mat</span>(<span class='no'>my_dist_mat</span>, <span class='no'>rownames_df</span>, <span class='no'>colnames_df</span>)
+<span class='no'>my_tidy_dm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tidy_dist_mat.html'>tidy_dist_mat</a></span>(<span class='no'>my_dist_mat</span>, <span class='no'>rownames_df</span>, <span class='no'>colnames_df</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>my_tidy_dm</span>)</div><div class='output co'>#&gt;     id                          
 #&gt; id     | 1       2       1      
 #&gt; id2    | f       f       s      

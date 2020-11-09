@@ -440,7 +440,7 @@ inner_compute_group_paths_to_points <- function(data, scales, params,
     data2d_list <- data2d %>%
       dplyr::group_by(.data$sim_group) %>%
       dplyr::group_split()
-    data2d_list_order_df <- data2d_equa_dist %>%
+    data2d_list_order_df <- data2d %>%
       dplyr::group_by(.data$sim_group) %>%
       dplyr::group_keys()
     
@@ -450,7 +450,7 @@ inner_compute_group_paths_to_points <- function(data, scales, params,
     data2d_list <- data2d %>%
       dplyr::group_by(.data$sim_group) %>%
       dplyr::group_split()
-    data2d_list_order_df <- data2d_equa_dist %>%
+    data2d_list_order_df <- data2d %>%
       dplyr::group_by(.data$sim_group) %>%
       dplyr::group_keys()
     
