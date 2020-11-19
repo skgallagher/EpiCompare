@@ -1,0 +1,63 @@
+\begin{thebibliography}{7}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Becker \emph{et~al.}(2016)Becker, Birger, Teillant, Gastanaduy,
+  Wallace, and Grenfell}]{becker2016}
+Becker AD, Birger RB, Teillant A, Gastanaduy PA, Wallace GS, Grenfell BT
+  (2016).
+\newblock \enquote{Estimating enhanced prevaccination measles transmission
+  hotspots in the context of cross-scale dynamics.}
+\newblock \emph{Proceedings of the National Academy of Sciences},
+  \textbf{113}(51), 14595--14600.
+
+\bibitem[{Britton \emph{et~al.}(2011)Britton, Kypraios, and
+  O'NEILL}]{britton2011}
+Britton T, Kypraios T, O'NEILL PD (2011).
+\newblock \enquote{Inference for epidemics with three levels of mixing:
+  methodology and application to a measles outbreak.}
+\newblock \emph{Scandinavian Journal of Statistics}, \textbf{38}(3), 578--599.
+
+\bibitem[{Groendyke \emph{et~al.}(2012)Groendyke, Welch, and
+  Hunter}]{groendyke2012}
+Groendyke C, Welch D, Hunter DR (2012).
+\newblock \enquote{A network-based analysis of the 1861 Hagelloch measles
+  data.}
+\newblock \emph{Biometrics}, \textbf{68}(3), 755--765.
+
+\bibitem[{Meyer \emph{et~al.}(2017)Meyer, Held, and
+  H\"{o}hle}]{surveillance2017}
+Meyer S, Held L, H\"{o}hle M (2017).
+\newblock \enquote{Spatio-Temporal Analysis of Epidemic Phenomena Using the {R}
+  Package {surveillance}.}
+\newblock \emph{Journal of Statistical Software}, \textbf{77}(11), 1--55.
+\newblock \doi{10.18637/jss.v077.i11}.
+
+\bibitem[{Neal and Roberts(2004)}]{Neal2004}
+Neal PJ, Roberts GO (2004).
+\newblock \enquote{{Statistical inference and model selection for the 1861
+  Hagelloch measles epidemic}.}
+\newblock \emph{Biostatistics}, \textbf{5}(2), 249--261.
+\newblock ISSN 14654644.
+\newblock \doi{10.1093/biostatistics/5.2.249}.
+
+\bibitem[{Oesterle(1992)}]{oesterle1992}
+Oesterle H (1992).
+\newblock \enquote{{Statistische Reanalyse einer Masernepidemie 1861 in
+  Hagelloch}.}
+
+\bibitem[{Pfeilsticker(1863)}]{pfeilsticker1863}
+Pfeilsticker A (1863).
+\newblock \enquote{{Beiträge zur Pathologie der Masern mit besonderer
+  Berücksichtigung der statistischen Verhältnisse}.}
+\newblock
+  \urlprefix\url{http://www.archive.org/details/beitrgezurpatho00pfeigoog}.
+
+\end{thebibliography}

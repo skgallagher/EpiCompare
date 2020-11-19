@@ -1,0 +1,128 @@
+---
+documentclass: jss
+author:
+  - name: Shannon K. Gallagher
+    affiliation: |
+      | Biostatistics Research Branch
+      | National Institute of Allergy 
+      | and Infectious Diseases
+    # use this syntax to add text on several lines
+    address: |
+      | 5603 Fishers Lane
+      | Rockville, MD 20852
+    email: \email{shannon.gallagher@nih.gov}
+    url: http://skgallagher.github.io
+  - name: Benjamin Leroy
+    affiliation: |
+      | Dept. of Statistics
+      | Carnegie Mellon University
+    address: |
+      | 5000 Forbes Ave.
+      | Pittsburgh, PA 15213
+    email: \email{bpleroy@andrew.cmu.edu}
+    url:  https://benjaminleroy.github.io/
+
+title:
+  formatted: "Time invariant analysis of epidemics with \\pkg{EpiCompare}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "A Capitalized Title: Something about a Package foo"
+  # For running headers, if needed
+  short:     "\\pkg{foo}: A Capitalized Title"
+abstract: >
+  The abstract of the article.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [keywords, not capitalized, "\\proglang{Java}"]
+  plain:     [keywords, not capitalized, Java]
+preamble: >
+  \usepackage{amsmath}
+output: 
+  rticles::jss_article:
+    number_sections: TRUE     #added argument option 
+    citation_package: "natbib"  #All my citations use biblatex, not natbib. 
+biblio-style: jss      #Listed to use in JSS Instructions for Authors, but not in template by default. 
+bibliography: EpiCompare.bib  #Also not included in template by default. 
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+---
+
+
+
+```{r, setup, include=FALSE}
+options(prompt = 'R> ', continue = '+ ')
+options(kableExtra.latex.load_packages = FALSE)
+
+
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      fig.align = "c",
+                      echo=TRUE, warning=FALSE, message=FALSE)
+```
+
+\section{Introduction}\label{sec:intro}
+
+
+This is the Section \ref{sec:intro}. This template demonstrates some of the basic LaTeX that you need to know to create a JSS article.
+
+## Code formatting
+
+In general, don't use Markdown, but use the more precise LaTeX commands instead:
+
+* \proglang{Java}
+* \pkg{plyr}
+
+One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
+
+If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
+
+# \proglang{R} code {short-title="R code" #r-code}
+
+Can be inserted in regular R markdown blocks.
+
+hags hags hags \cite{Neal2004}
+
+```{r}
+x <- 1:10
+x
+```
+
+## Features specific to \pkg{rticles} {short-title="Features specific to rticles"}
+
+* Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
+* Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::jss_article` format.
+
+
+
+In this section, we highlight a number of the functionalities available in \proglang{EpiCompare}.  These functionalities include data cleaning, visualization, simulation, and comparison, in accordance with the data analysis pipeline REF\ref{}. We show a full data analysis from beginning to end that can be accomplished in a streamlined and standardized manner.
+
+## Data and EDA
+
+We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector.  Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
+
+
+
+
+```{r}
+devtools::load_all()
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+```
+
+
+```{r hagelloch-subset-view}
+hagelloch_raw %>% select(PN, NAME, AGE, SEX, HN, PRO, ERU, IFTO) %>%
+  head(5) %>% kable(format = "latex", booktabs = TRUE, caption = "Cool table") %>%
+  kable_styling(position = "center")
+```
+
+
+\begin{itemize}
+\item thing
+\end{itemize}

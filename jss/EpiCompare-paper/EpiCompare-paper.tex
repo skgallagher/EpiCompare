@@ -1,0 +1,193 @@
+% To remove when JSS.cls is fixed
+% https://github.com/rstudio/rticles/issues/329
+\RequirePackage[2020/02/02]{latexrelease}
+\documentclass[
+]{jss}
+
+\usepackage[utf8]{inputenc}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\author{
+Shannon K. Gallagher\\Biostatistics Research Branch\\
+National Institute of Allergy\\
+and Infectious Diseases \And Benjamin Leroy\\Dept. of Statistics\\
+Carnegie Mellon University
+}
+\title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
+
+\Plainauthor{Shannon K. Gallagher, Benjamin Leroy}
+\Plaintitle{A Capitalized Title: Something about a Package foo}
+\Shorttitle{\pkg{foo}: A Capitalized Title}
+
+\Abstract{
+The abstract of the article.
+}
+
+\Keywords{keywords, not capitalized, \proglang{Java}}
+\Plainkeywords{keywords, not capitalized, Java}
+
+%% publication information
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{}
+%% \Acceptdate{2012-06-04}
+
+\Address{
+    Shannon K. Gallagher\\
+    Biostatistics Research Branch\\
+National Institute of Allergy\\
+and Infectious Diseases\\
+    5603 Fishers Lane\\
+Rockville, MD 20852\\
+  E-mail: \email{shannon.gallagher@nih.gov}\\
+  URL: \url{http://skgallagher.github.io}\\~\\
+      Benjamin Leroy\\
+    Dept. of Statistics\\
+Carnegie Mellon University\\
+    5000 Forbes Ave.\\
+Pittsburgh, PA 15213\\
+  E-mail: \email{bpleroy@andrew.cmu.edu}\\
+  URL: \url{https://benjaminleroy.github.io/}\\~\\
+  }
+
+% Pandoc citation processing
+
+% Pandoc header
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\section{Introduction}\label{sec:intro}
+
+This is the Section \ref{sec:intro}. This template demonstrates some of
+the basic LaTeX that you need to know to create a JSS article.
+
+\hypertarget{code-formatting}{%
+\subsection{Code formatting}\label{code-formatting}}
+
+In general, don't use Markdown, but use the more precise LaTeX commands
+instead:
+
+\begin{itemize}
+\item
+  \proglang{Java}
+\item
+  \pkg{plyr}
+\end{itemize}
+
+One exception is inline code, which can be written inside a pair of
+backticks (i.e., using the Markdown syntax).
+
+If you want to use LaTeX commands in headers, you need to provide a
+\texttt{short-title} attribute. You can also provide a custom identifier
+if necessary. See the header of Section \ref{r-code} for example.
+
+\section[R code]{\proglang{R} code}\label{r-code}
+
+Can be inserted in regular R markdown blocks.
+
+hags hags hags \cite{Neal2004}
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> x <- 1:10
+R> x
+\end{CodeInput}
+\begin{CodeOutput}
+ [1]  1  2  3  4  5  6  7  8  9 10
+\end{CodeOutput}
+\end{CodeChunk}
+
+\subsection[Features specific to rticles]{Features specific to
+\pkg{rticles}}\label{features-specific-to}
+
+\begin{itemize}
+\tightlist
+\item
+  Adding short titles to section headers is a feature specific to
+  \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is
+  currently not supported by Pandoc and we will update this template if
+  \href{https://github.com/jgm/pandoc/issues/4409}{it is officially
+  supported in the future}.
+\item
+  Using the \texttt{\textbackslash{}AND} syntax in the \texttt{author}
+  field to add authors on a new line. This is a specific to the
+  \texttt{rticles::jss\_article} format.
+\end{itemize}
+
+In this section, we highlight a number of the functionalities available
+in \proglang{EpiCompare}. These functionalities include data cleaning,
+visualization, simulation, and comparison, in accordance with the data
+analysis pipeline REF\ref{}. We show a full data analysis from beginning
+to end that can be accomplished in a streamlined and standardized
+manner.
+
+\hypertarget{data-and-eda}{%
+\subsection{Data and EDA}\label{data-and-eda}}
+
+We analyze an outbreak of measles in the town of Hagelloch, Germany from
+1861-1862, a data set organized by \cite{pfeilsticker1863}. The data was
+later made visible by \cite{oesterle1992} and made available in an
+\proglang{R} by \cite{surveillance2017}. The Hagelloch data includes a
+rich set of features including household members, school level,
+household locations, date of first symptoms (prodromes), date of measles
+rash, and even the alleged infector. Because of these rich features,
+this data set has been an ideal testing ground methodology in infectious
+disease epidemiology and is used in work by
+\cite{Neal2004,britton2011,groendyke2012,becker2016}.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> devtools::load_all()
+R> library(ggplot2)
+R> library(tidyr)
+R> library(dplyr)
+R> library(knitr)
+R> library(kableExtra)
+\end{CodeInput}
+\end{CodeChunk}
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> hagelloch_raw %>% select(PN, NAME, AGE, SEX, HN, PRO, ERU, IFTO) %>%
++   head(5) %>% kable(format = "latex", booktabs = TRUE, caption = "Cool table") %>%
++   kable_styling(position = "center")
+\end{CodeInput}
+\begin{table}
+
+\caption{\label{tab:hagelloch-subset-view}Cool table}
+\centering
+\begin{tabular}[t]{rlrlrllr}
+\toprule
+PN & NAME & AGE & SEX & HN & PRO & ERU & IFTO\\
+\midrule
+1 & Mueller & 7 & female & 61 & 1861-11-21 & 1861-11-25 & 45\\
+2 & Mueller & 6 & female & 61 & 1861-11-23 & 1861-11-27 & 45\\
+3 & Mueller & 4 & female & 61 & 1861-11-28 & 1861-12-02 & 172\\
+4 & Seibold & 13 & male & 62 & 1861-11-27 & 1861-11-28 & 180\\
+5 & Motzer & 8 & female & 63 & 1861-11-22 & 1861-11-27 & 45\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{CodeChunk}
+
+\begin{itemize}
+\item thing
+\end{itemize}
+
+\bibliography{EpiCompare.bib}
+
+
+\end{document}
