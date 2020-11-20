@@ -40,6 +40,7 @@ output:
   rticles::jss_article:
     number_sections: TRUE     #added argument option 
     citation_package: "natbib"  #All my citations use biblatex, not natbib. 
+classoption: shortnames
 biblio-style: jss      #Listed to use in JSS Instructions for Authors, but not in template by default. 
 bibliography: EpiCompare.bib  #Also not included in template by default. 
 header-includes:
@@ -59,9 +60,12 @@ options(kableExtra.latex.load_packages = FALSE)
 
 
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
-                      fig.align = "c",
-                      echo=TRUE, warning=FALSE, message=FALSE)
+                      fig.align = "center",
+                      echo=TRUE, warning=FALSE, message=FALSE,
+                      fig.pos = "H")
+
 ```
+
 
 \section{Introduction}\label{sec:intro}
 
@@ -90,36 +94,129 @@ x <- 1:10
 x
 ```
 
-## Features specific to \pkg{rticles} {short-title="Features specific to rticles"}
 
-* Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
-* Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::jss_article` format.
-
+# A tour of \pkg{EpiCompare} {short-title="Tour" #sec:tour}
 
 
 In this section, we highlight a number of the functionalities available in \proglang{EpiCompare}.  These functionalities include data cleaning, visualization, simulation, and comparison, in accordance with the data analysis pipeline REF\ref{}. We show a full data analysis from beginning to end that can be accomplished in a streamlined and standardized manner.
 
-## Data and EDA
+\subsection{Data and exploratory analysis}
 
-We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector.  Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
+We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}   Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
+
+After loading in the libraries for this analysis, we examine .  Within it, we
+
+
+```{r echo = FALSE}
+devtools::load_all()
+library(tidyr)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 20))
+```
+
+
+```{r hagelloch-subset-view, echo = FALSE}
+hagelloch_raw %>% select(PN, HN, NAME, AGE, SEX, CL,  PRO, ERU, IFTO) %>%
+  filter(PN %in% paste(c(1:5, 45))) %>% kable(format = "latex", booktabs = TRUE, caption = "Subset of Hagelloch infection data.  Features include the person ID, household ID (HH ID), age, sex, class level (Pre-K/1st/2nd), date of first symptoms, date of the appearance of the measles rash, and the alleged infector ID of the individual.",
+                                              linesep = "",
+                    col.names = c("ID","HH ID", "Name", "Age", "Sex", 
+                                  "Class", "Symp. Start", "Rash Date", "Infector ID"),
+                    label = "hags-people") %>%
+  kable_styling(position = "center", latex_options = "hold_position")
+```
+
+With \pkg{EpiCompare}, we can easily obtain the empirical cumulative incidence function with respect to the measles rash appearance (variable \code{ERU}) with the following tidy-style function, \code{agents_to_aggregate}.  The function \code{agents_to_aggregate} is a key component of \pkg{EpiCompare}, allowing the user to easily switch from an individual-level (i.e. an agent) view of a disease to an aggregate level.  For example, the below code shows how we can convert the agent data to a cumulative incidence of the measles rash, in order to see how the disease spread through the population over time. We can then compare the cumulative incidence of the rash to the cumulative incidence of the prodromes, i.e. the initial symptoms.  We do this with the below code, and a part of the cumulative incidence data output are shown in Table \ref{tab:cif-rash}.  The argument \code{integer_time_expansion} indicates whether we should include all time points in the recorded range of the data or only when there is a change in the incidence.
+
+```{r }
+cif_rash  <- hagelloch_raw %>%
+  mutate(time_of_rash = as.numeric(ERU - min(PRO, na.rm = TRUE))) %>%
+  agents_to_aggregate(states = time_of_rash,
+                      integer_time_expansion = FALSE) %>%
+  mutate(type = "Rash")
+```
+
+
+```{r echo = FALSE}
+cif_rash %>% 
+  dplyr::select(-type) %>%
+  head(5) %>% kable(booktabs = TRUE,
+                               caption = "Turning the individual-level information from the Hagelloch data to an aggregate view of the cumulative incidence of the measles rash in the population over time.",
+                               label = "cif-rash",
+                              col.names = c("Time", "# Susceptible", "# Total rash appearances") ) %>%
+  kable_styling(position = "center", 
+                latex_options = "hold_position"
+                      )
+```
+
+
+One question of interest is the duration between initial onset of prodromes or symptoms and the appearance of the measles rash.  Since \code{agent_to_aggregate} outputs a tidy-style data frame, it is a simple task to plot the two sets of incidence curves on the same graph (Fig. \ref{fig:cifs}).
+
 
 
 
 
 ```{r}
-devtools::load_all()
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-library(knitr)
-library(kableExtra)
+cif_prodromes <- hagelloch_raw %>%
+  mutate(time_of_PRO = as.numeric(PRO - min(PRO, na.rm = TRUE))) %>%
+  agents_to_aggregate(states = time_of_PRO,
+                      integer_time_expansion = FALSE) %>%
+  mutate(type = "Pro")
 ```
 
 
-```{r hagelloch-subset-view}
-hagelloch_raw %>% select(PN, NAME, AGE, SEX, HN, PRO, ERU, IFTO) %>%
-  head(5) %>% kable(format = "latex", booktabs = TRUE, caption = "Cool table") %>%
-  kable_styling(position = "center")
+
+```{r fig.cap = "\\label{fig:cifs}Empirical cumulative incidence functions of prodrome (symptom) onset and measles rash appearance.  We see that there is approximately a a constant lag between the two curves."}
+plot_df <- bind_rows(cif_rash, cif_prodromes)
+
+ggplot(data = plot_df,
+       aes(x = t, y = X1, col = type)) + 
+  geom_step() + 
+  labs(title = "Cumulative incidence of measles appearance",
+       x = "Time (days relative to first prodrome appearance)",
+       y = "Cumulative incidence of event") + 
+  coord_cartesian(xlim = c(0, 55)) +
+  scale_color_manual(values = c("blue", "red"))
+
+```
+
+
+```{r}
+with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
+
+```
+
+The real power of \code{agents_to_aggregate()} lies in its ability to aggregate over any number of pre-specified states.  For example, the Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the time of infection and recovery, respectively of each individual.  We can then plot the SIR values through a time-invariant lens via a ternary plot using regular \pkg{ggplot2} functions or with our custom \code{geom}, \code{geom_aggregate}, which takes the original agent data as input  (\ref{fig:hag-tern-raw}.
+
+```{r fig.cap = "\\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis)."}
+sir <- hagelloch_raw %>%
+  agents_to_aggregate(states = c(tI, tR),
+                      min_max_time = c(0, 55)) %>%
+  rename(time = t, S = X0, I = X1, R = X2)
+
+
+ggplot(sir, aes(x = S, y = I, z = R))+
+  coord_tern() +
+  geom_path() +
+  labs(x = "S", y = "I", z = "R",
+       title = "Time invariant view of Hagelloch measles outbreak") + 
+  theme_sir()
+
+```
+
+Moreover, we can look at the outbreaks of the disease by group within \code{agent_to_aggregate()} or \code{geom_aggregate()}, which allows us to examine differences among the groups of individuals.  For example, we show the time invariant outbreak by class level in Figure \ref{fig:tern-class-data}.  Immediately, we see that time invariant infection curve is very different for the pre-school group compared to the 1st class.  In the 1st class, we see about 95\% of the class become infected before anyone recovers, which is indicative of a super-spreading event.  This suspicion is further confirmed in that `r max(table(hagelloch_raw$IFTO[hagelloch_raw$CL == "1st class"]))` of the `r nrow(hagelloch_raw[hagelloch_raw$CL == "1st class",])` have been reportedly infected by the same individual.
+
+```{r fig.cap = "\\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined."}
+hagelloch_raw %>%
+  ggplot(aes(y = tI, z = tR, color = CL)) +
+  geom_aggregate(size = 2) + coord_tern() +
+  labs(x = "S", y = "I", z = "R",
+       color = "Class") +
+  scale_color_brewer(palette = "Dark2") +
+  facet_wrap(~CL)
 ```
 
 

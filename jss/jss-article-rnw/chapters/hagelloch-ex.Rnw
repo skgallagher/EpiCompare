@@ -1,0 +1,35 @@
+% !Rnw root = ../article.Rnw
+
+
+
+In this section, we highlight a number of the functionalities available in \proglang{EpiCompare}.  These functionalities include data cleaning, visualization, simulation, and comparison, in accordance with the data analysis pipeline REF\ref{}. We show a full data analysis from beginning to end that can be accomplished in a streamlined and standardized manner.
+
+\subsection{Data and EDA}
+We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector.  Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
+
+<<libraries, echo = FALSE>>=
+library(ggplot2)
+library(dplyr)
+library(broom)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+devtools::load_all()
+@
+
+The Hagelloch data is available in \proglang{EpiCompare} with \proglang{data(hagelloch\_raw)}.  We can see a subset of the data frame with
+
+<<hagelloch-subset-view, results = asis>>=
+hagelloch_raw %>% select(PN, NAME, AGE, SEX, HN, PRO, ERU, IFTO) %>%
+  head(5) %>% kable(format = "latex", booktabs = TRUE, align = 'c')
+@
+
+
+
+\subsection{Modeling}
+
+\subsection{Comparison}
+
+
+

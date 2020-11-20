@@ -25,13 +25,6 @@
 \usepackage[normalem]{ulem} % for \sout
 
 
-%% For Sweave-based articles about R packages:
-%% need no \usepackage{Sweave}
-\SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
-<<preliminaries, echo=FALSE, results=hide>>=
-options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-library("MASS")
-@
 
 
 %% -- Article metainformation (author, title, ...) -----------------------------
@@ -107,9 +100,9 @@ We do something, possibly useful
 \SweaveInput{chapters/ch4-orientation.Rnw}
 
 
-\section{In practice}
-\SweaveInput{chapters/ch5-ex1.Rnw}
-\SweaveInput{chapters/ch6-ex2.Rnw}
+\section{A tour of EpiCompare}
+\SweaveInput{chapters/hagelloch-ex.Rnw}
+
 
 \SweaveInput{chapters/ch7-discussion.Rnw}
 
