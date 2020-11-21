@@ -25,9 +25,9 @@ author:
 title:
   formatted: "Time invariant analysis of epidemics with \\pkg{EpiCompare}"
   # If you use tex in the formatted title, also supply version without
-  plain:     "A Capitalized Title: Something about a Package foo"
+  plain:     "Time invariant analysis of epidemics with \\pkg{EpiCompare}"
   # For running headers, if needed
-  short:     "\\pkg{foo}: A Capitalized Title"
+  short:     "\\pkg{EpiCompare}"
 abstract: >
   The abstract of the article.
 keywords:
@@ -104,7 +104,7 @@ In this section, we highlight a number of the functionalities available in \prog
 
 We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}   Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
 
-After loading in the libraries for this analysis, we examine .  Within it, we
+
 
 
 ```{r echo = FALSE}
@@ -115,7 +115,7 @@ library(knitr)
 library(kableExtra)
 library(ggplot2)
 
-theme_set(theme_bw(base_size = 20))
+theme_set(theme_bw(base_size = 24))
 ```
 
 
@@ -189,25 +189,25 @@ with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
 
 ```
 
-The real power of \code{agents_to_aggregate()} lies in its ability to aggregate over any number of pre-specified states.  For example, the Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the time of infection and recovery, respectively of each individual.  We can then plot the SIR values through a time-invariant lens via a ternary plot using regular \pkg{ggplot2} functions or with our custom \code{geom}, \code{geom_aggregate}, which takes the original agent data as input  (\ref{fig:hag-tern-raw}.
+The real power of \code{agents_to_aggregate()} lies in its ability to aggregate over any number of pre-specified states.  For example, the Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the time of infection and recovery, respectively of each individual.  We can then plot the SIR values through a time-invariant lens  using \pkg{ggplot2} functions or with our custom \code{geom}, \code{geom_aggregate}, which takes the original agent data as input  (Fig. \ref{fig:hag-tern-raw}).
 
 ```{r fig.cap = "\\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis)."}
-sir <- hagelloch_raw %>%
+hagelloch_sir <- hagelloch_raw %>%
   agents_to_aggregate(states = c(tI, tR),
                       min_max_time = c(0, 55)) %>%
   rename(time = t, S = X0, I = X1, R = X2)
 
 
-ggplot(sir, aes(x = S, y = I, z = R))+
+ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
   coord_tern() +
   geom_path() +
   labs(x = "S", y = "I", z = "R",
        title = "Time invariant view of Hagelloch measles outbreak") + 
-  theme_sir()
+  theme_sir(base_size = 24)
 
 ```
 
-Moreover, we can look at the outbreaks of the disease by group within \code{agent_to_aggregate()} or \code{geom_aggregate()}, which allows us to examine differences among the groups of individuals.  For example, we show the time invariant outbreak by class level in Figure \ref{fig:tern-class-data}.  Immediately, we see that time invariant infection curve is very different for the pre-school group compared to the 1st class.  In the 1st class, we see about 95\% of the class become infected before anyone recovers, which is indicative of a super-spreading event.  This suspicion is further confirmed in that `r max(table(hagelloch_raw$IFTO[hagelloch_raw$CL == "1st class"]))` of the `r nrow(hagelloch_raw[hagelloch_raw$CL == "1st class",])` have been reportedly infected by the same individual.
+Moreover, we can look at the outbreaks of the disease by group within \code{agent_to_aggregate()} or \code{geom_aggregate()}.  This allows us to examine differences among the different groups of individuals.  For example, we show the time invariant outbreak by class level in Figure \ref{fig:tern-class-data}.  Immediately, we see that time invariant infection curve is different for the pre-school class compared to the 1st class.  In the 1st class, we see about 95\% of the class become infected and less than 10\% of them having recovered, which is indicative of a super-spreading event.  This suspicion is further confirmed in that `r max(table(hagelloch_raw$IFTO[hagelloch_raw$CL == "1st class"]))` of the `r nrow(hagelloch_raw[hagelloch_raw$CL == "1st class",])` 1st class students have been reportedly infected by the same individual.
 
 ```{r fig.cap = "\\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined."}
 hagelloch_raw %>%
@@ -218,6 +218,124 @@ hagelloch_raw %>%
   scale_color_brewer(palette = "Dark2") +
   facet_wrap(~CL)
 ```
+
+Along with multiple epidemic states, the function \code{agents_to_aggregate} can also be extended to populations with vital dynamics (e.g. birth and death) and examples of this are shown in the package vignette.  In summary, \code{agents_to_aggregate()} is a multi-purpose workhorse that be leveraged to convert individual level records into aggregate information that may be more useful for some forms of epidemic modeling such as compartment modeling.
+
+Up to this point, we have used \pkg{EpiCompare} in the context of observed data.  We also want to compare statistical models, and \pkg{EpiCompare} aids in that process via a simple but dynamic individual-level data generator, conversion tools for popular epidemic model packages, and model assessments.  We demonstrate an example here.
+
+We first try to model the Hagelloch data with an SIR model (see Eq. \ref{eq:sir}).  In our vignette, we show how to fit a stochastic model via maximum likelihood and simulate from the model with those best fit parameters.  Our function \code{simulate_agents()} generates individual level data according to discrete multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example
+
+
+```{r}
+trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
+                  "0", "X1 * (1 - par2)", "par2 * X1",
+                  "0", "0", "X2"), byrow = TRUE, nrow = 3)
+```
+
+
+
+```{r cache = TRUE}
+set.seed(2020)
+
+best_params <- c("beta" = .36, "gamma" = .13)
+## This is the SIR representation
+
+rownames(trans_mat) <- c("S", "I", "R")
+init_vals <- c(187, 1, 0)
+par_vals <- c(par1 = best_params[1], par2 = best_params[2])
+max_T <- 55
+n_sims <- 100
+
+agents <- simulate_agents(trans_mat,
+                       init_vals,
+                       par_vals,
+                       max_T,
+                       n_sims,
+                       verbose = FALSE)
+
+
+```
+```{r}
+agg_model <- agents %>% group_by(sim) %>%
+  agents_to_aggregate(states = c(I, R)) %>%
+  mutate(Type = "Simple SIR")
+```
+The result of our simulation is the object \code{agents} which is a `r nrow(agents)` $\times$ `r ncol(agents)` which details the time of entry into the $S$, $I$, and $R$ states for a given simulation.  Before we examine the results of this simple SIR model, we will also examine another, more sophisticated SIR model, this time from the package \pkg{EpiModel}.  Briefly, this model fits a contact network, where the class of the student is a covariate and then simulates a SIR-epidemic on that network.
+
+```{r cache = TRUE, results = 'hide'}
+library(EpiModel)
+## WARNING:  Will take a minute or two
+
+set.seed(42)
+nw <- network.initialize(n = 188, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(0:2, each = 90, 30, 68))
+formation <- ~edges + nodematch("group") + concurrent
+target.stats <- c(200, 300, 200)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges),  duration = 5)
+est1 <- netest(nw, formation, target.stats, coef.diss, edapprox = TRUE)
+
+param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.1)
+status.vector <- c(rep(0, 90), rep(0, 30), rep(0, 67), 1)
+status.vector <- ifelse(status.vector == 1, "i", "s")
+init <- init.net(status.vector = status.vector)
+control <- control.net(type = "SIR", nsteps = 55,
+                       nsims = 100, epi.by = "group")
+epimodel_sir <- netsim(est1, param, init, control)
+
+```
+
+
+The output of this model is \code{epimodel_sir}, an object of class `r class(epimodel_sir)`, which contains a plethora of modeling information.  We provide the function \code{fortify_aggregate()}, which can take objects from specialized classes of modeling output and transform it into a tidy-style data frame.
+
+```{r}
+fortified_net <- fortify_aggregate(epimodel_sir, 
+                                   states = c("s.num", "i.num", "r.num")) %>%
+  mutate(Type = "EpiModel SIR",
+         sim = as.numeric(gsub("sim", "", sim)))
+```
+
+
+We can then analyze the results of the two models side by side as time-invariant epidemic curves.  The results are shown in Figure \ref{fig:hag-simple-sir}, where a 90\% prediction band is estimated from the delta ball method for each of the two models.  For the Simple SIR model, we see that the data generally covers the data fairly well but clearly misses the second peak of infection.  We also see that the prediction band is very large, covering up a large area of the ternary plot.  On the other hand, for the \pkg{EpiModel} model, we see that the prediction band covers the data quite well and takes up less area.
+
+
+
+```{r cache = TRUE}
+
+both_models <- bind_rows(agg_model, fortified_net)
+
+
+g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0),
+         aes(x = X0, y = X1, z = X2,
+              sim_group = sim, fill = Type),
+         alpha = .5,
+         conf_level = .90) 
+```
+
+```{r , fig.cap = "\\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models."}
+g +   geom_path(data = both_models %>% filter(t !=0),
+            aes(x = X0, y = X1, z = X2, group = paste(Type, sim)),
+            alpha = .3, col = "gray40") + 
+    coord_tern() + theme_sir(base_size = 24) +
+  geom_point(data = hagelloch_sir,
+             aes(x = S, y = I, z =R), col = "black") +
+  labs(title = "Simple SIR model",
+       subtitle = "90% Prediction band and original data",
+       x = "S", y = "I", z = "R") +
+  scale_fill_manual(values = c("#006677", "#AA6600")) + 
+  facet_wrap(~Type) +
+  theme(legend.position = "bottom")
+     
+```
+However, both models are not a good fit to the filamental path as opposed to the individual points in $(S, I, R)$-space.  What we mean by that is that both models predict epidemic paths that generally have a single defined peak of infection whereas the data certainly looks like it has two distinct peaks, likely caused by our assumed super-spreader event.  In conclusion, \pkg{EpiCompare} makes it clear that, at a glance, 1) the EpiModel network model is a better fit than the Simple SIR model, and 2) the fit is only good at the individual point level as opposed to the epidemic path level.
+
+
+
+
+
+
+
+HERE BEN IS GOING TO LOOK AT THE EPIMODEL OUTPUT DIFFERENT PREDICTION BAND THINGS.
+
 
 
 \begin{itemize}

@@ -1,6 +1,7 @@
 #' Add a portable theme for SIR ternary plots
 #' 
 #' @return theme to add to ggtern plots
+#' @param ... additional arguments to pass
 #' @export
 #' 
 #' @examples 
@@ -14,8 +15,8 @@
 #'   labs(x = "S", y = "I", z = "R",
 #'        color = "Gender") +
 #'        theme_sir()
-theme_sir <- function(){
-  ggtern::theme_bw() +
+theme_sir <- function(...){
+  ggtern::theme_bw(...) +
     ggtern::theme_hideticks() +
     ggtern::theme_showarrows() 
 }
