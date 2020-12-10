@@ -1,6 +1,3 @@
-% To remove when JSS.cls is fixed
-% https://github.com/rstudio/rticles/issues/329
-\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -12,17 +9,26 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin Leroy\\Dept. of Statistics\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
 
-\Plainauthor{Shannon K. Gallagher, Benjamin Leroy}
-\Plaintitle{Time invariant analysis of epidemics with \pkg{EpiCompare}}
+\Plainauthor{Shannon K. Gallagher, Benjamin LeRoy}
+\Plaintitle{Time invariant analysis of epidemics with EpiCompare}
 \Shorttitle{\pkg{EpiCompare}}
 
 \Abstract{
-The abstract of the article.
+We present \pkg{EpiCompare}, an \proglang{R} package that suppliments
+and enhance current infectious disease modeling analysis pipelines as
+well as to encourage comparisons across these pipelines. A major
+contribution of this work is the set of novel \textit{time-invariate}
+tools for model and epidemic comparisons - including time-invariate
+prediction bands. \pkg{EpiCompare} encorporates \proglang{R}'s
+\textit{tidy} coding style to aid it rapid and easy use. This paper
+provides an overview of both the tools in and intuition behind
+\pkg{EpiCompare} and a thorough demonstrating of the tools through a
+detailed example of a full data analysis pipeline.
 }
 
 \Keywords{keywords, not capitalized, \proglang{Java}}
@@ -39,22 +45,21 @@ The abstract of the article.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
-      Benjamin Leroy\\
-    Dept. of Statistics\\
-Carnegie Mellon University\\
+      Benjamin LeRoy\\
+    Dept. of Statistics \& Data Science\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -68,13 +73,97 @@ Pittsburgh, PA 15213\\
 
 \begin{document}
 
-\section{Introduction}\label{sec:intro}
+\section[Intro]{Introduction}\label{sec:intro}
+
+The recent (and currently on-going) COVID-19 global epidemic has
+galvanized public interest in understanding more about infectious
+disease modeling highlighted the usefulness of research in the area of
+infectious disease epidemiology. Infectious disease models typically
+attempt to do one or more of the following: 1) predict the spread of
+current and future epidemics
+\citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and
+current epidemics to increase scientific knowledge
+\citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or
+project epidemic scenarios under pre-specified parameters
+\citep[e.g. ...][]{}. The COVID-19 epidemic highlights how all three
+goals are important both separately and taken as a whole. Infectious
+diseases inflict enormous burdens on the world: millions of lives lost
+and trillions of dollars spent yearly. Correctly analyzing and
+addressing these issues aids in prevention and mitigation of future
+outbreaks.
+
+The current epidemic of COVID-19 also highlights that these models are
+just one piece of the overall analysis pipeline. University based
+resources like John Hopkin's and government numerical dashboards (across
+all levels of government) during the COVID-19 epidemic remind us that
+descriptive statistics and visualization can be a important first step
+in the process (multiple \cite{}?).\} Still, rightly so, a large amount
+of theoretical work goes into modeling epidemics, with different models
+focusing at the individual / agent level, network structure or just
+aggregate flows (review paper \cite{}?). All placing individuals /
+proportions of the populations into different states (e.g.~suspectible,
+exposed, infected, recovered, etc.). With all these models, review and
+comparison papers in the literature and through MIDAS (Models of
+Infectious Disease Agent Study) Control Center helps the individual
+practitioner decide the correct approach.
+
+At the same time, analysis packages often only address a portion of the
+analysis pipeline. Modeling tools often don't provide easy ways to
+compare and assess their models on new data. Moreover, exploring and
+modeling epidemics require transforming and \textit{tidying} data in
+different ways. To fill these gaps, we present our our \proglang{R}
+package \pkg{EpiCompare}. Our package's primary focus is to aid and
+advance research in the area of comparison and assessment of epidemic \&
+epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the
+data analysis pipeline of infectious diseases as 1) data pre-processing,
+2) exploratory data analysis (EDA), 3) modeling and simulating, 4)
+post-processing, and 5) comparison and assessment; where each previous
+part of the pipeline influences the next. \pkg{EpiCompare} provides
+tools to aids practitioners in all areas of this pipeline.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width = 1\textwidth]{images/pipeline1.png}
+    \caption{An idealized epidemiological data analysis pipeline.}
+    \label{fig:pipeline}
+\end{figure}
+
+This package also emphasizes the value of approach epidemics in a
+\textit{time-invariant} way, not constrained to things like a specific
+time scale, or initial date of the first infection. Although epidemics
+are by definition a process that evolves over time, epidemics, including
+the recent COVID-19, often need to be compared in a time-invariant way
+to understand the processes at play. Additionally, many tools to examine
+the quantity of the population in each state along the infection process
+(for example: quantity of suspectible vs infected vs recovered
+individuals) don't always as intelligently capture the natural
+connections between the proportion of individuals in these states. Tools
+in \pkg{EpiCompare} attempt to give the user the ability to extend their
+toolkit to evaluate epidemics to also include time-invariant approaches.
+
+This paper is broken up into the following sections, section
+\ref{sec:time-invariant} motivates and showcases tools of time-invariant
+analysis, section \ref{sec:overview} presents an outline of how
+\pkg{EpiCompare} aids a practitioner in every step of the pipeline and
+section \ref{sec:tour} provides a thorough demonstrating of the tools
+through a detailed example of a full data analysis pipeline.
+
+SHANNON: I THINK JUST INCLUDING LOTS OF LITERATURE IN INTRO + ETC.
+INSTEAD OF HAVING A LITERATURE REVIEW IS BETTER.
+
+\section[Time-invariant]{Motivation and tools for time-invariant
+analysis}\label{sec:time-invariant}
+
+SHANNON: I FEEL LIKE WE CAN JUST CLEAN UP TO ORIGINAL SECTION AND PUT IT
+BACK IN HERE
+
+\section[Package overview]{Package tool overview}\label{sec:overview}
+
+\hypertarget{rmd-code-formatting-info}{%
+\subsection{RMD Code formatting info}\label{rmd-code-formatting-info}}
 
 This is the Section \ref{sec:intro}. This template demonstrates some of
 the basic LaTeX that you need to know to create a JSS article.
-
-\hypertarget{code-formatting}{%
-\subsection{Code formatting}\label{code-formatting}}
 
 In general, don't use Markdown, but use the more precise LaTeX commands
 instead:
@@ -93,7 +182,7 @@ If you want to use LaTeX commands in headers, you need to provide a
 \texttt{short-title} attribute. You can also provide a custom identifier
 if necessary. See the header of Section \ref{r-code} for example.
 
-\section[R code]{\proglang{R} code}\label{r-code}
+\subsection[R code]{RMD \proglang{R} code}\label{r-code}
 
 Can be inserted in regular R markdown blocks.
 
@@ -337,12 +426,11 @@ number of individuals in each state at the previous time step and a
 matrix of transition probabilities. For example
 
 \begin{CodeChunk}
-\begin{CodeOutput}
-  S                          I                     R          
-S "X0 * (1 - X1 * par1 / N)" "X0 * X1  * par1 / N" "0"        
-I "0"                        "X1 * (1 - par2)"     "par2 * X1"
-R "0"                        "0"                   "X2"       
-\end{CodeOutput}
+\begin{CodeInput}
+R> trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
++                   "0", "X1 * (1 - par2)", "par2 * X1",
++                   "0", "0", "X2"), byrow = TRUE, nrow = 3)
+\end{CodeInput}
 \end{CodeChunk}
 
 \begin{CodeChunk}
@@ -415,7 +503,8 @@ tidy-style data frame.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> fortified_net <- fortify_aggregate(epimodel_sir, states = c("s.num", "i.num", "r.num")) %>%
+R> fortified_net <- fortify_aggregate(epimodel_sir, 
++                                    states = c("s.num", "i.num", "r.num")) %>%
 +   mutate(Type = "EpiModel SIR",
 +          sim = as.numeric(gsub("sim", "", sim)))
 \end{CodeInput}
@@ -461,11 +550,11 @@ R> g +   geom_path(data = both_models %>% filter(t !=0),
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-17-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-16-1} 
 
 }
 
-\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-17}
+\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-16}
 \end{figure}
 \end{CodeChunk}
 
@@ -490,3 +579,4 @@ BAND THINGS.
 
 
 \end{document}
+

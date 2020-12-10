@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -17,6 +17,35 @@ Becker AD, Birger RB, Teillant A, Gastanaduy PA, Wallace GS, Grenfell BT
   hotspots in the context of cross-scale dynamics.}
 \newblock \emph{Proceedings of the National Academy of Sciences},
   \textbf{113}(51), 14595--14600.
+
+\bibitem[{Biggerstaff \emph{et~al.}(2016)Biggerstaff, Alper, Dredze, Fox, Fung,
+  Hickmann, Lewis, Rosenfeld, Shaman, Tsou, Velardi, Vespignani, Finelli,
+  Chandra, Kaup, Krishnan, Madhavan, Markar, Pashley, Paul, Meyers, Eggo,
+  Henderson, Ramakrishnan, Scott, Singh, Srinivasan, Bakach, Hao, Schaible,
+  Sexton, {Del Valle}, Deshpande, Fairchild, Generous, Priedhorsky, Hickman,
+  Hyman, Brooks, Farrow, Hyun, Tibshirani, Yang, Allen, Aslam, Nagel, Stilo,
+  Basagni, Zhang, Perra, Chakraborty, Butler, Khadivi, Ramakrishnan, Chen,
+  Barrett, Bisset, Eubank, {Anil Kumar}, Laskowski, Lum, Marathe, Aman,
+  Brownstein, Goldstein, Lipsitch, Mekaru, Nsoesie, Gesualdo, Tozzi,
+  Broniatowski, Karspeck, Tse, Ying, Gambhir, and Scarpino}]{Biggerstaff2016}
+Biggerstaff M, Alper D, Dredze M, Fox S, Fung ICH, Hickmann KS, Lewis B,
+  Rosenfeld R, Shaman J, Tsou MH, Velardi P, Vespignani A, Finelli L, Chandra
+  P, Kaup H, Krishnan R, Madhavan S, Markar A, Pashley B, Paul M, Meyers LA,
+  Eggo R, Henderson J, Ramakrishnan A, Scott J, Singh B, Srinivasan R, Bakach
+  I, Hao Y, Schaible BJ, Sexton JK, {Del Valle} SY, Deshpande A, Fairchild G,
+  Generous N, Priedhorsky R, Hickman KS, Hyman JM, Brooks L, Farrow D, Hyun S,
+  Tibshirani RJ, Yang W, Allen C, Aslam A, Nagel A, Stilo G, Basagni S, Zhang
+  Q, Perra N, Chakraborty P, Butler P, Khadivi P, Ramakrishnan N, Chen J,
+  Barrett C, Bisset K, Eubank S, {Anil Kumar} VS, Laskowski K, Lum K, Marathe
+  M, Aman S, Brownstein JS, Goldstein E, Lipsitch M, Mekaru SR, Nsoesie EO,
+  Gesualdo F, Tozzi AE, Broniatowski D, Karspeck A, Tse ZTH, Ying Y, Gambhir M,
+  Scarpino S (2016).
+\newblock \enquote{{Results from the centers for disease control and
+  prevention's predict the 2013-2014 Influenza Season Challenge}.}
+\newblock \emph{BMC Infectious Diseases}, \textbf{16}(1), 1--10.
+\newblock ISSN 14712334.
+\newblock \doi{10.1186/s12879-016-1669-x}.
+\newblock \urlprefix\url{http://dx.doi.org/10.1186/s12879-016-1669-x}.
 
 \bibitem[{Britton \emph{et~al.}(2011)Britton, Kypraios, and
   O'Neill}]{britton2011}
