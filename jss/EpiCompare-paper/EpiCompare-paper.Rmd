@@ -50,7 +50,9 @@ header-includes:
   - \usepackage{multirow}
   - \usepackage{wrapfig}
   - \usepackage{float}
+  - \usepackage{xcolor}
 ---
+
 
 
 
@@ -66,13 +68,18 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
 
 ```
 
+\newcommand{\shannon}[1]{\textcolor{orange}{#1}}
+\newcommand{\ben}[1]{\textcolor{violet}{#1}}
+
+\newtheorem{theorem}{Theorem}
+
 
 # Introduction {short-title="Intro" #sec:intro}
 
-The recent (and currently on-going) COVID-19 global epidemic has galvanized public interest in understanding more about infectious disease modeling highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g. ...][]{}. The COVID-19 epidemic highlights how all three goals are important both separately and taken as a whole.  Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly.  Correctly analyzing and addressing these issues aids in prevention and mitigation of future outbreaks.
+The recent (and currently on-going) COVID-19 global pandemic has galvanized public interest in understanding more about infectious disease modeling and has highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g. ...][]{}. The COVID-19 pandemic highlights how all three goals are important both separately and taken as a whole.  Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly.  Correctly analyzing and addressing these issues aids in prevention and mitigation of future outbreaks. \shannon{really like this paragraph}
 
 
-The current epidemic of COVID-19 also highlights that these models are just one piece of the overall analysis pipeline. University based resources like John Hopkin's and government numerical dashboards (across all levels of government) during the COVID-19 epidemic remind us that descriptive statistics and visualization can be a important first step in the process (multiple \cite{}?).} Still, rightly so, a large amount of theoretical work goes into modeling epidemics, with different models focusing at the individual / agent level, network structure or just aggregate flows (review paper \cite{}?). All placing individuals / proportions of the populations into different states (e.g. suspectible, exposed, infected, recovered, etc.). With all these models, review and comparison papers in the literature and through MIDAS (Models of Infectious Disease Agent Study) Control Center helps the individual practitioner decide the correct approach. 
+The current epidemic of COVID-19 also highlights that infectious disease  models are only one piece of the overall analysis pipeline. University based resources like John Hopkin's and government numerical dashboards (across all levels of government) during the COVID-19 epidemic remind us that descriptive statistics and visualization can be a important first step in the process (multiple \cite{}?).} \shannon{add comment about NYT or something} Still, rightly so, a large amount of theoretical work goes into modeling epidemics, with different models focusing at the individual / agent level, network structure or just aggregate flows (review paper \cite{}?). All placing individuals / proportions of the populations into different states (e.g. suspectible, exposed, infected, recovered, etc.). With all these models, review and comparison papers in the literature and through MIDAS (Models of Infectious Disease Agent Study) Control Center helps the individual practitioner decide the correct approach. \shannon{along with expertise from healthcare professionals...}
 
 At the same time, analysis packages often only address a portion of the analysis pipeline. Modeling tools often don't provide easy ways to compare and assess their models on new data. Moreover, exploring and modeling epidemics require transforming and \textit{tidying} data in different ways. To fill these gaps, we present our our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus is to aid and advance research in the area of comparison and assessment of epidemic \& epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases  as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. \pkg{EpiCompare} provides tools to aids practitioners in all areas of this pipeline.
 
@@ -83,7 +90,7 @@ At the same time, analysis packages often only address a portion of the analysis
     \label{fig:pipeline}
 \end{figure}
 
-This package also emphasizes the value of approach epidemics in a \textit{time-invariant} way, not constrained to things like a specific time scale, or initial date of the first infection. Although epidemics are by definition a process that evolves over time, epidemics, including the recent COVID-19, often need to be compared in a time-invariant way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of suspectible vs infected vs recovered individuals) don't always as intelligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-invariant approaches. 
+This package also emphasizes the value of approach epidemics in a \textit{time-invariant} way, not constrained to things like a specific time scale, or initial date of the first infection. Although epidemics are by definition a process that evolves over time, epidemics, including the recent COVID-19, often need to be compared in a time-invariant way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of suspectible vs infected vs recovered individuals) don't always as intelligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-invariant approaches. The goal of \pkg{EpiCompare} is not to supplant existing infectious disease modeling tools and software but, rather, is a concerted effort to create standard and fair comparisons among models developed for disease outbreaks and outbreak data. \shannon{flesh out time invariance introduction to better explain to non-experts what we mean.  perhaps mention R0}
 
 This paper is broken up into the following sections, section \ref{sec:time-invariant} motivates and showcases tools of time-invariant analysis,  section \ref{sec:overview} presents an outline of how \pkg{EpiCompare} aids a practitioner in every step of the pipeline and section \ref{sec:tour} provides a thorough demonstrating of the tools through a detailed example of a full data analysis pipeline.
 
@@ -91,7 +98,8 @@ SHANNON: I THINK JUST INCLUDING LOTS OF LITERATURE IN INTRO + ETC. INSTEAD OF HA
 
 # Motivation and tools for time-invariant analysis {short-title="Time-invariant" #sec:time-invariant}
 
-SHANNON: I FEEL LIKE WE CAN JUST CLEAN UP TO ORIGINAL SECTION AND PUT IT BACK IN HERE
+
+
 
 # Package tool overview {short-title="Package overview" #sec:overview}
 
@@ -127,7 +135,7 @@ In this section, we highlight a number of the functionalities available in \prog
 
 \subsection{Data and exploratory analysis}
 
-We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}   Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
+We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  The Hagelloch data includes a rich set of features including household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}.   Because of these rich features, this data set has been an ideal testing ground  methodology in infectious disease epidemiology and is used in work by \cite{Neal2004,britton2011,groendyke2012,becker2016}.
 
 
 
@@ -209,12 +217,12 @@ ggplot(data = plot_df,
 ```
 
 
-```{r}
+```{r echo = FALSE, results = 'hide'}
 with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
 
 ```
 
-The real power of \code{agents_to_aggregate()} lies in its ability to aggregate over any number of pre-specified states.  For example, the Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the time of infection and recovery, respectively of each individual.  We can then plot the SIR values through a time-invariant lens  using \pkg{ggplot2} functions or with our custom \code{geom}, \code{geom_aggregate}, which takes the original agent data as input  (Fig. \ref{fig:hag-tern-raw}).
+The real power of \code{agents_to_aggregate()} lies in its ability to aggregate over any number of pre-specified states.  For example, the Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the time of infection and recovery, respectively of each individual.  We can then plot the SIR values through a time-invariant lens using \pkg{ggplot2} and \pkg{ggtern} functions (as shown in Fig. \ref{fig:hag-tern-raw}) or with our custom \code{geom}, \code{geom_aggregate}, which takes the raw agent data as input.
 
 ```{r fig.cap = "\\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis)."}
 hagelloch_sir <- hagelloch_raw %>%
@@ -244,11 +252,11 @@ hagelloch_raw %>%
   facet_wrap(~CL)
 ```
 
-Along with multiple epidemic states, the function \code{agents_to_aggregate} can also be extended to populations with vital dynamics (e.g. birth and death) and examples of this are shown in the package vignette.  In summary, \code{agents_to_aggregate()} is a multi-purpose workhorse that be leveraged to convert individual level records into aggregate information that may be more useful for some forms of epidemic modeling such as compartment modeling.
+Along with multiple epidemic states, the function \code{agents_to_aggregate} can also be extended to populations with vital dynamics (e.g. birth and death) and examples of this are shown in the package vignette.  In summary, \code{agents_to_aggregate()} is a multi-purpose workhorse that may be leveraged to convert individual level records into aggregate information that may be more useful for some forms of epidemic modeling such as compartment modeling.
 
 Up to this point, we have used \pkg{EpiCompare} in the context of observed data.  We also want to compare statistical models, and \pkg{EpiCompare} aids in that process via a simple but dynamic individual-level data generator, conversion tools for popular epidemic model packages, and model assessments.  We demonstrate an example here.
 
-We first try to model the Hagelloch data with an SIR model (see Eq. \ref{eq:sir}).  In our vignette, we show how to fit a stochastic model via maximum likelihood and simulate from the model with those best fit parameters.  Our function \code{simulate_agents()} generates individual level data according to discrete multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example
+We first try to model the Hagelloch data with an SIR model (see Eq. \ref{eq:sir}).  In our vignette, we show how to fit a stochastic model via maximum likelihood and simulate from the model with those best fit parameters.  Our function \code{simulate_agents()} generates individual level data according to discrete multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example, the below code generates 100 simulations of an outbreak of a diseease with one initial infector in a population of $n= 188$ individuals.
 
 
 ```{r}
@@ -285,7 +293,7 @@ agg_model <- agents %>% group_by(sim) %>%
   agents_to_aggregate(states = c(I, R)) %>%
   mutate(Type = "Simple SIR")
 ```
-The result of our simulation is the object \code{agents} which is a `r nrow(agents)` $\times$ `r ncol(agents)` which details the time of entry into the $S$, $I$, and $R$ states for a given simulation.  Before we examine the results of this simple SIR model, we will also examine another, more sophisticated SIR model, this time from the package \pkg{EpiModel}.  Briefly, this model fits a contact network, where the class of the student is a covariate and then simulates a SIR-epidemic on that network.
+The result of our simulation is the object \code{agents} which is a `r nrow(agents)` $\times$ `r ncol(agents)` which details the time of entry into the $S$, $I$, and $R$ states for a given simulation.  Before we examine the results of this simple SIR model, we will also examine another, more sophisticated SIR model, this time from the package \pkg{EpiModel}.  Briefly, this model first fits a contact network to the set of indivduals, where the class of the student is a covariate.  The model then simulates a SIR-epidemic on that network.
 
 ```{r cache = TRUE, results = 'hide'}
 library(EpiModel)
