@@ -187,11 +187,18 @@ dimnames.tidy_dist_mat <- function(x){
 }
 
 
-#' Fomat tidy_dist_mat for printing
+#' Format tidy_dist_mat for printing
 #'
-#' @param x tid_dist_mat
-#' @param ... additional parameter (e.g. \code{digits}) - tells us the number of 
-#' significant digits to present for the distances
+#' @param x tidy_dist_mat
+#' @param ... additional parameters. Currently we allow / use:
+#' \itemize{
+#'   \item{\code{digit}: }{integer, tells us the number of significant digits to 
+#'   present for the distances}
+#'   \item{\code{more_rows:} }{boolean, tells us if more rows exist than 
+#'   presented}
+#'   \item{\code{more_cols:} }{boolean, tells us if more columns exist than 
+#'   presented}
+#' }
 #'
 #' @return format ready information
 #' @export
@@ -289,6 +296,13 @@ print.tidy_dist_mat <- function(x, ..., n = NULL){
 }
 
 
+#' convert \code{tidy_dist_mat} to \code{matrix}
+#'
+#' @param x \code{tidy_dist_mat} object
+#'
+#' @return matrix representation (without column information)
+#' @export
+#'
 as.matrix.tidy_dist_mat <- function(x){
   inner <- unclass(x)
   attr(inner, "rownames_df") <- NULL
@@ -296,51 +310,39 @@ as.matrix.tidy_dist_mat <- function(x){
   
   return(inner)
 }
+
+#' @rdname as.matrix.tidy_dist_mat
+#' @export
 as.array.tidy_dist_mat <- as.matrix.tidy_dist_mat
 
 
 
-process_df_index_old <- function(x, index, margin = 1){
-  # checking and processing index
-  if (margin == 1){
-    info_names <- rownames(x)
-    index_name <- "i"
-    margin_name <- "rownames"
-  } else if (margin == 2) {
-    info_names <- colnames(x)
-    index_name <- "j"
-    margin_name <- "colnames"
-    
-  } else {
-    stop("margin needs to be either 1 or 2.")
-  }
-    assertthat::assert_that(all(names(info_names) == names(index)),
-                            msg =  sprintf(
-                              paste("%s needs to be a numeric (integer)",
-                                    "vector or a data.frame of the same",
-                                    "style as x's %s"), 
-                              index_name, margin_name))
-    
-    rnames2 <- info_names %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
-    index_check <- index %>% dplyr::left_join(rnames2, by = names(index))
-    
-    assertthat::assert_that(!any(is.null(index_check["CAPTURE CORRECT"])),
-                            msg = sprintf(paste("some of %s's rows don't",
-                                                "appear in %s(x)"),
-                                          index_name, margin_name))
-    
-    index2 <- index %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
-    which_rname <- info_names %>% dplyr::left_join(index2, names(info_names))
-    index <- which(!is.na(which_rname["CAPTURE CORRECT"]))
-    return(index)
-}
-
-
+#' internal function to get the indices of the \code{tidy_dist_mat} related to a data frame.
+#'
+#' @param x \code{tidy_dist_mat} object
+#' @param index data.frame style index related to \code{x}
+#' @param margin scalar representing if \code{index} is related to rows or 
+#' columns of \code{x}. 1 = row, 2 = column.
+#'
+#' @return index vector
 process_df_index <- function(x, index, margin = 1){
   out <- which_index.tidy_dist_mat(x, index, margin = margin)
   return(out)
 }
 
+
+#' Extract a part of a \code{tidy_dist_mat} object
+#'
+#' @param x \code{tidy_dist_mat} object
+#' @param i indices specifying elements to extract or replace. Indices are 
+#' numeric or data frames related to \code{x}'s row information. 
+#' @param j indices specifying elements to extract or replace. Indices are 
+#' numeric or data frames related to \code{x}'s column information. If no 
+#' \code{j} is provided, then \code{j=i} and a square matrix is returned (if 
+#' \code{x}'s structure follows correct assumptions).
+#'
+#' @return a new \code{tidy_dist_mat} object
+#' @export
 `[.tidy_dist_mat` <- function(x, i, j = i){
   
   # checking and processing i
@@ -371,35 +373,69 @@ process_df_index <- function(x, index, margin = 1){
                 colnames_df = colnames_new)
 }
 
+#' characterizes that we will subset by the indices *not* in said data.frame
+#'
+#' @param x data.frame like object with index structure associated with a 
+#' \code{tidy_dist_mat}'s rownames or colnames.
+#'
+#' @return a new \code{not_df} object
+#' @export
 not <- function(x){
   UseMethod("not")
 }
 
+#' @rdname not
+#' @export
 not.data.frame <- function(x){
   df2 <- x
   class(df2) <- c("not_df", class(x))
   return(df2)
 }
 
+#' removes the \code{not}() operation (that makes a df a \code{not_df})
+#'
+#' @param x \code{not_df} class object
+#'
+#' @return x without the \code{not_df} class associated with it
+#' @export
 reverse_not_df <- function(x){
   UseMethod("reverse_not_df")
 }
 
+#' @rdname reverse_not_df
+#' @export
 reverse_not_df.not_df <- function(x){
   df2 <- x
   class(df2) <- class(x)[class(x) != "not_df"]
   return(df2)
 }
 
+
+#' @rdname not
+#' @export
 is.not_df <- function(x){
   inherits(x, "not_df")
 }
 
+#' find the index of a \code{tidy_dist_mat} relative to a data.frame 
+#'
+#' probably more of an internal function
+#'
+#' @param x \code{tidy_dist_mat} object
+#' @param index data.frame index associated with \code{x}'s colnames or
+#' rownames (related to \code{margin}). If \code{which_not_index} then this 
+#' is which associated information *not* to include.
+#' @param margin scalar representing if \code{index} is related to rows or 
+#' columns of \code{x}. 1 = row, 2 = column.
+#'
+#' @return
+#' @export
 which_index <- function(x, index, margin = 1){
   UseMethod("which_index")
 }
 
-# index is df
+#' @rdname which_index
+#' @export
 which_index.tidy_dist_mat <- function(x, index,  margin = 1){
   if (is.not_df(index)){
     index <- reverse_not_df(index)
@@ -442,10 +478,14 @@ which_index.tidy_dist_mat <- function(x, index,  margin = 1){
   return(index)
 }
 
+#' @rdname which_index
+#' @export
 which_not_index <- function(x, index, margin = 1){
   UseMethod("which_not_index")
 }
 
+#' @rdname which_index
+#' @export
 which_not_index.tidy_dist_mat <- function(x, index, margin = 1){
   if (is.not_df(index)){
     index <- reverse_not_df(index)
@@ -492,30 +532,18 @@ which_not_index.tidy_dist_mat <- function(x, index, margin = 1){
   
 }
 
-if (FALSE){
-testthat::test_that("[.tidy_dist_mat", {
-  x_mat <- as.matrix(dist(rnorm(5))) 
-  x <- x_mat %>%
-    tidy_dist_mat()
-  
-  testthat::expect_equal(x[1:3], x_mat[1:3,1:3] %>% tidy_dist_mat())
-  testthat::expect_equal(x[2:4], x_mat[2:4,2:4] %>% 
-                           tidy_dist_mat(rownames_df = data.frame(id = 2:4),
-                                         colnames_df =  data.frame(id = 2:4)))
-  testthat::expect_equal(x[2:3,5], x_mat[2:3,5, drop = F] %>% 
-                           tidy_dist_mat(rownames_df = data.frame(id = 2:3),
-                                         colnames_df = data.frame(id = 5)))
-  testthat::expect_equal(x[5,2:3], x_mat[5,2:3, drop = F] %>% 
-                           tidy_dist_mat(rownames_df = data.frame(id = 5),
-                                         colnames_df = data.frame(id = 2:3)))
-  
-  testthat::expect_equal(x[-5,2:3], x_mat[-5,2:3, drop = F] %>% 
-                           tidy_dist_mat(rownames_df = data.frame(id = 1:4),
-                                         colnames_df = data.frame(id = 2:3)))
-})
 
-}
 
+
+#' Return the First or Last Parts of a \code{tidy_dist_mat} (symmetric grab) 
+#'
+#' @param x symmetric (in shape) \code{tidy_dist_mat} object
+#' @param n an integer of value bounded by the maximum rows \code{x}.
+#' @param ... arguments to be passed to or from other methods (currently none
+#' expected / used).
+#'
+#' @return \code{x[1:n]} or \code{x[(nrow(x)-n):nrow(x)]}
+#' @export
 head.tidy_dist_mat <- function(x, n = 6L, ...){
   assertthat::assert_that(ncol(x) == nrow(x),
                           msg = paste("currently only able to to produce the",
@@ -527,7 +555,8 @@ head.tidy_dist_mat <- function(x, n = 6L, ...){
 }
 
 
-
+#' @rdname head.tidy_dist_mat
+#' @export
 tail.tidy_dist_mat <- function(x, n = 6L, ...){
   assertthat::assert_that(ncol(x) == nrow(x),
                           msg = paste("currently only able to to produce the",

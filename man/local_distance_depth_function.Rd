@@ -6,14 +6,21 @@
 \alias{local_distance_depth_function.tidy_dist_mat}
 \title{Localized version of Geenens & Nieto-Reyes functional distance-based depth}
 \usage{
-local_distance_depth_function(dist_mat, tau = Inf, df_out = "auto")
+local_distance_depth_function(x, x_new = NULL, tau = Inf, df_out = "auto")
 
-\method{local_distance_depth_function}{matrix}(dist_mat, tau = Inf, df_out = F)
+\method{local_distance_depth_function}{matrix}(x, x_new = NULL, tau = Inf, df_out = F)
 
-\method{local_distance_depth_function}{tidy_dist_mat}(dist_mat, tau = Inf, df_out = T)
+\method{local_distance_depth_function}{tidy_dist_mat}(x, x_new = NULL, tau = Inf, df_out = T)
 }
 \arguments{
-\item{dist_mat}{a n x n square positive symmetric matrix or a tidy_dist_mat}
+\item{x}{a n x n square positive symmetric matrix or a tidy_dist_mat}
+
+\item{x_new}{a n_new x n matrix or tidy_dist_mat where the rows correspond to
+new observations, the columns correspond to points in \code{x} (if \code{x} 
+and \code{x_new} are matrices then they need to be corrected ordered). If 
+this value is not \code{NULL} (default is \code{NULL}) then localized depth
+vector will be calculated for these observations relative to observations 
+defined with \code{x} and \code{x_new}'s columns.}
 
 \item{tau}{localizing parameter (default is Inf) Can either by a standard
 numerical value or a string as a percentage (e.g. "20\%")}

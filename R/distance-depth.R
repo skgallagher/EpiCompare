@@ -358,7 +358,13 @@ distance_depth_function.matrix <- function(x, x_new = NULL, df_out = F){
     }
     return(depth_out)
   } else{
+    
+    assertthat::assert_that(ncol(x_new) == ncol(x),
+                            msg = paste("x_new should have the same number of",
+                                        "columns as x"))
+    
     N <- nrow(x_new)
+    N_x <- nrow(x)
     rnames <- rownames(x_new)
     
     depth <- rep(0, N)
@@ -368,14 +374,14 @@ distance_depth_function.matrix <- function(x, x_new = NULL, df_out = F){
       obs_column <- x_new[obs_index, 1:nrow(x)]
       obs_row <- obs_column # assumes symmetry...
       
-      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
-      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
-                                      nrow = N - 1)
-      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
-                                      nrow = N - 1, byrow = T)
+      obs_combo_array <- array(0, dim = c(N_x, N_x, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N_x),
+                                      nrow = N_x)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N_x),
+                                      nrow = N_x, byrow = T)
       
-      max_matrix <- sapply(1:(N - 1), function(row_i) {
-        sapply(1:(N - 1), function(col_i) {
+      max_matrix <- sapply(1:(N_x), function(row_i) {
+        sapply(1:(N_x), function(col_i) {
           max(obs_combo_array[row_i, col_i, 1:2])
         })
       }) %>% t
@@ -454,24 +460,37 @@ distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL, df_out = T){
     
     return(depth_out)
   } else {
+    
+    assertthat::assert_that(ncol(x_new) == ncol(x),
+                            msg = paste("x_new should have the same number of",
+                                        "columns as x"))
+    
+    assertthat::assert_that(nrow(colnames(x_new) %>%
+                              inner_join(colnames(x), 
+                                         by = names(colnames(x)))) ==
+                              nrow(colnames(x_new)),
+                            msg = paste("x_new's colname's columns should be",
+                                        "the same as x's colname's columns."))
+    
     N <- nrow(x_new)
+    N_x <- nrow(x)
     rnames <- rownames(x_new) # data.frame
     
     depth <- rep(0, N)
-    
+
     for (obs_index in 1:N) {
       sub_matrix <- x
       obs_column <- x_new[obs_index,1:nrow(x)]
       obs_row <- obs_column # assumes symmetry...
       
-      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
-      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
-                                      nrow = N - 1)
-      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
-                                      nrow = N - 1, byrow = T)
+      obs_combo_array <- array(0, dim = c(N_x, N_x, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N_x),
+                                      nrow = N_x)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N_x),
+                                      nrow = N_x, byrow = T)
       
-      max_matrix <- sapply(1:(N - 1), function(row_i) {
-        sapply(1:(N - 1), function(col_i) {
+      max_matrix <- sapply(1:(N_x), function(row_i) {
+        sapply(1:(N_x), function(col_i) {
           max(obs_combo_array[row_i, col_i, 1:2])
         })
       }) %>% t
@@ -557,13 +576,13 @@ if (r_new_interface()){
 #' ldd_vec2 <- local_distance_depth_function(dist_mat, tau = 1.5) # c(1,0,0)
 #' ldd_vec3 <- local_distance_depth_function(dist_mat, tau = 1) # c(0,0,0)
 #' ldd_vec <- local_distance_depth_function(dist_mat, tau = .1) # c(0,0,0)
-local_distance_depth_function <- function(x, x_new, tau = Inf, df_out = "auto"){
+local_distance_depth_function <- function(x, x_new = NULL, tau = Inf, df_out = "auto"){
   UseMethod("local_distance_depth_function")
 }
 
 #' @rdname local_distance_depth_function
 #' @export
-local_distance_depth_function.matrix <- function(x, x_new, tau = Inf, 
+local_distance_depth_function.matrix <- function(x, x_new = NULL, tau = Inf, 
                                                  df_out = F){
   if (df_out == "auto"){
     df_out <- FALSE
@@ -630,6 +649,11 @@ local_distance_depth_function.matrix <- function(x, x_new, tau = Inf,
     
     return(depth_out)
   } else {
+    
+    assertthat::assert_that(ncol(x_new) == ncol(x),
+                            msg = paste("x_new should have the same number of",
+                                        "columns as x"))
+    
     N <- nrow(x_new)
     rnames <- rownames(x_new)
     
@@ -647,7 +671,7 @@ local_distance_depth_function.matrix <- function(x, x_new, tau = Inf,
         depth[obs_index] <- 0
       } else {
         sub_matrix <- x[keep_idx, keep_idx]
-        obs_column <- x[obs_index, keep_idx]
+        obs_column <- x_new[obs_index, keep_idx]
         obs_row <- obs_column
         
         obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
@@ -684,7 +708,7 @@ local_distance_depth_function.matrix <- function(x, x_new, tau = Inf,
 
 #' @rdname local_distance_depth_function
 #' @export
-local_distance_depth_function.tidy_dist_mat <- function(x, x_new,
+local_distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL,
                                                         tau = Inf, 
                                                         df_out = T){
   if (df_out == "auto"){
@@ -753,6 +777,18 @@ local_distance_depth_function.tidy_dist_mat <- function(x, x_new,
     
     return(depth_out)
   } else {
+    
+    assertthat::assert_that(ncol(x_new) == ncol(x),
+                            msg = paste("x_new should have the same number of",
+                                        "columns as x"))
+    
+    assertthat::assert_that(nrow(colnames(x_new) %>%
+                                   inner_join(colnames(x), 
+                                              by = names(colnames(x)))) ==
+                              nrow(colnames(x_new)),
+                            msg = paste("x_new's colname's columns should be",
+                                        "the same as x's colname's columns."))
+    
     N <- nrow(x_new)
     rnames <- rownames(x_new) # data.frame
     
@@ -762,7 +798,9 @@ local_distance_depth_function.tidy_dist_mat <- function(x, x_new,
       # effected by tau
       dist_to_obs = x_new[obs_index, 1:ncol(x_new)]
       keep_idx <- c(1:ncol(x_new))[dist_to_obs <= tau]
-      keep_idx_df <- colnames(x_new)[dist_to_obs <= tau,]
+      keep_idx_df <- colnames(x_new) %>%
+        tibble::tibble() %>% .[as.vector(dist_to_obs <= tau),] %>%
+        as.data.frame
       
       N_keep <- length(keep_idx)
       
@@ -770,7 +808,7 @@ local_distance_depth_function.tidy_dist_mat <- function(x, x_new,
         depth[obs_index] <- 0
       } else {
         sub_matrix <- x[keep_idx_df]
-        obs_column <- x[obs_index, keep_idx_df]
+        obs_column <- x_new[obs_index, keep_idx_df]
         obs_row <- obs_column
         
         obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))

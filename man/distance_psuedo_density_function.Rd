@@ -6,11 +6,11 @@
 \alias{distance_psuedo_density_function.tidy_dist_mat}
 \title{psuedo-density for objects with a distance between them}
 \usage{
-distance_psuedo_density_function(x, sigma = 1, df_out = "auto")
+distance_psuedo_density_function(x, x_new = NULL, sigma = 1, df_out = "auto")
 
-\method{distance_psuedo_density_function}{matrix}(x, sigma = 1, df_out = F)
+\method{distance_psuedo_density_function}{matrix}(x, x_new = NULL, sigma = 1, df_out = F)
 
-\method{distance_psuedo_density_function}{tidy_dist_mat}(x, sigma = 1, df_out = T)
+\method{distance_psuedo_density_function}{tidy_dist_mat}(x, x_new = NULL, sigma = 1, df_out = T)
 }
 \arguments{
 \item{x}{a n x n square positive symmetric matrix or a \code{tidy_dist_mat}}

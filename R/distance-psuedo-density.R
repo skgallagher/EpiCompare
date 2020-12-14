@@ -154,19 +154,3 @@ if (r_new_interface()){
 }
 
 
-
-
-group_identify <- function(dist_mat, threshold = stats::quantile(dist_mat, .2)){
-  
-  rnames <- rownames(dist_mat)
-  
-  binary_mat <- 1* dist_mat <= threshold
-  g <- igraph::graph.adjacency(binary_mat) 
-  clu <- igraph::components(g)
-  
-  membership <- clu$membership
-  names(membership) <- rnames
-  
-  return(membership)
-} 
-

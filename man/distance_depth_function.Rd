@@ -6,14 +6,21 @@
 \alias{distance_depth_function.tidy_dist_mat}
 \title{Geenens & Nieto-Reyes functional distance-based depth}
 \usage{
-distance_depth_function(dist_mat, df_out = "auto")
+distance_depth_function(x, x_new = NULL, df_out = "auto")
 
-\method{distance_depth_function}{matrix}(dist_mat, df_out = F)
+\method{distance_depth_function}{matrix}(x, x_new = NULL, df_out = F)
 
-\method{distance_depth_function}{tidy_dist_mat}(dist_mat, df_out = T)
+\method{distance_depth_function}{tidy_dist_mat}(x, x_new = NULL, df_out = T)
 }
 \arguments{
-\item{dist_mat}{a n x n square positive symmetric matrix or a tidy_dist_mat}
+\item{x}{a n x n square positive symmetric matrix or a tidy_dist_mat}
+
+\item{x_new}{a n_new x n matrix or tidy_dist_mat where the rows correspond to
+new observations, the columns correspond to points in \code{x} (if \code{x} 
+and \code{x_new} are matrices then they need to be corrected ordered). If 
+this value is not \code{NULL} (default is \code{NULL}) then the depth
+vector will be calculated for these observations relative to observations 
+defined with \code{x} and \code{x_new}'s columns.}
 
 \item{df_out}{indicates if one should return a data.frame our a vector,
 by default returns data.frame if dist_mat is a tidy_dist_mat, and a vector

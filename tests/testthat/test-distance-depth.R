@@ -239,6 +239,7 @@ test_that("test for distance_depth_function", {
 })
 
 test_that("test for distance_depth_function.matrix", {
+  # basic
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -249,6 +250,8 @@ test_that("test for distance_depth_function.matrix", {
   
   testthat::expect_equal(dd_vec, c(1,0,0))
   
+  
+  # errors (sym & pos def)
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ))
@@ -259,6 +262,45 @@ test_that("test for distance_depth_function.matrix", {
   testthat::expect_error(distance_depth_function(dist_mat_not_sym))
   testthat::expect_error(distance_depth_function(dist_mat_not_pos))
   
+  # x_new (individual)
+  depth_vec_ind <- rep(NA, 3)
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    dis_mat_x_new <- dist_mat[idx, -idx, drop = F]
+    
+    depth_vec_ind[idx] <- distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new)
+  }
+
+  testthat::expect_equal(depth_vec_ind, c(1,0,0))
+  
+  
+  # x_new (multiple of the same)
+  depth_vec_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    dis_mat_x_new <- rbind(dist_mat[idx, -idx, drop = F],
+                           dist_mat[idx, -idx, drop = F])
+    
+    depth_vec_ind_mat[idx, ] <- distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new)
+  }
+  
+  testthat::expect_equal(depth_vec_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2))
+  
+  # error in sizes 
+  testthat::expect_error(distance_depth_function(dist_mat, 
+                                                 x_new = dist_mat_x_new))
+  
+  # error in object type
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    dis_mat_x_new <- dist_mat[idx, -idx, drop = T]
+    # ^still needs to be a matrix shape
+                           
+    testthat::expect_error(distance_depth_function(x = dist_mat_small, 
+                                                   x_new = dis_mat_x_new))
+  }
 })
 
 
@@ -270,20 +312,152 @@ test_that("test for distance_depth_function.tidy_dist_mat (univariate)", {
                      byrow = TRUE)
   tidy_dm <- tidy_dist_mat(dist_mat)
   
-  # df_out = F
+  ##### df_out = F ---------------------------------
+  # just x
   dd_vec <- distance_depth_function(tidy_dm, df_out = F)
   
   sol1 <- c(1,0,0)
   names(sol1) <- as.character(1:3)
   testthat::expect_equal(dd_vec, sol1)
   
-  # df_out = T
+  
+  # x_new (individual)
+  depth_vec_ind <- c()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    depth_vec_ind <- c(depth_vec_ind,
+                            distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new,
+                                                  df_out = F))
+  }
+  
+  testthat::expect_equal(depth_vec_ind, sol1)
+  
+  
+  # x_new (multiple of the same)
+  depth_vec_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = colnames(dist_mat_small))
+                           
+    
+    depth_vec_ind_mat[idx, ] <- distance_depth_function(x = dist_mat_small, 
+                                                        x_new = dis_mat_x_new,
+                                                        df_out = F)
+  }
+  
+  # colnames error
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = data.frame(id = 4:5))
+    
+    
+    testthat::expect_error(distance_depth_function(x = dist_mat_small, 
+                                                        x_new = dis_mat_x_new,
+                                                        df_out = F))
+  }
+  
+  testthat::expect_equal(depth_vec_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2))
+  
+  # error in sizes 
+  testthat::expect_error(distance_depth_function(tidy_dm, 
+                                                 x_new = dist_mat_x_new,
+                                                 df_out = F))
+  
+  # error in object type
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    # ^still needs to be a matrix shape
+    
+    testthat::expect_error(distance_depth_function(x = tidy_dm, 
+                                                   x_new = dis_mat_x_new, 
+                                                   df_out = F))
+  }
+  
+  
+  ##### df_out = T --------------------------------------
+  # just x
   dd_df <- distance_depth_function(tidy_dm, df_out = T)
   
   sol2 <- data.frame(id = 1:3, depth = c(1,0,0))
   testthat::expect_equivalent(dd_df, sol2)
   
   
+  # x_new (individual)
+  depth_vec_ind_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    depth_vec_ind_df <- rbind(depth_vec_ind_df,
+                       distance_depth_function(x = dist_mat_small, 
+                                               x_new = dis_mat_x_new,
+                                               df_out = T))
+  }
+  
+  testthat::expect_equal(depth_vec_ind_df, sol2)
+  
+  
+  # x_new (multiple of the same)
+  depth_vec_mult_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    depth_vec_mult_df <- rbind(depth_vec_mult_df,
+                               distance_depth_function(x = dist_mat_small, 
+                                                        x_new = dis_mat_x_new,
+                                                        df_out = T))
+  }
+  
+  testthat::expect_equal(depth_vec_mult_df, 
+                         data.frame(id = rep(4:5, 3),
+                                    depth = rep(c(1,0,0), each = 2)))
+  
+  # error in sizes 
+  testthat::expect_error(distance_depth_function(tidy_dm, 
+                                                 x_new = dist_mat_x_new,
+                                                 df_out = T))
+  
+  # error in column names 
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = data.frame(id = 4:5))
+    
+    testthat::expect_error(distance_depth_function(x = dist_mat_small, 
+                                                   x_new = dis_mat_x_new,
+                                                   df_out = T))
+  }
+  
+  # error in object type
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    # ^still needs to be a matrix shape
+    
+    testthat::expect_error(distance_depth_function(x = tidy_dm, 
+                                                   x_new = dis_mat_x_new, 
+                                                   df_out = T))
+  }
+  
+  
+  #### general errors ----------------------------------
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -314,7 +488,8 @@ test_that("test for distance_depth_function.tidy_dist_mat (bivariate)", {
   
   
   
-  # df_out = F
+  # df_out = F -----------------------------------------
+  # x only
   dd_vec <- distance_depth_function(tidy_dm, df_out = F)
   
   sol1 <- c(1,0,0)
@@ -322,12 +497,148 @@ test_that("test for distance_depth_function.tidy_dist_mat (bivariate)", {
     dplyr::pull(.data$names)
   testthat::expect_equal(dd_vec, sol1)
   
-  # df_out = T
+  # x_new (individual)
+  depth_vec_ind <- c()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    depth_vec_ind <- c(depth_vec_ind,
+                       distance_depth_function(x = dist_mat_small, 
+                                               x_new = dis_mat_x_new,
+                                               df_out = F))
+  }
+  
+  testthat::expect_equal(depth_vec_ind, sol1)
+  
+  
+  # x_new (multiple of the same)
+  depth_vec_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    depth_vec_ind_mat[idx, ] <- distance_depth_function(x = dist_mat_small, 
+                                                        x_new = dis_mat_x_new,
+                                                        df_out = F)
+  }
+  testthat::expect_equal(depth_vec_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2))
+  
+  
+  # colname error
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = data.frame(id = 4:5))
+    
+    
+    testthat::expect_error(distance_depth_function(x = dist_mat_small, 
+                                                        x_new = dis_mat_x_new,
+                                                        df_out = F))
+  }
+  
+
+  # error in sizes 
+  testthat::expect_error(distance_depth_function(tidy_dm, 
+                                                 x_new = dist_mat_x_new,
+                                                 df_out = F))
+  
+  # error in object type
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    # ^still needs to be a matrix shape
+    
+    testthat::expect_error(distance_depth_function(x = tidy_dm, 
+                                                   x_new = dis_mat_x_new, 
+                                                   df_out = F))
+  }
+  
+  
+  
+  # df_out = T -----------------------------------------
+  # x only
   dd_df <- distance_depth_function(tidy_dm, df_out = T)
   
   sol2 <- rownames_df %>% dplyr::mutate(depth = c(1,0,0))
   testthat::expect_equivalent(dd_df, sol2)
   
+  # x_new (individual)
+  depth_vec_ind_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    depth_vec_ind_df <- rbind(depth_vec_ind_df,
+                              distance_depth_function(x = dist_mat_small, 
+                                                      x_new = dis_mat_x_new,
+                                                      df_out = T))
+  }
+  
+  testthat::expect_equal(depth_vec_ind_df, sol2)
+  
+  
+  # x_new (multiple of the same)
+  depth_vec_mult_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                             id2 = c("a","a")),
+                    colnames_df = colnames(dist_mat_small))
+    
+    depth_vec_mult_df <- rbind(depth_vec_mult_df,
+                               distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       df_out = T))
+  }
+  
+  testthat::expect_equal(depth_vec_mult_df, 
+                         data.frame(id = rep(4:5, 3),
+                                    id2 = rep("a"),
+                                    depth = rep(c(1,0,0), each = 2)))
+  
+  # error in sizes 
+  testthat::expect_error(distance_depth_function(tidy_dm, 
+                                                 x_new = dist_mat_x_new,
+                                                 df_out = T))
+  
+  # error in column names 
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                             id2 = c("a","a")),
+                    colnames_df = data.frame(id = 4:5,
+                                             id2 = c("a","a")))
+    
+    testthat::expect_error(distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       df_out = T))
+  }
+  
+  
+  # error in object type
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    # ^still needs to be a matrix shape
+    
+    testthat::expect_error(distance_depth_function(x = tidy_dm, 
+                                                   x_new = dis_mat_x_new, 
+                                                   df_out = T))
+  }
+  
+  
+  # general errors ------------------------------------
   
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
@@ -348,14 +659,14 @@ test_that("test for distance_depth_function.tidy_dist_mat (bivariate)", {
 
 
 test_that("test for local_distance_depth_function.matrix, df_out = F", {
+  # x only ----------------------------------
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
                      nrow = 3,
                      byrow = TRUE)
-  
-  
-  dd_vec <- local_distance_depth_function(dist_mat) # c(1,0,0)
+
+  dd_vec <- local_distance_depth_function(x = dist_mat) # c(1,0,0)
   
   ldd_vec1 <- local_distance_depth_function(dist_mat, tau = 2) # c(1,0,0)
   ldd_vec2 <- local_distance_depth_function(dist_mat, tau = 1.5) # c(1,0,0)
@@ -368,6 +679,81 @@ test_that("test for local_distance_depth_function.matrix, df_out = F", {
   testthat::expect_equal(ldd_vec3, c(0,0,0)) # works relative to S constraint (only 1 in each box)
   testthat::expect_equal(ldd_vec4, c(0,0,0)) # works relative to S constraint (only 0 in each box)
   
+  # x new ----------------------------------
+  
+  # ind only
+  dd_vec_ind <- rep(NA, 3)
+  ldd_vec1_ind <- rep(NA, 3)
+  ldd_vec2_ind <- rep(NA, 3)
+  ldd_vec3_ind <- rep(NA, 3)
+  ldd_vec4_ind <- rep(NA, 3)
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    dis_mat_x_new <- dist_mat[idx, -idx, drop = F]
+    
+    dd_vec_ind[idx] <- local_distance_depth_function(x = dist_mat_small, 
+                                                     x_new = dis_mat_x_new)
+    ldd_vec1_ind[idx] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 2)
+    ldd_vec2_ind[idx] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1.5)
+    ldd_vec3_ind[idx] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1)
+    ldd_vec4_ind[idx] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = .1)
+
+  }
+  
+  
+  testthat::expect_equal(dd_vec_ind, c(1,0,0)) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind, c(1,0,0)) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind, c(1,0,0)) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind, c(0,0,0)) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind, c(0,0,0)) # works relative to S constraint (only 0 in each box)
+  
+  
+  # multiple only
+  dd_vec_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  ldd_vec1_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  ldd_vec2_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  ldd_vec3_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  ldd_vec4_ind_mat <- matrix(rep(NA, 6), ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    dis_mat_x_new <- rbind(dist_mat[idx, -idx, drop = F],
+                           dist_mat[idx, -idx, drop = F])
+  
+  
+    
+    dd_vec_ind_mat[idx,] <- local_distance_depth_function(x = dist_mat_small, 
+                                                     x_new = dis_mat_x_new)
+    ldd_vec1_ind_mat[idx,] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 2)
+    ldd_vec2_ind_mat[idx,] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1.5)
+    ldd_vec3_ind_mat[idx,] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1)
+    ldd_vec4_ind_mat[idx,] <- local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = .1)
+    
+  }
+
+  testthat::expect_equal(dd_vec_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2)) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2)) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_mat, matrix(rep(c(1,0,0),2) , ncol = 2)) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_mat, matrix(rep(c(0,0,0),2) , ncol = 2)) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_mat, matrix(rep(c(0,0,0),2) , ncol = 2)) # works relative to S constraint (only 0 in each box)
+  
+  
+  # general errors -------------------------
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -378,9 +764,11 @@ test_that("test for local_distance_depth_function.matrix, df_out = F", {
   testthat::expect_error(local_distance_depth_function(dist_mat_not_sym))
   testthat::expect_error(local_distance_depth_function(dist_mat_not_pos))
   
+  
 })
 
 test_that("test for local_distance_depth_function.matrix, df_out = T", {
+  # x only ----------------------------------
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -401,6 +789,115 @@ test_that("test for local_distance_depth_function.matrix, df_out = T", {
   testthat::expect_equal(ldd_vec3, data.frame(names = 1:3, local_depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
   testthat::expect_equal(ldd_vec4, data.frame(names = 1:3, local_depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
   
+  # x new ----------------------------------
+  
+  # ind only
+  dd_vec_ind_df <- data.frame()
+  ldd_vec1_ind_df <- data.frame()
+  ldd_vec2_ind_df <- data.frame()
+  ldd_vec3_ind_df <- data.frame()
+  ldd_vec4_ind_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    rownames(dist_mat_small) <- c(1:3)[-idx]
+    dis_mat_x_new <- dist_mat[idx, -idx, drop = F] 
+    rownames(dis_mat_x_new) <- idx
+    
+    dd_vec_ind_df <- rbind(dd_vec_ind_df,
+                           local_distance_depth_function(x = dist_mat_small, 
+                                                     x_new = dis_mat_x_new,
+                                                     df_out = T))
+    ldd_vec1_ind_df <- rbind(ldd_vec1_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 2,
+                                                       df_out = T))
+    ldd_vec2_ind_df <- rbind(ldd_vec2_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1.5,
+                                                       df_out = T))
+    ldd_vec3_ind_df <- rbind(ldd_vec3_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1,
+                                                       df_out = T))
+    ldd_vec4_ind_df <- rbind(ldd_vec4_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = .1,
+                                                       df_out = T))
+    
+  }
+  
+  testthat::expect_equal(dd_vec_ind_df, data.frame(names = as.character(1:3), 
+                                                   local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_df, data.frame(names = as.character(1:3), 
+                                                     local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_df, data.frame(names = as.character(1:3), 
+                                                     local_depth = c(1,0,0))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_df, data.frame(names = as.character(1:3), 
+                                                     local_depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_df, data.frame(names = as.character(1:3), 
+                                                     local_depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
+  
+  # multiple only
+  
+  
+  # ind only
+  dd_vec_mult_df <- data.frame()
+  ldd_vec1_mult_df <- data.frame()
+  ldd_vec2_mult_df <- data.frame()
+  ldd_vec3_mult_df <- data.frame()
+  ldd_vec4_mult_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- dist_mat[-idx, -idx]
+    rownames(dist_mat_small) <- c(1:3)[-idx]
+    dis_mat_x_new <- rbind(dist_mat[idx, -idx, drop = F],
+                           dist_mat[idx, -idx, drop = F])    
+    rownames(dis_mat_x_new) <- 4:5
+    
+    dd_vec_mult_df <- rbind(dd_vec_mult_df,
+                           local_distance_depth_function(x = dist_mat_small, 
+                                                         x_new = dis_mat_x_new,
+                                                         df_out = T))
+    ldd_vec1_mult_df <- rbind(ldd_vec1_mult_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 2,
+                                                           df_out = T))
+    ldd_vec2_mult_df <- rbind(ldd_vec2_mult_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 1.5,
+                                                           df_out = T))
+    ldd_vec3_mult_df <- rbind(ldd_vec3_mult_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 1,
+                                                           df_out = T))
+    ldd_vec4_mult_df <- rbind(ldd_vec4_mult_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = .1,
+                                                           df_out = T))
+    
+  }
+
+  testthat::expect_equal(dd_vec_mult_df, data.frame(names = as.character(rep(4:5, 3)), 
+                                                   local_depth = rep(c(1,0,0), each = 2))) # same as global depth
+  testthat::expect_equal(ldd_vec1_mult_df, data.frame(names =  as.character(rep(4:5, 3)), 
+                                                     local_depth = rep(c(1,0,0), each = 2))) # same as global depth
+  testthat::expect_equal(ldd_vec2_mult_df, data.frame(names =  as.character(rep(4:5, 3)), 
+                                                     local_depth = rep(c(1,0,0), each = 2))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_mult_df, data.frame(names =  as.character(rep(4:5, 3)), 
+                                                     local_depth =rep(c(0,0,0), each = 2))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_mult_df, data.frame(names =  as.character(rep(4:5, 3)), 
+                                                     local_depth = rep(c(0,0,0), each = 2))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # general errors -------------------------
+  
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -416,6 +913,7 @@ test_that("test for local_distance_depth_function.matrix, df_out = T", {
 
 
 test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_out = F)", {
+  # x only -------------------------------------
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -438,6 +936,129 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_
   testthat::expect_equivalent(ldd_vec3, c(0,0,0)) # works relative to S constraint (only 1 in each box)
   testthat::expect_equivalent(ldd_vec4, c(0,0,0)) # works relative to S constraint (only 0 in each box)
   
+  # x_new ----------------------------------
+  # ind only
+  dd_vec_ind <- c()
+  ldd_vec1_ind <- c()
+  ldd_vec2_ind <- c()
+  ldd_vec3_ind <- c()
+  ldd_vec4_ind <- c()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    dd_vec_ind <- c(dd_vec_ind,
+                    local_distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new,
+                                                  df_out = F))
+    ldd_vec1_ind <- c(ldd_vec1_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 2,
+                                                       df_out = F))
+    ldd_vec2_ind <- c(ldd_vec2_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1.5,
+                                                       df_out = F))
+    ldd_vec3_ind <- c(ldd_vec3_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = 1,
+                                                       df_out = F))
+    ldd_vec4_ind <- c(ldd_vec4_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                       x_new = dis_mat_x_new,
+                                                       tau = .1,
+                                                       df_out = F))
+    
+  }
+  
+  
+  testthat::expect_equal(dd_vec_ind, c("1" = 1,"2" = 0,"3" = 0)) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind,c("1" = 1,"2" = 0,"3" = 0)) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind, c("1" = 1,"2" = 0,"3" = 0)) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind, c("1" = 0,"2" = 0,"3" = 0)) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind, c("1" = 0,"2" = 0,"3" = 0)) # works relative to S constraint (only 0 in each box)
+  
+  
+  # multiple only
+  dd_vec_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec1_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec2_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec3_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec4_ind_mat <- matrix(nrow = 0, ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    
+    dd_vec_ind_mat <- rbind(dd_vec_ind_mat,
+                            local_distance_depth_function(x = dist_mat_small, 
+                                                          x_new = dis_mat_x_new,
+                                                          df_out = F))
+    ldd_vec1_ind_mat <-  rbind(ldd_vec1_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                            x_new = dis_mat_x_new,
+                                                            tau = 2,
+                                                            df_out = F))
+    ldd_vec2_ind_mat <-  rbind(ldd_vec2_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                            x_new = dis_mat_x_new,
+                                                            tau = 1.5,
+                                                            df_out = F))
+    ldd_vec3_ind_mat <-  rbind(ldd_vec3_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                            x_new = dis_mat_x_new,
+                                                            tau = 1,
+                                                            df_out = F))
+    ldd_vec4_ind_mat <-  rbind(ldd_vec4_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                            x_new = dis_mat_x_new,
+                                                            tau = .1,
+                                                            df_out = F))
+    
+  }
+  
+  testthat::expect_equal(dd_vec_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, 4:5))) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, 4:5))) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, 4:5))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_mat, matrix(rep(c(0,0,0),2), ncol = 2, dimnames = list(NULL, 4:5))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_mat, matrix(rep(c(0,0,0),2), ncol = 2, dimnames = list(NULL, 4:5))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # error in sizes 
+  for (tau in c(Inf, 2,1.5,1,.1)){
+    testthat::expect_error(local_distance_depth_function(tidy_dm, 
+                                                         x_new = dist_mat_x_new,
+                                                         df_out = F,
+                                                         tau = tau))
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                      colnames_df = data.frame(id = 4:5))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                     x_new = dis_mat_x_new,
+                                                     df_out = F,
+                                                     tau =tau))
+    }
+  }
+  
+  
+  # general errors -------------------------
+  
+  
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -456,6 +1077,7 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_
 
 
 test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_out = T)", {
+  # x only -------------------------------
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -478,6 +1100,136 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_
   testthat::expect_equivalent(ldd_vec3, data.frame(id = 1:3, depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
   testthat::expect_equivalent(ldd_vec4, data.frame(id = 1:3, depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
   
+  # x_new ----------------------------------
+  # ind only
+  dd_vec_ind_df <- data.frame()
+  ldd_vec1_ind_df <- data.frame()
+  ldd_vec2_ind_df <- data.frame()
+  ldd_vec3_ind_df <- data.frame()
+  ldd_vec4_ind_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    dd_vec_ind_df <- rbind(dd_vec_ind_df,
+                    local_distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new,
+                                                  df_out = T))
+    ldd_vec1_ind_df <- rbind(ldd_vec1_ind_df,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 2,
+                                                    df_out = T))
+    ldd_vec2_ind_df <- rbind(ldd_vec2_ind_df,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 1.5,
+                                                    df_out = T))
+    ldd_vec3_ind_df <- rbind(ldd_vec3_ind_df,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 1,
+                                                    df_out = T))
+    ldd_vec4_ind_df <- rbind(ldd_vec4_ind_df,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = .1,
+                                                    df_out = T))
+    
+  }
+  
+  
+  testthat::expect_equal(dd_vec_ind_df, data.frame(id= 1:3,
+                                                local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_df,data.frame(id= 1:3,
+                                                 local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_df, data.frame(id= 1:3,
+                                                  local_depth = c(1,0,0))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_df, data.frame(id= 1:3,
+                                                  local_depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_df, data.frame(id= 1:3,
+                                                  local_depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # multiple only
+  dd_vec_mult_df <- data.frame()
+  ldd_vec1_mult_df <- data.frame()
+  ldd_vec2_mult_df <- data.frame()
+  ldd_vec3_mult_df <- data.frame()
+  ldd_vec4_mult_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    
+    dd_vec_mult_df <- rbind(dd_vec_mult_df,
+                            local_distance_depth_function(x = dist_mat_small, 
+                                                          x_new = dis_mat_x_new,
+                                                          df_out = T))
+    ldd_vec1_mult_df <-  rbind(ldd_vec1_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 2,
+                                                             df_out = T))
+    ldd_vec2_mult_df <-  rbind(ldd_vec2_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1.5,
+                                                             df_out = T))
+    ldd_vec3_mult_df <-  rbind(ldd_vec3_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1,
+                                                             df_out = T))
+    ldd_vec4_mult_df <-  rbind(ldd_vec4_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = .1,
+                                                             df_out = T))
+    
+  }
+  
+  testthat::expect_equal(dd_vec_mult_df, data.frame(id= rep(4:5, 3),
+                                                    local_depth = rep(c(1,0,0), each =2))) # same as global depth
+  testthat::expect_equal(ldd_vec1_mult_df, data.frame(id= rep(4:5, 3),
+                                                      local_depth = rep(c(1,0,0), each =2))) # same as global depth
+  testthat::expect_equal(ldd_vec2_mult_df, data.frame(id= rep(4:5, 3),
+                                                      local_depth = rep(c(1,0,0), each =2))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_mult_df, data.frame(id= rep(4:5, 3),
+                                                      local_depth = rep(c(0,0,0), each =2))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_mult_df, data.frame(id= rep(4:5, 3),
+                                                      local_depth = rep(c(0,0,0), each =2))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # error in sizes 
+  for (tau in c(Inf, 2,1.5,1,.1)){
+    testthat::expect_error(local_distance_depth_function(tidy_dm, 
+                                                         x_new = dist_mat_x_new,
+                                                         df_out = T,
+                                                         tau = tau))
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5),
+                      colnames_df = data.frame(id = 4:5))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           df_out = T,
+                                                           tau =tau))
+    }
+  }
+  
+  # general errors -----------------------
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -496,6 +1248,8 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (univariate, df_
 
 
 test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_out = F)", {
+  # x only ------------------------------
+  
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -526,6 +1280,147 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_o
   testthat::expect_equivalent(ldd_vec3, c(0,0,0)) # works relative to S constraint (only 1 in each box)
   testthat::expect_equivalent(ldd_vec4, c(0,0,0)) # works relative to S constraint (only 0 in each box)
   
+  # x_new ----------------------------------
+  # ind only
+  dd_vec_ind <- c()
+  ldd_vec1_ind <- c()
+  ldd_vec2_ind <- c()
+  ldd_vec3_ind <- c()
+  ldd_vec4_ind <- c()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    dd_vec_ind <- c(dd_vec_ind,
+                    local_distance_depth_function(x = dist_mat_small, 
+                                                  x_new = dis_mat_x_new,
+                                                  df_out = F))
+    ldd_vec1_ind <- c(ldd_vec1_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 2,
+                                                    df_out = F))
+    ldd_vec2_ind <- c(ldd_vec2_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 1.5,
+                                                    df_out = F))
+    ldd_vec3_ind <- c(ldd_vec3_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = 1,
+                                                    df_out = F))
+    ldd_vec4_ind <- c(ldd_vec4_ind,
+                      local_distance_depth_function(x = dist_mat_small, 
+                                                    x_new = dis_mat_x_new,
+                                                    tau = .1,
+                                                    df_out = F))
+    
+  }
+  
+  
+  testthat::expect_equal(dd_vec_ind, c("1|a" = 1,"2|a" = 0,"1|b" = 0)) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind,c("1|a" = 1,"2|a" = 0,"1|b" = 0)) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind, c("1|a" = 1,"2|a" = 0,"1|b" = 0)) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind, c("1|a" = 0,"2|a" = 0,"1|b" = 0)) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind, c("1|a" = 0,"2|a" = 0,"1|b" = 0)) # works relative to S constraint (only 0 in each box)
+  
+  
+  # multiple only
+  dd_vec_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec1_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec2_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec3_ind_mat <- matrix(nrow = 0, ncol = 2)
+  ldd_vec4_ind_mat <- matrix(nrow = 0, ncol = 2)
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                             id2 = c("a","a")),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    
+    dd_vec_ind_mat <- rbind(dd_vec_ind_mat,
+                            local_distance_depth_function(x = dist_mat_small, 
+                                                          x_new = dis_mat_x_new,
+                                                          df_out = F))
+    ldd_vec1_ind_mat <-  rbind(ldd_vec1_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 2,
+                                                             df_out = F))
+    ldd_vec2_ind_mat <-  rbind(ldd_vec2_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1.5,
+                                                             df_out = F))
+    ldd_vec3_ind_mat <-  rbind(ldd_vec3_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1,
+                                                             df_out = F))
+    ldd_vec4_ind_mat <-  rbind(ldd_vec4_ind_mat,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = .1,
+                                                             df_out = F))
+    
+  }
+  
+  testthat::expect_equal(dd_vec_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, c("4|a", "5|a")))) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, c("4|a", "5|a")))) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_mat, matrix(rep(c(1,0,0),2), ncol = 2, dimnames = list(NULL, c("4|a", "5|a")))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_mat, matrix(rep(c(0,0,0),2), ncol = 2, dimnames = list(NULL, c("4|a", "5|a")))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_mat, matrix(rep(c(0,0,0),2), ncol = 2, dimnames = list(NULL, c("4|a", "5|a")))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # error in sizes 
+  for (tau in c(Inf, 2,1.5,1,.1)){
+    testthat::expect_error(local_distance_depth_function(tidy_dm, 
+                                                         x_new = dist_mat_x_new,
+                                                         df_out = F,
+                                                         tau = tau))
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                               id2 = "a", "a"),
+                      colnames_df = data.frame(id = 4:5,
+                                               id2 = "a", "a"))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           df_out = F,
+                                                           tau =tau))
+    }
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                               id2 = "a", "a"),
+                      colnames_df = data.frame(id = 1:2))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           df_out = F,
+                                                           tau =tau))
+    }
+  }
+  
+  # general errors -------------------------
+  
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)
@@ -546,6 +1441,7 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_o
 
 
 test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_out = T)", {
+  # x only -------------------
   dist_mat <- matrix(c(0,   1, 1.5,
                        1,   0, 2,
                        1.5, 2, 0   ),
@@ -575,7 +1471,166 @@ test_that("test for local_distance_depth_function.tidy_dist_mat (bivariate, df_o
                                 dplyr::mutate(depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
   testthat::expect_equivalent(ldd_vec4, rownames_df %>% 
                                 dplyr::mutate(depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
+  # x_new ----------------------------------
+  # ind only
+  dd_vec_ind_df <- data.frame()
+  ldd_vec1_ind_df <- data.frame()
+  ldd_vec2_ind_df <- data.frame()
+  ldd_vec3_ind_df <- data.frame()
+  ldd_vec4_ind_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- tidy_dm[idx, -idx]
+    
+    dd_vec_ind_df <- rbind(dd_vec_ind_df,
+                           local_distance_depth_function(x = dist_mat_small, 
+                                                         x_new = dis_mat_x_new,
+                                                         df_out = T))
+    ldd_vec1_ind_df <- rbind(ldd_vec1_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 2,
+                                                           df_out = T))
+    ldd_vec2_ind_df <- rbind(ldd_vec2_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 1.5,
+                                                           df_out = T))
+    ldd_vec3_ind_df <- rbind(ldd_vec3_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = 1,
+                                                           df_out = T))
+    ldd_vec4_ind_df <- rbind(ldd_vec4_ind_df,
+                             local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           tau = .1,
+                                                           df_out = T))
+    
+  }
   
+  
+  testthat::expect_equal(dd_vec_ind_df, data.frame(id = c(1,2,1),
+                                                   id2 = c("a", "a", "b"),
+                                                   local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec1_ind_df,data.frame(id = c(1,2,1),
+                                                    id2 = c("a", "a", "b"),
+                                                    local_depth = c(1,0,0))) # same as global depth
+  testthat::expect_equal(ldd_vec2_ind_df, data.frame(id = c(1,2,1),
+                                                     id2 = c("a", "a", "b"),
+                                                     local_depth = c(1,0,0))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_ind_df, data.frame(id = c(1,2,1),
+                                                     id2 = c("a", "a", "b"),
+                                                     local_depth = c(0,0,0))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_ind_df, data.frame(id = c(1,2,1),
+                                                     id2 = c("a", "a", "b"),
+                                                     local_depth = c(0,0,0))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # multiple only
+  dd_vec_mult_df <- data.frame()
+  ldd_vec1_mult_df <- data.frame()
+  ldd_vec2_mult_df <- data.frame()
+  ldd_vec3_mult_df <- data.frame()
+  ldd_vec4_mult_df <- data.frame()
+  for (idx in 1:3){
+    dist_mat_small <- tidy_dm[-idx, -idx]
+    dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                           as.matrix(tidy_dm[idx, -idx])) %>%
+      tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                             id2 = rep("a",2)),
+                    colnames_df = colnames(dist_mat_small))
+    
+    
+    
+    dd_vec_mult_df <- rbind(dd_vec_mult_df,
+                            local_distance_depth_function(x = dist_mat_small, 
+                                                          x_new = dis_mat_x_new,
+                                                          df_out = T))
+    ldd_vec1_mult_df <-  rbind(ldd_vec1_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 2,
+                                                             df_out = T))
+    ldd_vec2_mult_df <-  rbind(ldd_vec2_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1.5,
+                                                             df_out = T))
+    ldd_vec3_mult_df <-  rbind(ldd_vec3_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = 1,
+                                                             df_out = T))
+    ldd_vec4_mult_df <-  rbind(ldd_vec4_mult_df,
+                               local_distance_depth_function(x = dist_mat_small, 
+                                                             x_new = dis_mat_x_new,
+                                                             tau = .1,
+                                                             df_out = T))
+    
+  }
+  
+  testthat::expect_equal(dd_vec_mult_df, data.frame(id= rep(4:5, 3),
+                                                    id2 = rep("a", 6),
+                                                    local_depth = rep(c(1,0,0), each =2))) # same as global depth
+  testthat::expect_equal(ldd_vec1_mult_df, data.frame(id= rep(4:5, 3),
+                                                      id2 = rep("a", 6),
+                                                      local_depth = rep(c(1,0,0), each =2))) # same as global depth
+  testthat::expect_equal(ldd_vec2_mult_df, data.frame(id= rep(4:5, 3),
+                                                      id2 = rep("a", 6),
+                                                      local_depth = rep(c(1,0,0), each =2))) # works relative to S constraint
+  testthat::expect_equal(ldd_vec3_mult_df, data.frame(id= rep(4:5, 3),
+                                                      id2 = rep("a", 6),
+                                                      local_depth = rep(c(0,0,0), each =2))) # works relative to S constraint (only 1 in each box)
+  testthat::expect_equal(ldd_vec4_mult_df, data.frame(id= rep(4:5, 3),
+                                                      id2 = rep("a", 6),
+                                                      local_depth = rep(c(0,0,0), each =2))) # works relative to S constraint (only 0 in each box)
+  
+  
+  # error in sizes 
+  for (tau in c(Inf, 2,1.5,1,.1)){
+    testthat::expect_error(local_distance_depth_function(tidy_dm, 
+                                                         x_new = dist_mat_x_new,
+                                                         df_out = T,
+                                                         tau = tau))
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                               id2 = rep("a",2)),
+                      colnames_df = data.frame(id = 4:5,
+                                               id2 = rep("a",2)))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           df_out = T,
+                                                           tau =tau))
+    }
+  }
+  
+  # error in column names 
+  for (tau in c(Inf, 2, 1.5, 1, .1)){
+    for (idx in 1:3){
+      dist_mat_small <- tidy_dm[-idx, -idx]
+      dis_mat_x_new <- rbind(as.matrix(tidy_dm[idx, -idx]),
+                             as.matrix(tidy_dm[idx, -idx])) %>%
+        tidy_dist_mat(rownames_df = data.frame(id = 4:5,
+                                               id2 = rep("a",2)),
+                      colnames_df = data.frame(id = 1:2))
+      
+      testthat::expect_error(local_distance_depth_function(x = dist_mat_small, 
+                                                           x_new = dis_mat_x_new,
+                                                           df_out = T,
+                                                           tau =tau))
+    }
+  }
+  
+  # general errors -----------------------
   dist_mat_not_sym <- matrix(c(0,   1, 0,
                                1,   0, 2,
                                1.5, 2, 0   ), nrow = 3, byrow = 3)

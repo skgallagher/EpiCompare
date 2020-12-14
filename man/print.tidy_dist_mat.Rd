@@ -4,7 +4,7 @@
 \alias{print.tidy_dist_mat}
 \title{print tidy_dist_mat objects}
 \usage{
-\method{print}{tidy_dist_mat}(x, ...)
+\method{print}{tidy_dist_mat}(x, ..., n = NULL)
 }
 \arguments{
 \item{x}{tidy_dist_mat object}

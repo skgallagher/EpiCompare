@@ -39,7 +39,7 @@ dist_matrix_innersq_direction(
 \arguments{
 \item{x}{list of paths (data frames) - need to have the same num rows or a nested_df}
 
-\item{position}{column index of (x,y) euclidean coords.}
+\item{position}{column index of (x,y,...) euclidean coords.}
 
 \item{verbose}{boolean logic if should have print outs while computing
 distance matrix}

@@ -4,7 +4,10 @@
 \alias{theme_sir}
 \title{Add a portable theme for SIR ternary plots}
 \usage{
-theme_sir()
+theme_sir(...)
+}
+\arguments{
+\item{...}{additional arguments to pass}
 }
 \value{
 theme to add to ggtern plots

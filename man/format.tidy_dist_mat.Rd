@@ -2,19 +2,26 @@
 % Please edit documentation in R/tidy-dist-mat.R
 \name{format.tidy_dist_mat}
 \alias{format.tidy_dist_mat}
-\title{Fomat tidy_dist_mat for printing}
+\title{Format tidy_dist_mat for printing}
 \usage{
 \method{format}{tidy_dist_mat}(x, ...)
 }
 \arguments{
-\item{x}{tid_dist_mat}
+\item{x}{tidy_dist_mat}
 
-\item{...}{additional parameter (e.g. \code{digits}) - tells us the number of 
-significant digits to present for the distances}
+\item{...}{additional parameters. Currently we allow / use:
+\itemize{
+  \item{\code{digit}: }{integer, tells us the number of significant digits to 
+  present for the distances}
+  \item{\code{more_rows:} }{boolean, tells us if more rows exist than 
+  presented}
+  \item{\code{more_cols:} }{boolean, tells us if more columns exist than 
+  presented}
+}}
 }
 \value{
 format ready information
 }
 \description{
-Fomat tidy_dist_mat for printing
+Format tidy_dist_mat for printing
 }
