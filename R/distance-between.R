@@ -365,7 +365,7 @@ dist_matrix_innersq_angle <- dist_matrix_innersq_2d
 #'
 #'
 #' @param x list of paths (data frames) - need to have the same num rows or a nested_df
-#' @param position column index of (x,y) euclidean coords.
+#' @param position column index of (x,y,...) euclidean coords.
 #' @param verbose boolean logic if should have print outs while computing
 #' distance matrix
 #' @param id_as_columns boolean - DESCRIBE
@@ -477,8 +477,9 @@ if (r_new_interface()){
 dist_matrix_innersq_direction.grouped_df <- function(x, position = NULL,
                                                      verbose = FALSE, id_as_columns = FALSE){
   
-  id_info <- x %>% dplyr::select(-.data$data) 
-  path_list <- x$data
+  x_inner <- x %>% tidyr::nest()
+  id_info <- x_inner %>% dplyr::select(-.data$data) 
+  path_list <- x_inner$data
   
   if (!id_as_columns) {
     inner_names <- id_info %>% 
@@ -489,8 +490,21 @@ dist_matrix_innersq_direction.grouped_df <- function(x, position = NULL,
     names(path_list) <- 1:length(path_list)
   }
   
+  # dealing with update of position vector
+  group_names <- x %>% dplyr::groups() %>% 
+    lapply(as.character) %>% unlist
+  group_ids <- c(1:ncol(x))[names(x) %in% group_names]
+  non_group_ids <- c(1:ncol(x))[!(names(x) %in% group_names)]
+  position_inner <- c(1:length(non_group_ids))[non_group_ids %in% position]
+  
+  assertthat::assert_that(length(position_inner) == length(position),
+                          msg = paste("possible that position vector is",
+                                      "incorrect, possible that position is",
+                                      "part also a grouping variable -",
+                                      "which doesn't make sense"))
+  
   dist_mat <- dist_matrix_innersq_direction.list(x = path_list,
-                                                 position = position, 
+                                                 position = position_inner, 
                                                  verbose = verbose)
   
   if (id_as_columns) {

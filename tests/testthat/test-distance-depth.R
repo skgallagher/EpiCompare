@@ -617,7 +617,7 @@ test_that("test for local_distance_depth_function (tau percentage)", {
         for (attempts in 1:5){
           percentage <- round(runif(1, min = .1), 5)
           string_percentage <- sprintf("%.3f%%",percentage*100)
-          tau <- stats::quantile(dist_info, percentage)
+          tau <- stats::quantile(as.matrix(dist_info), percentage)
           
           ldd_vec_perc <- local_distance_depth_function(dist_info, 
                                                         tau = string_percentage, 

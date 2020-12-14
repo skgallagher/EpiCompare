@@ -203,6 +203,16 @@ format.tidy_dist_mat <- function(x, ...){
   } else {
     digits = 6
   }
+  if ("more_rows" %in% names(additional_params)){
+    more_rows <- additional_params[["more_rows"]]
+  } else {
+    more_rows <- F
+  }
+  if ("more_cols" %in% names(additional_params)){
+    more_cols <- additional_params[["more_cols"]]
+  } else {
+    more_cols <- F
+  }
   
   dim_x <- dim(x)
   dim_colnames_x <- dim(colnames(x))
@@ -225,11 +235,24 @@ format.tidy_dist_mat <- function(x, ...){
                                        ncol = 1),
                                 signif(x, digits)))
   
+  
+  
   colnames(top_present) <- NULL
   dimnames(between_present) <- NULL
   rownames(bottom_present) <- NULL
   
   m <- rbind(top_present, between_present, bottom_present) 
+  
+  
+  if (more_rows){
+    m <- rbind(m, rep("...", ncol(m)))
+  }
+  
+  if (more_cols) {
+    m <- cbind(m, rep("...", nrow(m)))
+    
+  }
+  
   
   noquote(m)
 }
@@ -250,9 +273,275 @@ format.tidy_dist_mat <- function(x, ...){
 #'
 #' my_tidy_dm <- tidy_dist_mat(my_dist_mat, rownames_df, colnames_df)
 #' print(my_tidy_dm)
-print.tidy_dist_mat <- function(x, ...){
-  print(format(x,...))
+print.tidy_dist_mat <- function(x, ..., n = NULL){
+  if (!is.null(n)){
+    n_row <- min(nrow(x), n)
+    n_col <- min(ncol(x), n)
+    more_rows <- n_row < nrow(x)
+    more_cols <- n_col < ncol(x)
+    
+    print(format(x[1:n_row, 1:n_col], ..., 
+                 more_cols = more_cols, more_rows = more_rows))
+    
+  } else {
+    print(format(x,...))
+  }
 }
+
+
+as.matrix.tidy_dist_mat <- function(x){
+  inner <- unclass(x)
+  attr(inner, "rownames_df") <- NULL
+  attr(inner, "colnames_df") <- NULL
+  
+  return(inner)
+}
+as.array.tidy_dist_mat <- as.matrix.tidy_dist_mat
+
+
+
+process_df_index_old <- function(x, index, margin = 1){
+  # checking and processing index
+  if (margin == 1){
+    info_names <- rownames(x)
+    index_name <- "i"
+    margin_name <- "rownames"
+  } else if (margin == 2) {
+    info_names <- colnames(x)
+    index_name <- "j"
+    margin_name <- "colnames"
+    
+  } else {
+    stop("margin needs to be either 1 or 2.")
+  }
+    assertthat::assert_that(all(names(info_names) == names(index)),
+                            msg =  sprintf(
+                              paste("%s needs to be a numeric (integer)",
+                                    "vector or a data.frame of the same",
+                                    "style as x's %s"), 
+                              index_name, margin_name))
+    
+    rnames2 <- info_names %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+    index_check <- index %>% dplyr::left_join(rnames2, by = names(index))
+    
+    assertthat::assert_that(!any(is.null(index_check["CAPTURE CORRECT"])),
+                            msg = sprintf(paste("some of %s's rows don't",
+                                                "appear in %s(x)"),
+                                          index_name, margin_name))
+    
+    index2 <- index %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+    which_rname <- info_names %>% dplyr::left_join(index2, names(info_names))
+    index <- which(!is.na(which_rname["CAPTURE CORRECT"]))
+    return(index)
+}
+
+
+process_df_index <- function(x, index, margin = 1){
+  out <- which_index.tidy_dist_mat(x, index, margin = margin)
+  return(out)
+}
+
+`[.tidy_dist_mat` <- function(x, i, j = i){
+  
+  # checking and processing i
+  assertthat::assert_that(is.data.frame(i) || all(is.wholenumber(i)) ,
+                          msg = paste("i needs to be a numeric (integer)",
+                                      "vector or a data.frame of the same",
+                                      "style as x's rownames"))
+  if(is.data.frame(i)){
+    i <- process_df_index(x, i, margin = 1)
+  }
+  assertthat::assert_that(is.data.frame(j) || all(is.wholenumber(j)),
+                          msg = paste("j needs to be a numeric (integer)",
+                                      "vector or a data.frame of the same",
+                                      "style as x's colnames"))
+  if(is.data.frame(j)){
+    j <- process_df_index(x, j, margin = 2)
+  }
+  
+  
+  
+  
+  x_mat <- as.matrix(x)[i,j,drop = F]
+  rownames_new <- rownames(x) %>% tibble::tibble() %>% .[i,] %>% data.frame
+  colnames_new <- colnames(x) %>% tibble::tibble() %>% .[j,] %>% data.frame
+  
+  tidy_dist_mat(x_mat, 
+                rownames_df = rownames_new,
+                colnames_df = colnames_new)
+}
+
+not <- function(x){
+  UseMethod("not")
+}
+
+not.data.frame <- function(x){
+  df2 <- x
+  class(df2) <- c("not_df", class(x))
+  return(df2)
+}
+
+reverse_not_df <- function(x){
+  UseMethod("reverse_not_df")
+}
+
+reverse_not_df.not_df <- function(x){
+  df2 <- x
+  class(df2) <- class(x)[class(x) != "not_df"]
+  return(df2)
+}
+
+is.not_df <- function(x){
+  inherits(x, "not_df")
+}
+
+which_index <- function(x, index, margin = 1){
+  UseMethod("which_index")
+}
+
+# index is df
+which_index.tidy_dist_mat <- function(x, index,  margin = 1){
+  if (is.not_df(index)){
+    index <- reverse_not_df(index)
+    return(which_not_index(x, index, margin = margin))
+  }
+  
+  
+  if (margin == 1){
+    info_names <- rownames(x)
+    index_name <- "i"
+    margin_name <- "rownames"
+  } else if (margin == 2) {
+    info_names <- colnames(x)
+    index_name <- "j"
+    margin_name <- "colnames"
+    
+  } else {
+    stop("margin needs to be either 1 or 2.")
+  }
+  
+  assertthat::assert_that(all(names(info_names) == names(index)),
+                          msg =  sprintf(
+                            paste("%s needs to be a numeric (integer)",
+                                  "vector or a data.frame of the same",
+                                  "style as x's %s"), 
+                            index_name, margin_name))
+  
+  rnames2 <- info_names %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+  index_check <- index %>% dplyr::left_join(rnames2, by = names(index))
+  
+  assertthat::assert_that(!any(is.null(index_check["CAPTURE CORRECT"])),
+                          msg = sprintf(paste("some of %s's rows don't",
+                                              "appear in %s(x)"),
+                                        index_name,
+                                        margin_name))
+  
+  index2 <- index %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+  which_rname <- info_names %>% dplyr::left_join(index2, names(info_names))
+  index <- which(!is.na(which_rname["CAPTURE CORRECT"]))
+  return(index)
+}
+
+which_not_index <- function(x, index, margin = 1){
+  UseMethod("which_not_index")
+}
+
+which_not_index.tidy_dist_mat <- function(x, index, margin = 1){
+  if (is.not_df(index)){
+    index <- reverse_not_df(index)
+    return(which_index(x, index, margin = margin))
+  }
+  
+  
+  
+  if (margin == 1){
+    info_names <- rownames(x)
+    index_name <- "i"
+    margin_name <- "rownames"
+  } else if (margin == 2) {
+    info_names <- colnames(x)
+    index_name <- "j"
+    margin_name <- "colnames"
+    
+  } else {
+    stop("margin needs to be either 1 or 2.")
+  }
+  
+  n_info <- nrow(info_names)
+  
+  assertthat::assert_that(all(names(info_names) == names(index)),
+                          msg =  sprintf(
+                            paste("%s needs to be a numeric (integer)",
+                                  "vector or a data.frame of the same",
+                                  "style as x's %s"), 
+                            index_name, margin_name))
+  
+  rnames2 <- info_names %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+  index_check <- index %>% dplyr::left_join(rnames2, by = names(index))
+  
+  assertthat::assert_that(!any(is.null(index_check["CAPTURE CORRECT"])),
+                          msg = sprintf(paste("some of %s's rows don't",
+                                              "appear in %s(x)"),
+                                        index_name,
+                                        margin_name))
+  
+  index2 <- index %>% dplyr::mutate(`CAPTURE CORRECT` = TRUE)
+  which_rname <- info_names %>% dplyr::left_join(index2, names(info_names))
+  index <- which(is.na(which_rname["CAPTURE CORRECT"]))
+  return(index)
+  
+}
+
+if (FALSE){
+testthat::test_that("[.tidy_dist_mat", {
+  x_mat <- as.matrix(dist(rnorm(5))) 
+  x <- x_mat %>%
+    tidy_dist_mat()
+  
+  testthat::expect_equal(x[1:3], x_mat[1:3,1:3] %>% tidy_dist_mat())
+  testthat::expect_equal(x[2:4], x_mat[2:4,2:4] %>% 
+                           tidy_dist_mat(rownames_df = data.frame(id = 2:4),
+                                         colnames_df =  data.frame(id = 2:4)))
+  testthat::expect_equal(x[2:3,5], x_mat[2:3,5, drop = F] %>% 
+                           tidy_dist_mat(rownames_df = data.frame(id = 2:3),
+                                         colnames_df = data.frame(id = 5)))
+  testthat::expect_equal(x[5,2:3], x_mat[5,2:3, drop = F] %>% 
+                           tidy_dist_mat(rownames_df = data.frame(id = 5),
+                                         colnames_df = data.frame(id = 2:3)))
+  
+  testthat::expect_equal(x[-5,2:3], x_mat[-5,2:3, drop = F] %>% 
+                           tidy_dist_mat(rownames_df = data.frame(id = 1:4),
+                                         colnames_df = data.frame(id = 2:3)))
+})
+
+}
+
+head.tidy_dist_mat <- function(x, n = 6L, ...){
+  assertthat::assert_that(ncol(x) == nrow(x),
+                          msg = paste("currently only able to to produce the",
+                                      "head of a tidy_dist_mat if it has the",
+                                      "same number of rows and columns"))
+  n_row <- min(nrow(x), n)
+  
+  x[1:n_row]
+}
+
+
+
+tail.tidy_dist_mat <- function(x, n = 6L, ...){
+  assertthat::assert_that(ncol(x) == nrow(x),
+                          msg = paste("currently only able to to produce the",
+                                      "tail of a tidy_dist_mat if it has the",
+                                      "same number of rows and columns"))
+  nr <- nrow(x)
+  n_row <- min(nrow(x), n)
+  if (n_row < nr){
+    x[(nr-n):nr]
+  } else {
+    x
+  }
+}
+
 
 if (r_new_interface()){
   .S3method(generic = "dimnames", class = "tidy_dist_mat") 
@@ -263,6 +552,15 @@ if (r_new_interface()){
   .S3method(generic = "format", class = "tidy_dist_mat") 
   .S3method(generic = "print", class = "tidy_dist_mat") 
   
-
+  .S3method(generic = "as.matrix", class = "tidy_dist_mat")
+  .S3method(generic = "as.array", class = "tidy_dist_mat")
+  .S3method(generic = "[", class = "tidy_dist_mat")
+  .S3method(generic = "which_index", class = "tidy_dist_mat")
+  .S3method(generic = "which_not_index", class = "tidy_dist_mat")
+  .S3method(generic = "head", class = "tidy_dist_mat")
+  .S3method(generic = "tail", class = "tidy_dist_mat")
+  
+  .S3method(generic = "not", class = "data.frame")
+  
+  .S3method(generic = "reverse_not_df", class = "not_df")
 }
-

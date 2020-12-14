@@ -269,7 +269,13 @@ top_curves_to_points.grouped_df <- function(x, alpha,
 #' \pkg{TCpredictionbands} on github:
 #' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
 #'
-#' @param dist_mat a n x n square positive symmetric matrix or a tidy_dist_mat
+#' @param x a n x n square positive symmetric matrix or a tidy_dist_mat
+#' @param x_new a n_new x n matrix or tidy_dist_mat where the rows correspond to
+#' new observations, the columns correspond to points in \code{x} (if \code{x} 
+#' and \code{x_new} are matrices then they need to be corrected ordered). If 
+#' this value is not \code{NULL} (default is \code{NULL}) then the depth
+#' vector will be calculated for these observations relative to observations 
+#' defined with \code{x} and \code{x_new}'s columns.
 #' @param df_out indicates if one should return a data.frame our a vector,
 #' by default returns data.frame if dist_mat is a tidy_dist_mat, and a vector
 #' if dist_mat is a matrix.
@@ -288,13 +294,13 @@ top_curves_to_points.grouped_df <- function(x, alpha,
 #' 
 #' tidy_dm <- tidy_dist_mat(dist_mat)
 #' dd_df <- distance_depth_function(tidy_dm) # depth = c(1,0,0)
-distance_depth_function <- function(dist_mat, df_out = "auto"){
+distance_depth_function <- function(x, x_new = NULL, df_out = "auto"){
   UseMethod("distance_depth_function")
 }
 
 #' @rdname distance_depth_function
 #' @export
-distance_depth_function.matrix <- function(dist_mat, df_out = F){
+distance_depth_function.matrix <- function(x, x_new = NULL, df_out = F){
   # This is a cleaned up version of the \code{depth_function} from
   # \pkg{TCpredictionbands} available on github. One of the authors of this
   # package wrote both versions (and given \pkg{TCpredictionbands} is not on
@@ -304,108 +310,193 @@ distance_depth_function.matrix <- function(dist_mat, df_out = F){
     df_out <- FALSE
   }
   
-  if (nrow(dist_mat) != ncol(dist_mat) |
-      any(t(dist_mat) != dist_mat) |
-      any(dist_mat < 0)) {
-    stop("your dist_mat is not a positive symmetric square matrix")
+  if (nrow(x) != ncol(x) |
+      any(t(x) != x) |
+      any(x < 0)) {
+    stop("your x is not a positive symmetric square matrix")
   }
 
-  N <- nrow(dist_mat)
-  rnames <- rownames(dist_mat)
   
-  depth <- rep(0, N)
-
-  for (obs_index in 1:N) {
-    sub_matrix <- dist_mat[-obs_index, -obs_index]
-    obs_column <- dist_mat[-obs_index, obs_index]
-    obs_row <- dist_mat[obs_index, -obs_index]
-
-    obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
-    obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
-                                    nrow = N - 1)
-    obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
-                                     nrow = N - 1, byrow = T)
-
-    max_matrix <- sapply(1:(N - 1), function(row_i) {
-      sapply(1:(N - 1), function(col_i) {
-        max(obs_combo_array[row_i, col_i, 1:2])
-      })
-      }) %>% t
-
-    depth[obs_index] <- mean((sub_matrix > max_matrix)[
-                                row(sub_matrix)!=col(sub_matrix)
-                                #^ignoring the diagonal values
-                                ])
-  }
-
-  if (df_out) {
-    if (is.null(rnames)){
-      rnames <- 1:length(depth)
+  if (is.null(x_new)){
+    N <- nrow(x)
+    rnames <- rownames(x)
+    
+    depth <- rep(0, N)
+  
+    for (obs_index in 1:N) {
+      sub_matrix <- x[-obs_index, -obs_index]
+      obs_column <- x[-obs_index, obs_index]
+      obs_row <- x[obs_index, -obs_index]
+  
+      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
+                                      nrow = N - 1)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
+                                       nrow = N - 1, byrow = T)
+  
+      max_matrix <- sapply(1:(N - 1), function(row_i) {
+        sapply(1:(N - 1), function(col_i) {
+          max(obs_combo_array[row_i, col_i, 1:2])
+        })
+        }) %>% t
+  
+      depth[obs_index] <- mean((sub_matrix > max_matrix)[
+                                  row(sub_matrix)!=col(sub_matrix)
+                                  #^ignoring the diagonal values
+                                  ])
     }
-    depth_out <- data.frame(names = rnames,
-                             depth = depth)
-  } else {
-    names(depth) <- rnames
-    depth_out <- depth
+  
+    if (df_out) {
+      if (is.null(rnames)){
+        rnames <- 1:length(depth)
+      }
+      depth_out <- data.frame(names = rnames,
+                               depth = depth)
+    } else {
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    return(depth_out)
+  } else{
+    N <- nrow(x_new)
+    rnames <- rownames(x_new)
+    
+    depth <- rep(0, N)
+    
+    for (obs_index in 1:N) {
+      sub_matrix <- x
+      obs_column <- x_new[obs_index, 1:nrow(x)]
+      obs_row <- obs_column # assumes symmetry...
+      
+      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
+                                      nrow = N - 1)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
+                                      nrow = N - 1, byrow = T)
+      
+      max_matrix <- sapply(1:(N - 1), function(row_i) {
+        sapply(1:(N - 1), function(col_i) {
+          max(obs_combo_array[row_i, col_i, 1:2])
+        })
+      }) %>% t
+      
+      depth[obs_index] <- mean((sub_matrix > max_matrix)[
+        row(sub_matrix)!=col(sub_matrix)
+        #^ignoring the diagonal values
+      ])
+    }
+    
+    if (df_out) {
+      depth_out <- data.frame(names = rnames,
+                              depth = depth)
+    } else {
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    return(depth_out)
   }
-  return(depth_out)
 }
 
 #' @rdname distance_depth_function
 #' @export
-distance_depth_function.tidy_dist_mat <- function(dist_mat, df_out = T){
+distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL, df_out = T){
   if (df_out == "auto"){
     df_out <- TRUE
   }
   
-  if (nrow(dist_mat) != ncol(dist_mat) |
-      any(t(dist_mat) != dist_mat) |
-      any(dist_mat < 0)) {
-    stop("your dist_mat is not a positive symmetric square matrix")
+  if (nrow(x) != ncol(x) |
+      any(t(x) != x) |
+      any(x < 0)) {
+    stop("your x is not a positive symmetric square matrix")
   }
   
-  N <- nrow(dist_mat)
-  rnames <- rownames(dist_mat) # data.frame
-  
-  depth <- rep(0, N)
-  
-  for (obs_index in 1:N) {
-    sub_matrix <- dist_mat[-obs_index, -obs_index]
-    obs_column <- dist_mat[-obs_index, obs_index]
-    obs_row <- dist_mat[obs_index, -obs_index]
+  if (is.null(x_new)){
+    N <- nrow(x)
+    rnames <- rownames(x) # data.frame
     
-    obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
-    obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
-                                    nrow = N - 1)
-    obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
-                                    nrow = N - 1, byrow = T)
+    depth <- rep(0, N)
     
-    max_matrix <- sapply(1:(N - 1), function(row_i) {
-      sapply(1:(N - 1), function(col_i) {
-        max(obs_combo_array[row_i, col_i, 1:2])
-      })
-    }) %>% t
+    for (obs_index in 1:N) {
+      sub_matrix <- x[-obs_index, -obs_index]
+      obs_column <- x[-obs_index, obs_index]
+      obs_row <- x[obs_index, -obs_index]
+      
+      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
+                                      nrow = N - 1)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
+                                      nrow = N - 1, byrow = T)
+      
+      max_matrix <- sapply(1:(N - 1), function(row_i) {
+        sapply(1:(N - 1), function(col_i) {
+          max(obs_combo_array[row_i, col_i, 1:2])
+        })
+      }) %>% t
+      
+      depth[obs_index] <- mean((sub_matrix > max_matrix)[
+        row(sub_matrix)!=col(sub_matrix)
+        #^ignoring the diagonal values
+      ])
+    }
     
-    depth[obs_index] <- mean((sub_matrix > max_matrix)[
-      row(sub_matrix)!=col(sub_matrix)
-      #^ignoring the diagonal values
-    ])
-  }
-  
-  
-  if (df_out) {
-    depth_out <- rnames %>% dplyr::mutate(depth = depth)
     
+    if (df_out) {
+      depth_out <- rnames %>% dplyr::mutate(depth = depth)
+      
+    } else {
+      rnames <- rnames %>% tidyr::unite(col = "names",
+                                        dplyr::everything(), sep = "|") %>% 
+        dplyr::pull(names)
+      
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
   } else {
-    rnames <- rnames %>% tidyr::unite(col = "names",
-                                      dplyr::everything(), sep = "|") %>% 
-      dplyr::pull(names)
+    N <- nrow(x_new)
+    rnames <- rownames(x_new) # data.frame
     
-    names(depth) <- rnames
-    depth_out <- depth
+    depth <- rep(0, N)
+    
+    for (obs_index in 1:N) {
+      sub_matrix <- x
+      obs_column <- x_new[obs_index,1:nrow(x)]
+      obs_row <- obs_column # assumes symmetry...
+      
+      obs_combo_array <- array(0, dim = c(N - 1, N - 1, 2))
+      obs_combo_array[, ,1] <- matrix(rep(obs_column, N - 1),
+                                      nrow = N - 1)
+      obs_combo_array[, ,2] <- matrix(rep(obs_row, N - 1),
+                                      nrow = N - 1, byrow = T)
+      
+      max_matrix <- sapply(1:(N - 1), function(row_i) {
+        sapply(1:(N - 1), function(col_i) {
+          max(obs_combo_array[row_i, col_i, 1:2])
+        })
+      }) %>% t
+      
+      depth[obs_index] <- mean((sub_matrix > max_matrix)[
+        row(sub_matrix)!=col(sub_matrix)
+        #^ignoring the diagonal values
+      ])
+    }
+    
+    
+    if (df_out) {
+      depth_out <- rnames %>% dplyr::mutate(depth = depth)
+      
+    } else {
+      rnames <- rnames %>% tidyr::unite(col = "names",
+                                        dplyr::everything(), sep = "|") %>% 
+        dplyr::pull(names)
+      
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
   }
-  
-  return(depth_out)
   
 }
 
@@ -433,7 +524,13 @@ if (r_new_interface()){
 #' with \pkg{TCpredictionbands} on github:
 #' \href{https://github.com/Mr8ND/TC-prediction-bands/tree/master/TCpredictionbands}{TCpredictionbands}.
 #'
-#' @param dist_mat a n x n square positive symmetric matrix or a tidy_dist_mat
+#' @param x a n x n square positive symmetric matrix or a tidy_dist_mat
+#' @param x_new a n_new x n matrix or tidy_dist_mat where the rows correspond to
+#' new observations, the columns correspond to points in \code{x} (if \code{x} 
+#' and \code{x_new} are matrices then they need to be corrected ordered). If 
+#' this value is not \code{NULL} (default is \code{NULL}) then localized depth
+#' vector will be calculated for these observations relative to observations 
+#' defined with \code{x} and \code{x_new}'s columns.
 #' @param tau localizing parameter (default is Inf) Can either by a standard
 #'   numerical value or a string as a percentage (e.g. "20\%")
 #' @param df_out indicates if one should return a data.frame our a vector, by
@@ -460,13 +557,13 @@ if (r_new_interface()){
 #' ldd_vec2 <- local_distance_depth_function(dist_mat, tau = 1.5) # c(1,0,0)
 #' ldd_vec3 <- local_distance_depth_function(dist_mat, tau = 1) # c(0,0,0)
 #' ldd_vec <- local_distance_depth_function(dist_mat, tau = .1) # c(0,0,0)
-local_distance_depth_function <- function(dist_mat,tau = Inf, df_out = "auto"){
+local_distance_depth_function <- function(x, x_new, tau = Inf, df_out = "auto"){
   UseMethod("local_distance_depth_function")
 }
 
 #' @rdname local_distance_depth_function
 #' @export
-local_distance_depth_function.matrix <- function(dist_mat, tau = Inf, 
+local_distance_depth_function.matrix <- function(x, x_new, tau = Inf, 
                                                  df_out = F){
   if (df_out == "auto"){
     df_out <- FALSE
@@ -474,104 +571,35 @@ local_distance_depth_function.matrix <- function(dist_mat, tau = Inf,
   
   if (inherits(tau, "character")){
     percentage <- check_character_percent(tau, "tau")
-    tau <- stats::quantile(dist_mat, percentage)
+    tau <- stats::quantile(x, percentage)
   }
   
-  if (nrow(dist_mat) != ncol(dist_mat) |
-      any(t(dist_mat) != dist_mat) |
-      any(dist_mat < 0)) {
-    stop("your dist_mat is not a positive symmetric square matrix")
+  if (nrow(x) != ncol(x) |
+      any(t(x) != x) |
+      any(x < 0)) {
+    stop("your x is not a positive symmetric square matrix")
   }
   
-  N <- nrow(dist_mat)
-  rnames <- rownames(dist_mat)
-  
-  depth <- rep(0, N)
-  
-  for (obs_index in 1:N) {
-    # effected by tau
-    rm_idx <- c(1:N)[-obs_index]
+  if (is.null(x_new)){
+    N <- nrow(x)
+    rnames <- rownames(x)
     
-    dist_to_obs = dist_mat[obs_index, -obs_index]
-    keep_idx <- rm_idx[dist_to_obs <= tau]
-    N_keep <- length(keep_idx)
+    depth <- rep(0, N)
     
-    if (N_keep <= 1) { # if only 1 or 0 points are in the S
-      depth[obs_index] <- 0
-    } else {
-    sub_matrix <- dist_mat[keep_idx,keep_idx]
-    obs_column <- dist_mat[keep_idx, obs_index]
-    obs_row <- dist_mat[obs_index, keep_idx]
-    
-    obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
-    obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
-                                    nrow = N_keep)
-    obs_combo_array[, ,2] <- matrix(rep(obs_row, N_keep),
-                                    nrow = N_keep, byrow = T)
-    
-    # below seems complicated
-    max_matrix <- apply(obs_combo_array, 1:2, max)
-
-    depth[obs_index] <- mean((sub_matrix > max_matrix)[
-      row(sub_matrix)!=col(sub_matrix)
-      #^ignoring the diagonal values
-      ])
-    }
-  }
-  
-  if (df_out) {
-    if (is.null(rnames)){
-      rnames <- 1:length(depth)
-    }
-    depth_out <- data.frame(names = rnames,
-                            local_depth = depth)
-  } else {
-    names(depth) <- rnames
-    depth_out <- depth
-  }
-  
-  return(depth_out)
-}
-
-
-#' @rdname local_distance_depth_function
-#' @export
-local_distance_depth_function.tidy_dist_mat <- function(dist_mat, tau = Inf, 
-                                                        df_out = T){
-  if (df_out == "auto"){
-    df_out <- TRUE
-  }
-  
-  if (inherits(tau, "character")){
-    percentage <- check_character_percent(tau, "tau")
-    tau <- stats::quantile(dist_mat, percentage)
-  }
-  
-  if (nrow(dist_mat) != ncol(dist_mat) |
-      any(t(dist_mat) != dist_mat) |
-      any(dist_mat < 0)) {
-    stop("your dist_mat is not a positive symmetric square matrix")
-  }
-  
-  N <- nrow(dist_mat)
-  rnames <- rownames(dist_mat) # data.frame
-  
-  depth <- rep(0, N)
-  
-  for (obs_index in 1:N) {
-    # effected by tau
-    rm_idx <- c(1:N)[-obs_index]
-    
-    dist_to_obs = dist_mat[obs_index, -obs_index]
-    keep_idx <- rm_idx[dist_to_obs <= tau]
-    N_keep <- length(keep_idx)
-    
-    if (N_keep <= 1) { # if only 1 or 0 points are in the S
-      depth[obs_index] <- 0
-    } else {
-      sub_matrix <- dist_mat[keep_idx,keep_idx]
-      obs_column <- dist_mat[keep_idx, obs_index]
-      obs_row <- dist_mat[obs_index, keep_idx]
+    for (obs_index in 1:N) {
+      # effected by tau
+      rm_idx <- c(1:N)[-obs_index]
+      
+      dist_to_obs = x[obs_index, -obs_index]
+      keep_idx <- rm_idx[dist_to_obs <= tau]
+      N_keep <- length(keep_idx)
+      
+      if (N_keep <= 1) { # if only 1 or 0 points are in the S
+        depth[obs_index] <- 0
+      } else {
+      sub_matrix <- x[keep_idx,keep_idx]
+      obs_column <- x[keep_idx, obs_index]
+      obs_row <- x[obs_index, keep_idx]
       
       obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
       obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
@@ -581,27 +609,200 @@ local_distance_depth_function.tidy_dist_mat <- function(dist_mat, tau = Inf,
       
       # below seems complicated
       max_matrix <- apply(obs_combo_array, 1:2, max)
-      
+  
       depth[obs_index] <- mean((sub_matrix > max_matrix)[
         row(sub_matrix)!=col(sub_matrix)
         #^ignoring the diagonal values
-      ])
+        ])
+      }
     }
-  }
-  
-  if (df_out) {
-    depth_out <- rnames %>% dplyr::mutate(local_depth = depth)
     
+    if (df_out) {
+      if (is.null(rnames)){
+        rnames <- 1:length(depth)
+      }
+      depth_out <- data.frame(names = rnames,
+                              local_depth = depth)
+    } else {
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
   } else {
-    rnames <- rnames %>% tidyr::unite(col = "names",
-                                      dplyr::everything(), sep = "|") %>% 
-      dplyr::pull(names)
+    N <- nrow(x_new)
+    rnames <- rownames(x_new)
     
-    names(depth) <- rnames
-    depth_out <- depth
+    depth <- rep(0, N)
+    
+    for (obs_index in 1:N) {
+      # effected by tau
+      rm_idx <- c(1:ncol(x_new))
+      
+      dist_to_obs = x_new[obs_index, rm_idx]
+      keep_idx <- rm_idx[dist_to_obs <= tau]
+      N_keep <- length(keep_idx)
+      
+      if (N_keep <= 1) { # if only 1 or 0 points are in the S
+        depth[obs_index] <- 0
+      } else {
+        sub_matrix <- x[keep_idx, keep_idx]
+        obs_column <- x[obs_index, keep_idx]
+        obs_row <- obs_column
+        
+        obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
+        obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
+                                        nrow = N_keep)
+        obs_combo_array[, ,2] <- matrix(rep(obs_row, N_keep),
+                                        nrow = N_keep, byrow = T)
+        
+        # below seems complicated
+        max_matrix <- apply(obs_combo_array, 1:2, max)
+        
+        depth[obs_index] <- mean((sub_matrix > max_matrix)[
+          row(sub_matrix)!=col(sub_matrix)
+          #^ignoring the diagonal values
+        ])
+      }
+    }
+    
+    if (df_out) {
+      if (is.null(rnames)){
+        rnames <- 1:length(depth)
+      }
+      depth_out <- data.frame(names = rnames,
+                              local_depth = depth)
+    } else {
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
+  }
+}
+
+
+#' @rdname local_distance_depth_function
+#' @export
+local_distance_depth_function.tidy_dist_mat <- function(x, x_new,
+                                                        tau = Inf, 
+                                                        df_out = T){
+  if (df_out == "auto"){
+    df_out <- TRUE
   }
   
-  return(depth_out)
+  if (inherits(tau, "character")){
+    percentage <- check_character_percent(tau, "tau")
+    tau <- stats::quantile(as.matrix(x), percentage)
+  }
+  
+  if (nrow(x) != ncol(x) |
+      any(t(x) != x) |
+      any(x < 0)) {
+    stop("your x is not a positive symmetric square matrix")
+  }
+  
+  if (is.null(x_new)){
+    N <- nrow(x)
+    rnames <- rownames(x) # data.frame
+    
+    depth <- rep(0, N)
+    
+    for (obs_index in 1:N) {
+      # effected by tau
+      rm_idx <- c(1:N)[-obs_index]
+      
+      dist_to_obs = x[obs_index, -obs_index]
+      keep_idx <- rm_idx[dist_to_obs <= tau]
+      N_keep <- length(keep_idx)
+      
+      if (N_keep <= 1) { # if only 1 or 0 points are in the S
+        depth[obs_index] <- 0
+      } else {
+        sub_matrix <- x[keep_idx,keep_idx]
+        obs_column <- x[keep_idx, obs_index]
+        obs_row <- x[obs_index, keep_idx]
+        
+        obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
+        obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
+                                        nrow = N_keep)
+        obs_combo_array[, ,2] <- matrix(rep(obs_row, N_keep),
+                                        nrow = N_keep, byrow = T)
+        
+        # below seems complicated
+        max_matrix <- apply(obs_combo_array, 1:2, max)
+        
+        depth[obs_index] <- mean((sub_matrix > max_matrix)[
+          row(sub_matrix)!=col(sub_matrix)
+          #^ignoring the diagonal values
+        ])
+      }
+    }
+    
+    if (df_out) {
+      depth_out <- rnames %>% dplyr::mutate(local_depth = depth)
+      
+    } else {
+      rnames <- rnames %>% tidyr::unite(col = "names",
+                                        dplyr::everything(), sep = "|") %>% 
+        dplyr::pull(names)
+      
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
+  } else {
+    N <- nrow(x_new)
+    rnames <- rownames(x_new) # data.frame
+    
+    depth <- rep(0, N)
+    
+    for (obs_index in 1:N) {
+      # effected by tau
+      dist_to_obs = x_new[obs_index, 1:ncol(x_new)]
+      keep_idx <- c(1:ncol(x_new))[dist_to_obs <= tau]
+      keep_idx_df <- colnames(x_new)[dist_to_obs <= tau,]
+      
+      N_keep <- length(keep_idx)
+      
+      if (N_keep <= 1) { # if only 1 or 0 points are in the S
+        depth[obs_index] <- 0
+      } else {
+        sub_matrix <- x[keep_idx_df]
+        obs_column <- x[obs_index, keep_idx_df]
+        obs_row <- obs_column
+        
+        obs_combo_array <- array(0, dim = c(N_keep, N_keep, 2))
+        obs_combo_array[, ,1] <- matrix(rep(obs_column, N_keep),
+                                        nrow = N_keep)
+        obs_combo_array[, ,2] <- matrix(rep(obs_row, N_keep),
+                                        nrow = N_keep, byrow = T)
+        
+        # below seems complicated
+        max_matrix <- apply(obs_combo_array, 1:2, max)
+        
+        depth[obs_index] <- mean((sub_matrix > max_matrix)[
+          row(sub_matrix)!=col(sub_matrix)
+          #^ignoring the diagonal values
+        ])
+      }
+    }
+    
+    if (df_out) {
+      depth_out <- rnames %>% dplyr::mutate(local_depth = depth)
+      
+    } else {
+      rnames <- rnames %>% tidyr::unite(col = "names",
+                                        dplyr::everything(), sep = "|") %>% 
+        dplyr::pull(names)
+      
+      names(depth) <- rnames
+      depth_out <- depth
+    }
+    
+    return(depth_out)
+  }
 }
 
 
