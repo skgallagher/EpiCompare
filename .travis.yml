@@ -4,6 +4,11 @@ language: r
 repos:
   CRAN: https://cloud.r-project.org
 
+addons:
+  apt:
+    packages:
+      - libgit2-dev
+
 cache:
   packages: true
 

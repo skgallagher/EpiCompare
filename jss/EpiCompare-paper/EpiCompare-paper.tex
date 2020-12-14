@@ -1,3 +1,6 @@
+% To remove when JSS.cls is fixed
+% https://github.com/rstudio/rticles/issues/329
+\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -9,7 +12,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +49,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -68,44 +73,51 @@ Pittsburgh, PA 15213\\
 \usepackage{multirow}
 \usepackage{wrapfig}
 \usepackage{float}
+\usepackage{xcolor}
 
 \usepackage{amsmath}
 
 \begin{document}
 
+\newcommand{\shannon}[1]{\textcolor{orange}{#1}}
+\newcommand{\ben}[1]{\textcolor{violet}{#1}}
+
+\newtheorem{theorem}{Theorem}
+
 \section[Intro]{Introduction}\label{sec:intro}
 
-The recent (and currently on-going) COVID-19 global epidemic has
+The recent (and currently on-going) COVID-19 global pandemic has
 galvanized public interest in understanding more about infectious
-disease modeling highlighted the usefulness of research in the area of
-infectious disease epidemiology. Infectious disease models typically
-attempt to do one or more of the following: 1) predict the spread of
-current and future epidemics
+disease modeling and has highlighted the usefulness of research in the
+area of infectious disease epidemiology. Infectious disease models
+typically attempt to do one or more of the following: 1) predict the
+spread of current and future epidemics
 \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and
 current epidemics to increase scientific knowledge
 \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or
 project epidemic scenarios under pre-specified parameters
-\citep[e.g. ...][]{}. The COVID-19 epidemic highlights how all three
+\citep[e.g. ...][]{}. The COVID-19 pandemic highlights how all three
 goals are important both separately and taken as a whole. Infectious
 diseases inflict enormous burdens on the world: millions of lives lost
 and trillions of dollars spent yearly. Correctly analyzing and
 addressing these issues aids in prevention and mitigation of future
-outbreaks.
+outbreaks. \textcolor{orange}{really like this paragraph}
 
-The current epidemic of COVID-19 also highlights that these models are
-just one piece of the overall analysis pipeline. University based
-resources like John Hopkin's and government numerical dashboards (across
-all levels of government) during the COVID-19 epidemic remind us that
-descriptive statistics and visualization can be a important first step
-in the process (multiple \cite{}?).\} Still, rightly so, a large amount
-of theoretical work goes into modeling epidemics, with different models
-focusing at the individual / agent level, network structure or just
-aggregate flows (review paper \cite{}?). All placing individuals /
+The current epidemic of COVID-19 also highlights that infectious disease
+models are only one piece of the overall analysis pipeline. University
+based resources like John Hopkin's and government numerical dashboards
+(across all levels of government) during the COVID-19 epidemic remind us
+that descriptive statistics and visualization can be a important first
+step in the process (multiple \cite{}?).\} Still, rightly so, a large
+amount of theoretical work goes into modeling epidemics, with different
+models focusing at the individual / agent level, network structure or
+just aggregate flows (review paper \cite{}?). All placing individuals /
 proportions of the populations into different states (e.g.~suspectible,
 exposed, infected, recovered, etc.). With all these models, review and
 comparison papers in the literature and through MIDAS (Models of
 Infectious Disease Agent Study) Control Center helps the individual
 practitioner decide the correct approach.
+\textcolor{orange}{along with expertise from healthcare professionals...}
 
 At the same time, analysis packages often only address a portion of the
 analysis pipeline. Modeling tools often don't provide easy ways to
@@ -140,6 +152,10 @@ individuals) don't always as intelligently capture the natural
 connections between the proportion of individuals in these states. Tools
 in \pkg{EpiCompare} attempt to give the user the ability to extend their
 toolkit to evaluate epidemics to also include time-invariant approaches.
+The goal of \pkg{EpiCompare} is not to supplant existing infectious
+disease modeling tools and software but, rather, is a concerted effort
+to create standard and fair comparisons among models developed for
+disease outbreaks and outbreak data.
 
 This paper is broken up into the following sections, section
 \ref{sec:time-invariant} motivates and showcases tools of time-invariant
@@ -154,8 +170,102 @@ INSTEAD OF HAVING A LITERATURE REVIEW IS BETTER.
 \section[Time-invariant]{Motivation and tools for time-invariant
 analysis}\label{sec:time-invariant}
 
-SHANNON: I FEEL LIKE WE CAN JUST CLEAN UP TO ORIGINAL SECTION AND PUT IT
-BACK IN HERE
+\hypertarget{visualize}{%
+\subsection{Visualize}\label{visualize}}
+
+One issue that the COVID-19 outbreak has brought to the forefront is the
+importance of figures and graphs to inform, support, and even persuade
+lay people of technical and scientific results \cite{}. Quantities and
+trends shown in these visualizations include exponential growth curves,
+S-curves, peak day and percent of infectious indviduals, ICU capacity,
+and deaths over time and uncertainty of such estimates.
+
+\pkg{EpiCompare} supports traditional visualizations (e.g.~\# in
+condition vs.~time) and also introduces a novel visualization of
+epidemics via time free analysis. In particular, we use ternary plots
+that show Susceptible-Infectious-Recovered data/models (SIR). The
+advantages of these ternary plots are 1) a standard way to compare
+epidemics with different outbreak times and time scales, 2) a novel
+interpretation of \(R_0\), the initial reproduction number under some
+circumstances, and 3) clear visualization of joint SIR uncertainty via
+conformal bands.
+
+Ternary plots are sometimes used in chemistry \citep{} but only rarely
+seen in the field of infectious disease epidemiology (to our knowledge,
+only seen in \cite{}). Ternary plots illustrate the relationship of
+constrained 3D data, namely of points
+\((a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]\) with
+\(a_i+ b_i + c_i =1\) and as such, are situational. The SIR framework,
+composed of data and statistical models where individuals pass from
+Susceptible to Infectious to Recovered states is a common, if not the
+most common, modeling framework in infectious disease epidemiology (seen
+in examples of recent published works in \cite{}), and also happens to
+be of the situational format required for ternary plots where
+\((S(t), I(t), R(t))\) are the number of susceptible, infectious, and
+recovered individuals in each state at time \(t\) and
+\(S(t) + I(t) + R(t) = N(t)\) where \(N(t)\) is the population size at
+time \(t\).
+
+Ternary plots are time-free in the sense that the temporal scale does
+not explicitly apear in the visualization and as a consequence, allow
+for direct comparisons of outbreaks on different time scales (e.g.~days
+vs.~years) or of SIR data of the same disease in different areas (our
+first case study in Sec. \ref{sec:ex1} focuses on this).
+
+Ternary plots also, under certain conditions, have a special
+relationship with \(R_0\), the initial reproduction number, which has
+been called the ``most important quantity in epidemiology'\,' \citep{}.
+The reproduction is itself a time-free concept and is the average number
+of secondary infections primary infection will generate when the primary
+infection is added to a completely susceptible population. To see the
+importance of \(R_0\), one need only read the newspaper \citep{} or look
+at the length of the table of estimated \(R_0\) quantities for COVID-19
+\citep{}.
+
+In regards to traditional \(X\) vs.~time plots, \(R_0\) is difficult to
+visualize. For example, as seen in Fig. \ref{fig:r0-trad}, it is
+possible that two models have the same value of \(R_0\) but there is no
+way of knowing that from looking at the graph.
+
+It is possible to identify, at a glance, which epidemic paths have the
+same value of \(R_0\) via ternary plot visualizations, under some
+circumstances. To show, this we first need to introduce the classic,
+deterministic Kermack and McKendrick SIR model where the initial number
+in each state \((S(0), I(0), R(0))\) are known and \(N\) the population
+size is constant. The movement of individuals among the states is given
+by the following differential equations (Eq. \eqref{eq:sir-ode}) where
+\(\beta\) is the average infection rate and \(\gamma\) is the average
+recovery rate, \begin{align}\label{eq:sir-ode}
+      S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
+      I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
+      R^\prime(t) &= \gamma I(t) \nonumber.
+  \end{align}
+
+If we have two SIR models that follow the Kermack and McKendrick SIR
+model, have the same percentage of individuals in the initial states,
+and the same value of \(R_0\) then the two models will create exactly
+overlapping paths in a ternary plot.
+
+More formally, let two Kermack and McKendrick (see Eq.
+\eqref{eq:sir-ode}) SIR models be denoted \((S_1(t), I_1(t), R_1(t))\)
+and \((S_2(t), I_2(t), R_2(t))\), respectively, for \(t > 0\). Assume
+both models have initial values \((S(0), I(0), R(0))\). Let
+\(R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}\) where
+\(\beta_i\) and \(\gamma_i\) are the average infection rate and recovery
+rate, respectively, for SIR model \(i=1, 2\). Equivalently,
+\(\beta_2 = a \beta_1\) if and only if \(\gamma_2 = a \gamma_1\) for
+some \(a > 0\).
+
+\begin{theorem}\label{thm:sir-scale}
+Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
+\end{theorem}
+
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent
+result from \cite{} and is shown in detail in Appendix \ref{app:proof}.
+The consequence of Theorem \ref{thm:sir-scale} is that for two SIR
+models that have the same initial percent of individuals in each state
+and \(R_0\) then for every point on the epidemic path of the first SIR
+model is also a point on the epidemic path of the second SIR model.
 
 \section[Package overview]{Package tool overview}\label{sec:overview}
 
@@ -216,7 +326,7 @@ later made visible by \cite{oesterle1992} and made available in an
 rich set of features including household members, school level,
 household locations, date of first symptoms (prodromes), date of measles
 rash, and even the alleged infector. A subset of the data is shown in
-Table \ref{tab:hags-people} Because of these rich features, this data
+Table \ref{tab:hags-people}. Because of these rich features, this data
 set has been an ideal testing ground methodology in infectious disease
 epidemiology and is used in work by
 \cite{Neal2004,britton2011,groendyke2012,becker2016}.
@@ -328,23 +438,14 @@ R> ggplot(data = plot_df,
 \end{figure}
 \end{CodeChunk}
 
-\begin{CodeChunk}
-\begin{CodeInput}
-R> with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] 0
-\end{CodeOutput}
-\end{CodeChunk}
-
 The real power of \code{agents_to_aggregate()} lies in its ability to
 aggregate over any number of pre-specified states. For example, the
 Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the
 time of infection and recovery, respectively of each individual. We can
 then plot the SIR values through a time-invariant lens using
-\pkg{ggplot2} functions or with our custom \code{geom},
-\code{geom_aggregate}, which takes the original agent data as input
-(Fig. \ref{fig:hag-tern-raw}).
+\pkg{ggplot2} and \pkg{ggtern} functions (as shown in Fig.
+\ref{fig:hag-tern-raw}) or with our custom \code{geom},
+\code{geom_aggregate}, which takes the raw agent data as input.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -407,9 +508,9 @@ Along with multiple epidemic states, the function
 \code{agents_to_aggregate} can also be extended to populations with
 vital dynamics (e.g.~birth and death) and examples of this are shown in
 the package vignette. In summary, \code{agents_to_aggregate()} is a
-multi-purpose workhorse that be leveraged to convert individual level
-records into aggregate information that may be more useful for some
-forms of epidemic modeling such as compartment modeling.
+multi-purpose workhorse that may be leveraged to convert individual
+level records into aggregate information that may be more useful for
+some forms of epidemic modeling such as compartment modeling.
 
 Up to this point, we have used \pkg{EpiCompare} in the context of
 observed data. We also want to compare statistical models, and
@@ -423,7 +524,9 @@ via maximum likelihood and simulate from the model with those best fit
 parameters. Our function \code{simulate_agents()} generates individual
 level data according to discrete multinomial draws, which depend on the
 number of individuals in each state at the previous time step and a
-matrix of transition probabilities. For example
+matrix of transition probabilities. For example, the below code
+generates 100 simulations of an outbreak of a diseease with one initial
+infector in a population of \(n= 188\) individuals.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -468,9 +571,9 @@ The result of our simulation is the object \code{agents} which is a
 \(I\), and \(R\) states for a given simulation. Before we examine the
 results of this simple SIR model, we will also examine another, more
 sophisticated SIR model, this time from the package \pkg{EpiModel}.
-Briefly, this model fits a contact network, where the class of the
-student is a covariate and then simulates a SIR-epidemic on that
-network.
+Briefly, this model first fits a contact network to the set of
+indivduals, where the class of the student is a covariate. The model
+then simulates a SIR-epidemic on that network.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -579,4 +682,3 @@ BAND THINGS.
 
 
 \end{document}
-
