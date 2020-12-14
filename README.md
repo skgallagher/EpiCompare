@@ -190,7 +190,8 @@ df_groups %>% ggplot() +
 6.  Useful Rstudio shortcuts for `Roxygen2`: (a) create `Roxygen2`
     comments template with `option` + `command` + `shift` + `R` (b) In
     `Roxygen2` comments do `control` + `shift` + `/` to format relative
-    to 80 char limit. 7.[stack
+    to 80 char limit.
+7.  [stack
     overflow](https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu)
     post on how to pass `check` for `rownames<-.tidy_dist_mat`.
 

@@ -3,6 +3,12 @@
 #' DESCRIBE MORE
 #'
 #' @param x a n x n square positive symmetric matrix or a \code{tidy_dist_mat}
+#' @param x_new a n_new x n matrix or tidy_dist_mat where the rows correspond to
+#' new observations, the columns correspond to points in \code{x} (if \code{x} 
+#' and \code{x_new} are matrices then they need to be corrected ordered). If 
+#' this value is not \code{NULL} (default is \code{NULL}) then the 
+#' psuedo-density vector will be calculated for these observations relative to 
+#' observations defined with \code{x} and \code{x_new}'s columns.
 #' @param sigma scaling parameter. Can either by a standard numerical value or a
 #' string as a percentage (e.g. "20\%")
 #' @param df_out indicates if one should return a data.frame our a vector,

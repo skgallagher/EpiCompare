@@ -164,7 +164,7 @@ df_groups %>% ggplot() +
 4. Now that `R` have come out with version >= 4.0.0, we now need to call `.S3method("method", "class")` to define the connection for `S3` methods (e.g. `method.class` function), which we have for the `contained` function. 
 5. **Does 2 wrongs make a right?** As of 9/23 `ggtern` had an [issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot) that it messed with `ggplot2`'s legends when loaded (it over-wrote the `print.ggplot` and other functions). To "correct" this, we've over-wrote `ggtern`'s `print.ggplot` to correct this problem when not producing ternary plots (code in `aaa.R`). 
 6. Useful Rstudio shortcuts for `Roxygen2`: (a) create `Roxygen2` comments template with `option` + `command` + `shift` + `R` (b) In `Roxygen2` comments do `control` + `shift` + `/` to format relative to 80 char limit.
-7.[stack overflow](https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu) post on how to pass `check` for `rownames<-.tidy_dist_mat`.
+7. [stack overflow](https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu) post on how to pass `check` for `rownames<-.tidy_dist_mat`.
 
 ## Contributors
 

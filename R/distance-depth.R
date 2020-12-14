@@ -466,7 +466,7 @@ distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL, df_out = T){
                                         "columns as x"))
     
     assertthat::assert_that(nrow(colnames(x_new) %>%
-                              inner_join(colnames(x), 
+                              dplyr::inner_join(colnames(x), 
                                          by = names(colnames(x)))) ==
                               nrow(colnames(x_new)),
                             msg = paste("x_new's colname's columns should be",
@@ -783,7 +783,7 @@ local_distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL,
                                         "columns as x"))
     
     assertthat::assert_that(nrow(colnames(x_new) %>%
-                                   inner_join(colnames(x), 
+                                   dplyr::inner_join(colnames(x), 
                                               by = names(colnames(x)))) ==
                               nrow(colnames(x_new)),
                             msg = paste("x_new's colname's columns should be",
@@ -798,8 +798,7 @@ local_distance_depth_function.tidy_dist_mat <- function(x, x_new = NULL,
       # effected by tau
       dist_to_obs = x_new[obs_index, 1:ncol(x_new)]
       keep_idx <- c(1:ncol(x_new))[dist_to_obs <= tau]
-      keep_idx_df <- colnames(x_new) %>%
-        tibble::tibble() %>% .[as.vector(dist_to_obs <= tau),] %>%
+      keep_idx_df <- tibble::tibble(colnames(x_new))[as.vector(dist_to_obs <= tau),] %>%
         as.data.frame
       
       N_keep <- length(keep_idx)

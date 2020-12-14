@@ -269,6 +269,7 @@ format.tidy_dist_mat <- function(x, ...){
 #' @param x tidy_dist_mat object
 #' @param ... (like \code{digits = 6}) number of significant digits to display
 #'   (uses \code{signif})
+#' @param n maximum number of rows or columns of x to print
 #'
 #' @export
 #'
@@ -299,11 +300,13 @@ print.tidy_dist_mat <- function(x, ..., n = NULL){
 #' convert \code{tidy_dist_mat} to \code{matrix}
 #'
 #' @param x \code{tidy_dist_mat} object
+#' @param ... additional arguments to be passed to or from methods. (currently
+#' doesn't do anything for this.)
 #'
 #' @return matrix representation (without column information)
 #' @export
 #'
-as.matrix.tidy_dist_mat <- function(x){
+as.matrix.tidy_dist_mat <- function(x, ...){
   inner <- unclass(x)
   attr(inner, "rownames_df") <- NULL
   attr(inner, "colnames_df") <- NULL
@@ -361,12 +364,16 @@ process_df_index <- function(x, index, margin = 1){
     j <- process_df_index(x, j, margin = 2)
   }
   
-  
-  
-  
   x_mat <- as.matrix(x)[i,j,drop = F]
-  rownames_new <- rownames(x) %>% tibble::tibble() %>% .[i,] %>% data.frame
-  colnames_new <- colnames(x) %>% tibble::tibble() %>% .[j,] %>% data.frame
+  
+  perserve_rownames_class <- class(rownames(x))
+  perserve_colnames_class <- class(colnames(x))
+  
+  rownames_new <- tibble::tibble(rownames(x))[i,]
+  class(rownames_new) <- perserve_rownames_class
+  colnames_new <- tibble::tibble(colnames(x))[j,] 
+  class(colnames_new) <- perserve_colnames_class
+  
   
   tidy_dist_mat(x_mat, 
                 rownames_df = rownames_new,
@@ -419,7 +426,7 @@ is.not_df <- function(x){
 
 #' find the index of a \code{tidy_dist_mat} relative to a data.frame 
 #'
-#' probably more of an internal function
+#' probably more of an internal function...
 #'
 #' @param x \code{tidy_dist_mat} object
 #' @param index data.frame index associated with \code{x}'s colnames or
@@ -428,7 +435,7 @@ is.not_df <- function(x){
 #' @param margin scalar representing if \code{index} is related to rows or 
 #' columns of \code{x}. 1 = row, 2 = column.
 #'
-#' @return
+#' @return index values associated with rows or columns of \code{x}
 #' @export
 which_index <- function(x, index, margin = 1){
   UseMethod("which_index")
@@ -535,7 +542,8 @@ which_not_index.tidy_dist_mat <- function(x, index, margin = 1){
 
 
 
-#' Return the First or Last Parts of a \code{tidy_dist_mat} (symmetric grab) 
+
+#' Return the Last Parts of a \code{tidy_dist_mat} (symmetric grab) 
 #'
 #' @param x symmetric (in shape) \code{tidy_dist_mat} object
 #' @param n an integer of value bounded by the maximum rows \code{x}.
@@ -544,6 +552,7 @@ which_not_index.tidy_dist_mat <- function(x, index, margin = 1){
 #'
 #' @return \code{x[1:n]} or \code{x[(nrow(x)-n):nrow(x)]}
 #' @export
+#' @importFrom utils head
 head.tidy_dist_mat <- function(x, n = 6L, ...){
   assertthat::assert_that(ncol(x) == nrow(x),
                           msg = paste("currently only able to to produce the",
@@ -555,8 +564,16 @@ head.tidy_dist_mat <- function(x, n = 6L, ...){
 }
 
 
-#' @rdname head.tidy_dist_mat
+#' Return the Last Parts of a \code{tidy_dist_mat} (symmetric grab) 
+#'
+#' @param x symmetric (in shape) \code{tidy_dist_mat} object
+#' @param n an integer of value bounded by the maximum rows \code{x}.
+#' @param ... arguments to be passed to or from other methods (currently none
+#' expected / used).
+#'
+#' @return \code{x[(nrow(x)-n):nrow(x)]}
 #' @export
+#' @importFrom utils tail
 tail.tidy_dist_mat <- function(x, n = 6L, ...){
   assertthat::assert_that(ncol(x) == nrow(x),
                           msg = paste("currently only able to to produce the",

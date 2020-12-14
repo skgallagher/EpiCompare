@@ -11,6 +11,8 @@
 
 \item{...}{(like \code{digits = 6}) number of significant digits to display
 (uses \code{signif})}
+
+\item{n}{maximum number of rows or columns of x to print}
 }
 \description{
 print tidy_dist_mat objects

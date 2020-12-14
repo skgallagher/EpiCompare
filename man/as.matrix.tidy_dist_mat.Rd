@@ -5,12 +5,15 @@
 \alias{as.array.tidy_dist_mat}
 \title{convert \code{tidy_dist_mat} to \code{matrix}}
 \usage{
-\method{as.matrix}{tidy_dist_mat}(x)
+\method{as.matrix}{tidy_dist_mat}(x, ...)
 
-\method{as.array}{tidy_dist_mat}(x)
+\method{as.array}{tidy_dist_mat}(x, ...)
 }
 \arguments{
 \item{x}{\code{tidy_dist_mat} object}
+
+\item{...}{additional arguments to be passed to or from methods. (currently
+doesn't do anything for this.)}
 }
 \value{
 matrix representation (without column information)

@@ -26,8 +26,8 @@ is which associated information *not* to include.}
 columns of \code{x}. 1 = row, 2 = column.}
 }
 \value{
-
+index values associated with rows or columns of \code{x}
 }
 \description{
-probably more of an internal function
+probably more of an internal function...
 }
