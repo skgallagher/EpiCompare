@@ -1,3 +1,66 @@
+
+#' Title
+#'
+#' @param tdmat must be a \code{tidy_dist_mat} object
+#' @param new_name_id data.frame containing which rownames of the \code{tdmat}
+#' are associated with the new observations. Note that this data.frame must
+#' be of the same format as \code{rownames(tdmat)}.
+#' @param distance_func distance function to calculates some type of ordering
+#' between observations with the distance matrix. This package currently
+#' provides 3 functions for this:
+#' \itemize{
+#'   \item{\code{distance_psudeo_density_function}}
+#'   \item{\code{distance_depth_function}}
+#'   \item{\code{local_distance_depth_function}}
+#' }
+#' If you are trying to make your own, please see examples of these methods for
+#' the \code{tidy_dist_mat} class. It's minimum required parameters are \code{x}
+#' \code{x_new=NULL}, \code{df_out}. And get's passed \code{...}
+#' @param ... additional parameters to be passed to the dist_func
+#' @param df_out indicates if one should return a data.frame or a list,
+#' by default returns data.frame.
+#' 
+#' @return returns either a data.frame with information about quantile score 
+#' value for new observations, the proportion of the simulations that have more 
+#' extreme values than it and the observations names (if df_out = T), else it 
+#' returns a list of quatile scores and proportion of simulations that had more
+#' extreme values than it.
+#' @export
+#'
+compare_new_to_rest_via_distance <- function(tdmat, 
+                                             new_name_id = data.frame(id = "true observation"), 
+                                             distance_func = distance_psuedo_density_function, 
+                                             ..., df_out = T){
+  
+  tdmat_small <- tdmat[not(new_name_id)]
+  
+  ranking_original <- distance_func(tdmat_small, ..., df_out = F)
+  
+  
+  tdmat_selected <- tdmat[new_name_id, not(new_name_id)]
+  new_ranking <- distance_func(x = tdmat_small, x_new = tdmat_selected, ..., 
+                               df_out = df_out)
+  
+  
+  if (df_out){
+    output_column_name <- names(new_ranking)[!(names(new_ranking) %in% names(rownames(tdmat_selected)))]
+    new_ranking$proportion_above <- sapply(new_ranking[output_column_name], 
+                                           function(x_val) {
+                                             mean(x_val > ranking_original)})
+    return(new_ranking)
+  } else {
+    proportion_above <- sapply(new_ranking, function(x_val) {
+      mean(x_val > ranking_original)})
+    output <- list("new_ranking" = new_ranking,
+                   "proportion_above" = proportion_above)
+    return(output)
+  }
+}
+
+
+
+
+
 #' Pull top (1-alpha)\% quantile percent of curves points.
 #'
 #' pulling out data points from curves that are ranked highest based on quantile

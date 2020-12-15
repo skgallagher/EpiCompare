@@ -742,12 +742,67 @@ event. In conclusion, \pkg{EpiCompare} makes it clear that, at a glance,
 and 2) the fit is only good at the individual point level as opposed to
 the epidemic path level.
 
-HERE BEN IS GOING TO LOOK AT THE EPIMODEL OUTPUT DIFFERENT PREDICTION
-BAND THINGS.
+\begin{CodeChunk}
+\begin{CodeInput}
+R> # after cleaning up and combining 
+R> all_together_df <- rbind(simple_sir,
++                          hagelloch_sir2)
+R> all_together_df[c(1:2, nrow(all_together_df) - c(1:0)),]
+\end{CodeInput}
+\begin{CodeOutput}
+# A tibble: 4 x 6
+# Groups:   sim [2]
+  Type               sim     t     S     I     R
+  <chr>            <dbl> <dbl> <dbl> <dbl> <dbl>
+1 Simple SIR           1     0   188     0     0
+2 Simple SIR           1     1   187     1     0
+3 true observation     0    54     1     0   187
+4 true observation     0    55     1     0   187
+\end{CodeOutput}
+\begin{CodeInput}
+R> compression_df <- all_together_df %>% group_by(Type, sim) %>% 
++   filament_compression(data_columns = c("S","I","R"), 
++                        number_points = 20)
+\end{CodeInput}
+\end{CodeChunk}
 
-\begin{itemize}
-\item thing
-\end{itemize}
+\begin{CodeChunk}
+\begin{CodeInput}
+R> dmat <- compression_df %>% 
++   dist_matrix_innersq_direction(
++     position = c(1:length(compression_df))[
++       names(compression_df) %in% c("S","I", "R")],
++     id_as_columns = T)
+R> 
+R> tdmat <- tidy_dist_mat(as.matrix(dmat[,-c(1:2)]),
++                        rownames_df = ungroup(dmat[,1:2]),
++                        colnames_df = ungroup(dmat[,1:2])) 
+R> 
+R> 
+R> simple_sir_true_obs_info <- tdmat %>% 
++   compare_new_to_rest_via_distance(
++     new_name_id = data.frame(Type = "true observation", sim = 0),
++     distance_func = distance_psuedo_density_function, 
++     sigma = "20%") 
+\end{CodeInput}
+\end{CodeChunk}
+
+\begin{CodeChunk}
+\begin{table}[!h]
+
+\caption{\label{tab:hags-extreme}The extremeness of the true simulations based on comparing psuedo-density estimates between true vs simulated curves}
+\centering
+\begin{tabular}[t]{l>{\raggedleft\arraybackslash}p{6cm}>{\raggedleft\arraybackslash}p{6cm}}
+\toprule
+Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
+\midrule
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{CodeChunk}
 
 \bibliography{EpiCompare.bib}
 

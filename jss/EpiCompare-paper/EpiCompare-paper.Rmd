@@ -214,6 +214,7 @@ library(dplyr)
 library(knitr)
 library(kableExtra)
 library(ggplot2)
+set.seed(2)
 
 theme_set(theme_bw(base_size = 24))
 ```
@@ -429,15 +430,116 @@ g +   geom_path(data = both_models %>% filter(t !=0),
 However, both models are not a good fit to the filamental path as opposed to the individual points in $(S, I, R)$-space.  What we mean by that is that both models predict epidemic paths that generally have a single defined peak of infection whereas the data certainly looks like it has two distinct peaks, likely caused by our assumed super-spreader event.  In conclusion, \pkg{EpiCompare} makes it clear that, at a glance, 1) the EpiModel network model is a better fit than the Simple SIR model, and 2) the fit is only good at the individual point level as opposed to the epidemic path level.
 
 
+```{r echo = F}
+simple_sir <- both_models %>% filter(Type == "Simple SIR") %>%
+  rename(S = "X0", I = "X1", R = "X2") %>%
+  select(Type, sim, t, S, I, R)
+
+hagelloch_sir2 <- hagelloch_sir %>%
+  rename(t = "time") %>%
+  mutate(Type = "true observation",
+         sim = 0) %>%
+  select(Type, sim, t, S, I, R)
+```
+```{r}
+# after cleaning up and combining 
+all_together_df <- rbind(simple_sir,
+                         hagelloch_sir2)
+all_together_df[c(1:2, nrow(all_together_df) - c(1:0)),]
+
+compression_df <- all_together_df %>% group_by(Type, sim) %>% 
+  filament_compression(data_columns = c("S","I","R"), 
+                       number_points = 20)
+```
+
+```{r echo = F}
+# # -OR- for 2d onto the simplex (done under the hood in geom_prediction_band:
+# compression_df <- all_together_df %>% 
+#   as.data.frame() %>% # just to be sure...
+#   get_xy_coord(xyz_col = c("S", "I", "R")) %>% # to 2d simplex space
+#   group_by(Type, sim) %>%
+#   filament_compression(data_columns = c("x","y"), 
+#                        number_points = 20)
+
+```
+
+```{r}
+dmat <- compression_df %>% 
+  dist_matrix_innersq_direction(
+    position = c(1:length(compression_df))[
+      names(compression_df) %in% c("S","I", "R")],
+    id_as_columns = T)
+
+tdmat <- tidy_dist_mat(as.matrix(dmat[,-c(1:2)]),
+                       rownames_df = ungroup(dmat[,1:2]),
+                       colnames_df = ungroup(dmat[,1:2])) 
 
 
+simple_sir_true_obs_info <- tdmat %>% 
+  compare_new_to_rest_via_distance(
+    new_name_id = data.frame(Type = "true observation", sim = 0),
+    distance_func = distance_psuedo_density_function, 
+    sigma = "20%") 
+
+```
+
+```{r echo = F}
+# EpiModel simulations:
+epimodel_sir <- both_models %>% filter(Type == "EpiModel SIR") %>%
+  rename(S = "X0", I = "X1", R = "X2") %>%
+  select(Type, sim, t, S, I, R)
+
+hagelloch_sir2 <- hagelloch_sir %>%
+  rename(t = "time") %>%
+  mutate(Type = "true observation",
+         sim = 0) %>%
+  select(Type, sim, t, S, I, R)
+
+all_together_df <- rbind(epimodel_sir,
+                         hagelloch_sir2)
+
+compression_df <- all_together_df %>% group_by(Type, sim) %>% 
+  filament_compression(data_columns = c("S","I","R"), 
+                       number_points = 20)
+
+dmat <- compression_df %>% 
+  dist_matrix_innersq_direction(
+    position = c(1:length(compression_df))[
+      names(compression_df) %in% c("S","I", "R")],
+    id_as_columns = T)
+
+tdmat <- tidy_dist_mat(as.matrix(dmat[,-c(1:2)]),
+                       rownames_df = ungroup(dmat[,1:2]),
+                       colnames_df = ungroup(dmat[,1:2])) 
 
 
+epimodel_sir_true_obs_info <- tdmat %>% 
+  compare_new_to_rest_via_distance(
+    new_name_id = data.frame(Type = "true observation", sim = 0),
+    distance_func = distance_psuedo_density_function, 
+    sigma = "20%") 
+```
 
-HERE BEN IS GOING TO LOOK AT THE EPIMODEL OUTPUT DIFFERENT PREDICTION BAND THINGS.
+```{r hagelloch-extremeness, echo = FALSE}
+simple_sir_info <- simple_sir_true_obs_info %>%
+  select(-sim) %>%
+  mutate(Type = "Simple SIR")
+eimodel_sir_info <- epimodel_sir_true_obs_info %>%
+  select(-sim) %>%
+  mutate(Type = "EpiModel SIR")
+
+rbind(simple_sir_info, eimodel_sir_info)  %>%
+  kable(format = "latex", booktabs = TRUE, 
+        col.names = 
+          linebreak(c("Type",
+                      "simulations-based estimated psuedo-density",
+              "proportion of simulations with lower estimated psuedo-density"),
+              align = c("l")),
+        caption = paste("The extremeness of the true simulations based on",
+                        "comparing psuedo-density estimates between true",
+                        "vs simulated curves"), label = "hags-extreme") %>%
+  kable_styling(position = "center", latex_options = "hold_position") %>%
+  column_spec(2:3, width = "6cm")
+```
 
 
-
-\begin{itemize}
-\item thing
-\end{itemize}
