@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{14}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,6 +8,15 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Aronson \emph{et~al.}(2020)Aronson, Brassey, and
+  Mahtani}]{Aronson2020}
+Aronson JK, Brassey J, Mahtani KR (2020).
+\newblock \enquote{{“When will it be over?”: An introduction to viral
+  reproduction numbers, R0 and Re}.}
+\newblock \emph{Technical report}, University of Oxford.
+\newblock
+  \urlprefix\url{https://www.cebm.net/covid-19/when-will-it-be-over-an-introduction-to-viral-reproduction-numbers-r0-and-re/}.
 
 \bibitem[{Becker \emph{et~al.}(2016)Becker, Birger, Teillant, Gastanaduy,
   Wallace, and Grenfell}]{becker2016}
@@ -54,12 +63,49 @@ Britton T, Kypraios T, O'Neill PD (2011).
   methodology and application to a measles outbreak.}
 \newblock \emph{Scandinavian Journal of Statistics}, \textbf{38}(3), 578--599.
 
+\bibitem[{Dalmasso \emph{et~al.}(2019)Dalmasso, Dunn, LeRoy, and
+  Schafer}]{Dalmasso2019a}
+Dalmasso N, Dunn R, LeRoy B, Schafer C (2019).
+\newblock \enquote{{A Flexible Pipeline for Prediction of Tropical Cyclone
+  Paths}.}
+\newblock \eprint{1906.08832}, \urlprefix\url{http://arxiv.org/abs/1906.08832}.
+
+\bibitem[{Fisher(2020)}]{Fisher2020}
+Fisher M (2020).
+\newblock \enquote{{R0, the Messy Metric That May Soon Shape Our Lives,
+  Explained}.}
+\newblock
+  \urlprefix\url{https://www.nytimes.com/2020/04/23/world/europe/coronavirus-R0-explainer.html?referringSource=articleShare}.
+
+\bibitem[{Gallagher \emph{et~al.}(2020)Gallagher, Chang, and
+  Eddy}]{Gallagher2020}
+Gallagher S, Chang A, Eddy WF (2020).
+\newblock \enquote{{Exploring the nuances of R0: Eight estimates and
+  application to 2009 pandemic influenza}.}
+\newblock \eprint{2003.10442}, \urlprefix\url{http://arxiv.org/abs/2003.10442}.
+
+\bibitem[{Gillespie(1976)}]{Gillespie1976}
+Gillespie DT (1976).
+\newblock \enquote{{A general method for numerically simulating coupled
+  chemical reactions}.}
+
 \bibitem[{Groendyke \emph{et~al.}(2012)Groendyke, Welch, and
   Hunter}]{groendyke2012}
 Groendyke C, Welch D, Hunter DR (2012).
 \newblock \enquote{A network-based analysis of the 1861 Hagelloch measles
   data.}
 \newblock \emph{Biometrics}, \textbf{68}(3), 755--765.
+
+\bibitem[{Harko \emph{et~al.}(2014)Harko, Lobo, and Mak}]{Harko2014}
+Harko T, Lobo FS, Mak MK (2014).
+\newblock \enquote{{Exact analytical solutions of the
+  Susceptible-Infected-Recovered (SIR) epidemic model and of the SIR model with
+  equal death and birth rates}.}
+\newblock \emph{Applied Mathematics and Computation}, \textbf{236}, 184--194.
+\newblock ISSN 00963003.
+\newblock \doi{10.1016/j.amc.2014.03.030}.
+\newblock \eprint{1403.2160},
+  \urlprefix\url{http://dx.doi.org/10.1016/j.amc.2014.03.030}.
 
 \bibitem[{Meyer \emph{et~al.}(2017)Meyer, Held, and
   H\"{o}hle}]{surveillance2017}

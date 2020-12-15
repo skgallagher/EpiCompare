@@ -1,6 +1,3 @@
-% To remove when JSS.cls is fixed
-% https://github.com/rstudio/rticles/issues/329
-\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -12,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -49,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -108,15 +103,16 @@ models are only one piece of the overall analysis pipeline. University
 based resources like John Hopkin's and government numerical dashboards
 (across all levels of government) during the COVID-19 epidemic remind us
 that descriptive statistics and visualization can be a important first
-step in the process (multiple \cite{}?).\} Still, rightly so, a large
-amount of theoretical work goes into modeling epidemics, with different
-models focusing at the individual / agent level, network structure or
-just aggregate flows (review paper \cite{}?). All placing individuals /
-proportions of the populations into different states (e.g.~suspectible,
-exposed, infected, recovered, etc.). With all these models, review and
-comparison papers in the literature and through MIDAS (Models of
-Infectious Disease Agent Study) Control Center helps the individual
-practitioner decide the correct approach.
+step in the process (multiple \cite{}?).\}
+\textcolor{orange}{add comment about NYT or something} Still, rightly
+so, a large amount of theoretical work goes into modeling epidemics,
+with different models focusing at the individual / agent level, network
+structure or just aggregate flows (review paper \cite{}?). All placing
+individuals / proportions of the populations into different states
+(e.g.~suspectible, exposed, infected, recovered, etc.). With all these
+models, review and comparison papers in the literature and through MIDAS
+(Models of Infectious Disease Agent Study) Control Center helps the
+individual practitioner decide the correct approach.
 \textcolor{orange}{along with expertise from healthcare professionals...}
 
 At the same time, analysis packages often only address a portion of the
@@ -156,6 +152,7 @@ The goal of \pkg{EpiCompare} is not to supplant existing infectious
 disease modeling tools and software but, rather, is a concerted effort
 to create standard and fair comparisons among models developed for
 disease outbreaks and outbreak data.
+\textcolor{orange}{flesh out time invariance introduction to better explain to non-experts what we mean.  perhaps mention R0}
 
 This paper is broken up into the following sections, section
 \ref{sec:time-invariant} motivates and showcases tools of time-invariant
@@ -170,76 +167,95 @@ INSTEAD OF HAVING A LITERATURE REVIEW IS BETTER.
 \section[Time-invariant]{Motivation and tools for time-invariant
 analysis}\label{sec:time-invariant}
 
-\hypertarget{visualize}{%
-\subsection{Visualize}\label{visualize}}
+Although epidemics are by definition a process that evolves over time,
+epidemics, including the recent COVID-19, often need to be compared in a
+time-invariant way to understand the processes at play. Additionally,
+many tools to examine the quantity of the population in each state along
+the infection process (for example: quantity of suspectible vs infected
+vs recovered individuals) don't always as intelligently capture the
+natural connections between the proportion of individuals in these
+states. Tools in \pkg{EpiCompare} attempt to give the user the ability
+to extend their toolkit to evaluate epidemics to also include
+time-invariant approaches and in this section we present benefits of the
+time-invariant analysis, with 1) motivation for time-invariant analysis
+through \(R_0\) (the initial reproduction number), 2) time-invariant
+visualization tools for 3-state models (e.g.~SIR models), and 3)
+potential for similar analysis for models with more states (e.g.~SEIR
+models).
+\textcolor{violet}{Will need to rewrite this section "introduction".}
 
-One issue that the COVID-19 outbreak has brought to the forefront is the
-importance of figures and graphs to inform, support, and even persuade
-lay people of technical and scientific results \cite{}. Quantities and
-trends shown in these visualizations include exponential growth curves,
-S-curves, peak day and percent of infectious indviduals, ICU capacity,
-and deaths over time and uncertainty of such estimates.
+\subsection[r0]{Motivation through \(R_0\)}\label{r0}
 
-\pkg{EpiCompare} supports traditional visualizations (e.g.~\# in
-condition vs.~time) and also introduces a novel visualization of
-epidemics via time free analysis. In particular, we use ternary plots
-that show Susceptible-Infectious-Recovered data/models (SIR). The
-advantages of these ternary plots are 1) a standard way to compare
-epidemics with different outbreak times and time scales, 2) a novel
-interpretation of \(R_0\), the initial reproduction number under some
-circumstances, and 3) clear visualization of joint SIR uncertainty via
-conformal bands.
-
-Ternary plots are sometimes used in chemistry \citep{} but only rarely
-seen in the field of infectious disease epidemiology (to our knowledge,
-only seen in \cite{}). Ternary plots illustrate the relationship of
-constrained 3D data, namely of points
-\((a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]\) with
-\(a_i+ b_i + c_i =1\) and as such, are situational. The SIR framework,
+\(R_0\), the initial reproduction number, has been called the ``most
+important quantity in epdiemiology'' \citep[][]{Gallagher2020}. To see
+the importance of \(R_0\), one need only read the newspaper
+\citep{Fisher2020} or look at the length of the table of estimated
+\(R_0\) quantities for COVID-19 \citep{Aronson2020}. \(R_0\) is also,
+maybe, the most famous \textit{time-invariant} numerical summary of an
+epidemic, and is commonly associated with the
+Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework,
 composed of data and statistical models where individuals pass from
 Susceptible to Infectious to Recovered states is a common, if not the
 most common, modeling framework in infectious disease epidemiology (seen
-in examples of recent published works in \cite{}), and also happens to
-be of the situational format required for ternary plots where
+in examples of recent published works in \cite{FILLIN}).
+
+In regards to traditional \(X\) vs.~time plots, \(R_0\) is difficult to
+visualize. For example, in a SIR simulation with two models have the
+same value of \(R_0\), one can see in Fig.
+\ref{fig:different-scales-standard} that there is no way of knowing that
+from looking at the graph (this figure will be commented on more below).
+
+\begin{figure}[!ht]
+%% Code to reproduce is in inst/paper_figs/different-time-scales.R
+    \centering
+    \includegraphics[width = .5\textwidth]{images/diff-time-standard.pdf}%\includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
+    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.\textcolor{violet}{We probably need to define $\beta/\gamma$.}
+\textcolor{violet}{NEW: recommendation - make this plot actually have 3 examples (the current one), one where we have an affine transformation of the time scale, and one with the halleolof data.} \textcolor{violet}{Also these figures should be reproducible.}}
+    \label{fig:different-scales-standard}
+\end{figure}
+
+\subsection[ternary visualizations]{Ternary and time-invariant
+visualizations for \(R_0\)}\label{sec:ternary}
+
+It is possible to identify, at a glance, which SIR epidemic paths, like
+those in Fig. \ref{fig:different-scales-tern} have the same value of
+\(R_0\) via ``time-invariant'' visualizations, under some circumstances.
+Specifically, for SIR models we propose using ternary to examine an
+epidemic's trajectory in a more time-invariant manner.
+
+Ternary plots are sometimes used in chemistry \citep[][]{Gillespie1976}
+but only rarely seen in the field of infectious disease epidemiology (to
+our knowledge, only seen in \cite{}). Ternary plots illustrate the
+relationship of constrained 3D data, namely of points
+\((a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]\) with
+\(a_i+ b_i + c_i =1\) and as such, are situational. The SIR framework
+happens to be of the situational format required for ternary plots where
 \((S(t), I(t), R(t))\) are the number of susceptible, infectious, and
 recovered individuals in each state at time \(t\) and
 \(S(t) + I(t) + R(t) = N(t)\) where \(N(t)\) is the population size at
 time \(t\).
 
-Ternary plots are time-free in the sense that the temporal scale does
-not explicitly apear in the visualization and as a consequence, allow
-for direct comparisons of outbreaks on different time scales (e.g.~days
-vs.~years) or of SIR data of the same disease in different areas (our
-first case study in Sec. \ref{sec:ex1} focuses on this).
+Ternary plots are time-invariant in the sense that the temporal scale
+does not explicitly apear in the visualization and as a consequence,
+allow for direct comparisons of outbreaks on different time scales
+(e.g.~days vs.~years) or of SIR data of the same disease in different
+areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
 
-Ternary plots also, under certain conditions, have a special
-relationship with \(R_0\), the initial reproduction number, which has
-been called the ``most important quantity in epidemiology'\,' \citep{}.
-The reproduction is itself a time-free concept and is the average number
-of secondary infections primary infection will generate when the primary
-infection is added to a completely susceptible population. To see the
-importance of \(R_0\), one need only read the newspaper \citep{} or look
-at the length of the table of estimated \(R_0\) quantities for COVID-19
-\citep{}.
-
-In regards to traditional \(X\) vs.~time plots, \(R_0\) is difficult to
-visualize. For example, as seen in Fig. \ref{fig:r0-trad}, it is
-possible that two models have the same value of \(R_0\) but there is no
-way of knowing that from looking at the graph.
-
-It is possible to identify, at a glance, which epidemic paths have the
-same value of \(R_0\) via ternary plot visualizations, under some
-circumstances. To show, this we first need to introduce the classic,
-deterministic Kermack and McKendrick SIR model where the initial number
-in each state \((S(0), I(0), R(0))\) are known and \(N\) the population
-size is constant. The movement of individuals among the states is given
-by the following differential equations (Eq. \eqref{eq:sir-ode}) where
+To show that ternary plots have to potential to aid in the comparison of
+different epidemic's \(R_0\)s -in certain circumstances- we first need
+to introduce the classic, deterministic Kermack and McKendrick
+\cite{CITETHIS?} SIR model where the initial number in each state
+\((S(0), I(0), R(0))\) are known and \(N\) the population size is
+constant. The movement of individuals among the states is given by the
+following differential equations (Eq. \eqref{eq:sir-ode}) where
 \(\beta\) is the average infection rate and \(\gamma\) is the average
 recovery rate, \begin{align}\label{eq:sir-ode}
       S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
       R^\prime(t) &= \gamma I(t) \nonumber.
   \end{align}
+
+\textcolor{violet}{SUGGESTION: define $R_0$ mathematically here (though referred to in figure 2 - which still needs to be defined there).}
 
 If we have two SIR models that follow the Kermack and McKendrick SIR
 model, have the same percentage of individuals in the initial states,
@@ -261,11 +277,66 @@ Let there be two SIR models as described above.  Then for all $t > 0$ there exis
 \end{theorem}
 
 The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent
-result from \cite{} and is shown in detail in Appendix \ref{app:proof}.
-The consequence of Theorem \ref{thm:sir-scale} is that for two SIR
-models that have the same initial percent of individuals in each state
-and \(R_0\) then for every point on the epidemic path of the first SIR
-model is also a point on the epidemic path of the second SIR model.
+result from \cite{Harko2014} and is shown in detail in Appendix
+\ref{app:proof}. The consequence of Theorem \ref{thm:sir-scale} is that
+for two SIR models that have the same initial percent of individuals in
+each state and \(R_0\) then for every point on the epidemic path of the
+first SIR model is also a point on the epidemic path of the second SIR
+model. Taking the sample simulations from Fig.
+\ref{fig:different-scales-standard}, Fig.
+\ref{fig:different-scales-tern} presents these models in a ternary plot.
+
+\begin{figure}[!ht]
+%% Code to reproduce is in inst/paper_figs/different-time-scales.R
+    \centering
+    \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
+    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \textcolor{violet}{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view. \textcolor{violet}{I might suggest using opacity to show time scale here?} \textcolor{violet}{Make this reproducible too?}}
+    \label{fig:different-scales-tern}
+\end{figure}
+
+In \pkg{EpiCompare}, we also provide visualization tools to aid in
+comparing models in the ternary / time-invariant space, which is
+presented in more details in Section
+\ref{sec:time-invariant-in-simplex}.
+
+\subsection[Simplexes beyond ternary plots]{Simplexes beyond ternary
+plots and time-invariant comparison
+tools}\label{sec:time-invariant-in-simplex}
+
+Beyond ternary plots, and the associated SIR models, we can extend the
+time-invariant approach described in Section \ref{sec:ternary} to higher
+dimensions (i.e.~models with more states). The constraints in 3d that
+are met with the SIR model (that is
+\(\sum_{i=1}^3 (\text{number in state}(i)) = N(t)\)) actually represents
+a spaces of 3d simplexes, and the ternary plot specifically represents
+these after scaling to examine such values as proportions (ternary plots
+are known as a 3d unit simplex due to it's scaling). This same scaling
+for larger models (i.e.~with more states) can be done onto different
+simplexes. In this package we present tools to help compare models
+(mostly through similations), and this tool compares these objects after
+projecting them into a one-dimension less space through the simplexical
+structure of the data.
+
+In \pkg{EpiCompare} we allow for the compare epidemics in these higher
+dimensional spaces by first projecting onto these simplexes. Even though
+higher dimensional models may not be able to visualized, we provide
+multiple tools to aid in the comparison of models and epidemics. The
+first of which uses multiple simulations under specific model parameters
+to assess the bairabilty of the model fit. In \pkg{EpiCompare} we
+provide ways to create prediction regions for a true epidemic under the
+model assumptions using these simulations. These regions require
+representing multi-dimensional structures for functions to completely
+contain epidemics, and treat these simulations and epidmeics as
+filamental objects. We extend off of papers like \citet{Dalmasso2019a}
+to create these bands. These high dimensional bands allow the user to
+assess if the true epidemic is within the band (there-by assessing the
+model's representation of the epidemic), and also compare who different
+models are from each other through distances that compare sets. We
+recommend using the Hausdorff distance to compare such sets as it
+captures how much bigger the sets would have to expand to cover each
+other, and is defined mathematically as \[
+d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
+\]
 
 \section[Package overview]{Package tool overview}\label{sec:overview}
 
@@ -682,3 +753,4 @@ BAND THINGS.
 
 
 \end{document}
+

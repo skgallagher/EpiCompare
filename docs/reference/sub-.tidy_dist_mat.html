@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a portable theme for SIR ternary plots — theme_sir • EpiCompare</title>
+<title>Extract a part of a <code>tidy_dist_mat</code> object — [.tidy_dist_mat • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Add a portable theme for SIR ternary plots — theme_sir" />
-<meta property="og:description" content="Add a portable theme for SIR ternary plots" />
+<meta property="og:title" content="Extract a part of a <code>tidy_dist_mat</code> object — [.tidy_dist_mat" />
+<meta property="og:description" content="Extract a part of a tidy_dist_mat object" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -147,41 +147,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a portable theme for SIR ternary plots</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/theme-sir.R'><code>R/theme-sir.R</code></a></small>
-    <div class="hidden name"><code>theme_sir.Rd</code></div>
+    <h1>Extract a part of a <code>tidy_dist_mat</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/tidy-dist-mat.R'><code>R/tidy-dist-mat.R</code></a></small>
+    <div class="hidden name"><code>sub-.tidy_dist_mat.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add a portable theme for SIR ternary plots</p>
+    <p>Extract a part of a <code>tidy_dist_mat</code> object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>theme_sir</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"># S3 method for tidy_dist_mat
+[(x, i, j = i)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments to pass</p></td>
+      <th>x</th>
+      <td><p><code>tidy_dist_mat</code> object</p></td>
+    </tr>
+    <tr>
+      <th>i</th>
+      <td><p>indices specifying elements to extract or replace. Indices are 
+numeric or data frames related to <code>x</code>'s row information.</p></td>
+    </tr>
+    <tr>
+      <th>j</th>
+      <td><p>indices specifying elements to extract or replace. Indices are 
+numeric or data frames related to <code>x</code>'s column information. If no 
+<code>j</code> is provided, then <code>j=i</code> and a square matrix is returned (if 
+<code>x</code>'s structure follows correct assumptions).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>theme to add to ggtern plots</p>
+    <p>a new <code>tidy_dist_mat</code> object</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>)
-
-<span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='hagelloch_raw.html'>hagelloch_raw</a></span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>.</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>tI</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='no'>tR</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='no'>SEX</span>)) +
-  <span class='fu'><a href='stat_aggregate.html'>geom_aggregate</a></span>() + <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/coord_tern.html'>coord_tern</a></span>() +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"S"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"I"</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='st'>"R"</span>,
-       <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>) +
-       <span class='fu'>theme_sir</span>()</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='theme_sir-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

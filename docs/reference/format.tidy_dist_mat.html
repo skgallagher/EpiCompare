@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fomat tidy_dist_mat for printing — format.tidy_dist_mat • EpiCompare</title>
+<title>Format tidy_dist_mat for printing — format.tidy_dist_mat • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Fomat tidy_dist_mat for printing — format.tidy_dist_mat" />
-<meta property="og:description" content="Fomat tidy_dist_mat for printing" />
+<meta property="og:title" content="Format tidy_dist_mat for printing — format.tidy_dist_mat" />
+<meta property="og:description" content="Format tidy_dist_mat for printing" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -147,13 +147,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fomat tidy_dist_mat for printing</h1>
+    <h1>Format tidy_dist_mat for printing</h1>
     <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/tidy-dist-mat.R'><code>R/tidy-dist-mat.R</code></a></small>
     <div class="hidden name"><code>format.tidy_dist_mat.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fomat tidy_dist_mat for printing</p>
+    <p>Format tidy_dist_mat for printing</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tidy_dist_mat</span>
@@ -164,12 +164,18 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>tid_dist_mat</p></td>
+      <td><p>tidy_dist_mat</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional parameter (e.g. <code>digits</code>) - tells us the number of 
-significant digits to present for the distances</p></td>
+      <td><p>additional parameters. Currently we allow / use:</p><ul>
+<li><p><code>digit</code>: integer, tells us the number of significant digits to 
+  present for the distances</p></li>
+<li><p><code>more_rows:</code> boolean, tells us if more rows exist than 
+  presented</p></li>
+<li><p><code>more_cols:</code> boolean, tells us if more columns exist than 
+  presented</p></li>
+</ul></td>
     </tr>
     </table>
 

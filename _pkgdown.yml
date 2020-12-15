@@ -62,6 +62,12 @@ reference:
   - matches("update_approved_layers")
   - matches("r_new_interface")
   - matches("print.ggplot")
+- title: tidy_dist_mat 
+  desc: tidy_dist_mat object and associated functions
+  contents:
+  - matches("tidy_dist_mat")
+  - matches("^not$")
+  - matches("not_df")
 - title: everything
   contents:
   - matches(".*")

@@ -1,0 +1,133 @@
+\documentclass[article,shortnames]{jss} 
+%^note: Ben changed this to get shortnames for references ("shortnames")
+
+%% -- LaTeX packages and custom commands ---------------------------------------
+
+%% recommended packages
+\usepackage{thumbpdf,lmodern}
+\usepackage{import}
+
+%% new custom commands
+\newcommand{\class}[1]{`\code{#1}'}
+\newcommand{\fct}[1]{\code{#1()}}
+%\newcommand{\sup}{\mathop{\mathrm{sup}}}
+%\newcommand{\inf}{\mathop{\mathrm{inf}}}
+
+
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+%\newtheorem{theorem}{Theorem}
+
+% note making commands
+\newcommand{\ben}{\textcolor{blue}}
+\newcommand{\skg}{\textcolor{red}}
+
+% useful packages
+\usepackage[normalem]{ulem} % for \sout
+
+
+%% For Sweave-based articles about R packages:
+%% need no \usepackage{Sweave}
+\SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
+<<preliminaries, echo=FALSE, results=hide>>=
+options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
+library("MASS")
+@
+
+
+%% -- Article metainformation (author, title, ...) -----------------------------
+
+%% - \author{} with primary affiliation
+%% - \Plainauthor{} without affiliations
+%% - Separate authors by \And or \AND (in \author) or by comma (in \Plainauthor).
+%% - \AND starts a new line, \And does not.
+\author{Shannon K. Gallagher\\ National Institute of\\ Allergy and Infectious Diseases
+   \And Benjamin LeRoy\\Statistics and Data Science Department\\Carnegie Mellon University}
+\Plainauthor{Shannon K. Gallagher, Benjamin LeRoy}
+
+%% - \title{} in title case
+%% - \Plaintitle{} without LaTeX markup (if any)
+%% - \Shorttitle{} with LaTeX markup (if any), used as running title
+% EpiCompare: A tidy R package for comparing and assessing epidemics and epidimology models
+\title{\proglang{EpiCompare}: An \proglang{R} package for time-invariant epidemic 
+assessment and comparison}
+\Plaintitle{EpiCompare}
+\Shorttitle{\prolang{EpiCompare}}
+
+%% - \Abstract{} almost as usual
+\Abstract{
+\SweaveInput{chapters/abstract.Rnw}
+
+}
+
+%% - \Keywords{} with LaTeX markup, at least one required
+%% - \Plainkeywords{} without LaTeX markup (if necessary)
+%% - Should be comma-separated and in sentence case.
+\Keywords{JSS, style guide, comma-separated, not capitalized, \proglang{R}}
+\Plainkeywords{JSS, style guide, comma-separated, not capitalized, R}
+
+%% - \Address{} of at least one author
+%% - May contain multiple affiliations for each author
+%%   (in extra lines, separated by \emph{and}\\).
+%% - May contain multiple authors for the same affiliation
+%%   (in the same first line, separated by comma).
+\Address{
+  Shanon K. Gallagher\\
+  Biostatistics Research Branch\\
+  Division of Clinical Research\\
+  National Institute of Allergy and Infectious Diseases\\
+  5601 Fishers Lane\\
+  Rockville, MD 20852\\
+  E-mail: \email{shannon.gallagher@nih.gov}
+}
+
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+
+
+\section{Outline}
+
+\SweaveInput{chapters/outline.Rnw}
+
+\SweaveInput{chapters/ch1-intro-v2.Rnw}
+
+%\SweaveInput{chapters/ch1-intro.Rnw}
+
+
+
+
+\section{Literature review} \label{sec:lit}
+\SweaveInput{chapters/ch2-lit-review.Rnw}
+
+\section{Reasons and tools for time-invariant analysis} \label{sec:time-invariant}
+\SweaveInput{chapters/ch3-time-free.Rnw}
+
+%\SweaveInput{chapters/ch2-vis.Rnw} % this file still exists
+%\SweaveInput{chapters/ch3-compare.Rnw}
+%\SweaveInput{chapters/ch4-convert.Rnw}
+
+\section{Code Orientation}
+\SweaveInput{chapters/ch4-orientation.Rnw}
+
+
+\section{In practice}
+\SweaveInput{chapters/ch5-ex1.Rnw}
+\SweaveInput{chapters/ch6-ex2.Rnw}
+
+\SweaveInput{chapters/ch7-discussion.Rnw}
+
+\bibliography{EpiCompare}
+
+\appendix
+
+\SweaveInput{chapters/app1-proofs.Rnw}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%% -----------------------------------------------------------------------------
+
+
+\end{document}

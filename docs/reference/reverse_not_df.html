@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a portable theme for SIR ternary plots — theme_sir • EpiCompare</title>
+<title>removes the <code>not</code>() operation (that makes a df a <code>not_df</code>) — reverse_not_df • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Add a portable theme for SIR ternary plots — theme_sir" />
-<meta property="og:description" content="Add a portable theme for SIR ternary plots" />
+<meta property="og:title" content="removes the <code>not</code>() operation (that makes a df a <code>not_df</code>) — reverse_not_df" />
+<meta property="og:description" content="removes the not() operation (that makes a df a not_df)" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -147,41 +147,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a portable theme for SIR ternary plots</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/theme-sir.R'><code>R/theme-sir.R</code></a></small>
-    <div class="hidden name"><code>theme_sir.Rd</code></div>
+    <h1>removes the <code>not</code>() operation (that makes a df a <code>not_df</code>)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/tidy-dist-mat.R'><code>R/tidy-dist-mat.R</code></a></small>
+    <div class="hidden name"><code>reverse_not_df.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add a portable theme for SIR ternary plots</p>
+    <p>removes the <code>not</code>() operation (that makes a df a <code>not_df</code>)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>theme_sir</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>reverse_not_df</span>(<span class='no'>x</span>)
+
+<span class='co'># S3 method for not_df</span>
+<span class='fu'>reverse_not_df</span>(<span class='no'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments to pass</p></td>
+      <th>x</th>
+      <td><p><code>not_df</code> class object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>theme to add to ggtern plots</p>
+    <p>x without the <code>not_df</code> class associated with it</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>)
-
-<span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='hagelloch_raw.html'>hagelloch_raw</a></span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>SEX</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>.</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>tI</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='no'>tR</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='no'>SEX</span>)) +
-  <span class='fu'><a href='stat_aggregate.html'>geom_aggregate</a></span>() + <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/coord_tern.html'>coord_tern</a></span>() +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"S"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"I"</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='st'>"R"</span>,
-       <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>) +
-       <span class='fu'>theme_sir</span>()</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='img'><img src='theme_sir-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

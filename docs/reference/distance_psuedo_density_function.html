@@ -156,13 +156,13 @@
     <p>DESCRIBE MORE</p>
     </div>
 
-    <pre class="usage"><span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='st'>"auto"</span>)
+    <pre class="usage"><span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>x_new</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='st'>"auto"</span>)
 
 <span class='co'># S3 method for matrix</span>
-<span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>F</span>)
+<span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>x_new</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>F</span>)
 
 <span class='co'># S3 method for tidy_dist_mat</span>
-<span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
+<span class='fu'>distance_psuedo_density_function</span>(<span class='no'>x</span>, <span class='kw'>x_new</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,6 +170,15 @@
     <tr>
       <th>x</th>
       <td><p>a n x n square positive symmetric matrix or a <code>tidy_dist_mat</code></p></td>
+    </tr>
+    <tr>
+      <th>x_new</th>
+      <td><p>a n_new x n matrix or tidy_dist_mat where the rows correspond to
+new observations, the columns correspond to points in <code>x</code> (if <code>x</code> 
+and <code>x_new</code> are matrices then they need to be corrected ordered). If 
+this value is not <code>NULL</code> (default is <code>NULL</code>) then the 
+psuedo-density vector will be calculated for these observations relative to 
+observations defined with <code>x</code> and <code>x_new</code>'s columns.</p></td>
     </tr>
     <tr>
       <th>sigma</th>

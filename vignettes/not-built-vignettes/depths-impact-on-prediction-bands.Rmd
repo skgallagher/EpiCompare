@@ -495,7 +495,7 @@ sigma <-  quantile(dist_mat, probs = .3)
 ```
 
 ```{r warning = F, message = F}
-psuedo_density <- distance_psuedo_density_function(tidy_dm, sigma)
+psuedo_density <- distance_psuedo_density_function(x = tidy_dm, sigma = sigma)
 
 group_names <- names(psuedo_density)[names(psuedo_density) != "psuedo_density"]
 
@@ -628,12 +628,12 @@ If we are interested in highlighting "central" curves in a more local way, we ca
 ### Tau selection
 
 ```{r eval = T, cache = T}
-quantile(dist_mat,probs = 0:10/10) %>%
+quantile(as.matrix(tidy_dm),probs = 0:10/10) %>%
   round(2) %>% t %>%
   data.frame(check.names = F) %>%
   DT::datatable(options = list(dom = 't'))
 
-tau <- quantile(tidy_dm,probs = .30)["30%"]
+tau <- quantile(as.matrix(tidy_dm), probs = .30)["30%"]
 
 tidy_dm %>% c() %>% data.frame(dist = .) %>%
   ggplot(aes(x = dist)) + geom_histogram(bins = 30) +

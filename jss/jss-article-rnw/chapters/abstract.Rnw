@@ -1,0 +1,9 @@
+% !Rnw root = ../article.Rnw
+
+We present \prolang{EpiCompare}, an \proglang{R} packge that provides a set of 
+\textbf{tidy} tools to aid in the analysis pipeline of epidemic modeling and 
+assessment. A wide range of tools are provides (for every step along the analysis
+pipeline), but a major contribution of this work is the set of time-invariate tools
+for model comparisons - including time-invariate prediction bands. This article ...
+
+

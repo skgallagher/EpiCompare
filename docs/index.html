@@ -224,7 +224,9 @@
 <li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
 <li>
 <strong>Does 2 wrongs make a right?</strong> As of 9/23 <code>ggtern</code> had an <a href="https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot">issue</a> that it messed with <code>ggplot2</code>’s legends when loaded (it over-wrote the <code>print.ggplot</code> and other functions). To “correct” this, we’ve over-wrote <code>ggtern</code>’s <code>print.ggplot</code> to correct this problem when not producing ternary plots (code in <code>aaa.R</code>).</li>
-<li>Useful Rstudio shortcuts for <code>Roxygen2</code>: (a) create <code>Roxygen2</code> comments template with <code>option</code> + <code>command</code> + <code>shift</code> + <code>R</code> (b) In <code>Roxygen2</code> comments do <code>control</code> + <code>shift</code> + <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code> to format relative to 80 char limit. 7.<a href="https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu">stack overflow</a> post on how to pass <code>check</code> for <code>rownames&lt;-.tidy_dist_mat</code>.</li>
+<li>Useful Rstudio shortcuts for <code>Roxygen2</code>: (a) create <code>Roxygen2</code> comments template with <code>option</code> + <code>command</code> + <code>shift</code> + <code>R</code> (b) In <code>Roxygen2</code> comments do <code>control</code> + <code>shift</code> + <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code> to format relative to 80 char limit.</li>
+<li>
+<a href="https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu">stack overflow</a> post on how to pass <code>check</code> for <code>rownames&lt;-.tidy_dist_mat</code>.</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">

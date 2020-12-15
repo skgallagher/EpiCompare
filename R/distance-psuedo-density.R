@@ -111,8 +111,8 @@ distance_psuedo_density_function.tidy_dist_mat <- function(x, x_new = NULL,
   if (is.null(x_new)){
     rnames <- rownames(x) # data.frame
     
-    kernel_dist_mat <- stats::dnorm(x/sigma)
-    psuedo_density <- apply(unclass(kernel_dist_mat), MARGIN = 1, mean)
+    kernel_dist_mat <- stats::dnorm(as.matrix(x)/sigma)
+    psuedo_density <- apply(kernel_dist_mat, MARGIN = 1, mean)
     
     
     if (df_out) {
@@ -132,8 +132,8 @@ distance_psuedo_density_function.tidy_dist_mat <- function(x, x_new = NULL,
   } else {
     rnames <- rownames(x_new) # data.frame
     
-    kernel_dist_mat <- stats::dnorm(x_new/sigma)
-    psuedo_density <- apply(unclass(kernel_dist_mat), MARGIN = 1, mean)
+    kernel_dist_mat <- stats::dnorm(as.matrix(x_new)/sigma)
+    psuedo_density <- apply(kernel_dist_mat, MARGIN = 1, mean)
     
     
     if (df_out) {

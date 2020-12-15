@@ -157,7 +157,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tidy_dist_mat</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,6 +171,10 @@
       <td><p>(like <code>digits = 6</code>) number of significant digits to display
 (uses <code>signif</code>)</p></td>
     </tr>
+    <tr>
+      <th>n</th>
+      <td><p>maximum number of rows or columns of x to print</p></td>
+    </tr>
     </table>
 
 
@@ -181,13 +185,13 @@
 <span class='no'>colnames_df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span>), <span class='kw'>id2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"f"</span>, <span class='st'>"f"</span>, <span class='st'>"s"</span>))
 
 <span class='no'>my_tidy_dm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tidy_dist_mat.html'>tidy_dist_mat</a></span>(<span class='no'>my_dist_mat</span>, <span class='no'>rownames_df</span>, <span class='no'>colnames_df</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>my_tidy_dm</span>)</div><div class='output co'>#&gt;     id                          
-#&gt; id     | 1       2       1      
-#&gt; id2    | f       f       s      
-#&gt;     -  + ------- ------- -------
-#&gt;     1  | 0       2.31399 1.39163
-#&gt;     2  | 2.31399 0       2.37576
-#&gt;     3  | 1.39163 2.37576 0      </div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>my_tidy_dm</span>)</div><div class='output co'>#&gt;     id                             
+#&gt; id     | 1        2        1       
+#&gt; id2    | f        f        s       
+#&gt;     -  + -------  -------  ------- 
+#&gt;     1  | 0        0.589213 0.727783
+#&gt;     2  | 0.589213 0        1.11849 
+#&gt;     3  | 0.727783 1.11849  0       </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -1,49 +1,53 @@
-This is BibTeX, Version 0.99d (TeX Live 2020/Arch Linux)
+This is BibTeX, Version 0.99d (TeX Live 2018)
 Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: EpiCompare-paper.aux
 The style file: jss.bst
 Database file #1: EpiCompare.bib
 Warning--I didn't find a database entry for ""
-Reallocated wiz_functions (elt_size=8) to 6000 items from 3000.
-You've used 8 entries,
+Warning--I didn't find a database entry for "FILLIN"
+Warning--I didn't find a database entry for "CITETHIS?"
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty journal in Dalmasso2019a
+Warning--empty journal in Gallagher2020
+You've used 14 entries,
             3215 wiz_defined-function locations,
-            698 strings with 8391 characters,
-and the built_in function-call counts, 21681 in all, are:
-= -- 2284
-> -- 782
-< -- 3
-+ -- 295
-- -- 286
-* -- 1718
-:= -- 2379
-add.period$ -- 37
-call.type$ -- 8
-change.case$ -- 127
-chr.to.int$ -- 9
-cite$ -- 8
-duplicate$ -- 2307
-empty$ -- 1452
-format.name$ -- 307
-if$ -- 4357
+            750 strings with 9970 characters,
+and the built_in function-call counts, 26801 in all, are:
+= -- 2786
+> -- 918
+< -- 5
++ -- 346
+- -- 331
+* -- 2100
+:= -- 3030
+add.period$ -- 64
+call.type$ -- 14
+change.case$ -- 167
+chr.to.int$ -- 15
+cite$ -- 16
+duplicate$ -- 2830
+empty$ -- 1844
+format.name$ -- 366
+if$ -- 5377
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 157
-newline$ -- 56
-num.names$ -- 32
-pop$ -- 1199
+missing$ -- 210
+newline$ -- 89
+num.names$ -- 56
+pop$ -- 1462
 preamble$ -- 1
-purify$ -- 127
+purify$ -- 166
 quote$ -- 0
-skip$ -- 211
+skip$ -- 308
 stack$ -- 0
-substring$ -- 2850
-swap$ -- 362
+substring$ -- 3319
+swap$ -- 480
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
-warning$ -- 0
-while$ -- 131
+type$ -- 126
+warning$ -- 2
+while$ -- 166
 width$ -- 0
-write$ -- 122
-(There was 1 warning)
+write$ -- 205
+(There were 5 warnings)
