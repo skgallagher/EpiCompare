@@ -733,32 +733,47 @@ R> g +   geom_path(data = both_models %>% filter(t !=0),
 \end{CodeChunk}
 
 However, both models are not a good fit to the filamental path as
-opposed to the individual points in \((S, I, R)\)-space. What we mean by
-that is that both models predict epidemic paths that generally have a
-single defined peak of infection whereas the data certainly looks like
-it has two distinct peaks, likely caused by our assumed super-spreader
-event. In conclusion, \pkg{EpiCompare} makes it clear that, at a glance,
-1) the EpiModel network model is a better fit than the Simple SIR model,
-and 2) the fit is only good at the individual point level as opposed to
-the epidemic path level.
+opposed to the individual points in \((S, I, R)\)-space. This can be
+captures with the set of simulations both models predict, which all
+generally have a single defined peak of infection whereas the data
+certainly looks like it has two distinct peaks, likely caused by our
+assumed super-spreader event. This observation is backed up by the below
+analysis that demonstrates that the estimated psuedo-density of the
+observed epidemic (relative to the simulations from either model) is
+much less likely then \textbf{any} of the simulations (reported in Table
+\ref{tab:hags-extreme}. In conclusion, \pkg{EpiCompare} makes it clear
+that, at a glance, 1) the EpiModel network model is a better fit than
+the Simple SIR model, and 2) the fit is only good at the individual
+point level as opposed to the epidemic path level.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> # after cleaning up and combining 
+R> #-- after cleaning up and combining --
 R> all_together_df <- rbind(simple_sir,
 +                          hagelloch_sir2)
-R> all_together_df[c(1:2, nrow(all_together_df) - c(1:0)),]
 \end{CodeInput}
-\begin{CodeOutput}
-# A tibble: 4 x 6
-# Groups:   sim [2]
-  Type               sim     t     S     I     R
-  <chr>            <dbl> <dbl> <dbl> <dbl> <dbl>
-1 Simple SIR           1     0   188     0     0
-2 Simple SIR           1     1   187     1     0
-3 true observation     0    54     1     0   187
-4 true observation     0    55     1     0   187
-\end{CodeOutput}
+\end{CodeChunk}
+
+\begin{CodeChunk}
+\begin{table}[!h]
+
+\caption{\label{tab:cif-all-together-df}Top and bottom 2 rows of \tt{all\_together\_df}\text{, combining both simulated epidemics and the true epidemic.}}
+\centering
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Type & sim & t & S & I & R\\
+\midrule
+Simple SIR & 1 & 0 & 188 & 0 & 0\\
+Simple SIR & 1 & 1 & 187 & 1 & 0\\
+true observation & 0 & 54 & 1 & 0 & 187\\
+true observation & 0 & 55 & 1 & 0 & 187\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{CodeChunk}
+
+\begin{CodeChunk}
 \begin{CodeInput}
 R> compression_df <- all_together_df %>% group_by(Type, sim) %>% 
 +   filament_compression(data_columns = c("S","I","R"), 
