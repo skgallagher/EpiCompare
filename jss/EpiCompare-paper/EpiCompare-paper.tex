@@ -783,16 +783,11 @@ R> compression_df <- all_together_df %>% group_by(Type, sim) %>%
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> dmat <- compression_df %>% 
+R> tdmat <- compression_df %>% 
 +   dist_matrix_innersq_direction(
 +     position = c(1:length(compression_df))[
 +       names(compression_df) %in% c("S","I", "R")],
-+     id_as_columns = T)
-R> 
-R> tdmat <- tidy_dist_mat(as.matrix(dmat[,-c(1:2)]),
-+                        rownames_df = ungroup(dmat[,1:2]),
-+                        colnames_df = ungroup(dmat[,1:2])) 
-R> 
++     tdm_out = T)
 R> 
 R> simple_sir_true_obs_info <- tdmat %>% 
 +   compare_new_to_rest_via_distance(

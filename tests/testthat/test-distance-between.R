@@ -334,7 +334,7 @@ test_that("test dist_matrix_innersq_2d basic checks", {
   testthat::expect_true(all(my_dist >= 0))
 })
 
-test_that("test dist_matrix_innersq_direction basic checks (2d)", {
+test_that("test dist_matrix_innersq_direction.list, basic checks (2d)", {
   function_list <- list(function(x) x^2, function(x) sqrt(x), function(x) x)
 
   my_list <- lapply(function_list, function(f) {
@@ -347,6 +347,159 @@ test_that("test dist_matrix_innersq_direction basic checks (2d)", {
   testthat::expect_true(all(diag(my_dist) == 0))
   testthat::expect_true(all(my_dist >= 0))
 })
+
+test_that("test dist_matrix_innersq_direction.grouped_df, basic checks (2d)", {
+  function_list <- list(function(x) x^2, function(x) sqrt(x), function(x) x)
+  
+  my_list <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  for (idx in 1:3){
+    my_list[[idx]] <- my_list[[idx]] %>% dplyr::mutate(id = idx)
+  }
+  my_grouped_df <- my_list %>% 
+    dplyr::bind_rows() %>%
+    group_by(.data$id)
+  
+  
+  my_dist <- dist_matrix_innersq_direction(my_grouped_df, position = 1:2)
+  
+  testthat::expect_equivalent(t(my_dist), my_dist)
+  testthat::expect_true(all(diag(my_dist) == 0))
+  testthat::expect_true(all(my_dist >= 0))
+  
+  my_tdm <- dist_matrix_innersq_direction(my_grouped_df, position = 1:2,
+                                          tdm_out = T)
+  
+  
+  testthat::expect_equivalent(as.matrix(my_tdm), my_dist)
+  testthat::expect_equivalent(rownames(my_tdm), data.frame(id = 1:3))
+})
+
+
+test_that("test dist_matrix_innersq_direction.grouped_df, basic checks, tdm (2d)", {
+  function_list <- list(function(x) x^2, function(x) sqrt(x), function(x) x)
+  
+  my_list <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  for (idx in 1:3){
+    my_list[[idx]] <- my_list[[idx]] %>% dplyr::mutate(id = idx)
+  }
+  my_grouped_df <- my_list %>% 
+    dplyr::bind_rows() %>%
+    group_by(.data$id)
+  
+  
+  my_tdm_base <- dist_matrix_innersq_direction(my_grouped_df, position = 1:2,
+                                          tdm_out = T)
+  
+  
+  
+  my_list2 <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  rownames_df2 <- tibble::tibble(id = c(3.14, Inf, -9),
+                            id2 = c("a", "b", "ab"))
+  
+  for (idx in 1:3){
+    my_list2[[idx]] <- cbind(rownames_df2[idx,],my_list2[[idx]])
+  }
+  my_grouped_df2 <- my_list2 %>% 
+    dplyr::bind_rows() %>%
+    group_by(.data$id, .data$id2)
+  
+  my_tdm <- dist_matrix_innersq_direction(my_grouped_df2, position = 3:4,
+                                               tdm_out = T)
+  
+  testthat::expect_equivalent(as.matrix(my_tdm_base), as.matrix(my_tdm))
+  testthat::expect_equivalent(rownames(my_tdm), rownames_df2)
+})
+
+test_that("test dist_matrix_innersq_direction.data.frame (nest), basic checks (2d)", {
+  function_list <- list(function(x) x^2, function(x) sqrt(x), function(x) x)
+  
+  my_list <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  for (idx in 1:3){
+    my_list[[idx]] <- my_list[[idx]] %>% dplyr::mutate(id = idx)
+  }
+  my_nested_df <- my_list %>% 
+    dplyr::bind_rows() %>%
+    dplyr::group_by(.data$id) %>%
+    tidyr::nest() %>% dplyr::ungroup() 
+  
+  
+  my_dist <- dist_matrix_innersq_direction(my_nested_df, position = 1:2)
+  
+  testthat::expect_equivalent(t(my_dist), my_dist)
+  testthat::expect_true(all(diag(my_dist) == 0))
+  testthat::expect_true(all(my_dist >= 0))
+  
+  my_tdm <- dist_matrix_innersq_direction(my_nested_df, position = 1:2,
+                                          tdm_out = T)
+  
+  
+  testthat::expect_equivalent(as.matrix(my_tdm), my_dist)
+  testthat::expect_equivalent(rownames(my_tdm), data.frame(id = 1:3))
+})
+
+
+test_that("test dist_matrix_innersq_direction.data.frame, basic checks, tdm (2d)", {
+  function_list <- list(function(x) x^2, function(x) sqrt(x), function(x) x)
+  
+  my_list <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  for (idx in 1:3){
+    my_list[[idx]] <- my_list[[idx]] %>% dplyr::mutate(id = idx)
+  }
+  my_nested_df <- my_list %>% 
+    dplyr::bind_rows() %>%
+    dplyr::group_by(.data$id) %>%
+    tidyr::nest() %>% dplyr::ungroup() 
+  
+  
+  my_tdm_base <- dist_matrix_innersq_direction(my_nested_df, position = 1:2,
+                                               tdm_out = T)
+  
+  
+  
+  my_list2 <- lapply(function_list, function(f) {
+    data.frame(x = 1:20,
+               y = f(1:20))
+  })
+  
+  rownames_df2 <- tibble::tibble(id = c(3.14, Inf, -9),
+                                 id2 = c("a", "b", "ab"))
+  
+  for (idx in 1:3){
+    my_list2[[idx]] <- cbind(rownames_df2[idx,],my_list2[[idx]])
+  }
+  my_nested_df2 <- my_list2 %>% 
+    dplyr::bind_rows() %>%
+    group_by(.data$id, .data$id2) %>%
+    tidyr::nest() %>% dplyr::ungroup() 
+  
+  my_tdm <- dist_matrix_innersq_direction(my_nested_df2, position = 1:2, 
+                                          # location relative to data column
+                                          tdm_out = T)
+  
+  testthat::expect_equivalent(as.matrix(my_tdm_base), as.matrix(my_tdm))
+  testthat::expect_equivalent(rownames(my_tdm), rownames_df2)
+})
+
 
 
 
@@ -379,7 +532,6 @@ test_that("get_xy_coord tests", {
 })
 
 
-# COME HERE
 test_that(paste("equa_dist_points_direction",
                 "should be able to deal with a path of length 0"), {
     x <- rnorm(n = 1)

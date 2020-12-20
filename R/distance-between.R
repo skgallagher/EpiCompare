@@ -368,13 +368,14 @@ dist_matrix_innersq_angle <- dist_matrix_innersq_2d
 #' @param position column index of (x,y,...) euclidean coords.
 #' @param verbose boolean logic if should have print outs while computing
 #' distance matrix
-#' @param id_as_columns boolean - DESCRIBE
+#' @param tdm_out boolean logic if we should return a \code{tidy_dist_mat} 
+#' object or just a matrix.
 #'
 #' @return distance matrix of dimension n x n or data.frame - DESCRIBE
 #' @export
 dist_matrix_innersq_direction <- function(x, position = NULL,
                                           verbose = FALSE,
-                                          id_as_columns = FALSE){
+                                          tdm_out = FALSE){
     UseMethod("dist_matrix_innersq_direction")
 }
 
@@ -384,7 +385,7 @@ dist_matrix_innersq_direction <- function(x, position = NULL,
 #' @export
 #' @rdname dist_matrix_innersq_direction
 dist_matrix_innersq_direction.list <- function(x,  position = NULL,
-                                          verbose = FALSE, id_as_columns = NA){
+                                          verbose = FALSE, tdm_out = FALSE){
   
   rnames <- names(x)
   
@@ -428,10 +429,16 @@ dist_matrix_innersq_direction.list <- function(x,  position = NULL,
       }
     }
   }
-
-  rownames(output_mat) <- rnames
   
-  return(output_mat)
+  # what type of object do we return?
+  if (tdm_out){
+    rownames_df <- data.frame(id = rnames)
+    output_tdm <- tidy_dist_mat(output_mat,rownames_df,rownames_df)
+    return(output_tdm)
+  } else {
+    rownames(output_mat) <- rnames
+    return(output_mat)
+  }
 }
 
 if (r_new_interface()){
@@ -441,27 +448,32 @@ if (r_new_interface()){
 #' @export
 #' @rdname dist_matrix_innersq_direction
 dist_matrix_innersq_direction.data.frame <- function(x, position = NULL,
-                                                     verbose = FALSE, id_as_columns = FALSE){
+                                                     verbose = FALSE, 
+                                                     tdm_out = FALSE){
   
   
   
   id_info <- x %>% dplyr::select(-.data$data) 
   path_list <- x$data
   
-  if (!id_as_columns) {
+  if (!tdm_out) {
     inner_names <- id_info %>% 
       tidyr::unite(col = "names", dplyr::everything(), sep = "|") %>% 
       dplyr::pull(.data$names)
     names(path_list) <- inner_names
+  } else {
+    names(path_list) <- 1:length(path_list)
   }
   
   dist_mat <- dist_matrix_innersq_direction.list(x = path_list,
                                                  position = position, 
-                                                 verbose = verbose)
+                                                 verbose = verbose,
+                                                 tdm_out = FALSE)
   
-  if (id_as_columns) {
-    dist_mat_df <- cbind(id_info, dist_mat)
-    return(dist_mat_df)
+  if (tdm_out) {
+    rownames_df <- id_info
+    output_tdm <- tidy_dist_mat(dist_mat,rownames_df,rownames_df)
+    return(output_tdm)
   } else {
     return(dist_mat)
   }
@@ -475,13 +487,14 @@ if (r_new_interface()){
 #' @export
 #' @rdname dist_matrix_innersq_direction
 dist_matrix_innersq_direction.grouped_df <- function(x, position = NULL,
-                                                     verbose = FALSE, id_as_columns = FALSE){
+                                                     verbose = FALSE, 
+                                                     tdm_out = FALSE){
   
   x_inner <- x %>% tidyr::nest()
   id_info <- x_inner %>% dplyr::select(-.data$data) 
   path_list <- x_inner$data
   
-  if (!id_as_columns) {
+  if (!tdm_out) {
     inner_names <- id_info %>% 
       tidyr::unite(col = "names", dplyr::everything(), sep = "|") %>% 
       dplyr::pull(.data$names)
@@ -505,13 +518,13 @@ dist_matrix_innersq_direction.grouped_df <- function(x, position = NULL,
   
   dist_mat <- dist_matrix_innersq_direction.list(x = path_list,
                                                  position = position_inner, 
-                                                 verbose = verbose)
+                                                 verbose = verbose,
+                                                 tdm_out = FALSE)
   
-  if (id_as_columns) {
-    dist_mat_df <- id_info %>% dplyr::ungroup() 
-    dist_mat_df <- cbind(dist_mat_df, dist_mat) %>%
-      dplyr::group_by(.dots = names(id_info))
-    return(dist_mat_df)
+  if (tdm_out) {
+    rownames_df <- id_info %>% dplyr::ungroup() 
+    output_tdm <- tidy_dist_mat(dist_mat,rownames_df,rownames_df)
+    return(output_tdm)
   } else {
     return(dist_mat)
   }

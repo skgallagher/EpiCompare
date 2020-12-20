@@ -12,28 +12,28 @@ dist_matrix_innersq_direction(
   x,
   position = NULL,
   verbose = FALSE,
-  id_as_columns = FALSE
+  tdm_out = FALSE
 )
 
 \method{dist_matrix_innersq_direction}{list}(
   x,
   position = NULL,
   verbose = FALSE,
-  id_as_columns = NA
+  tdm_out = FALSE
 )
 
 \method{dist_matrix_innersq_direction}{data.frame}(
   x,
   position = NULL,
   verbose = FALSE,
-  id_as_columns = FALSE
+  tdm_out = FALSE
 )
 
 \method{dist_matrix_innersq_direction}{grouped_df}(
   x,
   position = NULL,
   verbose = FALSE,
-  id_as_columns = FALSE
+  tdm_out = FALSE
 )
 }
 \arguments{
@@ -44,7 +44,8 @@ dist_matrix_innersq_direction(
 \item{verbose}{boolean logic if should have print outs while computing
 distance matrix}
 
-\item{id_as_columns}{boolean - DESCRIBE}
+\item{tdm_out}{boolean logic if we should return a \code{tidy_dist_mat} 
+object or just a matrix.}
 }
 \value{
 distance matrix of dimension n x n or data.frame - DESCRIBE
