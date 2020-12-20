@@ -53,14 +53,14 @@ jobs:
         shell: Rscript {0}
         
       - name: Query dependencies (tidyr old)
-        if: ${{not(matrix.config.tidyr_current)}}
-        run: |
-          install.packages('remotes')
-          install.packages('devtools')
-          devtools::install_version('tidyr', version = '0.8.3')
-          saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
+        if: ${{! matrix.config.tidyr_current }}
+          run: |
+            install.packages('remotes')
+            install.packages('devtools')
+            devtools::install_version('tidyr', version = '0.8.3')
+            saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
+            writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+          shell: Rscript {0}
 
       - name: Cache R packages
         if: runner.os != 'Windows'
@@ -79,7 +79,7 @@ jobs:
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
       - name: Install dependencies (tidyr old)
-        if: ${{not(matrix.config.tidyr_current)}}
+        if: ${{! matrix.config.tidyr_current }}
         run: |
           devtools::install_deps(dep = TRUE, upgrade = "never")
           remotes::install_cran("rcmdcheck")
