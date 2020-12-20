@@ -111,16 +111,16 @@ jobs:
           path: check
           
       - name: Test coverage (for code coverage)
-        if: ${{matrix.config.os == "macOS-latest"}}
+        if: ${{matrix.config.os == macOS-latest}}
         run: covr::codecov()
         shell: Rscript {0}
         
       - name: Install package (for pkgdown - on macOS-latest)
-        if: ${{matrix.config.os == "macOS-latest" & tidyr_current}}
+        if: ${{matrix.config.os == macOS-latest && tidyr_current}}
         run: R CMD INSTALL .
 
       - name: Deploy package (for pkgdown)
-        if: ${{matrix.config.os == "macOS-latest" & tidyr_current}}
+        if: ${{matrix.config.os == macOS-latest && tidyr_current}}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
