@@ -8,6 +8,7 @@
 [![Travis build
 status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare)
 [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare)
+[![R-CMD-check](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/skgallagher/EpiCompare/actions)
 <!-- badges: end -->
 
 The goal of `EpiCompare` is to provide the epidemiology community with
