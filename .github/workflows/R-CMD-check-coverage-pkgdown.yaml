@@ -14,7 +14,7 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, Tidyr current: ${{matrix.config.tidyr_current}})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr_current: ${{matrix.config.tidyr_current}})
 
     strategy:
       fail-fast: false
