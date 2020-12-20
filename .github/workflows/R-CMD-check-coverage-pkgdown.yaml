@@ -53,7 +53,7 @@ jobs:
         shell: Rscript {0}
         
       - name: Query dependencies (tidyr old)
-        if: ! ${{matrix.config.tidyr_current}}
+        if: ${{not(matrix.config.tidyr_current)}}
         run: |
           install.packages('remotes')
           install.packages('devtools')
@@ -79,7 +79,7 @@ jobs:
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
       - name: Install dependencies (tidyr old)
-        if: ! ${{matrix.config.tidyr_current}}
+        if: ${{not(matrix.config.tidyr_current)}}
         run: |
           devtools::install_deps(dep = TRUE, upgrade = "never")
           remotes::install_cran("rcmdcheck")
@@ -88,7 +88,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Install dependencies (tidyr new)
-        if: ! ${{matrix.config.tidyr_current}}
+        if: ${{matrix.config.tidyr_current}}
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
