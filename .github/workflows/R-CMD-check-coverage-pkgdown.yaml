@@ -15,7 +15,7 @@ jobs:
   R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current ${{ matrix.config.tidyr_current }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current is ${{ matrix.config.tidyr_current }})
 
     strategy:
       fail-fast: false
@@ -81,10 +81,11 @@ jobs:
       - name: Install dependencies (tidyr old)
         if: ${{! matrix.config.tidyr_current }}
         run: |
+          install.packages('devtools')
           devtools::install_deps(dep = TRUE, upgrade = "never")
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
-          install.packages("pkgdown", type = "binary")
+          install.packages("pkgdown")
         shell: Rscript {0}
 
       - name: Install dependencies (tidyr new)
@@ -93,7 +94,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
-          install.packages("pkgdown", type = "binary")
+          install.packages("pkgdown")
         shell: Rscript {0}
 
       - name: Check
@@ -110,13 +111,16 @@ jobs:
           path: check
           
       - name: Test coverage (for code coverage)
+        if: ${{matrix.config.os == "macOS-latest"}}
         run: covr::codecov()
         shell: Rscript {0}
         
-      - name: Install package (for pkgdown)
+      - name: Install package (for pkgdown - on macOS-latest)
+        if: ${{matrix.config.os == "macOS-latest" & tidyr_current}}
         run: R CMD INSTALL .
 
       - name: Deploy package (for pkgdown)
+        if: ${{matrix.config.os == "macOS-latest" & tidyr_current}}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
