@@ -12,10 +12,10 @@ on:
 name: R-CMD-check
 
 jobs:
-  R-CMD-check:
+  R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr_current: ${{matrix.config.tidyr_current}})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, ${{ matrix.config.tidyr_current }})
 
     strategy:
       fail-fast: false
