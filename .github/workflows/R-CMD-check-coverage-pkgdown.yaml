@@ -107,6 +107,8 @@ jobs:
       - name: Check which tidyr
         run: |
           print(utils::packageVersion("tidyr")) # errors
+          print(Sys.info()["user"])
+          print(Sys.info())
         shell: Rscript {0}
 
 
