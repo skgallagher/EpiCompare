@@ -126,10 +126,10 @@ jobs:
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: R CMD INSTALL .
 
-      - name: install additional packages for pkgdown site
+      - name: install additional packages for pkgdown site (for pkgdown - on macOS-latest)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
-           remotes::install_cran("reticulate")
+           install.packages("reticulate")
         
       - name: Deploy package (for pkgdown)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
