@@ -56,8 +56,6 @@ Suggests:
     viridis
 RoxygenNote: 7.1.1
 VignetteBuilder: 
-    knitr,
-    latex2exp,
-    plotly
+    knitr
 URL: https://github.com/skgallagher/EpiCompare
 BugReports: https://github.com/skgallagher/EpiCompare/issues
