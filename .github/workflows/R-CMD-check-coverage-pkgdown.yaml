@@ -9,7 +9,7 @@ on:
     branches:
       - master
 
-name: R-CMD-check-coverage-pkgdown
+name: R-CMD-check, code coverage, pkgdown site creation
 
 jobs:
   R-CMD-check-coverage-pkgdown:
