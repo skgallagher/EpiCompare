@@ -64,9 +64,12 @@ jobs:
         run: |
           install.packages('remotes')
           remotes::install_cran('devtools', upgrade = "never")
-          devtools::install_version('tidyr', version = '0.8.3')
+          devtools::install_version('tidyr', version = '0.8.3', upgrade = "never")
+          print(utils::packageVersion("tidyr"))
           saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+          writeLines(sprintf("tidyr-%s", utils::packageVersion("tidyr")), ".github/tidyr-version")
+          print(utils::packageVersion("tidyr"))
         shell: Rscript {0}
 
       - name: Cache R packages
@@ -74,8 +77,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{matrix.config.r}}-${{matrix.config.tidr_current}}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{matrix.config.r}}-${{matrix.config.tidr_current}}-${{ hashFiles('.github/R-version') }}-1-
+          key: ${{ runner.os }}-${{ hashFiles('.github/tidyr-version') }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/tidyr-version') }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
