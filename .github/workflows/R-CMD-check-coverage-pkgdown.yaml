@@ -47,9 +47,10 @@ jobs:
       - name: Install libgit (Linux) - for devtools (12/2020) 
         if: runner.os == 'Linux'
         run: |
-          sudo apt install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+          sudo apt install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev libgit2-dev
           # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev:
           sudo add-apt-repository ppa:cran/libgit2
+          
       - name: Query dependencies (tidyr current)
         if: ${{matrix.config.tidyr_current}}
         run: |
