@@ -62,8 +62,8 @@ jobs:
       - name: Query dependencies (tidyr old)
         if: ${{! matrix.config.tidyr_current }}
         run: |
-          install.packages('remotes')
-          install.packages('devtools', dependencies = T)
+          install.packages('remotes', dependencies = FALSE)
+          install.packages('devtools', dependencies = FALSE)
           devtools::install_version('tidyr', version = '0.8.3')
           saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
@@ -88,10 +88,10 @@ jobs:
       - name: Install dependencies (tidyr old)
         if: ${{! matrix.config.tidyr_current }}
         run: |
-          install.packages('devtools')
+          install.packages('devtools', dependencies = FALSE)
           devtools::install_deps(dep = TRUE, upgrade = "never")
-          remotes::install_cran("rcmdcheck")
-          remotes::install_cran("covr")
+          remotes::install_cran("rcmdcheck", upgrade = "never")
+          remotes::install_cran("covr", upgrade = "never")
           install.packages("pkgdown")
         shell: Rscript {0}
 
@@ -126,6 +126,11 @@ jobs:
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: R CMD INSTALL .
 
+      - name: install additional packages for pkgdown site
+        if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
+        run: |
+           remotes::install_cran("reticulate")
+        
       - name: Deploy package (for pkgdown)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
