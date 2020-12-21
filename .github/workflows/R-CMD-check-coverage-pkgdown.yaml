@@ -62,8 +62,8 @@ jobs:
       - name: Query dependencies (tidyr old)
         if: ${{! matrix.config.tidyr_current }}
         run: |
-          install.packages('remotes', dependencies = FALSE)
-          install.packages('devtools', dependencies = FALSE)
+          install.packages('remotes')
+          remotes::install_cran('devtools', upgrade = "never")
           devtools::install_version('tidyr', version = '0.8.3')
           saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
@@ -88,7 +88,7 @@ jobs:
       - name: Install dependencies (tidyr old)
         if: ${{! matrix.config.tidyr_current }}
         run: |
-          install.packages('devtools', dependencies = FALSE)
+          remotes::install_cran('devtools', upgrade = "never")
           devtools::install_deps(dep = TRUE, upgrade = "never")
           remotes::install_cran("rcmdcheck", upgrade = "never")
           remotes::install_cran("covr", upgrade = "never")
