@@ -15,7 +15,7 @@ jobs:
   R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current is ${{ matrix.config.tidyr_current }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current:${{ matrix.config.tidyr_current }})
 
     strategy:
       fail-fast: false
@@ -73,6 +73,9 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
+          # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev	          while read -r cmd
+          sudo add-apt-repository ppa:cran/libgit2
+        
           while read -r cmd
           do
             eval sudo $cmd
