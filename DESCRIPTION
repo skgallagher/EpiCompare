@@ -10,7 +10,7 @@ Authors@R:
            family = "LeRoy",
            role = c("aut"),
            email = "bpleroy@stat.cmu.edu"))     
-Description: A package to aid in all steps of the epidemiology pipeline. This 
+Description: Tools to aid in all steps of the epidemiology pipeline. This 
   package provides tidy tools to aid in the assessment and comparison of 
   epidemics and models. 
 License: MIT + file LICENSE
@@ -48,6 +48,7 @@ Suggests:
     knitr,
     MASS, 
     outbreaks,
+    plotly,
     pomp,
     progress,
     rmarkdown,
