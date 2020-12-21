@@ -131,8 +131,20 @@ jobs:
         run: |
            install.packages("reticulate")
            install.packages("plotly")
+           install.packages("tidyverse")
+           install.packages("ks")
+           install.packages("latex2exp")
         shell: Rscript {0}
         
+      - name: install python packages 
+        if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
+        run: |
+           conda install numpy
+           conda install matplotlib
+           conda install pandas
+           conda install scipy
+           conda install progressbar
+
       - name: Deploy package (for pkgdown)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
