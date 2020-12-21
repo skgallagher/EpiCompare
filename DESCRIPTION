@@ -10,7 +10,7 @@ Authors@R:
            family = "LeRoy",
            role = c("aut"),
            email = "bpleroy@stat.cmu.edu"))     
-Description: A pipeline to analyze and compare infectious disease epidemics.
+Description: A Pipeline to Analyze and Compare Infectious Disease Epidemics.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -44,13 +44,17 @@ Suggests:
     gridExtra,
     kableExtra,
     knitr,
+    ks,
+    latex2exp,
     MASS, 
     outbreaks,
     plotly,
     pomp,
     progress,
+    plotly,
     rmarkdown,
     testthat (>= 2.1.0),
+    tidyverse,
     viridis
 RoxygenNote: 7.1.1
 VignetteBuilder: 
