@@ -147,12 +147,12 @@ jobs:
       - name: install python packages 
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
-           python -m pip install --upgrade pip
-           pip install numpy
-           pip install matplotlib
-           pip install pandas
-           pip install scipy
-           pip install progressbar
+           brew cask install anaconda
+           conda install numpy
+           conda install matplotlib
+           conda install pandas
+           conda install scipy
+           conda install progressbar2
 
       - name: Deploy package (for pkgdown)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
