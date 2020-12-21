@@ -130,6 +130,8 @@ jobs:
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
            install.packages("reticulate")
+           install.packages("plotly")
+        shell: Rscript {0}
         
       - name: Deploy package (for pkgdown)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
