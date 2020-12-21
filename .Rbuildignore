@@ -17,3 +17,4 @@
 ^skg/.*
 skg/*
 ^skg$
+^\.github$

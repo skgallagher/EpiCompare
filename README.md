@@ -5,10 +5,11 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare)
+[![R-CMD-check, code coverage, pkgdown site
+creation](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check,%20code%20coverage,%20pkgdown%20site%20creation/badge.svg)](https://github.com/skgallagher/EpiCompare/actions)
+<!-- [![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) -->
 [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare)
-[![R-CMD-check](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/skgallagher/EpiCompare/actions)
+
 <!-- badges: end -->
 
 The goal of `EpiCompare` is to provide the epidemiology community with
@@ -145,6 +146,17 @@ df_groups %>% ggplot() +
 
 ## Package Creation Notes:
 
+\*\*We’re transferring to \~github actions\~ and away from Travis CI.
+Thanks Travis CI for the long run (During undergrad - probably around
+2015, I got introduced to Travis CI and it has been a really great tool
+and CIs in general are great tools). Sadly, open source packages (like
+ours) no longer gets infinite free resources on Travis. [Dean
+Attali](https://deanattali.com/blog/migrating-travis-to-github/) and
+[ROpenSci](https://ropensci.org/technotes/2020/11/19/moving-away-travis/)
+have blog posts on the situation. As such, if you’re looking to learn
+from our mistakes from Travis, then the comments below stop making sense
+after December 15th, 2020.
+
 1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` \<=
     0.8.3. We followed ideas found in [tidyr:
     in-packages](https://tidyr.tidyverse.org/articles/in-packages.html),
@@ -195,6 +207,22 @@ df_groups %>% ggplot() +
 7.  [stack
     overflow](https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu)
     post on how to pass `check` for `rownames<-.tidy_dist_mat`.
+8.  Transferring from Travis CI to github actions. We only use a single
+    workflow file (although we use code ideas found in:
+    [check-standard/`usethis::use_github_action_check_standard()`](https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml)),
+    [pkgdown/`usethis::use_github_action("pkgdown")`](https://github.com/r-lib/actions/blob/master/examples/pkgdown.yaml)
+    and
+    [test-coverage/`usethis::use_github_action("test-coverage")`](https://github.com/r-lib/actions/blob/master/examples/test-coverage.yaml).
+    In our `.github/workflows/R-CMD-check-coverage-pkgdown.yaml` you’ll
+    find **a** (potentially not optional) approach to preform our
+    complex checking approach (which tries to copy the ideas in our [old
+    travis
+    file](https://github.com/skgallagher/EpiCompare/blob/e1298f799d9248bb330885ba5e7b0fa17ea2c83e/.travis.yml)).
+    The github action easily creates a *larger* matrix that allows us to
+    run on all standard OS, R versions and our “tidyr-current” vs
+    “tidyr-old” split. Our approach with 1 github action `yaml` file
+    makes us only look at 8 matrix options - it’s possible that, in the
+    future, we’ll go back to 3 files.
 
 ## Contributors
 
