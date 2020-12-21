@@ -1,5 +1,5 @@
 Package: EpiCompare
-Title: EpiCompare
+Title: A Pipeline to Analyze and Compare Infectious Disease Epidemics
 Version: 0.0.1
 Authors@R: 
     c(person(given = "Shannon",
@@ -10,7 +10,9 @@ Authors@R:
            family = "LeRoy",
            role = c("aut"),
            email = "bpleroy@stat.cmu.edu"))     
-Description: A Pipeline to Analyze and Compare Infectious Disease Epidemics.
+Description: A package to aid in all steps of the epidemiology pipeline. This 
+package provides tidy tools to aid in the assessment and comparison of epidemics
+and models. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -44,11 +46,9 @@ Suggests:
     gridExtra,
     kableExtra,
     knitr,
-    ks,
     latex2exp,
     MASS, 
     outbreaks,
-    plotly,
     pomp,
     progress,
     plotly,

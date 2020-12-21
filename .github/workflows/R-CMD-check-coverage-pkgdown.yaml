@@ -143,6 +143,12 @@ jobs:
         with:
           python-version: 3.6
         
+      - name: Set up Python 3.6 miniconda
+        if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
+        uses: goanpeca/setup-miniconda@v1
+        with:
+          auto-update-conda: true
+          python-version: 3.6
           
       - name: install python packages 
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
