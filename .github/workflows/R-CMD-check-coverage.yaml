@@ -9,10 +9,10 @@ on:
     branches:
       - master
 
-name: R-CMD-check, code coverage
+name: R-CMD-check, code coverage, pkgdown site creation
 
 jobs:
-  R-CMD-check-coverage:
+  R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current:${{ matrix.config.tidyr_current }})
@@ -109,9 +109,9 @@ jobs:
 
       - name: Check which tidyr
         run: |
-          print(utils::packageVersion("tidyr")) 
-          # check to make sure tidyr wasn't upgraded 
-          # (may happen if packages force tidyr to be >=1.0.0)
+          print(utils::packageVersion("tidyr")) # errors
+          print(Sys.info()["user"])
+          print(Sys.info())
         shell: Rscript {0}
 
 
@@ -125,7 +125,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-tidyr_current${{matrix.config.tidyr_current}}-results
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
           
       - name: Test coverage (for code coverage)

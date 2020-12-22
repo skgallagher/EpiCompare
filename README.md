@@ -210,19 +210,19 @@ after December 15th, 2020.
 8.  Transferring from Travis CI to github actions. We only use a single
     workflow file (although we use code ideas found in:
     [check-standard/`usethis::use_github_action_check_standard()`](https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml)),
-    [pkgdown/`usethis::use_github_action("pkgdown")`](https://github.com/r-lib/actions/blob/master/examples/pkgdown.yaml)
-    and
     [test-coverage/`usethis::use_github_action("test-coverage")`](https://github.com/r-lib/actions/blob/master/examples/test-coverage.yaml).
-    In our `.github/workflows/R-CMD-check-coverage-pkgdown.yaml` you’ll
-    find **a** (potentially not optional) approach to preform our
-    complex checking approach (which tries to copy the ideas in our [old
-    travis
+    In our `.github/workflows/R-CMD-check-coverage.yaml` you’ll find
+    **a** (potentially not optional) approach to preform our complex
+    checking approach (which tries to copy the ideas in our [old travis
     file](https://github.com/skgallagher/EpiCompare/blob/e1298f799d9248bb330885ba5e7b0fa17ea2c83e/.travis.yml)).
     The github action easily creates a *larger* matrix that allows us to
     run on all standard OS, R versions and our “tidyr-current” vs
     “tidyr-old” split. Our approach with 1 github action `yaml` file
     makes us only look at 8 matrix options - it’s possible that, in the
-    future, we’ll go back to 3 files.
+    future, we’ll go back to 3 files. We currently compile our `pkgdown`
+    site on our own computers and then push - and will continue to do so
+    due to complications with `reticulate` and `python` packages on the
+    virtual machines in github actions.
 
 ## Contributors
 
