@@ -1,11 +1,3 @@
-
-#' logic to check if tidyverse (and tidyr specifically is up to version 1.0)
-#'
-#' @return logical value (boolean)
-tidyr_new_interface <- function() {
-  utils::packageVersion("tidyr") > "0.8.99"
-}
-
 #' Convert SEIR to XYZ coordinates fixed in a tetrahedron
 #'
 #' @param data data frame with the following columns \describe{ \item{time}{time
@@ -140,5 +132,6 @@ check_character_percent <- function(x, name = "x"){
 #' all(is.wholenumber(rbinom(100,10,.5)))
 #' is.wholenumber((1:10)/2)
 #' @export
-is.wholenumber <-
-  function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5){
+  abs(x - round(x)) < tol
+}

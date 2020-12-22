@@ -571,19 +571,13 @@ delta_ball_compute_group_paths_to_points <- function(data, scales, params,
                                     xrange = xrange,
                                     yrange = yrange,
                                     gridbreaks = NULL)
-  
-  if (tidyr_new_interface()){
-    update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
-                                                names_from = "y",
-                                                values_from = "z") %>%
-      dplyr::select(-.data$x) %>% as.matrix
-  } else {
-    update_gridpoints_mat <- tidyr::spread(updated_gridpoints,
-                                           key = "y",
-                                           value = "z") %>%
-      dplyr::select(-.data$x) %>% as.matrix
-  }
-  
+
+  update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
+                                              names_from = "y",
+                                              values_from = "z") %>%
+    dplyr::select(-.data$x) %>% as.matrix
+
+
   
   
   cl <- grDevices::contourLines(x = xrange, y = yrange,
@@ -779,18 +773,12 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
                                                             xrange = xrange,
                                                             yrange = yrange)
 
-        if (tidyr_new_interface()){
-          update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
-                                                      names_from = "y",
-                                                      values_from = "included"
-          ) %>%
-            dplyr::select(-.data$x) %>% as.matrix
-        } else {
-          update_gridpoints_mat <- tidyr::spread(updated_gridpoints,
-                                                 key = "y",
-                                                 value = "included") %>%
-            dplyr::select(-.data$x) %>% as.matrix
-        }
+        update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
+                                                    names_from = "y",
+                                                    values_from = "included"
+        ) %>%
+          dplyr::select(-.data$x) %>% as.matrix
+        
 
         cl <- grDevices::contourLines(x = xrange, y = yrange,
                                       z = update_gridpoints_mat,levels = c(1))

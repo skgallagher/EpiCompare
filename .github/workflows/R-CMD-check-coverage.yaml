@@ -15,20 +15,20 @@ jobs:
   R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current:${{ matrix.config.tidyr_current }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', tidyr_current: false}
-          - {os: windows-latest, r: 'release', tidyr_current: true}
-          - {os: macOS-latest, r: 'release', tidyr_current: false}
-          - {os: macOS-latest, r: 'release', tidyr_current: true}
-          - {os: ubuntu-20.04, r: 'release', tidyr_current: false, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'release', tidyr_current: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', tidyr_current: false, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', tidyr_current: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: 'devel',rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -51,34 +51,20 @@ jobs:
           # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev:
           sudo add-apt-repository ppa:cran/libgit2
           
-      - name: Query dependencies (tidyr current)
-        if: ${{matrix.config.tidyr_current}}
+      - name: Query dependencies 
         run: |
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
         
-      - name: Query dependencies (tidyr old)
-        if: ${{! matrix.config.tidyr_current }}
-        run: |
-          install.packages('remotes')
-          remotes::install_cran('devtools', upgrade = "never")
-          devtools::install_version('tidyr', version = '0.8.3', upgrade = "never")
-          print(utils::packageVersion("tidyr"))
-          saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-          writeLines(sprintf("tidyr-%s", utils::packageVersion("tidyr")), ".github/tidyr-version")
-          print(utils::packageVersion("tidyr"))
-        shell: Rscript {0}
-
       - name: Cache R packages
         if: runner.os != 'Windows'
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/tidyr-version') }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/tidyr-version') }}-${{ hashFiles('.github/R-version') }}-1-
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install system dependencies
         if: runner.os == 'Linux'
@@ -88,29 +74,12 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: Install dependencies (tidyr old)
-        if: ${{! matrix.config.tidyr_current }}
-        run: |
-          remotes::install_cran('devtools', upgrade = "never")
-          devtools::install_deps(dep = TRUE, upgrade = "never")
-          remotes::install_cran("rcmdcheck", upgrade = "never")
-          remotes::install_cran("covr", upgrade = "never")
-        shell: Rscript {0}
-
-      - name: Install dependencies (tidyr new)
-        if: ${{matrix.config.tidyr_current}}
+      - name: Install dependencies 
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
         shell: Rscript {0}
-
-      - name: Check which tidyr
-        run: |
-          print(utils::packageVersion("tidyr")) 
-          # check if tidyr was kept at desired version or forced to upgrade
-        shell: Rscript {0}
-
 
       - name: Check
         env:
@@ -122,7 +91,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-tidyr_current${{ matrix.config.tidyr_current }}-results
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
           
       - name: Test coverage (for code coverage)

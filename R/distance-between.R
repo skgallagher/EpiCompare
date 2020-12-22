@@ -432,6 +432,9 @@ dist_matrix_innersq_direction.list <- function(x,  position = NULL,
   
   # what type of object do we return?
   if (tdm_out){
+    if (is.null(rnames)){
+      rnames <- 1:length(x)
+    }
     rownames_df <- data.frame(id = rnames)
     output_tdm <- tidy_dist_mat(output_mat,rownames_df,rownames_df)
     return(output_tdm)

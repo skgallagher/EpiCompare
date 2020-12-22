@@ -32,28 +32,17 @@ fortify_aggregate.pomp_list <- function(data,
 
     pomp_output <- data
     arr <- pomp_output[[1]]
-    if(tidyr_new_interface()){
-        out <- arr %>%
-            as.data.frame.table() %>%
-            dplyr::mutate(t = as.numeric(.data$time) - 1,
-                          sim = as.numeric(.data$rep)) %>%
-            tidyr::pivot_wider(values_from = .data$Freq,
-                               names_from = .data$variable) %>%
-            as.data.frame() %>%
-            dplyr::select(dplyr::one_of(c("t", "sim", states))) %>%
-            dplyr::arrange(dplyr::desc(-.data$sim))
-    } else{
 
-        out <- arr %>%
-            as.data.frame.table() %>%
-            dplyr::mutate(t = as.numeric(.data$time) - 1,
-                          sim = as.numeric(.data$rep)) %>%
-            tidyr::spread(.data$variable,
-                               .data$Freq) %>%
-            as.data.frame() %>%
-            dplyr::select(dplyr::one_of(c("t", "sim", states))) %>%
-            dplyr::arrange(dplyr::desc(-.data$sim))
-    }
+    out <- arr %>%
+        as.data.frame.table() %>%
+        dplyr::mutate(t = as.numeric(.data$time) - 1,
+                      sim = as.numeric(.data$rep)) %>%
+        tidyr::pivot_wider(values_from = .data$Freq,
+                           names_from = .data$variable) %>%
+        as.data.frame() %>%
+        dplyr::select(dplyr::one_of(c("t", "sim", states))) %>%
+        dplyr::arrange(dplyr::desc(-.data$sim))
+    
     out$sim <- factor(out$sim)
     colnames(out)[-c(1:2)] <- paste0("X", 0:(ncol(out)-3))
 

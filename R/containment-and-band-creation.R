@@ -43,37 +43,13 @@ filament_compression <- function(grouped_df, data_columns = NULL,
     data_columns <- data_columns[!(data_columns %in% group_columns)]
   }
 
-  if (tidyr_new_interface()){
-    
-    compression_df <- grouped_df %>%
-      tidyr::nest() %>%
-      dplyr::mutate(data =
-                      purrr::map(.data$data,
-                                 function(df) {equa_dist_points_direction(
-                                   df[, data_columns],num_splits = number_points)})) %>%
-      tidyr::unnest(cols = c(.data$data))
-    
-  } else {
-
-    compression_df <- grouped_df %>%
-      tidyr::nest() %>%
-      dplyr::mutate(data =
-                      purrr::map(.data$data,
-                                 function(df) {equa_dist_points_direction(
-                                   df[, data_columns], num_splits = number_points)})) %>%
-      tidyr::unnest()
-
-    if (length(group_columns) == 1) {
-      group_sym <- dplyr::sym(group_columns)
-      compression_df <- compression_df %>% dplyr::group_by(!!group_sym)
-    }
-    if (length(group_columns) > 1) {
-      group_sym <- dplyr::syms(group_columns)
-      compression_df <- compression_df %>% dplyr::group_by(!!!group_sym)
-    }
-
-  }
-
+  compression_df <- grouped_df %>%
+    tidyr::nest() %>%
+    dplyr::mutate(data =
+                    purrr::map(.data$data,
+                               function(df) {equa_dist_points_direction(
+                                 df[, data_columns],num_splits = number_points)})) %>%
+    tidyr::unnest(cols = c(.data$data))
 
   return(compression_df)
 }
@@ -197,41 +173,25 @@ grab_top_depth_filaments <- function(grouped_df, data_columns = NULL,
     stop("selected 'conf_level' returns 0 filaments")
   }
 
-  if (tidyr_new_interface()){
-    updated_df <- grouped_df %>% tidyr::nest() %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = 1 - conf_level))
-    # ^conf_level = 1 - alpha
+
+  updated_df <- grouped_df %>% tidyr::nest() %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(depth = depth_vector) %>%
+    dplyr::filter(.data$depth >
+                    stats::quantile(depth_vector, probs = 1 - conf_level))
+  # ^conf_level = 1 - alpha
 
 
-    if (.remove_group){
-      updated_df <- updated_df %>%
-        dplyr::select(.data$data) %>%
-        tidyr::unnest(cols = dplyr::everything())
-    } else {
-      updated_df <- updated_df %>%
-        dplyr::select(-.data$depth) %>%
-        tidyr::unnest(cols = dplyr::everything())
-    }
+  if (.remove_group){
+    updated_df <- updated_df %>%
+      dplyr::select(.data$data) %>%
+      tidyr::unnest(cols = dplyr::everything())
   } else {
-    updated_df <- grouped_df %>% tidyr::nest() %>%
-      dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = 1 - conf_level))
-    # ^conf_level = 1 - alpha
-
-    if (.remove_group){
-      updated_df <- updated_df %>%
-        dplyr::select(.data$data) %>%
-        tidyr::unnest()
-    } else {
-      updated_df <- updated_df %>%
-        dplyr::select(-.data$depth) %>%
-        tidyr::unnest()
-    }
+    updated_df <- updated_df %>%
+      dplyr::select(-.data$depth) %>%
+      tidyr::unnest(cols = dplyr::everything())
   }
+  
   return(updated_df)
 }
 

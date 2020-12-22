@@ -5,8 +5,8 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check, code coverage, pkgdown site
-creation](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check,%20code%20coverage,%20pkgdown%20site%20creation/badge.svg)](https://github.com/skgallagher/EpiCompare/actions)
+[![R-CMD-check, code
+coverage](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check,%20code%20coverage/badge.svg)](https://github.com/skgallagher/EpiCompare/actions)
 <!-- [![Travis build status](https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master)](https://travis-ci.org/skgallagher/EpiCompare) -->
 [![codecov](https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg)](https://codecov.io/gh/skgallagher/EpiCompare)
 
@@ -165,6 +165,8 @@ after December 15th, 2020.
     github](https://github.com/tidyverse/design/issues/95) and
     [tidyverse
     principles](https://principles.tidyverse.org/changes-multivers.html).
+    \*\*This is no longer done (was removed 22 December 2020), as the
+    rest of `tidyrverse` has moved on and now requires `tidyr >1.0.0`.
 2.  For writing your own `geom`s and `stat`s that works with `ggtern`
     (which are generally restricted), the following 2 stack-exchange
     articles helped use do so with ease:

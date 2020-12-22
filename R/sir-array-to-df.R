@@ -31,18 +31,11 @@ sim_arr_to_df <- function(arr){
                                 agent_id = 1:n_agents)
     df <- as.data.frame.table(arr)
 
-
-    if (tidyr_new_interface()){
-        df_spread <- df %>% tidyr::pivot_wider(names_from = .data$agents_stat,
-                                               values_from = .data$Freq) %>%
-            dplyr::select(dplyr::one_of("init_state", "tI",
-                                        "tR", "sim", "agent_id"))
-    } else {
-        df_spread <- df %>% tidyr::spread(key = .data$agents_stat,
-                                          value = .data$Freq) %>%
-            dplyr::select(dplyr::one_of("init_state", "tI",
-                                        "tR", "sim", "agent_id"))
-    }
+    df_spread <- df %>% tidyr::pivot_wider(names_from = .data$agents_stat,
+                                           values_from = .data$Freq) %>%
+        dplyr::select(dplyr::one_of("init_state", "tI",
+                                    "tR", "sim", "agent_id"))
+    
     df <- df_spread %>% dplyr::mutate(tI = ifelse(.data$init_state != 0,
                                                   0, .data$tI),
                                       tR = ifelse(.data$init_state == 2,
