@@ -116,14 +116,9 @@ df_ave <- out %>% agents_to_aggregate(states = c(tI, tR)) %>%
   group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
 
                    
-if (tidyr_new_interface()){ # if tidyr version > 0.8.99
-  df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
-                                          values_to = "Value",
-                                          cols = c(S, I, R))
-} else {
-  df_ave_lines <- df_ave %>% gather(key = "State", value = "Value",
-                                S, I, R)
-}
+df_ave_lines <- df_ave %>% pivot_longer(names_to = "State", 
+                                        values_to = "Value",
+                                        cols = c(S, I, R))
 
 ggplot(data = df_ave_lines,
        aes(x = t, y = Value, group = State, col = State)) +
