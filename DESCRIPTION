@@ -33,7 +33,7 @@ Imports:
     rdist,
     rgeos,
     rlang,
-    tidyr,
+    tidyr (>= 1.0.0),
     tidyselect,
     tibble,
     sp,
