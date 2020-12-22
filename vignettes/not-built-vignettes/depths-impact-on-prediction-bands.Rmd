@@ -32,24 +32,26 @@ library(EpiCompare)
 
 # Overview
 
-Creating prediction regions and quantifying uncertainty in epidemiological function space is a complicated endeavor. In this vignette we focus on providing the reader some background for the approach presented in this package. Although our work was is based on work in (Dalmasso, Dunn, LeRoy^[Ben is a coauthor in this paper.], Schafer 2019),  we provide more statistical grounding for our shared approaches as well as smarter approaches for simulation based prediction regions for multivariate functional data (functions with output in multi-dimensional space). 
+Creating prediction regions and quantifying uncertainty in epidemiological function space is a complicated endeavor. In this vignette, we focus on providing the reader some background for the approach presented in this package. Although our work was is based on work in (Dalmasso, Dunn, LeRoy^[Ben is a coauthor in this paper.], Schafer 2019),  we provide more statistical grounding for our shared approaches as well as smarter approaches for simulation based prediction regions for multivariate functional data (functions with output in multi-dimensional space). 
 
-The first section of this vignette is a literature review of some useful tools and related literature to create prediction regions for Euclidean space. We focus on creating rudimentary level sets for for conditional density estimates.
+The first section of this vignette is a literature review of some useful tools and related works to create prediction regions for Euclidean space. We focus on creating rudimentary level sets for for conditional density estimates.
 
-The second part of this vignette demonstrates how we leverage level set estimate to define a prediction region for simulated epidemics. We demonstrate our prediction region on a mixture of SIR epidemic models, and examine different ranking/quantile functions to create a prediction region.
+The second part of this vignette demonstrates how we leverage level set estimates to define a prediction region for simulated epidemics. We demonstrate our prediction region on a mixture of SIR epidemic models, and examine different ranking/quantile functions to create a prediction region.
 
 # Section 1: An introduction to creating prediction regions with level sets
 
-There are many ways to create prediction regions. The most famous prediction region (interval) comes from linear regression. Under assumptions about the linearity of $y|X$ and the normality of the residuals, we can define a prediction interval for $y_i|X_i$ as 
+There are many ways to create prediction regions. The most famous prediction region (interval) comes from linear regression. Under assumptions about the linearity of $y|X$ and the normality of the residuals, we can define a prediction interval for a *new* point $y_*|X_*$ as 
 
 \[
-X_i^T\beta \pm z_{\alpha/2} \cdot \hat{\sigma} \sqrt{1 + X_i^T \hat{\Sigma}X_i} \;,
+X_*^T\hat{\beta} \pm z_{\alpha/2} \cdot \hat{\sigma} \sqrt{1 + X_*^T \left ( X^TX^\right ){-1}}X_*} \;,
 \]
-which should contain $y_i$ $(1-\alpha)100\%$ of the time. 
+where $X_*$ is a vector of $p$ predictors for the new point, $X$ is the information matrix for the training data, $\hat{\beta} = \left (X^TX\right )^{-1}X^Ty$, and $\hat{\sigma} = \sqrt{SSE/(n-(p+1))}$.  This interval should contain $y_i$ $(1-\alpha)100\%$ of the time. 
 
 Such a prediction region relies heavily on the strict assumptions of the linear model. It is often useful to assume less strict assumptions for the generative distribution, potentially as far as fitting some  black models  that return an estimate of the conditional density to $y|x$ to define prediction regions [e.g. @Izbicki2017].
 
-For models that can estimate conditional densities, density level sets provide a great tool to create a prediction region. Level sets are know to be the best (most efficient) prediction regions given a density is known (mentioned in passing in [@Lei2013]). Although lvel ets are often visualized by just evaluating the density over a grid, there are many ways to estimate density level sets, especially when one has a sampling from the underlying distribution. [@Grenander1981a; @Walther1997; @Jiang2017], all present possible ways to use a union of balls to represent level sets for densities for simulations/random samples. @Walther1997's more efficient approach is visualized below in the below visuals. Our approach builds off of prediction regions through level sets from low-dimensional Euclidean space to multivariate functional epidemics.
+For models that can estimate conditional densities, density level sets provide a great tool to create a prediction region. Level sets are known to be the best (i.e. most efficient) prediction regions given a density is known (mentioned in passing in [@Lei2013]). Although level sets are often visualized by just evaluating the density over a grid, there are many ways to estimate density level sets, especially when one has a method of sampling from the underlying distribution. [@Grenander1981a; @Walther1997; @Jiang2017] all present possible ways to use a union of balls to represent level sets for densities for simulations/random samples. @Walther1997's more efficient approach is visualized in the below visuals. Our approach builds off of prediction regions through level sets from low-dimensional Euclidean space to multivariate functional epidemics.
+
+The below visuals show different prediction regions when either varying the level set cutoff value $\lambda$ (top figures) or the radius of the delta balls $r_n$ (bottom figures).  The figures on the right show a delta ball approach to creating a prediction region, a process dependent on both the radius $r_n$ and the cutoff value $\lambda$.  The figures on the right show prediction regions determined by kernel density estimates, a process dependent only on $\lambda$.
 
 ```{r interal-data, echo = F, message = F, warning = F, eval = F}
 library(tidyverse)
@@ -370,11 +372,11 @@ walk(walther_plots_rad, plot)
 
 # Section 2: Prediction bands from epidemic simulations
 
-In order to demonstrate our approaches to building prediction regions for epidemics, we start with a data example, examining the structure and then look at different approaches to contain a desired region in the space.
+In order to demonstrate our approaches to building prediction regions for epidemics, we start with a data example.  We first examine the structure of the simulated points and then look at different approaches to contain a desired region in the space.
 
 ## Data example
 
-To understand how we create prediction regions (and a few options we provide), we will examine a generative model that sees the true epidemic comes from a mixture of these two models. Specially, 
+To understand how we create prediction regions (and a few options we provide), we will examine a generative model where the  true epidemic comes from a mixture of these two SIR models with different infection parameters $\beta$ and recovery parameters $\gamma$. Specially, 
 
 $$
 \text{Epidemic} \sim .7 \cdot \text{Model}_1 + .3 \cdot \text{Model}_2
@@ -419,15 +421,15 @@ df_group2 <- out2 %>% group_by(sim) %>%
                       min_max_time = c(0,100)) %>%
   rename(S = "X0", I = "X1", R = "X2") 
 
-df_all <- rbind(df_group %>% mutate(id = "first"),
-                df_group2 %>% mutate(id = "second"))
+df_all <- rbind(df_group %>% mutate(id = "Model 1"),
+                df_group2 %>% mutate(id = "Model 2"))
 df_all_vis <- df_all %>% 
-  mutate(id2 = factor(paste0(id, sim), levels = paste0(rep(c("first", "second"), each = 100),
+  mutate(id2 = factor(paste0(id, sim), levels = paste0(rep(c("Model 1", "Model 2"), each = 100),
                                      rep(1:100, length = 200)))) %>%
   mutate(id2 = as.numeric(id2)) 
 ```
 
-The following figure shows these curves on the unit simplex. Notice that is hard for the eye to tell that the second group only contains 30\% of simulations (this observation will be important later).
+The following figure shows these curves on the unit simplex. Notice that is hard for the eye to tell that the second group only contains 30\% of simulations.  This observation will be important later.
 
 ```{r warning = F, message = F}
 all_curves <- ggplot(df_all_vis) +
@@ -442,7 +444,7 @@ all_curves
 
 ### Distances between epidemic simulations
 
-If we imagine each epidemic simulation as it's own object, we can naturally imagine comparing simulations, and - if we treat these simulations like functional data, we might approach comparing the simulations with a distance metric ($d_\mathcal{F}$ ). $d_\mathcal{F}$ can be defined in different ways [e.g. @Chiou2014; @Chen2012; @Buchman2011], For concreteness, one potential distance between multivariate random functions from @Buchman2011 is defined as:
+If we imagine each epidemic simulation as it's own object, we can naturally imagine comparing simulations, and if we treat these simulations like functional data, we might approach comparing the simulations with a distance metric ($d_\mathcal{F}$). The metric $d_\mathcal{F}$ can be defined in different ways [e.g. @Chiou2014; @Chen2012; @Buchman2011], For concreteness, one potential distance between multivariate random functions from @Buchman2011 is defined as:
 \[
 d_\mathcal{F}(f_1, f_2) = \int_{c \in C} d_Y(\mathbf{f}_1(c), \mathbf{f}_2(c)) dc
 \]
@@ -454,18 +456,18 @@ d_\mathcal{F}^\text{equa}(f_1,f_2,n) = \frac{1}{n} \sum_{i=1}^n d_Y(f_1(c_{1(i)}
 where $c_{j(i)}$ relates to equally spaced, order points along the function^[In line with treating the function as a filament.].
 
 
-## Psuedo-density
+## Pseudo-density
 
-To summarize these curves we want wish capture a representation of highly likely curves through a prediction region. Although one cannot define a density for multivariate functions, there's a long practice of defining psuedo-densities [e.g. @Ferraty2012; @Ciollaro2014] by with kernels and the distance between observations, e.g. 
+To summarize these curves we want wish capture a representation of highly likely curves through a prediction region. Although one cannot define a density for multivariate functions, there's a long practice of defining pseudo-densities [e.g. @Ferraty2012; @Ciollaro2014] via kernels and the distance between observations, e.g. 
 \[
 \hat{f}(X) = \frac{1}{n}\sum_{i=1}^n K(\text{dist}(X, X_i)^2/\sigma) \;,
 \]
 
-often with $K$ being the standard Gaussian kernel. We can calculate the psuedo-density for the set of simulations, and we visualize them below. In both figures below we can see that the the estimated density for most simulations from the second mixture is above the maximum density estimated for the density from the second simulation.
+often with $K$ being the standard Gaussian kernel. We can calculate the pseudo-density for the set of simulations, and we visualize them below. In both figures below we can see that the the estimated density for most simulations from the second mixture is above the maximum density estimated for the density from the second simulation.
 
 <details><summary>*Additional commentary associated with code `tidy_dist_mat`...*</summary>
 
-Although not important for this vignette's message, `EpiCompare` introduces a new class, `tidy_dis_mat` to keep track of the `tidyverse` grouping structure that we have relative to the simulations when we seek to understand the distances between the simulated epidemics. our `tidy_dist_mat` work very similar to distance matrices but also store keys of information for each row and column in the matrix akin to `tidyverse` style grouping. *This was mostly done as `tidyverse` is inconsistent in the order of their groupings `group_by` + `nest` vs `group_nest`/`group_split`/`group_keys`. See `?tidy_dist_mat` for examples. Any function that can take in a `tidy_dist_mat` and also take in a "regular" `matrix.
+Although not important for this vignette's message, `EpiCompare` introduces a new class, `tidy_dis_mat` to keep track of the `tidyverse` grouping structure that we have relative to the simulations.  This allows us to understand the distances between the simulated epidemics. Our `tidy_dist_mat` work very similar to distance matrices but also stores keys of information for each row and column in the matrix akin to `tidyverse` style grouping. *This was "mostly" done as `tidyverse` style as opposed to fully `tidyverse` style as `tidyverse` is inconsistent in the order of their groupings `group_by` + `nest` vs `group_nest`/`group_split`/`group_keys`. See `?tidy_dist_mat` for examples. Any function that can take in a `tidy_dist_mat` and also take in a "regular" `matrix.
 
 </details>
 <br>
@@ -497,14 +499,14 @@ sigma <-  quantile(dist_mat, probs = .3)
 ```{r warning = F, message = F}
 psuedo_density <- distance_psuedo_density_function(x = tidy_dm, sigma = sigma)
 
-group_names <- names(psuedo_density)[names(psuedo_density) != "psuedo_density"]
+group_names <- names(psuedo_density)[names(psuedo_density) != "pseudo_density"]
 
 df_all_pd <- df_all_vis %>%
   left_join(psuedo_density, by = c("sim", "id")) %>%
   ungroup() %>% 
   mutate(psuedo_density2 = cut(.data$psuedo_density, breaks = 5),
          id2 = factor(paste0(id, sim), 
-                      levels = paste0(rep(c("first", "second"), each = 100),
+                      levels = paste0(rep(c("Model 1", "Model 2"), each = 100),
                                       rep(1:100, length = 200)))) %>%
   mutate(id2 = as.numeric(id2)) 
 
@@ -515,7 +517,7 @@ psuedo_density %>%
   ggplot() +
   geom_histogram(aes(x = psuedo_density, fill = id)) +
   facet_grid(id ~.) +
-  labs(fill = "mixture membership", x = "psuedo-density")
+  labs(fill = "mixture membership", x = "pseudo-density")
 ```
 
 ```{r}
@@ -523,7 +525,7 @@ df_all_pd %>%
   ggplot(aes(x = S, y = I, z = R, color = psuedo_density, group = id2)) +
   geom_path() +
   coord_tern() +
-  labs(title = "Psuedo Density", color = "psuedo density") +
+  labs(title = "Pseudo Density", color = "pseudo density") +
   theme_sir() 
 ```
 
@@ -542,7 +544,7 @@ df_all_pd %>%
 
 ### Creating a prediction region
 
-bBy extending off union-of-balls based level set estimation techniques as described in the first section, we try to wrap each function in a small tube to represent the level set^[This is approximated by what [@Dalmasso2019] describes as the $\delta$-ball approach, but with a more statistically valid approach using the psuedo-density.]. The final result with the psuedo-density estimate is presented below (with a $\alpha$ level of $.5$).
+By extending  union-of-balls-based-level-set estimation techniques as described in the first section, we wrap each function in a small "tube" to represent the level set^[This is approximated by what [@Dalmasso2019] describes as the $\delta$-ball approach, but with a more statistically valid approach using the pseudo-density.]. The final result with the pseudo-density estimate is presented below (with a $\alpha$ level of $.5$).
 
 ```{r cache = T}
 psuedo_density_pb <- all_curves + 
@@ -552,7 +554,7 @@ psuedo_density_pb <- all_curves +
                        pb_type = "delta_ball", conf_level = .5,
                        dist_params = list(dist_approach = "auto", 
                                           num_steps = "auto", 
-                                          quantile_approach = "psuedo_density", 
+                                          quantile_approach = "pseudo_density", 
                                           quantile_approach_params = list("sigma" = "30%"))) +
   coord_tern() +
   theme_sir()
@@ -574,16 +576,16 @@ df_all_pd %>%
                        pb_type = "delta_ball", conf_level = .5, color = "blue",
                        dist_params = list(dist_approach = "auto", 
                                           num_steps = "auto", 
-                                          quantile_approach = "psuedo_density", 
+                                          quantile_approach = "pseudo_density", 
                                           quantile_approach_params = list("sigma" = "30%"))) 
 ```
 
 
 ## Global depth
 
-If we look at the above confidence interval we might feel like second branch captured in the prediction region doesn't really capture the true structure of the data in the way we want - specifically we might imagine that a more "central" curve in the second mixture should be highlighted first. Naturally, we could change the $\sigma$ for the psuedo-density or redefine the distance function we use, but depth also provides a different way to think about the geometric structure of a distribution. At it's core, depth focuses on defining the "centrality" of observations.
+If we look at the above confidence interval, we might feel like the Model 2 part captured in the prediction region doesn't really capture the true structure of the data in the way we want, which also contains parts from Model 1.  Specifically we might imagine that a more "central" curve in the second mixture should be highlighted first. We could change the $\sigma$ for the pseudo-density or redefine the distance function we use, but "depth" also provides a different way to think about the geometric structure of a distribution. At it's core, depth focuses on defining the "centrality" of observations.
 
-Because we have a space with a distance defined between observations we use Geenens \& Nieto-Reyes's distance depth (directly explorably with the function `distance_depth_function`) [@Geenens2017]. @Geenens2017's distance depth is a global measure, and depth in general doesn't capture density structure - so level sets aren't the best to capture a true level set of density^[See Figure 2 in @Lei2013 for a Euclidean comparison of global depth vs density]. None the less, depth can be used to define an ordering / ranking of the curves to create a prediction region. Depth is a very common tool in functional data analysis. Below we present the estimated "depth" of all the simulated curves using @Geenens2017's distance depth. Note that a simulation that had a similar shape and ended with $\approx 83\%$ in the recovery state would actually be seen as the most deep curve (and included in this prediction interval).
+Because we have a space with a distance defined between observations we use @Geenens2017's distance depth (directly explorable with the function `distance_depth_function`). @Geenens2017's distance depth is a *global* measure, and depth in general doesn't capture density structure. This means level sets based on this distance of depth aren't the best method to capture a true level set of density^[See Figure 2 in @Lei2013 for a Euclidean comparison of global depth vs density]. Nonetheless, depth can be used to define an ordering / ranking of the curves to create a prediction region. Depth is a very common tool in functional data analysis. Below we present the estimated "depth" of all the simulated curves using @Geenens2017's distance depth. Note that a simulation that had a similar shape and ended with $\approx 83\%$ in the recovery state would actually be seen as the most deep curve (and included in this prediction interval).
 
 ```{r}
 global_depth <- distance_depth_function(tidy_dm)
@@ -623,7 +625,7 @@ global_depth_pb
 
 ## Local depth
 
-If we are interested in highlighting "central" curves in a more local way, we can use local depth. Agostinelli \& Romanazzi (2011) proposed an approach to create local depth, and we have extended their ideas to Geenens \& Nieto-Reyes into a local distance based depth (directly explorably with the function `local_distance_depth_function`) [@Agostinelli2011]. @Agostinelli2011 recommended a localized parameter $\tau$ around the 20-30% quantile of the distance distribution - which we explore here.
+If we are interested in highlighting central curves in a more local way, we can use local depth. Agostinelli \& Romanazzi (2011) proposed an approach to create local depth, and we have extended their ideas to Geenens \& Nieto-Reyes into a local distance based depth (directly explorably with the function `local_distance_depth_function`) [@Agostinelli2011]. @Agostinelli2011 recommended a localized parameter $\tau$ around the 20-30% quantile of the distance distribution - which we explore here.
 
 ### Tau selection
 
@@ -640,7 +642,7 @@ tidy_dm %>% c() %>% data.frame(dist = .) %>%
   geom_vline(xintercept = tau)
 ```
 
-Unlike the global depth, local depth "localizes" what it means to be central. It's not the same as a density estimate (see [vignette for Euclidean examples](https://skgallagher.github.io/EpiCompare/articles/Comparing-Depth-and-Density.html)), the below visual of this local depth emphasises that we're not focused as much at the probablistic level, but given the local nature of the the approach we might expect the union of balls to better capture the level set structure of local depth.
+Unlike the global depth, local depth "localizes" what it means to be central. It's not the same as a density estimate (see [vignette for Euclidean examples](./vignettes/not-built-vignettes/Comparing-Depth-and-Density.html)).   The below visual of this local depth emphasizes that we're not focused as much at the probabilistic level, but given the local nature of the the approach we might expect the union of balls to better capture the level-set structure of local depth.
 
 ```{r}
 local_depth <- local_distance_depth_function(tidy_dm, tau = tau)
@@ -702,11 +704,11 @@ grid.arrange(global_depth_pb +
              local_depth_pb + 
                labs(title = "local depth based prediction band"),
              psuedo_density_pb + 
-               labs(title = "psuedo-density based prediction band"),
+               labs(title = "pseudo-density based prediction band"),
              ggplot() + theme_minimal(),
              layout_matrix = layout_mat)
 ```
 
-For examples of tools in our package that work for higher dimensional epidemic models please see [Comparing Models (to Models) and Epidemics (to Models)](https://skgallagher.github.io/EpiCompare/articles/comparing-bands-and-assessing-containment.html). Our vignette on the [differences between density estimates and depth (local and global)](https://skgallagher.github.io/EpiCompare/articles/Comparing-Depth-and-Density.html) may also help aid your understanding of the differences between these ordering approaches.
+For examples of tools in our package that work for higher dimensional epidemic models please see [Comparing Models (to Models) and Epidemics (to Models)](./vignettes/not-built-vignettes/comparing-bands-and-assessing-containment.html). Our vignette on the [differences between density estimates and depth (local and global)](./vignettes/not-built-vignettes/Comparing-Depth-and-Density.html) may also help aid your understanding of the differences between these ordering approaches.
 
 # References

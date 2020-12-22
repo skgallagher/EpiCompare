@@ -35,19 +35,19 @@ library(purrr)
 
 # Introduction to Ternary plots
 
-A ternary plot is a "triangular" plot that represents is used to represent relative proportions of 3 quantities. In this package we encourage the use of ternary plots to example the change in proportions of a population who are **Suspectible**, **Infected**, and have **Recovered** from a disease (more commonly refered to as an *SIR* model). Ternary plots are also used in chemistry and other physical sciences. 
+A ternary plot is a "triangular" plot that is used to represent relative proportions of 3 quantities. In this package we encourage the use of ternary plots to exemplify the change in proportions of a population who are **Susceptible**, **Infected**, or have **Recovered** from a disease (more commonly referred to as an *SIR* model). Ternary plots are also used in chemistry and other physical sciences. 
 
-Because ternary plots aren't *that* common in epidemogolgy (yet &#128521;), so we thought it would be useful to introduced them in more detail here, so that users can feel more comfortable interpreting them.
+Because ternary plots aren't *that* common in epidemiology (yet?), we thought it would be useful to introduce them in more detail here.  This way users can feel more comfortable in both creating and interpreting interpreting them.
 
 ## Mathematical foundation (can be skipped)
 
-In many epidemic models, even beyond SIR models (e.g. SEIR), examining the follow of individuals into different states is very useful. These situations (where we examine proportions in set number of states) can be thought of as existing in a unit simplex. Unit simplices (the pural of simplex), are defined as 
+In many epidemic models, even beyond SIR models (e.g. *S-E*xposed-*I-R*), examining the flow of individuals into different states is very useful. These situations (where we examine proportions in set number of states) can be thought of as existing in a unit simplex, e.g. a constrained set in space.  For example, it is natural that the proportions of all the states add to 1.  Unit simplices (the plural of simplex), are then defined as 
 
 \[
 \{ x \in \mathbb{R}^p \;|\; x_i \geq 0 \text{ for } i \in \{1,...,p\},\; \sum_i^p x_i = 1\}
 \]
 
-Our ternary plots are a specific case where \(p\) is equal to 3. In 3d the unit simplex actually looks like the following:
+Our ternary plots are a specific case where \(p\) is equal to 3. In 3d the unit simplex actually looks like the following plot:
 
 <center>
 ```{r echo = F, message = F, warning = F, eval = F}
@@ -78,6 +78,9 @@ fig <- plot_ly() %>%
 fig
 ```
 
+The shaded triangular region consists of the set of all points $(x, y, z)$ such that $x + y + z = 1$ and $x, y, z \ge 0$.  The consequence is that for the SIR model, every  outcome point from our models or data will lie in this 2-dimensional space.  This means that we can visualize all three dimensions simultaneously.
+
+
 ```{r echo = F}
 #### this line was run once off-line in the console
 # htmlwidgets::saveWidget(fig, file = "man/figures/3d_simplex.html",
@@ -95,12 +98,12 @@ htmltools::tags$iframe(
 ```
 </center>
 
-And a ternary plot is just a projection of this simplex onto a 2d surface.
+A ternary plot is just a projection of this simplex onto a 2d surface.
 
 
 ## How the axes and locations of the plot really work
 
-As mentioned above, ternary plots are oftern to show proportions. For example we could see the proportion of a population that are suspectible start out at 100%, which would mean that no one was Infected or Recovered, in the SIR model with would look like a point `(1,0,0)`. Likewise, me might see, midway through the epidemic, that 30% of people were still not infected (aka still Suspectible), 20% were currently infected and the rest had recoved - this would look like the point `(.3,.2,.5)`.
+As mentioned above, ternary plots are often to show proportions. For example we could see the proportion of a population that are susceptible (S) start out at 100%, which would mean that no one was Infected or Recovered. In the SIR model with would look like a point (S, I, R) = `(1,0,0)`. Likewise, me might see, midway through the epidemic, that 30% of people were still not infected (aka still Suspectible), 20% were currently Infected and the rest had Recovered - this would look like the point `(.3,.2,.5)`.
 
 We could plot these two points like done in the following plot.
 
@@ -274,7 +277,7 @@ grid.arrange(x_vis, y_vis, z_vis, nrow = 1, top = "Grey represents:")
 
 ## How to do this with `ggtern`?
 
-The `ggtern` package, which we leverage inside EpiCompare, allows for `ggplot2` style coding, and also rescales values if they are not in proportions. Below are 3 examples to demonstrate these things.
+The `ggtern` package, which we leverage inside EpiCompare, allows for `ggplot2` style coding, and also rescales values if they are not in proportions. Below are 3 examples to demonstrate these concepts.
 
 ```{r}
 # just the data

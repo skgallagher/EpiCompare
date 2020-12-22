@@ -1,3 +1,6 @@
+% To remove when JSS.cls is fixed
+% https://github.com/rstudio/rticles/issues/329
+\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -9,7 +12,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +49,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -100,7 +105,7 @@ outbreaks. \textcolor{orange}{really like this paragraph}
 
 The current epidemic of COVID-19 also highlights that infectious disease
 models are only one piece of the overall analysis pipeline. University
-based resources like John Hopkin's and government numerical dashboards
+based resources like John Hopkins' and government numerical dashboards
 (across all levels of government) during the COVID-19 epidemic remind us
 that descriptive statistics and visualization can be a important first
 step in the process (multiple \cite{}?).\}
@@ -184,83 +189,67 @@ potential for similar analysis for models with more states (e.g.~SEIR
 models).
 \textcolor{violet}{Will need to rewrite this section "introduction".}
 
-\subsection[r0]{Motivation through \(R_0\)}\label{r0}
+\subsection[r0]{What \(R_0\) has to do with time-invariant
+analysis}\label{r0}
 
 \(R_0\), the initial reproduction number, has been called the ``most
-important quantity in epdiemiology'' \citep[][]{Gallagher2020}. To see
+important quantity in epdiemiology'\,' \citep[][]{heesterbeek2003}. By
+definition, \(R_0\) is the number of expected secondary infections when
+a primary infection is introduced to a susceptible population. To see
 the importance of \(R_0\), one need only read the newspaper
 \citep{Fisher2020} or look at the length of the table of estimated
 \(R_0\) quantities for COVID-19 \citep{Aronson2020}. \(R_0\) is also,
 maybe, the most famous \textit{time-invariant} numerical summary of an
-epidemic, and is commonly associated with the
-Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework,
-composed of data and statistical models where individuals pass from
-Susceptible to Infectious to Recovered states is a common, if not the
-most common, modeling framework in infectious disease epidemiology (seen
-in examples of recent published works in \cite{FILLIN}).
+epidemic, which allows epidemics to be compared to one another in both
+different time and geographic scales.
 
-In regards to traditional \(X\) vs.~time plots, \(R_0\) is difficult to
-visualize. For example, in a SIR simulation with two models have the
-same value of \(R_0\), one can see in Fig.
-\ref{fig:different-scales-standard} that there is no way of knowing that
-from looking at the graph (this figure will be commented on more below).
-
-\begin{figure}[!ht]
-%% Code to reproduce is in inst/paper_figs/different-time-scales.R
-    \centering
-    \includegraphics[width = .5\textwidth]{images/diff-time-standard.pdf}%\includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.\textcolor{violet}{We probably need to define $\beta/\gamma$.}
-\textcolor{violet}{NEW: recommendation - make this plot actually have 3 examples (the current one), one where we have an affine transformation of the time scale, and one with the halleolof data.} \textcolor{violet}{Also these figures should be reproducible.}}
-    \label{fig:different-scales-standard}
-\end{figure}
-
-\subsection[ternary visualizations]{Ternary and time-invariant
-visualizations for \(R_0\)}\label{sec:ternary}
-
-It is possible to identify, at a glance, which SIR epidemic paths, like
-those in Fig. \ref{fig:different-scales-tern} have the same value of
-\(R_0\) via ``time-invariant'' visualizations, under some circumstances.
-Specifically, for SIR models we propose using ternary to examine an
-epidemic's trajectory in a more time-invariant manner.
-
-Ternary plots are sometimes used in chemistry \citep[][]{Gillespie1976}
-but only rarely seen in the field of infectious disease epidemiology (to
-our knowledge, only seen in \cite{}). Ternary plots illustrate the
-relationship of constrained 3D data, namely of points
-\((a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]\) with
-\(a_i+ b_i + c_i =1\) and as such, are situational. The SIR framework
-happens to be of the situational format required for ternary plots where
-\((S(t), I(t), R(t))\) are the number of susceptible, infectious, and
-recovered individuals in each state at time \(t\) and
-\(S(t) + I(t) + R(t) = N(t)\) where \(N(t)\) is the population size at
-time \(t\).
-
-Ternary plots are time-invariant in the sense that the temporal scale
-does not explicitly apear in the visualization and as a consequence,
-allow for direct comparisons of outbreaks on different time scales
-(e.g.~days vs.~years) or of SIR data of the same disease in different
-areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
-
-To show that ternary plots have to potential to aid in the comparison of
-different epidemic's \(R_0\)s -in certain circumstances- we first need
-to introduce the classic, deterministic Kermack and McKendrick
-\cite{CITETHIS?} SIR model where the initial number in each state
-\((S(0), I(0), R(0))\) are known and \(N\) the population size is
-constant. The movement of individuals among the states is given by the
-following differential equations (Eq. \eqref{eq:sir-ode}) where
-\(\beta\) is the average infection rate and \(\gamma\) is the average
-recovery rate, \begin{align}\label{eq:sir-ode}
+Estimator(s) for \(R_0\) are dependent on the epidemic modeling
+framework, which consists of which states an individual can occupy
+(e.g.~susceptible, infectious, recovered) and a description of how
+individuals move from one state to the next over time. A common epidemic
+modeling framework is the SIR model, originally introduced by
+\citet{kermack1927}. Transitions from one state to the next are defined
+by a series of ordinary differential equations, where \(N\) is the
+(fixed) total number individuals, \(\beta\) is the rate of infection,
+and \(\gamma\) is rate of recovery, \begin{align}\label{eq:sir-ode}
       S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
       R^\prime(t) &= \gamma I(t) \nonumber.
-  \end{align}
+  \end{align} From this,
+\(\hat{R}_0 = \frac{\hat{\beta}}{\hat{\gamma}}\), the ratio of the
+estimated infection rate compared to the estimated recovery rate.
 
-\textcolor{violet}{SUGGESTION: define $R_0$ mathematically here (though referred to in figure 2 - which still needs to be defined there).}
+In regards to traditional \(state\) vs.~time plots, \(R_0\) is difficult
+to visualize, especially with respect from one epidemic to another. For
+example, consider the scenarios where the first epidemic is generated
+from a SIR model with \((S(0) = 990, I(0) = 10)\), \(\beta_1 = .3\) and
+\(\gamma_1 = .15\), and the second epidemic is generated from a SIR
+model with \((S(0) = 990, I(0) = 10)\), \(\beta_2 = .24\) and
+\(\gamma_1 = .12\) over 40 days. Both epidemics have the same value of
+\(R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2\). The epidemic
+trajectories are shown in the \(state\) vs.~time plots in Figure
+\ref{fig:sir-ex}. At a glance, we may assume that Model 1 has a larger
+\(R_0\) than Model 2 because the peak of infection occurs more quickly
+than in Model 2. On the other hand, we may think Model 2 has a larger
+\(R_0\) because it has a slightly larger peak of infection than Model 1.
 
-If we have two SIR models that follow the Kermack and McKendrick SIR
-model, have the same percentage of individuals in the initial states,
-and the same value of \(R_0\) then the two models will create exactly
-overlapping paths in a ternary plot.
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{Figs/unnamed-chunk-2-1} 
+
+}
+
+\caption{\label{fig:sir-ex}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.}\label{fig:unnamed-chunk-2}
+\end{figure}
+\end{CodeChunk}
+
+However, when we plot the trajectories as a single curve using the
+ternary plot in the time-invariant view, we immediately see a different
+story. In this time-invariant view in Fig. \ref{fig:ternary-ex}, the
+points seem to overlap and form the same trajectory. In other words, we
+can see there is something fundamentally linking these two different
+epidemics, and this fundamental link turns out to be \(R_0\).
 
 More formally, let two Kermack and McKendrick (see Eq.
 \eqref{eq:sir-ode}) SIR models be denoted \((S_1(t), I_1(t), R_1(t))\)
@@ -286,20 +275,18 @@ model. Taking the sample simulations from Fig.
 \ref{fig:different-scales-standard}, Fig.
 \ref{fig:different-scales-tern} presents these models in a ternary plot.
 
-\begin{figure}[!ht]
-%% Code to reproduce is in inst/paper_figs/different-time-scales.R
-    \centering
-    \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \textcolor{violet}{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view. \textcolor{violet}{I might suggest using opacity to show time scale here?} \textcolor{violet}{Make this reproducible too?}}
-    \label{fig:different-scales-tern}
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{Figs/unnamed-chunk-3-1} 
+
+}
+
+\caption{\label{fig:ternary-ex}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered.}\label{fig:unnamed-chunk-3}
 \end{figure}
+\end{CodeChunk}
 
-In \pkg{EpiCompare}, we also provide visualization tools to aid in
-comparing models in the ternary / time-invariant space, which is
-presented in more details in Section
-\ref{sec:time-invariant-in-simplex}.
-
-\subsection[Simplexes beyond ternary plots]{Simplexes beyond ternary
+\subsection[Simplexes beyond ternary plots]{Simplices beyond ternary
 plots and time-invariant comparison
 tools}\label{sec:time-invariant-in-simplex}
 
@@ -501,11 +488,11 @@ R> ggplot(data = plot_df,
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-6-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-8-1} 
 
 }
 
-\caption{\label{fig:cifs}Empirical cumulative incidence functions of prodrome (symptom) onset and measles rash appearance.  We see that there is approximately a a constant lag between the two curves.}\label{fig:unnamed-chunk-6}
+\caption{\label{fig:cifs}Empirical cumulative incidence functions of prodrome (symptom) onset and measles rash appearance.  We see that there is approximately a a constant lag between the two curves.}\label{fig:unnamed-chunk-8}
 \end{figure}
 \end{CodeChunk}
 
@@ -535,11 +522,11 @@ R> ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-8-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-10-1} 
 
 }
 
-\caption{\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis).}\label{fig:unnamed-chunk-8}
+\caption{\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis).}\label{fig:unnamed-chunk-10}
 \end{figure}
 \end{CodeChunk}
 
@@ -567,11 +554,11 @@ R> hagelloch_raw %>%
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-9-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-11-1} 
 
 }
 
-\caption{\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined.}\label{fig:unnamed-chunk-9}
+\caption{\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined.}\label{fig:unnamed-chunk-11}
 \end{figure}
 \end{CodeChunk}
 
@@ -724,11 +711,11 @@ R> g +   geom_path(data = both_models %>% filter(t !=0),
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-16-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-18-1} 
 
 }
 
-\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-16}
+\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-18}
 \end{figure}
 \end{CodeChunk}
 
@@ -806,8 +793,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0\\
-EpiModel SIR & 0.0028813 & 0\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -818,4 +805,3 @@ EpiModel SIR & 0.0028813 & 0\\
 
 
 \end{document}
-

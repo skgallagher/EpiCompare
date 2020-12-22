@@ -64,7 +64,8 @@ options(kableExtra.latex.load_packages = FALSE)
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
                       fig.align = "center",
                       echo=TRUE, warning=FALSE, message=FALSE,
-                      fig.pos = "H")
+                      fig.pos = "H",
+                      cache = TRUE)
 
 ```
 
@@ -79,7 +80,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
 The recent (and currently on-going) COVID-19 global pandemic has galvanized public interest in understanding more about infectious disease modeling and has highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g. ...][]{}. The COVID-19 pandemic highlights how all three goals are important both separately and taken as a whole.  Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly.  Correctly analyzing and addressing these issues aids in prevention and mitigation of future outbreaks. \shannon{really like this paragraph}
 
 
-The current epidemic of COVID-19 also highlights that infectious disease  models are only one piece of the overall analysis pipeline. University based resources like John Hopkin's and government numerical dashboards (across all levels of government) during the COVID-19 epidemic remind us that descriptive statistics and visualization can be a important first step in the process (multiple \cite{}?).} \shannon{add comment about NYT or something} Still, rightly so, a large amount of theoretical work goes into modeling epidemics, with different models focusing at the individual / agent level, network structure or just aggregate flows (review paper \cite{}?). All placing individuals / proportions of the populations into different states (e.g. suspectible, exposed, infected, recovered, etc.). With all these models, review and comparison papers in the literature and through MIDAS (Models of Infectious Disease Agent Study) Control Center helps the individual practitioner decide the correct approach. \shannon{along with expertise from healthcare professionals...}
+The current epidemic of COVID-19 also highlights that infectious disease  models are only one piece of the overall analysis pipeline. University based resources like John Hopkins' and government numerical dashboards (across all levels of government) during the COVID-19 epidemic remind us that descriptive statistics and visualization can be a important first step in the process (multiple \cite{}?).} \shannon{add comment about NYT or something} Still, rightly so, a large amount of theoretical work goes into modeling epidemics, with different models focusing at the individual / agent level, network structure or just aggregate flows (review paper \cite{}?). All placing individuals / proportions of the populations into different states (e.g. suspectible, exposed, infected, recovered, etc.). With all these models, review and comparison papers in the literature and through MIDAS (Models of Infectious Disease Agent Study) Control Center helps the individual practitioner decide the correct approach. \shannon{along with expertise from healthcare professionals...}
 
 At the same time, analysis packages often only address a portion of the analysis pipeline. Modeling tools often don't provide easy ways to compare and assess their models on new data. Moreover, exploring and modeling epidemics require transforming and \textit{tidying} data in different ways. To fill these gaps, we present our our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus is to aid and advance research in the area of comparison and assessment of epidemic \& epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases  as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. \pkg{EpiCompare} provides tools to aids practitioners in all areas of this pipeline.
 
@@ -100,40 +101,77 @@ SHANNON: I THINK JUST INCLUDING LOTS OF LITERATURE IN INTRO + ETC. INSTEAD OF HA
 
 Although epidemics are by definition a process that evolves over time, epidemics, including the recent COVID-19, often need to be compared in a time-invariant way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of suspectible vs infected vs recovered individuals) don't always as intelligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-invariant approaches and in this section we present benefits of the time-invariant analysis, with 1) motivation for time-invariant analysis through $R_0$ (the initial reproduction number), 2) time-invariant visualization tools for 3-state models (e.g. SIR models), and 3) potential for similar analysis for models with more states (e.g. SEIR models). \ben{Will need to rewrite this section "introduction".}
 
-## Motivation through $R_0$ {short-title="r0" #r0}
+## What $R_0$ has to do with time-invariant analysis {short-title="r0" #r0}
 
-$R_0$, the initial reproduction number, has been called the ``most important quantity in epdiemiology'' \citep[][]{Gallagher2020}. To see the importance of $R_0$, one need only read the newspaper \citep{Fisher2020} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{Aronson2020}. $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, and is commonly associated with the Susceptible-Infectious-Recovered (SIR) data/models. The SIR framework, composed of data and statistical models where individuals pass from Susceptible to Infectious to Recovered states is a common, if not the most common, modeling framework in infectious disease epidemiology (seen in examples of recent published works in \cite{FILLIN}).
+$R_0$, the initial reproduction number, has been called the ``most important quantity in epdiemiology'' \citep[][]{heesterbeek2003}. By definition, $R_0$ is the number of expected secondary infections when a primary infection is introduced to a susceptible population. To see the importance of $R_0$, one need only read the newspaper \citep{Fisher2020} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{Aronson2020}. $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, which allows epidemics to be compared to one another in both different time and geographic scales. 
 
-In regards to traditional $X$ vs. time plots, $R_0$ is difficult to visualize. For example, in a SIR simulation with two models have the same value of $R_0$, one can see in Fig. \ref{fig:different-scales-standard} that there is no way of knowing that from looking at the graph (this figure will be commented on more below).
-
-\begin{figure}[!ht]
-%% Code to reproduce is in inst/paper_figs/different-time-scales.R
-    \centering
-    \includegraphics[width = .5\textwidth]{images/diff-time-standard.pdf}%\includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Bivariate view of \# in each state vs. time. Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$.\ben{We probably need to define $\beta/\gamma$.}
-\ben{NEW: recommendation - make this plot actually have 3 examples (the current one), one where we have an affine transformation of the time scale, and one with the halleolof data.} \ben{Also these figures should be reproducible.}}
-    \label{fig:different-scales-standard}
-\end{figure}
-
-## Ternary and time-invariant visualizations for $R_0$ {short-title="ternary visualizations" #sec:ternary}
-
-It is possible to identify, at a glance, which SIR epidemic paths, like those in Fig. \ref{fig:different-scales-tern}  have the same value of $R_0$ via ``time-invariant'' visualizations, under some circumstances. Specifically, for SIR models we propose using ternary to examine an epidemic's trajectory in a more time-invariant manner. 
-
-Ternary plots are sometimes used in chemistry \citep[][]{Gillespie1976} but only rarely seen in the field of infectious disease epidemiology (to our knowledge, only seen in \cite{}).  Ternary plots illustrate the relationship of constrained 3D data, namely of points $(a_i, b_i, c_i) \in [0,1] \times [0,1] \times [0,1]$ with $a_i+ b_i + c_i =1$ and as such, are situational.  The SIR framework happens to be of the situational format required for ternary plots where $(S(t), I(t), R(t))$ are the number of susceptible, infectious, and recovered individuals in each state at time $t$ and $S(t) + I(t) + R(t) = N(t)$ where $N(t)$ is the population size at time $t$.
-
-Ternary plots are time-invariant in the sense that the temporal scale does not explicitly apear in the visualization and as a consequence, allow for direct comparisons of outbreaks on different time scales (e.g. days vs. years) or of SIR data of the same disease in different areas (our first case study in Sec. \ref{sec:ex1} focuses on this).
-
-
-To show that ternary plots have to potential to aid in the comparison of different epidemic's $R_0$s -in certain circumstances- we first need to introduce the classic, deterministic Kermack and McKendrick \cite{CITETHIS?} SIR model where the initial number in each state $(S(0), I(0), R(0))$ are known and $N$ the population size is constant.  The movement of individuals among the states is given by the following differential equations (Eq. \eqref{eq:sir-ode}) where $\beta$ is the average infection rate and $\gamma$ is the average recovery rate,
+Estimator(s) for $R_0$ are dependent on the epidemic modeling framework, which consists of which states an individual can occupy (e.g. susceptible, infectious, recovered) and a description of how individuals move from one state to the next over time.  A common epidemic modeling framework is the SIR model, originally introduced by @kermack1927.  Transitions from one state to the next are defined by a series of ordinary differential equations, where $N$ is the (fixed) total number individuals, $\beta$ is the rate of infection, and $\gamma$ is rate of recovery,
 \begin{align}\label{eq:sir-ode}
       S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
       R^\prime(t) &= \gamma I(t) \nonumber.
   \end{align}
-  
-\ben{SUGGESTION: define $R_0$ mathematically here (though referred to in figure 2 - which still needs to be defined there).}
-  
-If we have two SIR models that follow the Kermack and McKendrick SIR model, have the same percentage of individuals in the initial states, and the same value of $R_0$ then the two models will create exactly overlapping paths in a ternary plot. 
+From this, $\hat{R}_0 = \frac{\hat{\beta}}{\hat{\gamma}}$, the ratio of the estimated infection rate compared to the estimated recovery rate.
+
+
+In regards to traditional $state$ vs. time plots, $R_0$ is difficult to visualize, especially with respect from one epidemic to another. For example, consider the scenarios where the first epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_1 = .3$ and $\gamma_1 = .15$, and the second epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_2 = .24$ and $\gamma_1 = .12$ over 40 days.  Both epidemics have the same value of $R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2$.  The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:sir-ex}.  At a glance, we may assume that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may think Model 2 has a larger $R_0$ because it has a slightly larger peak of infection than Model 1.
+
+
+```{r echo = FALSE}
+devtools::load_all()
+library(tidyr)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+set.seed(1)
+
+theme_set(theme_bw(base_size = 24))
+```
+
+
+```{r echo = FALSE, fig.cap = "\\label{fig:sir-ex}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$."  }
+set.seed(1225)
+
+beta1 <- .8
+gamma1 <- .4
+scale <- .8
+sir1 <- simulate_SIR_agents(n_sims = 100, n_time_steps = 40,
+                            beta = beta1, gamma = gamma1,
+                            init_SIR = c(990, 10, 0)) %>%
+  group_by(sim) %>%
+  agents_to_aggregate(states = c(tI, tR)) %>%
+  group_by(t) %>%
+  summarize(S = mean(X0), I = mean(X1), R = mean(X2),
+            .groups = "drop") %>%
+  mutate(type = "Model 1")
+
+sir2 <- simulate_SIR_agents(n_sims = 100, n_time_steps = 40,
+                            beta = beta1 * scale, gamma = gamma1 * scale,
+                            init_SIR = c(990, 10, 0)) %>%
+  group_by(sim) %>%
+    agents_to_aggregate(states = c(tI, tR)) %>%
+  group_by(t) %>%
+  summarize(S = mean(X0), I = mean(X1), R = mean(X2),
+            .groups = "drop") %>%
+  mutate(type = "Model 2")
+
+df <- bind_rows(sir1, sir2)
+
+df_long <- df %>%
+         tidyr::pivot_longer(cols = c(S, I, R))  %>%
+  mutate(name = factor(name, levels = c("S", "I", "R")))
+
+ggplot(data = df_long,
+       aes(x = t, y = value, col = type)) + 
+  facet_wrap(~name, ncol = 1, scales = "free") +
+  geom_point() +
+  scale_color_manual(values = c("red", "blue"), name = "Epidemic") +
+  labs(x = "Time",
+       y = "# in state",
+       title = latex2exp::TeX("Comparing two epidemics over 50 days with same $R_0$"))
+```
+However, when we plot the trajectories as a single curve using the ternary plot in the time-invariant view, we immediately see a different story.  In this time-invariant view in Fig. \ref{fig:ternary-ex}, the points seem to overlap and form the same trajectory.  In other words, we can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
 
 More formally, let two Kermack and McKendrick (see Eq. \eqref{eq:sir-ode}) SIR models be denoted $(S_1(t), I_1(t), R_1(t))$ and $(S_2(t), I_2(t), R_2(t))$, respectively, for $t > 0$. Assume both models have initial values $(S(0), I(0), R(0))$.  Let $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$.  Equivalently, $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$ for some $a > 0$. 
 
@@ -144,18 +182,20 @@ Let there be two SIR models as described above.  Then for all $t > 0$ there exis
 The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Appendix \ref{app:proof}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these models in a ternary plot.
 
 
-\begin{figure}[!ht]
-%% Code to reproduce is in inst/paper_figs/different-time-scales.R
-    \centering
-    \includegraphics[width = .5\textwidth]{images/diff-time-ternary.pdf}
-    \caption{Ternary view of \# in each state.  Both this Fig. and Fig. \ref{fig:different-scales-standard} display the same two sets of data.  Both data sets are generated using the same value of $R_0 = 2.8$ but have different values of $\beta$ and $\gamma$. \ben{We probably need to define $\beta/\gamma$.}  While there are obvious are differences in Fig.\ref{fig:different-scale-standard}, the data sets look quite similar in the ternary view. \ben{I might suggest using opacity to show time scale here?} \ben{Make this reproducible too?}}
-    \label{fig:different-scales-tern}
-\end{figure}
 
-In \pkg{EpiCompare}, we also provide visualization tools to aid in comparing models in the ternary / time-invariant space, which is presented in more details in Section \ref{sec:time-invariant-in-simplex}.
+```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:ternary-ex}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered."}
+ggplot(data = df) +
+  geom_point(aes(x = S, y = I, z = R,
+                     col = type)) +
+    coord_tern() + 
+  theme_sir() +
+  scale_color_manual(values = c("red", "blue"), name = "Epidemic") 
+```
 
 
-## Simplexes beyond ternary plots and time-invariant comparison tools {short-title="Simplexes beyond ternary plots" #sec:time-invariant-in-simplex}
+
+
+## Simplices beyond ternary plots and time-invariant comparison tools {short-title="Simplexes beyond ternary plots" #sec:time-invariant-in-simplex}
 
 Beyond ternary plots, and the associated SIR models, we can extend the time-invariant approach described in Section \ref{sec:ternary} to higher dimensions (i.e. models with more states). The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a one-dimension less space through the simplexical structure of the data.
 
@@ -207,17 +247,7 @@ We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-18
 
 
 
-```{r echo = FALSE}
-devtools::load_all()
-library(tidyr)
-library(dplyr)
-library(knitr)
-library(kableExtra)
-library(ggplot2)
-set.seed(1)
 
-theme_set(theme_bw(base_size = 24))
-```
 
 
 ```{r hagelloch-subset-view, echo = FALSE}

@@ -46,7 +46,7 @@ This "quickstart" guide presents how to:
 
 ## Measles outbreak in Hagelloch, Germany in 1861
 
-Our first example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered, information on their school class.
+Our first example comes from a Measles outbreak in Hagelloch, Germany in 1861. We have data on each child (agent) in the town.The data we use (as seen below) has each child's information relative to when they were reported to be infected and recovered along with information on their school class.
 
 ```{r quickstart, fig.width=6, eval=TRUE, message=F}
 ## Visualizing epidemic progression using EpiCompare
@@ -59,7 +59,7 @@ EpiCompare::hagelloch_raw %>% head() %>%
 
 ```
 
-To understand to epidemic we can examine it through an "aggregate" lense (using `geom_aggregate`), which aggregates across agents to find the number of susceptible, infectious, and recovered, and plots them in the ternary view.
+One way to understand an epidemic is to view examine it through an "aggregate" lens.  In *EpiCompare*, we can use the function `geom_aggregate`, which aggregates across agents to find the number of susceptible, infectious, and recovered agents at each time step and displays them in a ternary plot, which allows us to simultaneously view the $S$, $I$, and $R$ components.
 
 ```{r}
 theme_set(theme_sir())
@@ -77,7 +77,8 @@ Previous work has suggested that the class (`CL`) the student was in effected ho
 hagelloch_raw %>% 
   rename(`school grade` = CL) %>%
   group_by(`school grade`) %>%
-  summarize(`number of students` = n()) %>%
+  summarize(`# of students` = n(),
+            .groups = "drop") %>%
   knitr::kable() %>%
   kableExtra::kable_styling()
 ```
@@ -113,7 +114,9 @@ out <- EpiCompare::simulate_SIR_agents(n_sims = n_sims,
               
 df_ave <- out %>% agents_to_aggregate(states = c(tI, tR)) %>%
   rename(S = "X0", I = "X1", R = "X2") %>% 
-  group_by(t) %>% summarize(S = mean(S), I = mean(I), R = mean(R))
+  group_by(t) %>%
+  summarize(S = mean(S), I = mean(I), R = mean(R),
+            .groups = "drop")
 
                    
 if (tidyr_new_interface()){ # if tidyr version > 0.8.99
@@ -206,13 +209,13 @@ ggplot() +
 
 Here's a demo of all current geometric tools to create prediction bands:
 
-```{r fig.width = 7}
+```{r fig.width = 9}
 vis_data <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R") %>%
   ggplot(aes(x = x, y =y, z = z, group = .id)) +
   geom_path(alpha = .03) +
   coord_tern() +
-  labs(title = "Actually data paths")
+  labs(title = "Actual simulation paths")
 
 vis_spherical <- EpiCompare::pomp_df %>%
   rename(x = "S", y = "I", z = "R", t = "time") %>%

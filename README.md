@@ -15,30 +15,31 @@ creation](https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check,%20cod
 The goal of `EpiCompare` is to provide the epidemiology community with
 easy-to-use tools to encourage comparing and assessing epidemics and
 epidemiology models in a time-free manner. All tools attempt to adhere
-to `tidyverse`/`ggplot2` style to enhance easy of use.
+to `tidyverse`/`ggplot2` style to enhance ease of use.
 
-Time free analysis allows for stronger comparison of epidemics and model
-based simulations avoiding different scaling and shifts of time that
-mess up time-based comparisons.
+Additionally, `EpiCompare` provides tools for time invariant analysis.
+This allows for ‘fairer’ comparison of epidemics and model based
+simulations by avoiding different scaling and shifting of time that can
+confound time-based comparisons.
 
-To achieve this goal, the package contains:
+To achieve these goals, the package contains:
 
-  - **Visualization tools** to visualize SIR epidemics and simulations
+-   **Visualization tools** to visualize SIR epidemics and simulations
     from SIR models in a time-free manner using `ggtern`’s ternary plots
     and prediction bands. For agent-based SIR models we also provide
     visualization tools to let the user easily explore how different
     characteristics of the agents relate to different experiences in the
     epidemic.
-  - General **comparison tools** to compare epidemics and epidemic
+-   General **comparison tools** to compare epidemics and epidemic
     models that have higher numbers of states (again in a time-free
     manner), allowing for the user to examine the differences between
     models through simulations, and if an epidemic is similar to a model
     through simulations and prediction bands.
-  - **Conversion tools** to:
-      - Convert and then compare models from *standard epidemic
+-   **Conversion tools** to:
+    -   Convert and then compare models from *standard epidemic
         packages* like `EpiModels`, `pomp`, as well as internal
         agent-based models, and epidemics in a common framework.
-      - Convert *agent-based information into aggregate* to compare in
+    -   Convert *agent-based* information into *aggregate* to compare in
         the aggregate framework described above.
 
 ## Installation
@@ -157,8 +158,8 @@ have blog posts on the situation. As such, if you’re looking to learn
 from our mistakes from Travis, then the comments below stop making sense
 after December 15th, 2020.
 
-1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse` \<=
-    0.8.3. We followed ideas found in [tidyr:
+1.  For writing code that works with `tidyverse` 1.0 vs `tidyverse`
+    &lt;= 0.8.3. We followed ideas found in [tidyr:
     in-packages](https://tidyr.tidyverse.org/articles/in-packages.html),
     for the code, and - when working with Travis CI (using a matrix for
     multiple builds) - we leverage ideas in [tidyverse travis on
@@ -167,39 +168,39 @@ after December 15th, 2020.
     principles](https://principles.tidyverse.org/changes-multivers.html).
 2.  For writing your own `geom`s and `stat`s that works with `ggtern`
     (which are generally restricted), the following 2 stack-exchange
-    articles helped use do so with ease:
+    articles helped us do so with ease:
     1.  [stack-exchange: personal code
         idea](https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups)
-    
-    2.  [stack-exchange: being able to access ggtern’s element write
+
+    2.  [stack-exchange: being able to access ggtern’s element right
         away](https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479)
-    
+
     3.  Finally, we’ve also leveraged ideas from [R-devel: on avoiding
         problems with
         `:::`](https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html)
         in `R/aaa.R` to overcome messages from CRAN relative to this
         hack (using `:::`). For some reason - when documenting for
-        `pkgdown` website, we need to do `library(ggtern);
-        EpiCompare:::update_approved_layers()`
+        `pkgdown` website, we need to do
+        `library(ggtern); EpiCompare:::update_approved_layers()`
 3.  `geom_prediction_band` required not just `compute_group` but
     `compute_layer` - there is very little documentation on how to
     approach this correctly. Basically - there are problems when the
     `compute_group` wants to make multiple `pieces`/`groups` - and it is
-    similar to the problem that if you do something like `aes(color =
-    var1, group = var2)` you may actually want to do `aes(color = var1,
-    group = paste(var1, var2))`, if there are the same `var2` values
-    across different `var1` values but they don’t mean they should be
-    grouped together.
-4.  Now that `R` have come out with version \>= 4.0.0, we now need to
+    similar to the problem that if you do something like
+    `aes(color = var1, group = var2)` you may actually want to do
+    `aes(color = var1, group = paste(var1, var2))`, if there are the
+    same `var2` values across different `var1` value, but should not
+    necessarily be grouped together.
+4.  Now that `R` has come out with version &gt;= 4.0.0, we now need to
     call `.S3method("method", "class")` to define the connection for
     `S3` methods (e.g. `method.class` function), which we have for the
     `contained` function.
-5.  **Does 2 wrongs make a right?** As of 9/23 `ggtern` had an
+5.  **Do two wrongs make a right?** As of 9/23 `ggtern` had an
     [issue](https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot)
     that it messed with `ggplot2`’s legends when loaded (it over-wrote
-    the `print.ggplot` and other functions). To “correct” this, we’ve
-    over-wrote `ggtern`’s `print.ggplot` to correct this problem when
-    not producing ternary plots (code in `aaa.R`).
+    the `print.ggplot` and other functions). We’ve over-written
+    `ggtern`’s `print.ggplot` to correct this problem when not producing
+    ternary plots (code in `aaa.R`).
 6.  Useful Rstudio shortcuts for `Roxygen2`: (a) create `Roxygen2`
     comments template with `option` + `command` + `shift` + `R` (b) In
     `Roxygen2` comments do `control` + `shift` + `/` to format relative
@@ -226,5 +227,5 @@ after December 15th, 2020.
 
 ## Contributors
 
-  - Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
-  - Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))
+-   Shannon Gallagher ([`skgallagher`](https://github.com/skgallagher))
+-   Benjamin LeRoy ([`benjaminleroy`](https://github.com/benjaminleroy))

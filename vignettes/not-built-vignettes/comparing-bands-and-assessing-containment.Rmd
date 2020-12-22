@@ -38,9 +38,9 @@ devtools::load_all()
 <summary>Unfold </summary>
 This package provides you the ability to create bands that are high dimensional (say beyond a 3d simplex). It also allows for you to compare bands (using Haussdorff distance) and examine containment of curves.
 
-To  motivate these tools we're actually going to use a with a SIR example (maybe elsewhere do a full high-d example?). Below we've generated a `pretend_actual_data`-set and a set of simulations. 
+To  motivate these tools we present a SIR example. Below we've generated a `pretend_actual_data`-set (i.e. made up data) and a set of simulations (i.e. draws from stochastic models). 
 
-Look at this beautify pretend data. A good peak. We're able to use `geom_aggregate` on our data (though we also could have used `agents_to_aggregate` + `geom_path`).
+Our pretend data simulates a basic epidemic where a disease spreads through a population where there is exactly one peak of infection. We're able to use `geom_aggregate` on our data (though we also could have used `agents_to_aggregate` + `geom_path`).
 </details>
 
 ```{r}
@@ -66,7 +66,8 @@ df_single <- pretend_actual_data %>%
   agents_to_aggregate(states = c("tI", "tR")) %>%
   rename(S = "X0", I = "X1", R = "X2") 
 ```
-```{r eval = F}
+
+```{r eval = FALSE}
 # visual not run...
 ggplot(df_single, aes(x = S, y = I, z = R)) +
   geom_path(color = "blue") +
@@ -74,7 +75,7 @@ ggplot(df_single, aes(x = S, y = I, z = R)) +
 
 ```
 
-Now, suppose, without having read our paper, you don't have a proof of \@Shannon's at the top of your head, but you still think the following model fits decently well for the above data.
+Now, suppose, as in real life, you do not know how the original data were generated, but you still think the following model is a good fit for the data.  We can plot the data (blue) on top of the simulated paths (gray) and do so, below.  Intuitively, if the model is a good fit, we might expect the blue curve to be centered (or at least contained) within the gray curves.
 
 ```{r, eval = TRUE, fig.asp = .62, out.width = '60%'}
 n_sims <- 50 
@@ -122,9 +123,9 @@ ggplot(df_group) +
 
 Great! The visualization looks like you made a good estimate of the SIR model parameters. But how good? Would a 60\% prediction interval contain the true epidemic?
 
-We propose to assess this question with containment of the epidemic with a band using 60\% of the simulations - specifically the top 60\% most *globally* deep filaments of simulations. (*since this looks like a 'single mode' style distribution - global depth isn't that bad.*)
+We propose to assess this question with containment of the epidemic with a band using 60\% of the simulations - specifically the top 60\% most *globally* deep filaments of simulations. (Please see this [article for an explanation of global depth and filaments](file:///home/shannon/EpiCompare/docs/articles/not-built-vignettes/depths-impact-on-prediction-bands.html).)
 
-We define:
+We define the delta ball containment band as:
 ```{r}
 delta_ball_cb <- df_group %>%
   arrange(t) %>% # just to be safe
@@ -134,7 +135,7 @@ delta_ball_cb <- df_group %>%
   create_delta_ball_structure()
 ```
 
-Which is just a data version (not exactly, but close) to this:
+Which is just a data version (not exactly, but close) of the following visualization:
 ```{r cache = F}
 ggplot() +
   geom_prediction_band(data = df_group, 
@@ -147,14 +148,14 @@ ggplot() +
   theme_sir()
 ```
 
-Is it contained in the above delta ball?
+Is the data (blue) contained in the above delta ball?
 
 ```{r}
 contained(delta_ball_cb, 
          df_single %>% select(-t)) # aggregate version
 ```
 
-What about a less strigent ruling (maybe a normal prediction band with 90% confidence)? 
+What about a less stringent ruling (maybe a more typical prediction band with 90% confidence)? 
 
 ```{r}
 delta_ball_cb1 <- df_group %>%
@@ -170,9 +171,10 @@ contained(delta_ball_cb1,
          df_single %>% select(-t)) # aggregate version
 ```
 
-# Comparing another simulation
 
-Suppose your lab has seen an epidemic that has similar characteristics as the current epidemic, and had already build simulations below for such thing:
+# Comparing one set of simulations to another
+
+Suppose your lab has seen an epidemic that has similar characteristics as the current epidemic, and had already built simulations below for such an occasion:
 
 ```{r}
 beta <- .15
@@ -191,7 +193,11 @@ df_group2 <- sim50_2 %>% group_by(sim) %>%
 
 ## Motivating visuals {.tabset}
 
-### First
+Below we present four different ways to visualize the different sets of simulations.  The first two generate the same plot but are constructed differently.  The first plot combines the two data frames of simulations together and groups them by the model type.  The second plot plots a separate layer for each set of simulations.  The third and fourth plots also generate the same resulting figures.  This time, the individual simulation paths are shown.  The third plot uses `EpiCompare::agents_to_aggregate` to first format the raw agent data into a form to be plotted with `ggplot2::geom_path`.  The fourth plot uses `EpiCompare::geom_aggregate` on the raw agent data to directly create the visualization.
+
+Regardless of which visualization we use, it is evident that the two sets of simulations produce fairly different sets.  However, we also see that there is significant overlap until about 60\% of the population is infected, meaning that the two different sets of simulations may be indistinguishable from one another at the beginning of the epidemic.
+
+### Plotting (Way 1)
 
 ```{r cache = F}
 df_all <- rbind( df_group %>% ungroup() %>% mutate(sim = as.character(sim),
@@ -208,7 +214,7 @@ ggplot() +
   theme_sir()
 ```
 
-### Second 
+### Plotting (Way 2)
 ```{r eval = F}
 # visual not run
 ggplot() +
@@ -232,7 +238,7 @@ ggplot() +
 
 
 
-### Third
+### Plotting (Way 3)
 ```{r eval = F}
 # visual not run
 df_all <- rbind(df_group %>% ungroup() %>% 
@@ -250,13 +256,15 @@ ggplot() +
   theme_sir()
 ```
 
+### Plotting (Way 4)
+
 ```{r eval = F}
 # this would also work (and is not run)
-df_all_agg <- rbind(sim50 %>% mutate(epi_model = "first"),
+df_all_agents <- rbind(sim50 %>% mutate(epi_model = "first"),
                 sim50_2 %>% mutate(epi_model = "second"))
 
 ggplot() +
-  geom_aggregate(data = df_all_agg, 
+  geom_aggregate(data = df_all_agents, 
             aes(y = tI, z = tR, color = epi_model,
                 group = factor(paste(epi_model,sim))), 
                 alpha = .1)  +
@@ -268,9 +276,9 @@ ggplot() +
 
 ## Numerical comparison (good for higher dimensional models)
 
-Above we saw how to compare a epidemic to a model (through simulations), and how to visually compare simulations in a time-free manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.
+Above we saw how to compare observed epidemic data to a model (through simulations), and how to visually compare simulations in a time-invariant manner. Naturally, we can also compare models (and the geometric prediction bands they generate), though geometric summary statistics.
 
-We provide one such metric, the [**Hausdorff Distance**](https://en.wikipedia.org/wiki/Hausdorff_distance), which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically `hausdorff_dist()` can calculate this distance between `delta_ball` and `convex_hull` based prediction bands (with classes `delta_ball_structure` and `convex_hull_structure` respectively.
+We provide one such metric, the [**Hausdorff Distance**](https://en.wikipedia.org/wiki/Hausdorff_distance), which defines the distance between sets (but the minimum distance that each set must expand to cover the other set). Specifically `hausdorff_dist()` can calculate this distance between `delta_ball` and `convex_hull` based prediction bands (with classes `delta_ball_structure` and `convex_hull_structure` respectively).
 
 ```{r}
 delta_ball_cb_group2 <- df_group2 %>%
