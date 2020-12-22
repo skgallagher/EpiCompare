@@ -95,7 +95,6 @@ jobs:
           devtools::install_deps(dep = TRUE, upgrade = "never")
           remotes::install_cran("rcmdcheck", upgrade = "never")
           remotes::install_cran("covr", upgrade = "never")
-          install.packages("pkgdown")
         shell: Rscript {0}
 
       - name: Install dependencies (tidyr new)
@@ -104,14 +103,12 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
-          install.packages("pkgdown")
         shell: Rscript {0}
 
       - name: Check which tidyr
         run: |
-          print(utils::packageVersion("tidyr")) # errors
-          print(Sys.info()["user"])
-          print(Sys.info())
+          print(utils::packageVersion("tidyr")) 
+          # check if tidyr was kept at desired version or forced to upgrade
         shell: Rscript {0}
 
 
@@ -125,7 +122,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-tidyr_current${{ matrix.config.tidyr_current }}-results
           path: check
           
       - name: Test coverage (for code coverage)
