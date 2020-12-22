@@ -77,7 +77,7 @@
 #' @format The object is a 'pompList' which contains essentially all information from a \code{pomp} simulation.
 #' @examples
 #' data("pomp_pomp")
-#' str(pomp_pomp)
+#' str(head(pomp_pomp))
 "pomp_pomp"
 
 

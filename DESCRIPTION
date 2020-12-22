@@ -40,7 +40,6 @@ Imports:
     stringr
 Suggests:
     coronavirus,
-    COVID19,
     devtools,
     EpiModel,
     gridExtra,
@@ -53,7 +52,6 @@ Suggests:
     progress,
     rmarkdown,
     testthat (>= 2.1.0),
-    tidyverse,
     viridis
 RoxygenNote: 7.1.1
 VignetteBuilder: 

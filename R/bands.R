@@ -1043,10 +1043,14 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'                       conf_level = .95) +
 #'  coord_tern() +
 #'  labs(title = "Convex hull CB")
-#'
+#'\dontrun{
+#'# run this if you want to see them all
 #'grid.arrange(vis_data, vis_spherical,
 #'             vis_delta_ball, vis_kde,
 #'             vis_convex_hull, nrow = 2)
+#'}
+#' 
+#'grid.arrange(vis_data, vis_delta_ball, nrow = 2)            
 geom_prediction_band <- function(mapping = NULL, data = NULL,
                                  stat = list("PredBandDeltaBall",
                                              "PredBandKDE",

@@ -140,7 +140,7 @@ jobs:
       - name: install additional packages for pkgdown site (for pkgdown - on macOS-latest)
         if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
         run: |
-           install.packages("reticulate")
+           remotes::install_github("rstudio/reticulate")
            install.packages("plotly")
            install.packages("tidyverse")
            install.packages("ks")
