@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EpiCompare • EpiCompare</title>
+<title>A Pipeline to Analyze and Compare Infectious Disease Epidemics • EpiCompare</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,8 +17,10 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="EpiCompare">
-<meta property="og:description" content="A pipeline to analyze and compare infectious disease epidemics.">
+<script src="pkgdown.js"></script><meta property="og:title" content="A Pipeline to Analyze and Compare Infectious Disease Epidemics">
+<meta property="og:description" content="Tools to aid in all steps of the epidemiology pipeline. This 
+  package provides tidy tools to aid in the assessment and comparison of 
+  epidemics and models. ">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -110,9 +112,10 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of <code>EpiCompare</code> is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to <code>tidyverse</code>/<code>ggplot2</code> style to enhance easy of use.</p>
-<p>Time free analysis allows for stronger comparison of epidemics and model based simulations avoiding different scaling and shifts of time that mess up time-based comparisons.</p>
-<p>To achieve this goal, the package contains:</p>
+<!-- badges: end -->
+<p>The goal of <code>EpiCompare</code> is to provide the epidemiology community with easy-to-use tools to encourage comparing and assessing epidemics and epidemiology models in a time-free manner. All tools attempt to adhere to <code>tidyverse</code>/<code>ggplot2</code> style to enhance ease of use.</p>
+<p>Additionally, <code>EpiCompare</code> provides tools for time invariant analysis. This allows for ‘fairer’ comparison of epidemics and model based simulations by avoiding different scaling and shifting of time that can confound time-based comparisons.</p>
+<p>To achieve these goals, the package contains:</p>
 <ul>
 <li>
 <strong>Visualization tools</strong> to visualize SIR epidemics and simulations from SIR models in a time-free manner using <code>ggtern</code>’s ternary plots and prediction bands. For agent-based SIR models we also provide visualization tools to let the user easily explore how different characteristics of the agents relate to different experiences in the epidemic.</li>
@@ -121,7 +124,7 @@
 <strong>Conversion tools</strong> to:
 <ul>
 <li>Convert and then compare models from <em>standard epidemic packages</em> like <code>EpiModels</code>, <code>pomp</code>, as well as internal agent-based models, and epidemics in a common framework.</li>
-<li>Convert <em>agent-based information into aggregate</em> to compare in the aggregate framework described above.</li>
+<li>Convert <em>agent-based</em> information into <em>aggregate</em> to compare in the aggregate framework described above.</li>
 </ul>
 </li>
 </ul>
@@ -210,23 +213,25 @@
 <div id="package-creation-notes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-creation-notes" class="anchor"></a>Package Creation Notes:</h2>
+<p>**We’re transferring to ~github actions~ and away from Travis CI. Thanks Travis CI for the long run (During undergrad - probably around 2015, I got introduced to Travis CI and it has been a really great tool and CIs in general are great tools). Sadly, open source packages (like ours) no longer gets infinite free resources on Travis. <a href="https://deanattali.com/blog/migrating-travis-to-github/">Dean Attali</a> and <a href="https://ropensci.org/technotes/2020/11/19/moving-away-travis/">ROpenSci</a> have blog posts on the situation. As such, if you’re looking to learn from our mistakes from Travis, then the comments below stop making sense after December 15th, 2020.</p>
 <ol>
-<li>For writing code that works with <code>tidyverse</code> 1.0 vs <code>tidyverse</code> &lt;= 0.8.3. We followed ideas found in <a href="https://tidyr.tidyverse.org/articles/in-packages.html">tidyr: in-packages</a>, for the code, and - when working with Travis CI (using a matrix for multiple builds) - we leverage ideas in <a href="https://github.com/tidyverse/design/issues/95">tidyverse travis on github</a> and <a href="https://principles.tidyverse.org/changes-multivers.html">tidyverse principles</a>.</li>
+<li>For writing code that works with <code>tidyverse</code> 1.0 vs <code>tidyverse</code> &lt;= 0.8.3. We followed ideas found in <a href="https://tidyr.tidyverse.org/articles/in-packages.html">tidyr: in-packages</a>, for the code, and - when working with Travis CI (using a matrix for multiple builds) - we leverage ideas in <a href="https://github.com/tidyverse/design/issues/95">tidyverse travis on github</a> and <a href="https://principles.tidyverse.org/changes-multivers.html">tidyverse principles</a>. **This is no longer done (was removed 22 December 2020), as the rest of <code>tidyrverse</code> has moved on and now requires <code>tidyr &gt;1.0.0</code>.</li>
 <li>For writing your own <code>geom</code>s and <code>stat</code>s that works with <code>ggtern</code> (which are generally restricted), the following 2 stack-exchange articles helped use do so with ease:
 <ol>
 <li><p><a href="https://stackoverflow.com/questions/57175114/ternary-plot-scaling-opacity-across-groups">stack-exchange: personal code idea</a></p></li>
-<li><p><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element write away</a></p></li>
+<li><p><a href="https://stackoverflow.com/questions/31589479/how-to-fix-no-item-called-packagepkg-on-the-search-list-without-using-libra#comment51172891_31589479">stack-exchange: being able to access ggtern’s element right away</a></p></li>
 <li><p>Finally, we’ve also leveraged ideas from <a href="https://stat.ethz.ch/pipermail/r-devel/2013-August/067210.html">R-devel: on avoiding problems with <code>:::</code></a> in <code>R/aaa.R</code> to overcome messages from CRAN relative to this hack (using <code>:::</code>). For some reason - when documenting for <code>pkgdown</code> website, we need to do <code><a href="https://rdrr.io/pkg/ggtern/man">library(ggtern); EpiCompare:::update_approved_layers()</a></code></p></li>
 </ol>
 </li>
 <li>
-<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> values but they don’t mean they should be grouped together.</li>
-<li>Now that <code>R</code> have come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
+<code>geom_prediction_band</code> required not just <code>compute_group</code> but <code>compute_layer</code> - there is very little documentation on how to approach this correctly. Basically - there are problems when the <code>compute_group</code> wants to make multiple <code>pieces</code>/<code>groups</code> - and it is similar to the problem that if you do something like <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = var2)</a></code> you may actually want to do <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes(color = var1, group = paste(var1, var2))</a></code>, if there are the same <code>var2</code> values across different <code>var1</code> value, but should not necessarily be grouped together.</li>
+<li>Now that <code>R</code> has come out with version &gt;= 4.0.0, we now need to call <code><a href="https://rdrr.io/r/base/S3method.html">.S3method("method", "class")</a></code> to define the connection for <code>S3</code> methods (e.g. <code>method.class</code> function), which we have for the <code>contained</code> function.</li>
 <li>
-<strong>Does 2 wrongs make a right?</strong> As of 9/23 <code>ggtern</code> had an <a href="https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot">issue</a> that it messed with <code>ggplot2</code>’s legends when loaded (it over-wrote the <code>print.ggplot</code> and other functions). To “correct” this, we’ve over-wrote <code>ggtern</code>’s <code>print.ggplot</code> to correct this problem when not producing ternary plots (code in <code>aaa.R</code>).</li>
+<strong>Do two wrongs make a right?</strong> As of 9/23 <code>ggtern</code> had an <a href="https://bitbucket.org/nicholasehamilton/ggtern/issues/13/ggtern-breaks-ggplots-plot">issue</a> that it messed with <code>ggplot2</code>’s legends when loaded (it over-wrote the <code>print.ggplot</code> and other functions). We’ve over-written <code>ggtern</code>’s <code>print.ggplot</code> to correct this problem when not producing ternary plots (code in <code>aaa.R</code>).</li>
 <li>Useful Rstudio shortcuts for <code>Roxygen2</code>: (a) create <code>Roxygen2</code> comments template with <code>option</code> + <code>command</code> + <code>shift</code> + <code>R</code> (b) In <code>Roxygen2</code> comments do <code>control</code> + <code>shift</code> + <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code> to format relative to 80 char limit.</li>
 <li>
 <a href="https://stackoverflow.com/questions/11285496/r-cmd-check-warning-functions-methods-with-usage-in-documentation-object-bu">stack overflow</a> post on how to pass <code>check</code> for <code>rownames&lt;-.tidy_dist_mat</code>.</li>
+<li>Transferring from Travis CI to github actions. We only use a single workflow file (although we use code ideas found in: <a href="https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml">check-standard/<code><a href="https://usethis.r-lib.org/reference/use_github_action.html">usethis::use_github_action_check_standard()</a></code></a>), <a href="https://github.com/r-lib/actions/blob/master/examples/test-coverage.yaml">test-coverage/<code><a href="https://usethis.r-lib.org/reference/use_github_action.html">usethis::use_github_action("test-coverage")</a></code></a>. In our <code>.github/workflows/R-CMD-check-coverage.yaml</code> you’ll find <strong>a</strong> (potentially not optional) approach to preform our complex checking approach (which tries to copy the ideas in our <a href="https://github.com/skgallagher/EpiCompare/blob/e1298f799d9248bb330885ba5e7b0fa17ea2c83e/.travis.yml">old travis file</a>). The github action easily creates a <em>larger</em> matrix that allows us to run on all standard OS, R versions and our “tidyr-current” vs “tidyr-old” split. Our approach with 1 github action <code>yaml</code> file makes us only look at 8 matrix options - it’s possible that, in the future, we’ll go back to 3 files. We currently compile our <code>pkgdown</code> site on our own computers and then push - and will continue to do so due to complications with <code>reticulate</code> and <code>python</code> packages on the virtual machines in github actions.</li>
 </ol>
 </div>
 <div id="contributors" class="section level2">
@@ -270,7 +275,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/skgallagher/EpiCompare"><img src="https://travis-ci.org/skgallagher/EpiCompare.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://github.com/skgallagher/EpiCompare/actions"><img src="https://github.com/skgallagher/EpiCompare/workflows/R-CMD-check,%20code%20coverage/badge.svg" alt="R-CMD-check, code coverage"></a></li>
 <li><a href="https://codecov.io/gh/skgallagher/EpiCompare"><img src="https://codecov.io/gh/skgallagher/EpiCompare/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>

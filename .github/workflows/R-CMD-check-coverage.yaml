@@ -15,20 +15,16 @@ jobs:
   R-CMD-check-coverage-pkgdown:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, tidyr current:${{ matrix.config.tidyr_current }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', tidyr_current: false}
-          - {os: windows-latest, r: 'release', tidyr_current: true}
-          - {os: macOS-latest, r: 'release', tidyr_current: false}
-          - {os: macOS-latest, r: 'release', tidyr_current: true}
-          - {os: ubuntu-20.04, r: 'release', tidyr_current: false, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'release', tidyr_current: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', tidyr_current: false, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: 'devel', tidyr_current: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: windows-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -51,24 +47,13 @@ jobs:
           # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev:
           sudo add-apt-repository ppa:cran/libgit2
           
-      - name: Query dependencies (tidyr current)
-        if: ${{matrix.config.tidyr_current}}
+      - name: Query dependencies 
         run: |
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
         
-      - name: Query dependencies (tidyr old)
-        if: ${{! matrix.config.tidyr_current }}
-        run: |
-          install.packages('remotes')
-          install.packages('devtools', dependencies = T)
-          devtools::install_version('tidyr', version = '0.8.3')
-          saveRDS(devtools::install_deps(dep = TRUE, upgrade = "never"), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
-
       - name: Cache R packages
         if: runner.os != 'Windows'
         uses: actions/cache@v2
@@ -85,23 +70,11 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: Install dependencies (tidyr old)
-        if: ${{! matrix.config.tidyr_current }}
-        run: |
-          install.packages('devtools')
-          devtools::install_deps(dep = TRUE, upgrade = "never")
-          remotes::install_cran("rcmdcheck")
-          remotes::install_cran("covr")
-          install.packages("pkgdown")
-        shell: Rscript {0}
-
-      - name: Install dependencies (tidyr new)
-        if: ${{matrix.config.tidyr_current}}
+      - name: Install dependencies 
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
-          install.packages("pkgdown")
         shell: Rscript {0}
 
       - name: Check
@@ -122,13 +95,3 @@ jobs:
         run: covr::codecov()
         shell: Rscript {0}
         
-      - name: Install package (for pkgdown - on macOS-latest)
-        if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
-        run: R CMD INSTALL .
-
-      - name: Deploy package (for pkgdown)
-        if: ${{matrix.config.os == 'macOS-latest' && matrix.config.tidyr_current}}
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE)'

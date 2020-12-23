@@ -64,17 +64,13 @@ extract_icm_cols <- function(nm, ii, epi){
 
     mat <- epi[[nm]]
     nm <- paste0("X", ii)
-    if(tidyr_new_interface()){
-         df <- tidyr::pivot_longer(as.data.frame(mat),
-                                   cols = tidyr::everything(),
-                                   names_to = "sim",
-                                   values_to = "X")
-         names(df)[names(df) == "X"] <- nm
-     } else{
-         df <- tidyr::gather(as.data.frame(mat),
-                             key = "sim")
-         names(df)[names(df) == "value"] <- nm
-     }
+    
+    df <- tidyr::pivot_longer(as.data.frame(mat),
+                              cols = tidyr::everything(),
+                              names_to = "sim",
+                              values_to = "X")
+    names(df)[names(df) == "X"] <- nm
+     
     return(df)
 
 }

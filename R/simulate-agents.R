@@ -126,16 +126,12 @@ simulate_agents <- function(trans_mat,
         
 
         
-        if(tidyr_new_interface()){
-            df <- df %>% dplyr::select(-.data$state) %>%
-                tidyr::pivot_wider(id_cols = c(.data$sim, 
-                                               .data$agent_id),
-                    names_from = .data$state_name,
-                                            values_from = .data$time)
-        } else {
-            df <- df %>% dplyr::select(-.data$state) %>%
-                tidyr::spread(.data$state_name, .data$time)
-        }
+        df <- df %>% dplyr::select(-.data$state) %>%
+            tidyr::pivot_wider(id_cols = c(.data$sim, 
+                                           .data$agent_id),
+                names_from = .data$state_name,
+                                        values_from = .data$time)
+        
     }
     return(df)
     

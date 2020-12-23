@@ -92,6 +92,7 @@ articles:
     - 'not-built-vignettes/hagelloch-sir-fit'
     - 'not-built-vignettes/hagelloch-sir-stochastic'
     - 'not-built-vignettes/hagelloch-sir-stochastic-three-groups'
+    - 'not-built-vignettes/hagelloch-other-models'
 - title: Data examples
   desc: Vignettes that take a dive into different datasets
   contents:

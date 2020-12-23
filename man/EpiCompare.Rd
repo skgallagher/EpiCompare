@@ -8,7 +8,7 @@
 The goal of \code{EpiCompare} is to provide the epidemiology community with
 easy-to-use tools to encourage comparing and assessing epidemics and
 epidemiology models in a time-free manner. All tools attempt to adhere to
-\code{\link[tidyverse]{tidyverse}}/\code{\link[ggplot2]{ggplot2}} style to
+\code{tidyverse}/\code{\link[ggplot2]{ggplot2}} style to
 enhance easy of use.
 }
 \details{

@@ -132,21 +132,14 @@ quantile_curves_to_points.grouped_df <- function(x, alpha, dist_mat,
                                           ...){
   depth_vector <- dist_func(dist_mat, ...)
 
-  if (tidyr_new_interface()){
-    updated_df <- x %>% tidyr::nest() %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(.data$depth >
-                      stats::quantile(depth_vector, probs = alpha)) %>%
-      dplyr::select(-.data$depth) %>%
-      tidyr::unnest(cols = dplyr::everything())
-  } else {
-    updated_df <- x %>% tidyr::nest() %>%
-      dplyr::mutate(depth = depth_vector) %>%
-      dplyr::filter(.data$depth > stats::quantile(depth_vector, probs = alpha)) %>%
-      dplyr::select(-.data$depth) %>%
-      tidyr::unnest()
-  }
+  updated_df <- x %>% tidyr::nest() %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(depth = depth_vector) %>%
+    dplyr::filter(.data$depth >
+                    stats::quantile(depth_vector, probs = alpha)) %>%
+    dplyr::select(-.data$depth) %>%
+    tidyr::unnest(cols = dplyr::everything())
+
 
   return(updated_df)
 }

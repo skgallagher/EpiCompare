@@ -15,6 +15,6 @@ The data is an example of simulation output from functions from the \href{https:
 }
 \examples{
 data("pomp_pomp")
-str(pomp_pomp)
+str(head(pomp_pomp))
 }
 \keyword{datasets}

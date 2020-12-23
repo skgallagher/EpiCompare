@@ -165,7 +165,7 @@ is actually d^2</p>
   <span class='no'>x</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>tdm_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
 <span class='co'># S3 method for list</span>
@@ -173,7 +173,7 @@ is actually d^2</p>
   <span class='no'>x</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+  <span class='kw'>tdm_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
 <span class='co'># S3 method for data.frame</span>
@@ -181,7 +181,7 @@ is actually d^2</p>
   <span class='no'>x</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>tdm_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
 <span class='co'># S3 method for grouped_df</span>
@@ -189,7 +189,7 @@ is actually d^2</p>
   <span class='no'>x</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id_as_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>tdm_out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -209,8 +209,9 @@ is actually d^2</p>
 distance matrix</p></td>
     </tr>
     <tr>
-      <th>id_as_columns</th>
-      <td><p>boolean - DESCRIBE</p></td>
+      <th>tdm_out</th>
+      <td><p>boolean logic if we should return a <code>tidy_dist_mat</code> 
+object or just a matrix.</p></td>
     </tr>
     </table>
 

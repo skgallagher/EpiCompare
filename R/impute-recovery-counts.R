@@ -123,37 +123,13 @@ cases_to_SIR.data.frame <- function(data, par,
 #'                        par = 1)
 cases_to_SIR.grouped_df <- function(data, par,
                      method = "chain-binomial"){
-
-  if (tidyr_new_interface()){
-    out <- data %>%
-      tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, cases_to_SIR,
-                                        par = par)) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest(cols = c(.data$update)) # only change
-  } else {
-    # old tidyr
-
-    out <- data %>% tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, cases_to_SIR,
-                                        par = par)) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest(.drop = FALSE)
-
-    # making sure output is also grouped_df
-    group_columns <- names(attr(data, "groups"))[names(attr(data, "groups")) != ".rows"]
-
-    if (length(group_columns) == 1) {
-      group_sym <- dplyr::sym(group_columns)
-      out <- out %>% dplyr::group_by(!!group_sym)
-    }
-    if (length(group_columns) > 1) {
-      group_sym <- dplyr::syms(group_columns)
-      out <- out %>% dplyr::group_by(!!!group_sym)
-    }
-
-  }
-
+  out <- data %>%
+    tidyr::nest() %>%
+    dplyr::mutate(update = purrr::map(.data$data, cases_to_SIR,
+                                      par = par)) %>%
+    dplyr::select(-.data$data) %>%
+    tidyr::unnest(cols = c(.data$update)) # only change
+  
   return(out)
     
 }

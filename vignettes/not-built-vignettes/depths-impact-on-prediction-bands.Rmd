@@ -554,7 +554,7 @@ psuedo_density_pb <- all_curves +
                        pb_type = "delta_ball", conf_level = .5,
                        dist_params = list(dist_approach = "auto", 
                                           num_steps = "auto", 
-                                          quantile_approach = "pseudo_density", 
+                                          quantile_approach = "psuedo_density", 
                                           quantile_approach_params = list("sigma" = "30%"))) +
   coord_tern() +
   theme_sir()

@@ -102,8 +102,7 @@
 
       
 
-      </header><script src="ternary-plots-explained_files/header-attrs-2.5/header-attrs.js"></script><link href="ternary-plots-explained_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="ternary-plots-explained_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="ternary-plots-explained_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>An Introduction to Ternary Plots</h1>
@@ -158,44 +157,40 @@
 <h2 class="hasAnchor">
 <a href="#how-to-do-this-with-ggtern" class="anchor"></a>How to do this with <code>ggtern</code>?</h2>
 <p>The <code>ggtern</code> package, which we leverage inside EpiCompare, allows for <code>ggplot2</code> style coding, and also rescales values if they are not in proportions. Below are 3 examples to demonstrate these concepts.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># just the data</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">.3</span><span class="op">)</span>,
-                   I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">.2</span><span class="op">)</span>,
-                   R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">.5</span><span class="op">)</span>,
-                   labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"start"</span>, <span class="st">"midway"</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># just the data</span>
+<span class="no">data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">.3</span>),
+                   <span class="kw">I</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">.2</span>),
+                   <span class="kw">R</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">.5</span>),
+                   <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"start"</span>, <span class="st">"midway"</span>))
 
-<span class="va">data_unscaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">60</span><span class="op">)</span>,
-                            I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span>,
-                            R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>,
-                            labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"start"</span>, <span class="st">"midway"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="no">data_unscaled</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">S</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">200</span>, <span class="fl">60</span>),
+                            <span class="kw">I</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">40</span>),
+                            <span class="kw">R</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">100</span>),
+                            <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"start"</span>, <span class="st">"midway"</span>))</pre></body></html></div>
 <div id="regular-data-ggplot-base-coord_tern" class="section level3">
 <h3 class="hasAnchor">
 <a href="#regular-data-ggplot-base-coord_tern" class="anchor"></a>Regular data, ggplot base + coord_tern()</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">S</span>, y <span class="op">=</span> <span class="va">I</span>, z <span class="op">=</span> <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_tern</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data</span>) +
+  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
+  <span class="fu">coord_tern</span>() +
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example1-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="regular-data-ggtern-base" class="section level3">
 <h3 class="hasAnchor">
 <a href="#regular-data-ggtern-base" class="anchor"></a>Regular data, ggtern base</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggtern</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">S</span>, y <span class="op">=</span> <span class="va">I</span>, z <span class="op">=</span> <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">ggtern</span>(<span class="no">data</span>) +
+  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example2-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="unscaled-regular-data-ggplot-base-coord_tern" class="section level3">
 <h3 class="hasAnchor">
 <a href="#unscaled-regular-data-ggplot-base-coord_tern" class="anchor"></a>Unscaled regular data, ggplot base + coord_tern()</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">data_unscaled</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">S</span>, y <span class="op">=</span> <span class="va">I</span>, z <span class="op">=</span> <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_tern</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">data_unscaled</span>) +
+  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>)) +
+  <span class="fu">coord_tern</span>() +
+  <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>()</pre></body></html></div>
 <p><img src="ternary-plots-explained_files/figure-html/example3-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -217,7 +212,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

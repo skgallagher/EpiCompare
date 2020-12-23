@@ -227,8 +227,12 @@ vis_convex_hull <- smaller_pomp_df \%>\%
                       conf_level = .95) +
  coord_tern() +
  labs(title = "Convex hull CB")
-
+\dontrun{
+# run this if you want to see them all
 grid.arrange(vis_data, vis_spherical,
             vis_delta_ball, vis_kde,
             vis_convex_hull, nrow = 2)
+}
+
+grid.arrange(vis_data, vis_delta_ball, nrow = 2)            
 }

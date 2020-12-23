@@ -1,5 +1,5 @@
 Package: EpiCompare
-Title: EpiCompare
+Title: A Pipeline to Analyze and Compare Infectious Disease Epidemics
 Version: 0.0.1
 Authors@R: 
     c(person(given = "Shannon",
@@ -10,7 +10,9 @@ Authors@R:
            family = "LeRoy",
            role = c("aut"),
            email = "bpleroy@stat.cmu.edu"))     
-Description: A pipeline to analyze and compare infectious disease epidemics.
+Description: Tools to aid in all steps of the epidemiology pipeline. This 
+  package provides tidy tools to aid in the assessment and comparison of 
+  epidemics and models. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -31,14 +33,13 @@ Imports:
     rdist,
     rgeos,
     rlang,
-    tidyr,
+    tidyr (>= 1.0.0),
     tidyselect,
     tibble,
     sp,
     stringr
 Suggests:
     coronavirus,
-    COVID19,
     devtools,
     EpiModel,
     gridExtra,

@@ -12,6 +12,8 @@ knitr::knit_engines$set(python = reticulate::eng_python)
 library(reticulate)
 if (Sys.info()['user'] == "benjaminleroy"){
   use_python("/Users/benjaminleroy/miniconda3/bin/python")
+} else if (Sys.info()['user'] == "runner"){ # github actions
+  use_python("/usr/local/miniconda/bin/python")
 }
 ```
 

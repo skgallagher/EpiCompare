@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EpiCompare: package overview — EpiCompare • EpiCompare</title>
+<title>Title — compare_new_to_rest_via_distance • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,12 +46,8 @@
 
 
 
-<meta property="og:title" content="EpiCompare: package overview — EpiCompare" />
-<meta property="og:description" content="The goal of EpiCompare is to provide the epidemiology community with
-easy-to-use tools to encourage comparing and assessing epidemics and
-epidemiology models in a time-free manner. All tools attempt to adhere to
-tidyverse/ggplot2 style to
-enhance easy of use." />
+<meta property="og:title" content="Title — compare_new_to_rest_via_distance" />
+<meta property="og:description" content="Title" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -151,47 +147,66 @@ enhance easy of use." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>EpiCompare: package overview</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/EpiCompare.R'><code>R/EpiCompare.R</code></a></small>
-    <div class="hidden name"><code>EpiCompare.Rd</code></div>
+    <h1>Title</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/distance-depth.R'><code>R/distance-depth.R</code></a></small>
+    <div class="hidden name"><code>compare_new_to_rest_via_distance.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The goal of <code>EpiCompare</code> is to provide the epidemiology community with
-easy-to-use tools to encourage comparing and assessing epidemics and
-epidemiology models in a time-free manner. All tools attempt to adhere to
-<code>tidyverse</code>/<code><a href='https://ggplot2.tidyverse.org/reference/ggplot2-package.html'>ggplot2</a></code> style to
-enhance easy of use.</p>
+    <p>Title</p>
     </div>
 
+    <pre class="usage"><span class='fu'>compare_new_to_rest_via_distance</span>(
+  <span class='no'>tdmat</span>,
+  <span class='kw'>new_name_id</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"true observation"</span>),
+  <span class='kw'>distance_func</span> <span class='kw'>=</span> <span class='no'>distance_psuedo_density_function</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>df_out</span> <span class='kw'>=</span> <span class='no'>T</span>
+)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>tdmat</th>
+      <td><p>must be a <code>tidy_dist_mat</code> object</p></td>
+    </tr>
+    <tr>
+      <th>new_name_id</th>
+      <td><p>data.frame containing which rownames of the <code>tdmat</code>
+are associated with the new observations. Note that this data.frame must
+be of the same format as <code><a href='https://rdrr.io/r/base/colnames.html'>rownames(tdmat)</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>distance_func</th>
+      <td><p>distance function to calculates some type of ordering
+between observations with the distance matrix. This package currently
+provides 3 functions for this:</p><ul>
+<li><p><code>distance_psudeo_density_function</code></p></li>
+<li><p><code>distance_depth_function</code></p></li>
+<li><p><code>local_distance_depth_function</code></p></li>
+</ul><p>If you are trying to make your own, please see examples of these methods for
+the <code>tidy_dist_mat</code> class. It's minimum required parameters are <code>x</code>
+<code>x_new=NULL</code>, <code>df_out</code>. And get's passed <code>...</code></p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional parameters to be passed to the dist_func</p></td>
+    </tr>
+    <tr>
+      <th>df_out</th>
+      <td><p>indicates if one should return a data.frame or a list,
+by default returns data.frame.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Time free analysis allows for stronger comparison of epidemics and model
-based simulations avoiding different scaling and shifts of time that mess up
-time-based comparisons.</p>
-<p>To achieve this goal, the package contains:</p><ul>
-<li><p><strong>Visualization tools</strong> to visualize SIR epidemics and simulations
-from SIR models in a time-free manner using <code><a href='https://rdrr.io/pkg/ggtern/man/ggtern.html'>ggtern</a></code>’s
-ternary plots and prediction bands. For agent-based SIR models we also
-provide visualization tools to let the user easily explore how different
-characteristics of the agents relate to different experiences in the
-epidemic.</p></li>
-<li><p><strong>General comparison</strong> tools to compare epidemics and epidemic
-models that have higher numbers of states (again in a time-free manner),
-allowing for the user to examine the differences between models through
-simulations, and if an epidemic is similar to a model through simulations and
-prediction bands.</p></li>
-<li><p><strong>Conversion tools</strong> to:</p><ul>
-<li><p>Convert and then compare models from <em>standard epidemic packages</em>
-like <code><a href='https://rdrr.io/pkg/EpiModel/man/EpiModel-package.html'>EpiModel</a></code>, <code><a href='https://rdrr.io/pkg/pomp/man/pomp.html'>pomp</a></code>, as well as
-internal agent-based models, and epidemics in a common framework.</p></li>
-<li><p>Convert <em>agent-based information into aggregate</em> to compare in the
-aggregate framework described above.</p></li>
-</ul></li>
-</ul>
-
+    <p>returns either a data.frame with information about quantile score 
+value for new observations, the proportion of the simulations that have more 
+extreme values than it and the observations names (if df_out = T), else it 
+returns a list of quatile scores and proportion of simulations that had more
+extreme values than it.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

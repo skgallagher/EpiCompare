@@ -965,3 +965,4 @@ test_that("agents_to_aggregate + integer_time_expansion = FALSE -- more basic",{
   testthat::expect_equal(all_out_filter, all_out[!(all_out$t %in% c(2,4,5,8)),])
 
 })
+

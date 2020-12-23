@@ -194,7 +194,6 @@ distinct_time <- function(df, ignore_idx = NULL){
 #'   the unique \code{states} as columns. For each row, it contains the number
 #'   of agents to change to said state at specified time.
 expanding_info <- function(df, t_min, t_max, K){
-  if (tidyr_new_interface()){
     ## The below code uses tidyr's "spec" approach (which allows for specs to
     # be provided to alter the outcome of "pivot").
     #
@@ -242,25 +241,6 @@ expanding_info <- function(df, t_min, t_max, K){
       dplyr::mutate(state = as.numeric(factor(.data$state,
                                               levels = paste0("V",1:K),
                                               labels = 1:K)))
-  } else {
-    hold <- df %>% dplyr::mutate(t = factor(.data$t, levels = t_min:t_max)) %>%
-      tidyr::spread(key = .data$t,
-                    value = .data$count,
-                    drop = FALSE, fill = 0) %>%
-      t()
-
-    names(hold) <- hold[1,]
-    hold <- hold %>% as.data.frame()
-    hold <- hold[-1,, drop = FALSE] %>% tibble::rownames_to_column() %>%
-      dplyr::rename(t = "rowname") %>%
-      tidyr::gather(dplyr::one_of(paste0("V",1:K)),
-                    key = "state",
-                    value = "count") %>%
-      dplyr::mutate(state = as.numeric(factor(.data$state,
-                                              levels = paste0("V",1:K),
-                                              labels = 1:K)))
-
-  }
 
   return(hold)
 }
@@ -607,22 +587,14 @@ agents_to_aggregate.data.frame <- function(agents,
   }
 
   # getting new counts of state membership (not state 0) --------------------
-  if (tidyr_new_interface()){
-    info_only_into_long <- info_only_int[,states, drop = FALSE] %>%
-      tidyr::pivot_longer(cols = dplyr::everything(),
-                          names_to = "state",
-                          values_to = "t") %>%
-      dplyr::mutate(state = as.numeric(factor(.data$state, labels = 1:K,
-                                              levels = states))) %>%
-      dplyr::arrange(.data$state)
-  } else {
-    info_only_into_long <- info_only_int[,states, drop = FALSE] %>%
-      tidyr::gather(dplyr::everything(),
-                    key = "state",
-                    value = "t") %>%
-      dplyr::mutate(state = as.numeric(factor(.data$state, labels = 1:K,
-                                              levels = states)))
-  }
+  info_only_into_long <- info_only_int[,states, drop = FALSE] %>%
+    tidyr::pivot_longer(cols = dplyr::everything(),
+                        names_to = "state",
+                        values_to = "t") %>%
+    dplyr::mutate(state = as.numeric(factor(.data$state, labels = 1:K,
+                                            levels = states))) %>%
+    dplyr::arrange(.data$state)
+
 
   one_plus_state_count <- info_only_into_long %>%
     dplyr::group_by(.data$state, .data$t) %>%
@@ -677,41 +649,23 @@ agents_to_aggregate.data.frame <- function(agents,
   state_count <- one_plus_state_count %>% as.data.frame %>%
     rbind(.data$.,zero_state_count)
 
-  if (tidyr_new_interface()){
-    cum_state_count <- state_count %>%
-      dplyr::mutate(state = factor(.data$state, levels = 0:K,
-                                   labels = paste0("X",0:K))) %>%
-      dplyr::group_by(.data$state) %>%
-      tidyr::nest() %>%
-      dplyr::mutate(new_data =
-                      purrr::map(.data$data,
-                                 function(df){df %>%
-                                     dplyr::mutate(cum_count = cumsum(.data$count))})) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest(.data$new_data) %>% dplyr::select(-.data$count) %>%
-      tidyr::pivot_wider(id_cols = "t",values_fill = list("cum_count" = 0),
-                         names_from = "state", values_from = "cum_count") %>%
-      dplyr::filter(.data$t >= t_min) %>%
-      dplyr::arrange(.data$t) %>%
-      dplyr::select(t, dplyr::one_of(paste0("X", 0:K)))
-  } else {
-    cum_state_count <- state_count %>%
-      dplyr::mutate(state = factor(.data$state, levels = 0:K,
-                                   labels = paste0("X",0:K))) %>%
-      dplyr::group_by(.data$state) %>%
-      tidyr::nest() %>% # nest_legacy
-      dplyr::mutate(new_data =
-                      purrr::map(.data$data,
-                                 function(df){df %>%
-                                     dplyr::mutate(cum_count = cumsum(.data$count))})) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest() %>%  # unnest_legacy
-      dplyr::select(-.data$count) %>%
-      dplyr::group_by(.data$t) %>%
-      tidyr::spread(key = "state",value = "cum_count", fill = 0) %>%
-      dplyr::filter(.data$t >= t_min) %>%
-      dplyr::select(.data$t, dplyr::one_of(paste0("X", 0:K)))
-    }
+  cum_state_count <- state_count %>%
+    dplyr::mutate(state = factor(.data$state, levels = 0:K,
+                                 labels = paste0("X",0:K))) %>%
+    dplyr::group_by(.data$state) %>%
+    tidyr::nest() %>%
+    dplyr::mutate(new_data =
+                    purrr::map(.data$data,
+                               function(df){df %>%
+                                   dplyr::mutate(cum_count = cumsum(.data$count))})) %>%
+    dplyr::select(-.data$data) %>%
+    tidyr::unnest(.data$new_data) %>% dplyr::select(-.data$count) %>%
+    tidyr::pivot_wider(id_cols = "t",values_fill = list("cum_count" = 0),
+                       names_from = "state", values_from = "cum_count") %>%
+    dplyr::filter(.data$t >= t_min) %>%
+    dplyr::arrange(.data$t) %>%
+    dplyr::select(t, dplyr::one_of(paste0("X", 0:K)))
+
 
   
   cum_state_count <- cum_state_count %>% 
@@ -853,45 +807,18 @@ agents_to_aggregate.grouped_df <- function(agents,
 
   min_max_time_all <- c(t_min, t_max)
 
-  if (tidyr_new_interface()){
-    out <- agents %>%
-      tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
-                                        states = !!!dplyr::enquos(states),
-                                        death = !!dplyr::enquo(death),
-                                        birth = !!dplyr::enquo(birth),
-                                        min_max_time = min_max_time_all,
-                                        integer_time_expansion = integer_time_expansion)
-                    ) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest(cols = c(.data$update)) # only change
-  } else {
-    # old tidyr
+  out <- agents %>%
+    tidyr::nest() %>%
+    dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
+                                      states = !!!dplyr::enquos(states),
+                                      death = !!dplyr::enquo(death),
+                                      birth = !!dplyr::enquo(birth),
+                                      min_max_time = min_max_time_all,
+                                      integer_time_expansion = integer_time_expansion)
+                  ) %>%
+    dplyr::select(-.data$data) %>%
+    tidyr::unnest(cols = c(.data$update)) # only change
 
-    out <- agents %>% tidyr::nest() %>%
-      dplyr::mutate(update = purrr::map(.data$data, agents_to_aggregate,
-                                        states = !!!dplyr::enquos(states),
-                                        death = !!dplyr::enquo(death),
-                                        birth = !!dplyr::enquo(birth),
-                                        min_max_time = min_max_time_all,
-                                        integer_time_expansion = integer_time_expansion)
-      ) %>%
-      dplyr::select(-.data$data) %>%
-      tidyr::unnest(.drop = FALSE)
-
-    # making sure output is also grouped_df
-    group_columns <- names(attr(agents, "groups"))[names(attr(agents, "groups")) != ".rows"]
-
-    if (length(group_columns) == 1) {
-      group_sym <- dplyr::sym(group_columns)
-      out <- out %>% dplyr::group_by(!!group_sym)
-    }
-    if (length(group_columns) > 1) {
-      group_sym <- dplyr::syms(group_columns)
-      out <- out %>% dplyr::group_by(!!!group_sym)
-    }
-
-  }
 
   return(out)
 }
