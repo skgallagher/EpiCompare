@@ -9,10 +9,10 @@ on:
     branches:
       - master
 
-name: R-CMD-check, code coverage, pkgdown site creation
+name: R-CMD-check and code coverage
 
 jobs:
-  R-CMD-check-coverage-pkgdown:
+  R-CMD-check-and-coverage:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
