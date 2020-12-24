@@ -239,19 +239,13 @@ d_\mathcal{F}^\text{equa}(f_1,f_2,n) = \frac{1}{n} \sum_{i=1}^n d_Y(f_1(c_{1(i)}
   <span class="fu"><a href="../../reference/filament_compression.html">filament_compression</a></span>(<span class="kw">data_columns</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">S</span>,<span class="no">I</span>,<span class="no">R</span>),
                        <span class="kw">number_points</span> <span class="kw">=</span> <span class="fl">20</span>)
 
-<span class="no">compression_list</span> <span class="kw">&lt;-</span> <span class="no">compression_df</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>()
+<span class="no">tidy_dm</span> <span class="kw">&lt;-</span> <span class="no">compression_df</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="../../reference/dist_matrix_innersq_direction.html">dist_matrix_innersq_direction</a></span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">3</span>:<span class="fl">5</span>,
+                                <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
+                                <span class="kw">tdm_out</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
-<span class="no">compression_list_names</span> <span class="kw">&lt;-</span> <span class="no">compression_df</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_data.html">group_keys</a></span>()
 
-
-<span class="no">dist_mat</span> <span class="kw">&lt;-</span> <span class="no">compression_list</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/dist_matrix_innersq_direction.html">dist_matrix_innersq_direction</a></span>(<span class="kw">position</span> <span class="kw">=</span> <span class="fl">3</span>:<span class="fl">5</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-
-<span class="no">tidy_dm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/tidy_dist_mat.html">tidy_dist_mat</a></span>(<span class="no">dist_mat</span>, <span class="no">compression_list_names</span>,
-                         <span class="no">compression_list_names</span>)
-
-<span class="no">sigma</span> <span class="kw">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">dist_mat</span>, <span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.3</span>)</pre></body></html></div>
+<span class="no">sigma</span> <span class="kw">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">tidy_dm</span>), <span class="kw">probs</span> <span class="kw">=</span> <span class="fl">.3</span>)</pre></body></html></div>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">psuedo_density</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/distance_psuedo_density_function.html">distance_psuedo_density_function</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">tidy_dm</span>, <span class="kw">sigma</span> <span class="kw">=</span> <span class="no">sigma</span>)
 
 <span class="no">group_names</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">psuedo_density</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">psuedo_density</span>) <span class="kw">!=</span> <span class="st">"pseudo_density"</span>]

@@ -82,7 +82,7 @@ hagelloch_raw %>%
 #> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
 Previous work has suggested that the class (`CL`) the student was in
 effected how the experienced the outbreak. The below figure shows
@@ -112,7 +112,7 @@ hagelloch_raw %>%
 #> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ### Simulate SIR data
 
@@ -143,7 +143,7 @@ df_groups %>% ggplot() +
 #> Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ## Package Creation Notes:
 

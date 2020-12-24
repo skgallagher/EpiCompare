@@ -481,19 +481,13 @@ compression_df <- df_all %>%
   filament_compression(data_columns = c(S,I,R), 
                        number_points = 20) 
 
-compression_list <- compression_df %>% group_split()
+tidy_dm <- compression_df %>%
+  dist_matrix_innersq_direction(position = 3:5, 
+                                verbose = TRUE,
+                                tdm_out = TRUE)
 
-compression_list_names <- compression_df %>%
-  group_keys() 
 
-
-dist_mat <- compression_list %>%
-  dist_matrix_innersq_direction(position = 3:5, verbose = TRUE)
-
-tidy_dm <- tidy_dist_mat(dist_mat, compression_list_names, 
-                         compression_list_names)
-
-sigma <-  quantile(dist_mat, probs = .3)
+sigma <-  quantile(as.matrix(tidy_dm), probs = .3)
 ```
 
 ```{r warning = F, message = F}

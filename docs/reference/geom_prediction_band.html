@@ -270,9 +270,7 @@ contour.</p></td>
     <tr>
       <th>dist_params</th>
       <td><p>list of parameters for distance based approaches (convex 
-hull and delta ball). Named parameters are <code>dist_approach</code> with options
-<code><a href='https://rdrr.io/r/base/c.html'>c("auto", "temporal", "equa_dist")</a></code>, and <code>num_steps</code> as either
-an integer or "auto".</p></td>
+hull and delta ball). See details for more information</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -290,12 +288,13 @@ controlled by the <code>pb_type</code> parameter.</p></td>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This stat/geom can create 1 of 4 prediction band structures. These approaches
+    <p><strong>Prediction Bands:</strong></p>
+<p>This stat/geom can create 1 of 4 prediction band structures. These approaches
 can be broken into 2 subgroups, "pointwise" and "uniform" prediction bands.
 The rational for these splits relate to containment properties and the
 'original' ideas are discussed more here:
 <a href='https://arxiv.org/abs/1906.08832'>Arvix: 1906.08832</a></p>
-<p><strong>Pointwise</strong>:</p>
+<p><strong>Prediction Bands - Pointwise:</strong></p>
 <ul>
 <li><p><code>spherical_ball</code>: This prediction band is defined
 relative to the time points that paths take. For each time point, we take a
@@ -307,7 +306,7 @@ the full prediction band.</p></li>
 for <code>conf_level</code> relative to all points.</p></li>
 </ul>
 
-<p><strong>Uniform</strong>:</p>
+<p><strong>Prediction Bands - Uniform:</strong></p>
 <p>These approaches focus on containing the paths/curves/filaments in
 uniformity. This approach uses depth (specifically a distance-based depth
 developed by Geenens &amp; Nieto-Reyes, 2017), to select to top
@@ -325,6 +324,38 @@ prediction band.</p></li>
 prediction band as such.</p></li>
 </ul>
 
+<p><strong>Distance attributes</strong></p>
+<p>The <code>dist_params</code> list parameter informs us about what type of 
+distance comparisons we do between simulations. The values in the list 
+include:</p><ul>
+<li><p><code>"dist_approach"</code>: Options are <code><a href='https://rdrr.io/r/base/c.html'>c("auto", "equa_dist",
+"temporal")</a></code>. Naturally we recommend <code>"auto"</code> - which is just 
+<code>"equa_dist"</code>. This parameter defines we calculate the distance between 
+2 curves using \(l_2\) distance. If <code>"equa_dist"</code> we re-define the 
+curves relative to points spaced equa-distant apart.</p></li>
+<li><p><code>num_steps</code>: Options are either <code>"auto"</code> or a numerical 
+value. If <code>"dist_approach"</code> parameter is <code>"equa_dist"</code> then this
+will define the number of points the curves are re-defined along. If 
+<code>"auto"</code> then we use 20 equa-spaced points.</p></li>
+<li><p><code>"quantile_approach"</code>: Options are <code><a href='https://rdrr.io/r/base/c.html'>c("depth", "local_depth",
+"pseudo-density")</a></code>. Default is "depth" (but we recommend "pseudo-density"). 
+This relates to the type of ordering approach to define.</p></li>
+<li><p><code>"quantile_approach_params"</code>: this is a list of parameters 
+values that are passed to the <code>"quantile_approach"</code>, for 
+<code>"loal_depth"</code> we expect a <code>tau</code> value, for <code>"psuedo-density"</code> 
+it's <code>sigma</code>, both can either take associated values or associated 
+quantile string percentages.</p></li>
+</ul>
+
+<p><strong>Debugging</strong></p>
+<p>If you get a</p><pre>
+Error: Problem with `mutate()` input `piece_old`. x Column `piece` 
+not found in `.data` ℹ Input `piece_old` is `.data$piece`.
+</pre>
+
+<p>Then that probably means you've input a parameter incorrectly (<code>ggplot</code>
+is slightly finicky.) We invite you to submit an issue if you're pretty sure
+all parameters are input correctly.</p>
     <h2 class="hasAnchor" id="aesthetics"><a class="anchor" href="#aesthetics"></a>Aesthetics</h2>
 
     <p><code>stat_prediction_band</code>/<code>geom_prediction_band</code>
@@ -399,14 +430,13 @@ prediction band as such.</p></li>
  <span class='fu'>geom_prediction_band</span>(<span class='kw'>pb_type</span> <span class='kw'>=</span> <span class='st'>"convex_hull"</span>,
                       <span class='kw'>conf_level</span> <span class='kw'>=</span> <span class='fl'>.95</span>) +
  <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/coord_tern.html'>coord_tern</a></span>() +
- <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Convex hull CB"</span>)</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+ <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Convex hull CB"</span>)</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># run this if you want to see them all</span>
 <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/arrangeGrob.html'>grid.arrange</a></span>(<span class='no'>vis_data</span>, <span class='no'>vis_spherical</span>,
             <span class='no'>vis_delta_ball</span>, <span class='no'>vis_kde</span>,
-            <span class='no'>vis_convex_hull</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-}
+            <span class='no'>vis_convex_hull</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='message'>Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></div><div class='output co'>#&gt; <span class='message'>Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></div><div class='img'><img src='geom_prediction_band-1.png' alt='' width='700' height='433' /></div><div class='input'># }
 
-<span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/arrangeGrob.html'>grid.arrange</a></span>(<span class='no'>vis_data</span>, <span class='no'>vis_delta_ball</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='message'>Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></div><div class='img'><img src='geom_prediction_band-1.png' alt='' width='700' height='433' /></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -909,19 +909,19 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' @param over_delta defines small extension of box around actual points to define
 #' contour.
 #' @param dist_params list of parameters for distance based approaches (convex 
-#' hull and delta ball). Named parameters are \code{dist_approach} with options
-#' \code{c("auto", "temporal", "equa_dist")}, and \code{num_steps} as either
-#' an integer or "auto". 
+#' hull and delta ball). See details for more information
 #'
 #' @details
-#'
+#' 
+#' \strong{Prediction Bands:}
+#' 
 #' This stat/geom can create 1 of 4 prediction band structures. These approaches
 #' can be broken into 2 subgroups, "pointwise" and "uniform" prediction bands.
 #' The rational for these splits relate to containment properties and the
 #' 'original' ideas are discussed more here:
 #' \href{https://arxiv.org/abs/1906.08832}{Arvix: 1906.08832}
 #'
-#' \strong{Pointwise}:
+#' \strong{Prediction Bands - Pointwise:}
 #'
 #' \itemize{
 #' \item \code{spherical_ball}: This prediction band is defined
@@ -934,7 +934,7 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' for \code{conf_level} relative to all points.
 #' }
 #'
-#' \strong{Uniform}:
+#' \strong{Prediction Bands - Uniform:}
 #'
 #' These approaches focus on containing the paths/curves/filaments in
 #' uniformity. This approach uses depth (specifically a distance-based depth
@@ -954,6 +954,44 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #' \code{conf_level} curves we just create a convex hull and define our
 #' prediction band as such.
 #' }
+#'
+#' \strong{Distance attributes}
+#' 
+#' The \code{dist_params} list parameter informs us about what type of 
+#' distance comparisons we do between simulations. The values in the list 
+#' include:
+#' \itemize{
+#' \item{\code{"dist_approach"}: }{Options are \code{c("auto", "equa_dist",
+#' "temporal")}. Naturally we recommend \code{"auto"} - which is just 
+#' \code{"equa_dist"}. This parameter defines we calculate the distance between 
+#' 2 curves using \eqn{l_2} distance. If \code{"equa_dist"} we re-define the 
+#' curves relative to points spaced equa-distant apart.}
+#' \item{\code{num_steps}: }{Options are either \code{"auto"} or a numerical 
+#' value. If \code{"dist_approach"} parameter is \code{"equa_dist"} then this
+#' will define the number of points the curves are re-defined along. If 
+#' \code{"auto"} then we use 20 equa-spaced points.}
+#' \item{\code{"quantile_approach"}: }{Options are \code{c("depth", "local_depth",
+#' "pseudo-density")}. Default is "depth" (but we recommend "pseudo-density"). 
+#' This relates to the type of ordering approach to define.} 
+#' \item{\code{"quantile_approach_params"}: }{this is a list of parameters 
+#' values that are passed to the \code{"quantile_approach"}, for 
+#' \code{"loal_depth"} we expect a \code{tau} value, for \code{"psuedo-density"} 
+#' it's \code{sigma}, both can either take associated values or associated 
+#' quantile string percentages.} 
+#' }
+#'
+#' \strong{Debugging} 
+#' 
+#' If you get a 
+#' \preformatted{
+#' Error: Problem with `mutate()` input `piece_old`. x Column `piece` 
+#' not found in `.data` ℹ Input `piece_old` is `.data$piece`.
+#' }
+#' 
+#' Then that probably means you've input a parameter incorrectly (\code{ggplot}
+#' is slightly finicky.) We invite you to submit an issue if you're pretty sure
+#' all parameters are input correctly. 
+#'
 #'
 #' @section Aesthetics: \code{stat_prediction_band}/\code{geom_prediction_band}
 #'  understands the following aesthetics (required aesthetics are in bold):
@@ -1031,14 +1069,13 @@ stat_prediction_band <- function(mapping = NULL, data = NULL, geom = "polygon",
 #'                       conf_level = .95) +
 #'  coord_tern() +
 #'  labs(title = "Convex hull CB")
-#'\dontrun{
+#'\donttest{
 #'# run this if you want to see them all
 #'grid.arrange(vis_data, vis_spherical,
 #'             vis_delta_ball, vis_kde,
 #'             vis_convex_hull, nrow = 2)
 #'}
 #' 
-#'grid.arrange(vis_data, vis_delta_ball, nrow = 2)            
 geom_prediction_band <- function(mapping = NULL, data = NULL,
                                  stat = list("PredBandDeltaBall",
                                              "PredBandKDE",
