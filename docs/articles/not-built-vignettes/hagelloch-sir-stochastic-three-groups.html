@@ -161,7 +161,7 @@
                         <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">CL</span> <span class="kw">==</span> <span class="st">"2nd class"</span>,
                                <span class="fl">2</span>, <span class="fl">0</span>))) <span class="kw">%&gt;%</span>
   <span class="fu">group_by</span>(<span class="no">class</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">55</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">tidyr</span><span class="kw ns">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span>(<span class="kw">id_cols</span> <span class="kw">=</span> <span class="no">time</span>,
@@ -282,7 +282,7 @@
 <span class="no">max_T</span> <span class="kw">&lt;-</span> <span class="fl">55</span>
 <span class="no">n_sims</span> <span class="kw">&lt;-</span> <span class="fl">500</span>
 
-<span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/simulate_agents.html">simulate_agents</a></span>(<span class="no">trans_mat</span>,
+<span class="no">abm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/simulate_agents.html">simulate_agents</a></span>(<span class="no">trans_mat</span>,
                        <span class="no">init_vals</span>,
                        <span class="no">par_vals</span>,
                        <span class="no">max_T</span>,
@@ -295,7 +295,7 @@
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(!(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">S</span>) <span class="kw">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">I</span>) <span class="kw">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">R</span>)))
 
 <span class="no">agg</span> <span class="kw">&lt;-</span> <span class="no">grouped_agents</span> <span class="kw">%&gt;%</span> <span class="fu">group_by</span>(<span class="no">sim</span>, <span class="no">group</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))</pre></body></html></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))</pre></body></html></div>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co">## TODO</span>
 <span class="co">## geom_prediction_band problem??</span>
 
@@ -304,18 +304,18 @@
                         <span class="fl">1</span>,
                         <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">CL</span> <span class="kw">==</span> <span class="st">"2nd class"</span>,
                                <span class="fl">2</span>, <span class="fl">0</span>))) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">55</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 
 
 <span class="fu">ggplot</span>() +
-    <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">agg</span>,
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">agg</span>,
          <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>,
               <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">sim</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>,
                          <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.8</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"orange"</span>) +
-    <span class="fu">coord_tern</span>() + <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>() +
+    <span class="fu">coord_tern</span>() + <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>() +
   <span class="fu">geom_point</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">obs_groups</span>,
              <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>))</pre></body></html></div>
 <p><img src="hagelloch-sir-stochastic-three-groups_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
@@ -331,7 +331,7 @@
                         <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="no">CL</span> <span class="kw">==</span> <span class="st">"2nd class"</span>,
                                <span class="fl">2</span>, <span class="fl">0</span>))) <span class="kw">%&gt;%</span>
   <span class="fu">group_by</span>(<span class="no">class</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>),
                       <span class="kw">min_max_time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">55</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
@@ -341,18 +341,18 @@
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(!(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">S</span>) <span class="kw">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">I</span>) <span class="kw">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">R</span>)))
 
 <span class="no">agg</span> <span class="kw">&lt;-</span> <span class="no">grouped_agents</span> <span class="kw">%&gt;%</span> <span class="fu">group_by</span>(<span class="no">sim</span>, <span class="no">group</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">I</span>, <span class="no">R</span>))
 
 
 
 <span class="fu">ggplot</span>() +
-    <span class="fu"><a href="../../reference/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">agg</span>,
+    <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/geom_prediction_band.html">geom_prediction_band</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">agg</span>,
          <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">X2</span>,
               <span class="kw">sim_group</span> <span class="kw">=</span> <span class="no">sim</span>,
              <span class="kw">fill</span> <span class="kw">=</span> <span class="no">group</span>),
             <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>,
                          <span class="kw">conf_level</span> <span class="kw">=</span> <span class="fl">.95</span>) +
-    <span class="fu">coord_tern</span>() + <span class="fu"><a href="../../reference/theme_sir.html">theme_sir</a></span>() +
+    <span class="fu">coord_tern</span>() + <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/theme_sir.html">theme_sir</a></span>() +
   <span class="fu">geom_point</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">obs_groups</span>,
              <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">S</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">I</span>, <span class="kw">z</span> <span class="kw">=</span> <span class="no">R</span>,
                  <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">class</span>))) +

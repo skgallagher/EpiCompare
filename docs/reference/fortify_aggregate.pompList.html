@@ -162,7 +162,7 @@ puts it in SIR format for EpiCompare</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for pompList</span>
-<span class='fu'><a href='fortify_aggregate.html'>fortify_aggregate</a></span>(<span class='no'>data</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>fortify_aggregate</span>(<span class='no'>data</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,7 +198,7 @@ puts it in SIR format for EpiCompare</p>
   to find all single letter names in POMP and output those.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fortify_aggregate.html'>fortify_aggregate</a></span>(<span class='no'>pomp_arr</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='st'>"pomp"</span>,
+    <pre class="examples"><div class='input'><span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'>fortify_aggregate</span>(<span class='no'>pomp_arr</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='st'>"pomp"</span>,
 <span class='kw'>states</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"S"</span>, <span class='st'>"I"</span>, <span class='st'>"R"</span>))
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>out</span>)</div><div class='output co'>#&gt;   t sim  X0 X1 X2
 #&gt; 1 0   1 950 50  0

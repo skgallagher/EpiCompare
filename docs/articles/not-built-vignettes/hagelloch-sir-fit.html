@@ -159,7 +159,7 @@
 <p>we get the aggregate SIR data from <code>hagelloch_raw</code> and define our deterministic, continuous time SIR model.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co">## Getting aggregate data</span>
 <span class="no">aggregate_hag</span> <span class="kw">&lt;-</span> <span class="no">hagelloch_raw</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../../reference/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/EpiCompare/man/agents_to_aggregate.html">agents_to_aggregate</a></span>(<span class="kw">states</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tI</span>, <span class="no">tR</span>)) <span class="kw">%&gt;%</span>
    <span class="fu">rename</span>(<span class="kw">time</span> <span class="kw">=</span> <span class="no">t</span>, <span class="kw">S</span> <span class="kw">=</span> <span class="no">X0</span>, <span class="kw">I</span> <span class="kw">=</span> <span class="no">X1</span>, <span class="kw">R</span> <span class="kw">=</span> <span class="no">X2</span>)
 
 <span class="co">## Making the SIR function</span>

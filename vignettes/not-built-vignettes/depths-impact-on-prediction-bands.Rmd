@@ -43,7 +43,7 @@ The second part of this vignette demonstrates how we leverage level set estimate
 There are many ways to create prediction regions. The most famous prediction region (interval) comes from linear regression. Under assumptions about the linearity of $y|X$ and the normality of the residuals, we can define a prediction interval for a *new* point $y_*|X_*$ as 
 
 \[
-X_*^T\hat{\beta} \pm z_{\alpha/2} \cdot \hat{\sigma} \sqrt{1 + X_*^T \left ( X^TX^\right ){-1}}X_*} \;,
+X_*^T\hat{\beta} \pm z_{\alpha/2} \cdot \hat{\sigma} \sqrt{1 + X_*^T \left ( X^TX \right)^{-1}X_*} \;,
 \]
 where $X_*$ is a vector of $p$ predictors for the new point, $X$ is the information matrix for the training data, $\hat{\beta} = \left (X^TX\right )^{-1}X^Ty$, and $\hat{\sigma} = \sqrt{SSE/(n-(p+1))}$.  This interval should contain $y_i$ $(1-\alpha)100\%$ of the time. 
 
