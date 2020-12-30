@@ -1,6 +1,3 @@
-% To remove when JSS.cls is fixed
-% https://github.com/rstudio/rticles/issues/329
-\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -12,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -49,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -86,53 +81,41 @@ Pittsburgh, PA 15213\\
 
 \section[Intro]{Introduction}\label{sec:intro}
 
-The recent (and currently on-going) COVID-19 global pandemic has
-galvanized public interest in understanding more about infectious
-disease modeling and has highlighted the usefulness of research in the
-area of infectious disease epidemiology. Infectious disease models
-typically attempt to do one or more of the following: 1) predict the
-spread of current and future epidemics
+The recent (and on-going) COVID-19 global pandemic has galvanized public
+interest in understanding more about infectious disease modeling and has
+highlighted the usefulness of research in the area of infectious disease
+epidemiology. Infectious diseases inflict enormous burdens on the world:
+millions of lives lost and trillions of dollars spent yearly. Infectious
+disease models typically attempt to do one or more of the following: 1)
+predict the spread of current and future epidemics
 \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and
 current epidemics to increase scientific knowledge
 \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or
 project epidemic scenarios under pre-specified parameters
-\citep[e.g. ...][]{}. The COVID-19 pandemic highlights how all three
-goals are important both separately and taken as a whole. Infectious
-diseases inflict enormous burdens on the world: millions of lives lost
-and trillions of dollars spent yearly. Correctly analyzing and
-addressing these issues aids in prevention and mitigation of future
-outbreaks. \textcolor{orange}{really like this paragraph}
+\citep[e.g. ...][]{}\footnote{@Shannon: CITE}. At the same time,
+descriptive statistics and visualizations (from universities like John
+Hopkins \citep{}\footnote{@Shannon: CITE}, many branches and levels of
+government, and new organizations \citep{}\footnote{@Shannon: CITE}) are
+an important first step of the process.
 
-The current epidemic of COVID-19 also highlights that infectious disease
-models are only one piece of the overall analysis pipeline. University
-based resources like John Hopkins' and government numerical dashboards
-(across all levels of government) during the COVID-19 epidemic remind us
-that descriptive statistics and visualization can be a important first
-step in the process (multiple \cite{}?).\}
-\textcolor{orange}{add comment about NYT or something} Still, rightly
-so, a large amount of theoretical work goes into modeling epidemics,
-with different models focusing at the individual / agent level, network
-structure or just aggregate flows (review paper \cite{}?). All placing
-individuals / proportions of the populations into different states
-(e.g.~suspectible, exposed, infected, recovered, etc.). With all these
-models, review and comparison papers in the literature and through MIDAS
-(Models of Infectious Disease Agent Study) Control Center helps the
-individual practitioner decide the correct approach.
-\textcolor{orange}{along with expertise from healthcare professionals...}
-
-At the same time, analysis packages often only address a portion of the
-analysis pipeline. Modeling tools often don't provide easy ways to
-compare and assess their models on new data. Moreover, exploring and
-modeling epidemics require transforming and \textit{tidying} data in
-different ways. To fill these gaps, we present our our \proglang{R}
-package \pkg{EpiCompare}. Our package's primary focus is to aid and
-advance research in the area of comparison and assessment of epidemic \&
-epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the
-data analysis pipeline of infectious diseases as 1) data pre-processing,
-2) exploratory data analysis (EDA), 3) modeling and simulating, 4)
-post-processing, and 5) comparison and assessment; where each previous
-part of the pipeline influences the next. \pkg{EpiCompare} provides
-tools to aids practitioners in all areas of this pipeline.
+With the many visualization and exploratory tools, models and modeling
+paradigms, and reviews and comparisons in the literature and through
+MIDAS (Models of Infectious Disease Agent Study) Control Center
+comparison guides \citep{}\footnote{@Shannon: CITE}, this field has a
+lot of devices to aid an individual practitioner decide the correct
+approach. At the same time, analysis packages often only address a
+portion of the analysis pipeline. Modeling tools often don't provide
+easy ways to compare and assess their models on new data. Moreover,
+exploring and modeling epidemics require transforming and
+\textit{tidying} data in different ways. To fill these gaps, we present
+our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus
+is to aid and advance research in the area of comparison and assessment
+of epidemic \& epidemiological models. In Figure \ref{fig:pipeline}, we
+illustrate the data analysis pipeline of infectious diseases as 1) data
+pre-processing, 2) exploratory data analysis (EDA), 3) modeling and
+simulating, 4) post-processing, and 5) comparison and assessment; where
+each previous part of the pipeline influences the next. \pkg{EpiCompare}
+provides tools to aids practitioners in all areas of this pipeline.
 
 \begin{figure}[!ht]
     \centering
@@ -161,7 +144,7 @@ disease outbreaks and outbreak data.
 
 This paper is broken up into the following sections, section
 \ref{sec:time-invariant} motivates and showcases tools of time-invariant
-analysis, section \ref{sec:overview} presents an outline of how
+analysis, section \ref{sec:overview} prxesents an outline of how
 \pkg{EpiCompare} aids a practitioner in every step of the pipeline and
 section \ref{sec:tour} provides a thorough demonstrating of the tools
 through a detailed example of a full data analysis pipeline.
@@ -193,7 +176,7 @@ models).
 analysis}\label{r0}
 
 \(R_0\), the initial reproduction number, has been called the ``most
-important quantity in epdiemiology'\,' \citep[][]{heesterbeek2003}. By
+important quantity in epdiemiology'' \citep[][]{heesterbeek2003}. By
 definition, \(R_0\) is the number of expected secondary infections when
 a primary infection is introduced to a susceptible population. To see
 the importance of \(R_0\), one need only read the newspaper
@@ -291,7 +274,7 @@ plots and time-invariant comparison
 tools}\label{sec:time-invariant-in-simplex}
 
 Beyond ternary plots, and the associated SIR models, we can extend the
-time-invariant approach described in Section \ref{sec:ternary} to higher
+time-invariant approach described in Section \ref{sec:r0} to higher
 dimensions (i.e.~models with more states). The constraints in 3d that
 are met with the SIR model (that is
 \(\sum_{i=1}^3 (\text{number in state}(i)) = N(t)\)) actually represents
@@ -793,8 +776,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -805,3 +788,4 @@ EpiModel SIR & 0.0149686 & 0.02\\
 
 
 \end{document}
+
