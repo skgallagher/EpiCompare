@@ -79,7 +79,7 @@ devtools::load_all("../../")
 
 # Introduction {short-title="Intro" #sec:intro}
 
-The recent (and on-going) COVID-19 global pandemic has galvanized public interest in understanding more about infectious disease modeling and has highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g. ...][]{}^[\@Shannon: CITE]. At the same time, descriptive statistics and visualizations (from universities like John Hopkins \citep{}^[\@Shannon: CITE], many branches and levels of government, and new organizations \citep{}^[\@Shannon: CITE]) are an important first step of the process.
+The recent (and on-going) COVID-19 global pandemic has galvanized public interest in understanding more about infectious disease modeling and has highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flu prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g. ...][]{}^[\@Shannon: CITE]. At the same time, descriptive statistics and visualizations (from universities like John Hopkins \citep{}^[\@Shannon: CITE], many branches and levels of government, and new organizations \citep{}^[\@Shannon: CITE]) are an important first step of the process.
 
 With the many visualization and exploratory tools, models and modeling paradigms, and reviews and comparisons in the literature and through MIDAS (Models of Infectious Disease Agent Study) Control Center comparison guides \citep{}^[\@Shannon: CITE], this field has a lot of devices to aid an individual practitioner decide the correct approach. At the same time, analysis packages often only address a portion of the analysis pipeline. Modeling tools often don't provide easy ways to compare and assess their models on new data. Moreover, exploring and modeling epidemics require transforming and \textit{tidying} data in different ways. To fill these gaps, we present our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus is to aid and advance research in the area of comparison and assessment of epidemic \& epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases  as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. \pkg{EpiCompare} provides tools to aids practitioners in all areas of this pipeline.
 
@@ -108,11 +108,11 @@ SHANNON: I THINK JUST INCLUDING LOTS OF LITERATURE IN INTRO + ETC. INSTEAD OF HA
 
 # Motivation and tools for time-invariant analysis {short-title="Time-invariant" #sec:time-invariant}
 
-Although epidemics are by definition a process that evolves over time, epidemics, including the recent COVID-19, often need to be compared in a time-invariant way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of suspectible vs infected vs recovered individuals) don't always as intelligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-invariant approaches and in this section we present benefits of the time-invariant analysis, with 1) motivation for time-invariant analysis through $R_0$ (the initial reproduction number), 2) time-invariant visualization tools for 3-state models (e.g. SIR models), and 3) potential for similar analysis for models with more states (e.g. SEIR models). \ben{Will need to rewrite this section "introduction".}
+Although epidemics are by definition a process that evolves over time, epidemics, including the recent COVID-19, often need to be compared in a time-invariant way to understand the processes at play. Additionally, many tools to examine the quantity of the population in each state along the infection process (for example: quantity of susceptible vs infected vs recovered individuals) don't always as intelligently capture the natural connections between the proportion of individuals in these states. Tools in \pkg{EpiCompare} attempt to give the user the ability to extend their toolkit to evaluate epidemics to also include time-invariant approaches and in this section we present benefits of the time-invariant analysis, with 1) motivation for time-invariant analysis through $R_0$ (the initial reproduction number), 2) time-invariant visualization tools for 3-state models (e.g. SIR models), and 3) potential for similar analysis for models with more states (e.g. SEIR models). \ben{Will need to rewrite this section "introduction".}
 
 ## What $R_0$ has to do with time-invariant analysis {short-title="r0" #r0}
 
-$R_0$, the initial reproduction number, has been called the "most important quantity in epdiemiology" \citep[][]{heesterbeek2003}. By definition, $R_0$ is the number of expected secondary infections when a primary infection is introduced to a susceptible population. To see the importance of $R_0$, one need only read the newspaper \citep{Fisher2020} or look at the length of the table of estimated $R_0$ quantities for COVID-19 \citep{Aronson2020}. $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, which allows epidemics to be compared to one another in both different time and geographic scales. 
+ By definition, $R_0$ is the number of expected secondary infections when a primary infection is introduced to a susceptible population.  $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, which allows epidemics to be compared to one another in both different time and geographic scales. For example, $R_0$ for Covid-19 is estimated to be between 2-3, seasonal influenza between 1.2-2, and modern measles outbreaks between 5-6.
 
 Estimator(s) for $R_0$ are dependent on the epidemic modeling framework, which consists of which states an individual can occupy (e.g. susceptible, infectious, recovered) and a description of how individuals move from one state to the next over time.  A common epidemic modeling framework is the SIR model, originally introduced by @kermack1927.  Transitions from one state to the next are defined by a series of ordinary differential equations, where $N$ is the (fixed) total number individuals, $\beta$ is the rate of infection, and $\gamma$ is rate of recovery,
 \begin{align}\label{eq:sir-ode}
@@ -123,7 +123,7 @@ Estimator(s) for $R_0$ are dependent on the epidemic modeling framework, which c
 From this, $\hat{R}_0 = \frac{\hat{\beta}}{\hat{\gamma}}$, the ratio of the estimated infection rate compared to the estimated recovery rate.
 
 
-In regards to traditional $state$ vs. time plots, $R_0$ is difficult to visualize, especially with respect from one epidemic to another. For example, consider the scenarios where the first epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_1 = .3$ and $\gamma_1 = .15$, and the second epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_2 = .24$ and $\gamma_1 = .12$ over 40 days.  Both epidemics have the same value of $R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2$.  The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:sir-ex}.  At a glance, we may assume that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may think Model 2 has a larger $R_0$ because it has a slightly larger peak of infection than Model 1.
+With regards to traditional epidemic $state$ vs. $time$ plots, $R_0$ is difficult to visualize, especially with respect from one epidemic to another. For example, consider the scenarios where the first epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_1 = 0.3$ and $\gamma_1 = 0.15$, and the second epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_2 = 0.24$ and $\gamma_1 = 0.12$ over 40 days.  Both epidemics have the same value of $R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2$.  The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:sir-ex}.  At a glance, we may assume that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may think Model 2 has a larger $R_0$ because it has a slightly larger peak of infection than Model 1.
 
 
 ```{r echo = FALSE}
@@ -139,8 +139,9 @@ theme_set(theme_bw(base_size = 24))
 ```
 
 
-```{r echo = FALSE, fig.cap = "\\label{fig:sir-ex}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$."  }
+```{r echo = FALSE, fig.cap = "\\label{fig:different-scales-standard}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$."  }
 set.seed(1225)
+theme_set(theme_bw(base_size = 24))
 
 beta1 <- .8
 gamma1 <- .4
@@ -178,7 +179,8 @@ ggplot(data = df_long,
   scale_color_manual(values = c("red", "blue"), name = "Epidemic") +
   labs(x = "Time",
        y = "# in state",
-       title = latex2exp::TeX("Comparing two epidemics over 50 days with same $R_0$"))
+       title = latex2exp::TeX("Comparing two epidemics over first 15 days with same $R_0$")) +
+  coord_cartesian(xlim = c(0, 15))
 ```
 However, when we plot the trajectories as a single curve using the ternary plot in the time-invariant view, we immediately see a different story.  In this time-invariant view in Fig. \ref{fig:ternary-ex}, the points seem to overlap and form the same trajectory.  In other words, we can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
 
@@ -188,12 +190,12 @@ More formally, let two Kermack and McKendrick (see Eq. \eqref{eq:sir-ode}) SIR m
 Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
-The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Appendix \ref{app:proof}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these models in a ternary plot.
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Appendix \ref{app:proof}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these two models in a ternary plot.  This means, that at a glance, we can tell if two epidemics have different values of $R_0$.
 
 
-
-```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:ternary-ex}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered."}
-ggplot(data = df) +
+```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:different-scales-tern}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered."}
+ggplot(data = df %>%
+         filter(t <= 15)) +
   geom_point(aes(x = S, y = I, z = R,
                      col = type)) +
     coord_tern() + 
@@ -202,46 +204,22 @@ ggplot(data = df) +
 ```
 
 
+## Beyond the Kermack and McKendrick SIR models
 
 
-## Simplices beyond ternary plots and time-invariant comparison tools {short-title="Simplexes beyond ternary plots" #sec:time-invariant-in-simplex}
+Although the result of Theorem \ref{thm:sir-scale} allows for easy visual comparison of $R_0$ in Kermack SIR models, it does require stringent assumptions of homogeneity of behavior in populations.  The use of visualizing epidemics in a time-invariant lens via ternary plots extends beyond those of models that follow the ODEs in the Kermack-McKendrick equations.  Any model with S, I, and R states can be visualized with ternary plots, regardless of birth and death dynamics and regardless of homogeneity of individual behavior.  We can use ternary plots to compare the spread of a disease for groups within a population without time as a confounding factor.  We show an example of this in a later section.
 
-Beyond ternary plots, and the associated SIR models, we can extend the time-invariant approach described in Section \ref{sec:r0} to higher dimensions (i.e. models with more states). The constraints in 3d that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a spaces of 3d simplexes, and the ternary plot specifically represents these after scaling to examine such values as proportions (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through similations), and this tool compares these objects after projecting them into a one-dimension less space through the simplexical structure of the data.
 
-In \pkg{EpiCompare} we allow for the compare epidemics in these higher dimensional spaces by first projecting onto these simplexes. Even though higher dimensional models may not be able to visualized, we provide multiple tools to aid in the comparison of models and epidemics. The first of which uses multiple simulations under specific model parameters to assess the bairabilty of the model fit. In \pkg{EpiCompare} we provide ways to create prediction regions for a true epidemic under the model assumptions using these simulations. These regions require representing multi-dimensional structures for functions to completely contain epidemics, and treat these simulations and epidmeics as filamental objects. We extend off of papers like \citet{Dalmasso2019a} to create these bands. These high dimensional bands allow the user to assess if the true epidemic is within the band (there-by assessing the model's representation of the epidemic), and also compare who different models are from each other through distances that compare sets. We recommend using the Hausdorff distance to compare such sets as it captures how much bigger the sets would have to expand to cover each other, and is defined mathematically as 
+
+
+But time-invariant analysis is also useful for epidemic models with more than three states. The constraints in three dimensions that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a space of 3d simplices, and the ternary plot specifically represents these simplices, after scaling to examine such values as proportions between 0 and 1 (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through simulations).  s tool compares these objects after projecting them into a one-dimension-fewer space through the simplexical structure of the data.
+
+In \pkg{EpiCompare} we allow for the comparison epidemics in these higher dimensional spaces by first projecting onto these simplexes. Even though higher dimensional models may not be able to visualized, we provide multiple tools to aid in the comparison of models and epidemics. The first of which uses multiple simulations under specific model parameters to assess the bairabilty of the model fit. In \pkg{EpiCompare} we provide ways to create prediction regions for a true epidemic under the model assumptions using these simulations. These regions require representing multi-dimensional structures for functions to completely contain epidemics, and treat these simulations and epidmeics as filamental objects. We extend off of papers like \citet{Dalmasso2019a} to create these bands. These high dimensional bands allow the user to assess if the true epidemic is within the band (there-by assessing the model's representation of the epidemic), and also compare who different models are from each other through distances that compare sets. We recommend using the Hausdorff distance to compare such sets as it captures how much bigger the sets would have to expand to cover each other, and is defined mathematically as 
 \[
 d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
 
-
-
-
-# Package tool overview {short-title="Package overview" #sec:overview}
-
-## RMD Code formatting info
-
-This is the Section \ref{sec:intro}. This template demonstrates some of the basic LaTeX that you need to know to create a JSS article.
-
-In general, don't use Markdown, but use the more precise LaTeX commands instead:
-
-* \proglang{Java}
-* \pkg{plyr}
-
-One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
-
-If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
-
-## RMD \proglang{R} code {short-title="R code" #r-code}
-
-Can be inserted in regular R markdown blocks.
-
-hags hags hags \cite{Neal2004}
-
-```{r}
-x <- 1:10
-x
-```
 
 
 # A tour of \pkg{EpiCompare} {short-title="Tour" #sec:tour}
@@ -325,6 +303,7 @@ ggplot(data = plot_df,
 
 
 ```{r echo = FALSE, results = 'hide'}
+data(hagelloch_raw)
 with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
 
 ```
@@ -583,5 +562,35 @@ rbind(simple_sir_info, eimodel_sir_info)  %>%
   kable_styling(position = "center", latex_options = "hold_position") %>%
   column_spec(2:3, width = "6cm")
 ```
+
+
+
+
+# Package tool overview {short-title="Package overview" #sec:overview}
+
+## RMD Code formatting info
+
+This is the Section \ref{sec:intro}. This template demonstrates some of the basic LaTeX that you need to know to create a JSS article.
+
+In general, don't use Markdown, but use the more precise LaTeX commands instead:
+
+* \proglang{Java}
+* \pkg{plyr}
+
+One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
+
+If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
+
+## RMD \proglang{R} code {short-title="R code" #r-code}
+
+Can be inserted in regular R markdown blocks.
+
+hags hags hags \cite{Neal2004}
+
+```{r}
+x <- 1:10
+x
+```
+
 
 

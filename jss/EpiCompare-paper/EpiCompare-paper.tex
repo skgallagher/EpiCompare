@@ -1,3 +1,6 @@
+% To remove when JSS.cls is fixed
+% https://github.com/rstudio/rticles/issues/329
+\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -9,7 +12,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +49,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -88,7 +93,7 @@ epidemiology. Infectious diseases inflict enormous burdens on the world:
 millions of lives lost and trillions of dollars spent yearly. Infectious
 disease models typically attempt to do one or more of the following: 1)
 predict the spread of current and future epidemics
-\citep[e.g. flue prediction][]{Biggerstaff2016}, 2) analyze past and
+\citep[e.g. flu prediction][]{Biggerstaff2016}, 2) analyze past and
 current epidemics to increase scientific knowledge
 \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or
 project epidemic scenarios under pre-specified parameters
@@ -159,7 +164,7 @@ Although epidemics are by definition a process that evolves over time,
 epidemics, including the recent COVID-19, often need to be compared in a
 time-invariant way to understand the processes at play. Additionally,
 many tools to examine the quantity of the population in each state along
-the infection process (for example: quantity of suspectible vs infected
+the infection process (for example: quantity of susceptible vs infected
 vs recovered individuals) don't always as intelligently capture the
 natural connections between the proportion of individuals in these
 states. Tools in \pkg{EpiCompare} attempt to give the user the ability
@@ -175,16 +180,13 @@ models).
 \subsection[r0]{What \(R_0\) has to do with time-invariant
 analysis}\label{r0}
 
-\(R_0\), the initial reproduction number, has been called the ``most
-important quantity in epdiemiology'' \citep[][]{heesterbeek2003}. By
-definition, \(R_0\) is the number of expected secondary infections when
-a primary infection is introduced to a susceptible population. To see
-the importance of \(R_0\), one need only read the newspaper
-\citep{Fisher2020} or look at the length of the table of estimated
-\(R_0\) quantities for COVID-19 \citep{Aronson2020}. \(R_0\) is also,
-maybe, the most famous \textit{time-invariant} numerical summary of an
-epidemic, which allows epidemics to be compared to one another in both
-different time and geographic scales.
+By definition, \(R_0\) is the number of expected secondary infections
+when a primary infection is introduced to a susceptible population.
+\(R_0\) is also, maybe, the most famous \textit{time-invariant}
+numerical summary of an epidemic, which allows epidemics to be compared
+to one another in both different time and geographic scales. For
+example, \(R_0\) for Covid-19 is estimated to be between 2-3, seasonal
+influenza between 1.2-2, and modern measles outbreaks between 5-6.
 
 Estimator(s) for \(R_0\) are dependent on the epidemic modeling
 framework, which consists of which states an individual can occupy
@@ -202,13 +204,14 @@ and \(\gamma\) is rate of recovery, \begin{align}\label{eq:sir-ode}
 \(\hat{R}_0 = \frac{\hat{\beta}}{\hat{\gamma}}\), the ratio of the
 estimated infection rate compared to the estimated recovery rate.
 
-In regards to traditional \(state\) vs.~time plots, \(R_0\) is difficult
-to visualize, especially with respect from one epidemic to another. For
-example, consider the scenarios where the first epidemic is generated
-from a SIR model with \((S(0) = 990, I(0) = 10)\), \(\beta_1 = .3\) and
-\(\gamma_1 = .15\), and the second epidemic is generated from a SIR
-model with \((S(0) = 990, I(0) = 10)\), \(\beta_2 = .24\) and
-\(\gamma_1 = .12\) over 40 days. Both epidemics have the same value of
+With regards to traditional epidemic \(state\) vs.~\(time\) plots,
+\(R_0\) is difficult to visualize, especially with respect from one
+epidemic to another. For example, consider the scenarios where the first
+epidemic is generated from a SIR model with \((S(0) = 990, I(0) = 10)\),
+\(\beta_1 = 0.3\) and \(\gamma_1 = 0.15\), and the second epidemic is
+generated from a SIR model with \((S(0) = 990, I(0) = 10)\),
+\(\beta_2 = 0.24\) and \(\gamma_1 = 0.12\) over 40 days. Both epidemics
+have the same value of
 \(R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2\). The epidemic
 trajectories are shown in the \(state\) vs.~time plots in Figure
 \ref{fig:sir-ex}. At a glance, we may assume that Model 1 has a larger
@@ -223,7 +226,7 @@ than in Model 2. On the other hand, we may think Model 2 has a larger
 
 }
 
-\caption{\label{fig:sir-ex}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.}\label{fig:unnamed-chunk-2}
+\caption{\label{fig:different-scales-standard}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.}\label{fig:unnamed-chunk-2}
 \end{figure}
 \end{CodeChunk}
 
@@ -256,7 +259,9 @@ each state and \(R_0\) then for every point on the epidemic path of the
 first SIR model is also a point on the epidemic path of the second SIR
 model. Taking the sample simulations from Fig.
 \ref{fig:different-scales-standard}, Fig.
-\ref{fig:different-scales-tern} presents these models in a ternary plot.
+\ref{fig:different-scales-tern} presents these two models in a ternary
+plot. This means, that at a glance, we can tell if two epidemics have
+different values of \(R_0\).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -265,89 +270,59 @@ model. Taking the sample simulations from Fig.
 
 }
 
-\caption{\label{fig:ternary-ex}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered.}\label{fig:unnamed-chunk-3}
+\caption{\label{fig:different-scales-tern}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered.}\label{fig:unnamed-chunk-3}
 \end{figure}
 \end{CodeChunk}
 
-\subsection[Simplexes beyond ternary plots]{Simplices beyond ternary
-plots and time-invariant comparison
-tools}\label{sec:time-invariant-in-simplex}
+\hypertarget{beyond-the-kermack-and-mckendrick-sir-models}{%
+\subsection{Beyond the Kermack and McKendrick SIR
+models}\label{beyond-the-kermack-and-mckendrick-sir-models}}
 
-Beyond ternary plots, and the associated SIR models, we can extend the
-time-invariant approach described in Section \ref{sec:r0} to higher
-dimensions (i.e.~models with more states). The constraints in 3d that
-are met with the SIR model (that is
+Although the result of Theorem \ref{thm:sir-scale} allows for easy
+visual comparison of \(R_0\) in Kermack SIR models, it does require
+stringent assumptions of homogeneity of behavior in populations. The use
+of visualizing epidemics in a time-invariant lens via ternary plots
+extends beyond those of models that follow the ODEs in the
+Kermack-McKendrick equations. Any model with S, I, and R states can be
+visualized with ternary plots, regardless of birth and death dynamics
+and regardless of homogeneity of individual behavior. We can use ternary
+plots to compare the spread of a disease for groups within a population
+without time as a confounding factor. We show an example of this in a
+later section.
+
+But time-invariant analysis is also useful for epidemic models with more
+than three states. The constraints in three dimensions that are met with
+the SIR model (that is
 \(\sum_{i=1}^3 (\text{number in state}(i)) = N(t)\)) actually represents
-a spaces of 3d simplexes, and the ternary plot specifically represents
-these after scaling to examine such values as proportions (ternary plots
-are known as a 3d unit simplex due to it's scaling). This same scaling
-for larger models (i.e.~with more states) can be done onto different
-simplexes. In this package we present tools to help compare models
-(mostly through similations), and this tool compares these objects after
-projecting them into a one-dimension less space through the simplexical
-structure of the data.
+a space of 3d simplices, and the ternary plot specifically represents
+these simplices, after scaling to examine such values as proportions
+between 0 and 1 (ternary plots are known as a 3d unit simplex due to
+it's scaling). This same scaling for larger models (i.e.~with more
+states) can be done onto different simplexes. In this package we present
+tools to help compare models (mostly through simulations). s tool
+compares these objects after projecting them into a one-dimension-fewer
+space through the simplexical structure of the data.
 
-In \pkg{EpiCompare} we allow for the compare epidemics in these higher
-dimensional spaces by first projecting onto these simplexes. Even though
-higher dimensional models may not be able to visualized, we provide
-multiple tools to aid in the comparison of models and epidemics. The
-first of which uses multiple simulations under specific model parameters
-to assess the bairabilty of the model fit. In \pkg{EpiCompare} we
-provide ways to create prediction regions for a true epidemic under the
-model assumptions using these simulations. These regions require
-representing multi-dimensional structures for functions to completely
-contain epidemics, and treat these simulations and epidmeics as
-filamental objects. We extend off of papers like \citet{Dalmasso2019a}
-to create these bands. These high dimensional bands allow the user to
-assess if the true epidemic is within the band (there-by assessing the
-model's representation of the epidemic), and also compare who different
-models are from each other through distances that compare sets. We
-recommend using the Hausdorff distance to compare such sets as it
-captures how much bigger the sets would have to expand to cover each
-other, and is defined mathematically as \[
+In \pkg{EpiCompare} we allow for the comparison epidemics in these
+higher dimensional spaces by first projecting onto these simplexes. Even
+though higher dimensional models may not be able to visualized, we
+provide multiple tools to aid in the comparison of models and epidemics.
+The first of which uses multiple simulations under specific model
+parameters to assess the bairabilty of the model fit. In
+\pkg{EpiCompare} we provide ways to create prediction regions for a true
+epidemic under the model assumptions using these simulations. These
+regions require representing multi-dimensional structures for functions
+to completely contain epidemics, and treat these simulations and
+epidmeics as filamental objects. We extend off of papers like
+\citet{Dalmasso2019a} to create these bands. These high dimensional
+bands allow the user to assess if the true epidemic is within the band
+(there-by assessing the model's representation of the epidemic), and
+also compare who different models are from each other through distances
+that compare sets. We recommend using the Hausdorff distance to compare
+such sets as it captures how much bigger the sets would have to expand
+to cover each other, and is defined mathematically as \[
 d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
-
-\section[Package overview]{Package tool overview}\label{sec:overview}
-
-\hypertarget{rmd-code-formatting-info}{%
-\subsection{RMD Code formatting info}\label{rmd-code-formatting-info}}
-
-This is the Section \ref{sec:intro}. This template demonstrates some of
-the basic LaTeX that you need to know to create a JSS article.
-
-In general, don't use Markdown, but use the more precise LaTeX commands
-instead:
-
-\begin{itemize}
-\item
-  \proglang{Java}
-\item
-  \pkg{plyr}
-\end{itemize}
-
-One exception is inline code, which can be written inside a pair of
-backticks (i.e., using the Markdown syntax).
-
-If you want to use LaTeX commands in headers, you need to provide a
-\texttt{short-title} attribute. You can also provide a custom identifier
-if necessary. See the header of Section \ref{r-code} for example.
-
-\subsection[R code]{RMD \proglang{R} code}\label{r-code}
-
-Can be inserted in regular R markdown blocks.
-
-hags hags hags \cite{Neal2004}
-
-\begin{CodeChunk}
-\begin{CodeInput}
-R> x <- 1:10
-R> x
-\end{CodeInput}
-\begin{CodeOutput}
- [1]  1  2  3  4  5  6  7  8  9 10
-\end{CodeOutput}
-\end{CodeChunk}
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
@@ -471,11 +446,11 @@ R> ggplot(data = plot_df,
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-8-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-7-1} 
 
 }
 
-\caption{\label{fig:cifs}Empirical cumulative incidence functions of prodrome (symptom) onset and measles rash appearance.  We see that there is approximately a a constant lag between the two curves.}\label{fig:unnamed-chunk-8}
+\caption{\label{fig:cifs}Empirical cumulative incidence functions of prodrome (symptom) onset and measles rash appearance.  We see that there is approximately a a constant lag between the two curves.}\label{fig:unnamed-chunk-7}
 \end{figure}
 \end{CodeChunk}
 
@@ -505,11 +480,11 @@ R> ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-10-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-9-1} 
 
 }
 
-\caption{\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis).}\label{fig:unnamed-chunk-10}
+\caption{\label{fig:hag-tern-raw}Time invariant view of the Hagelloch epidemic where we view the individuals in Susceptible, Infectious, or Recovered states.  We see there are two peaks of infection (the vertical axis).}\label{fig:unnamed-chunk-9}
 \end{figure}
 \end{CodeChunk}
 
@@ -537,11 +512,11 @@ R> hagelloch_raw %>%
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-11-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-10-1} 
 
 }
 
-\caption{\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined.}\label{fig:unnamed-chunk-11}
+\caption{\label{fig:tern-class-data}Time invariant outbreak curves for the three class groups.  The pre-school class has a distinct peak of infection whereas the peak infection point for the other two classes are less well defined.}\label{fig:unnamed-chunk-10}
 \end{figure}
 \end{CodeChunk}
 
@@ -694,11 +669,11 @@ R> g +   geom_path(data = both_models %>% filter(t !=0),
 \end{CodeInput}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-18-1} 
+{\centering \includegraphics{Figs/unnamed-chunk-17-1} 
 
 }
 
-\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-18}
+\caption{\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models.}\label{fig:unnamed-chunk-17}
 \end{figure}
 \end{CodeChunk}
 
@@ -776,16 +751,56 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0\\
-EpiModel SIR & 0.0028813 & 0\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \end{CodeChunk}
 
+\section[Package overview]{Package tool overview}\label{sec:overview}
+
+\hypertarget{rmd-code-formatting-info}{%
+\subsection{RMD Code formatting info}\label{rmd-code-formatting-info}}
+
+This is the Section \ref{sec:intro}. This template demonstrates some of
+the basic LaTeX that you need to know to create a JSS article.
+
+In general, don't use Markdown, but use the more precise LaTeX commands
+instead:
+
+\begin{itemize}
+\item
+  \proglang{Java}
+\item
+  \pkg{plyr}
+\end{itemize}
+
+One exception is inline code, which can be written inside a pair of
+backticks (i.e., using the Markdown syntax).
+
+If you want to use LaTeX commands in headers, you need to provide a
+\texttt{short-title} attribute. You can also provide a custom identifier
+if necessary. See the header of Section \ref{r-code} for example.
+
+\subsection[R code]{RMD \proglang{R} code}\label{r-code}
+
+Can be inserted in regular R markdown blocks.
+
+hags hags hags \cite{Neal2004}
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> x <- 1:10
+R> x
+\end{CodeInput}
+\begin{CodeOutput}
+ [1]  1  2  3  4  5  6  7  8  9 10
+\end{CodeOutput}
+\end{CodeChunk}
+
 \bibliography{EpiCompare.bib}
 
 
 \end{document}
-
