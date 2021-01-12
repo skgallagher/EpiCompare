@@ -84,3 +84,144 @@ print.ggplot <- function(x, newpage = is.null(vp), vp = NULL, ...){
     print.ggplot(x, newpage = newpage, vp = vp, ...)
   }
 }
+
+
+#' Arrange multiple grobs on a page (\code{ggtern} and \code{ggplot2} compatible)
+#' 
+#' @inheritParams gridExtra::arrangeGrob
+#' @rdname arrangeGrob
+#' @export
+arrangeGrob = function (..., grobs = list(...), layout_matrix, vp = NULL, name = "arrange", 
+                        as.table = TRUE, respect = FALSE, clip = "off", nrow = NULL, 
+                        ncol = NULL, widths = NULL, heights = NULL, top = NULL, bottom = NULL, 
+                        left = NULL, right = NULL, padding = unit(0.5, "line")) 
+{
+  n <- length(grobs)
+  if (!is.null(ncol) && !is.null(widths)) {
+    stopifnot(length(widths) == ncol)
+  }
+  if (!is.null(nrow) && !is.null(heights)) {
+    stopifnot(length(heights) == nrow)
+  }
+  if (is.null(ncol) && !is.null(widths)) {
+    ncol <- length(widths)
+  }
+  if (is.null(nrow) && !is.null(heights)) {
+    nrow <- length(heights)
+  }
+  if (is.null(nrow) && !is.null(ncol)) {
+    nrow <- ceiling(n/ncol)
+  }
+  if (is.null(ncol) && !is.null(nrow)) {
+    ncol <- ceiling(n/nrow)
+  }
+  stopifnot(nrow * ncol >= n)
+  if (is.null(nrow) && is.null(ncol) && is.null(widths) && 
+      is.null(heights)) {
+    nm <- grDevices::n2mfrow(n)
+    nrow = nm[1]
+    ncol = nm[2]
+  }
+  inherit.ggplot <- unlist(lapply(grobs, inherits, what = "ggplot"))
+  inherit.ggtern <- unlist(lapply(grobs, function(ggplot){inherits(ggplot$coordinates, "CoordTern")})) ##BL
+  inherit.trellis <- unlist(lapply(grobs, inherits, what = "trellis"))
+  if (any(inherit.ggplot)) {
+    stopifnot(requireNamespace("ggplot2", quietly = TRUE))
+    toconv <- which(inherit.ggplot)
+    toconv_ggtern <- which(inherit.ggtern) ## BL
+    toconv_ggplot <- toconv[!(toconv %in% toconv_ggtern)] ## BL
+    #grobs[toconv] <- lapply(grobs[toconv], ggplot2::ggplotGrob)
+    #grobs[toconv] <- lapply(grobs[toconv], ggplotGrob) ##NH
+    grobs[toconv_ggtern] <- lapply(grobs[toconv_ggtern], ggtern::ggplotGrob) ##BL
+    grobs[toconv_ggplot] <- lapply(grobs[toconv_ggplot], ggplot2::ggplotGrob) ##BL
+    
+  }
+  if (any(inherit.trellis)) {
+    stopifnot(requireNamespace("lattice", quietly = TRUE))
+    toconv <- which(inherit.trellis)
+    grobs[toconv] <- lapply(grobs[toconv], ggint$latticeGrob)
+  }
+  if (missing(layout_matrix)) {
+    positions <- expand.grid(t = seq_len(nrow), l = seq_len(ncol))
+    positions$b <- positions$t
+    positions$r <- positions$l
+    if (as.table) 
+      positions <- positions[order(positions$t), ]
+    positions <- positions[seq_along(grobs), ]
+  }
+  else {
+    cells <- sort(unique(as.vector(layout_matrix)))
+    range_cell <- function(ii) {
+      ind <- which(layout_matrix == ii, arr.ind = TRUE)
+      c(l = min(ind[, "col"]), r = max(ind[, "col"]), t = min(ind[, 
+                                                                  "row"]), b = max(ind[, "row"]))
+    }
+    positions <- data.frame(do.call(rbind, lapply(cells, 
+                                                  range_cell)))
+    ncol <- max(positions$r)
+    nrow <- max(positions$b)
+  }
+  if (is.null(widths)) 
+    widths <- unit(rep(1, ncol), "null")
+  if (is.null(heights)) 
+    heights <- unit(rep(1, nrow), "null")
+  if (!grid::is.unit(widths)) ## BL (grid::)
+    widths <- unit(widths, "null")
+  if (!grid::is.unit(heights)) ## BL (grid::)
+    heights <- unit(heights, "null")
+  gt <- gtable::gtable(name = name, respect = respect, heights = heights, ##NH
+               widths = widths, vp = vp) ## BL (ggtable::)
+  gt <- gtable::gtable_add_grob(gt, grobs, t = positions$t, b = positions$b, 
+                        l = positions$l, r = positions$r, z = seq_along(grobs), 
+                        clip = clip) ## BL (ggtable::)
+  if (is.character(top)) {
+    top <- textGrob(top)
+  }
+  if (grid::is.grob(top)) { ## BL (grid::)
+    h <- grid::grobHeight(top) + padding ## BL (grid::)
+    gt <- gtable::gtable_add_rows(gt, heights = h, 0)  ## BL (ggtable::)
+    gt <- gtable::gtable_add_grob(gt, top, t = 1, l = 1, r = ncol(gt), 
+                          z = Inf, clip = clip) ## BL (ggtable::)
+  }
+  if (is.character(bottom)) {
+    bottom <- grid::textGrob(bottom) ## BL (grid::)
+  }
+  if (grid::is.grob(bottom)) { ## BL (grid::)
+    h <- grid::grobHeight(bottom) + padding ## BL (grid::)
+    gt <- ggtable::gtable_add_rows(gt, heights = h, -1) ## BL (ggtable::)
+    gt <- ggtable::gtable_add_grob(gt, bottom, t = nrow(gt), l = 1, 
+                          r = ncol(gt), z = Inf, clip = clip) ## BL (ggtable::)
+  }
+  if (is.character(left)) {
+    left <- grid::textGrob(left, rot = 90) ## BL (grid::)
+  }
+  if (grid::is.grob(left)) { ## BL (grid::)
+    w <- grid::grobWidth(left) + padding ## BL (grid::)
+    gt <- ggtable::gtable_add_cols(gt, widths = w, 0) ## BL (ggtable::)
+    gt <- ggtable::gtable_add_grob(gt, left, t = 1, b = nrow(gt), 
+                          l = 1, r = 1, z = Inf, clip = clip) ## BL (ggtable::)
+  }
+  if (is.character(right)) {
+    right <- grid::textGrob(right, rot = -90) ## BL (grid::)
+  }
+  if (grid::is.grob(right)) { ## BL (grid::)
+    w <- grid::grobWidth(right) + padding ## BL (grid::)
+    gt <- ggtable::gtable_add_cols(gt, widths = w, -1) ## BL (ggtable::)
+    gt <- ggtable::gtable_add_grob(gt, right, t = 1, b = nrow(gt), 
+                          l = ncol(gt), r = ncol(gt), z = Inf, clip = clip) ## BL (ggtable::)
+  }
+  gt
+}
+
+#' @inheritParams gridExtra::arrangeGrob
+#' @inheritParams gridExtra::grid.arrange
+#' @rdname arrangeGrob 
+#' @aliases grid.arrange
+#' @export
+grid.arrange = function (..., newpage = TRUE) {
+  if (newpage) 
+    grid.newpage()
+  g <- arrangeGrob(...)
+  grid.draw(g)
+  invisible(g)
+}
