@@ -222,13 +222,23 @@ In \pkg{EpiCompare} we allow for the comparison epidemics in these higher dimens
 d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
+# Package tool overview {short-title="Package overview" #sec:overview}
+
+\ben{**The goals of this section is to present parts of the data science pipeline, introduce how we help, why they are useful and the ideas behind it.**}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width = 1\textwidth]{images/pipeline2.png}
+    \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
+    \label{fig:pipeline2}
+\end{figure}
 
 
 
 # A tour of \pkg{EpiCompare} {short-title="Tour" #sec:tour}
 
 
-In this section, we highlight a number of the functionalities available in \proglang{EpiCompare}.  These functionalities include data cleaning, visualization, simulation, and comparison, in accordance with the data analysis pipeline REF\ref{}. We show a full data analysis from beginning to end that can be accomplished in a streamlined and standardized manner.
+In this section, we highlight a number of the functionalities available in \pkg{EpiCompare}.  These functionalities include data cleaning, visualization, simulation, and comparison, in accordance with the data analysis pipeline \ref{fig:pipeline}. We show a full data analysis from beginning to end that can be accomplished in a streamlined and standardized manner.
 
 \subsection{Data and exploratory analysis}
 
@@ -569,7 +579,7 @@ rbind(simple_sir_info, eimodel_sir_info)  %>%
 
 
 
-# Package tool overview {short-title="Package overview" #sec:overview}
+# Helpful Rmd tricks
 
 ## RMD Code formatting info
 
