@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{14}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -68,6 +68,13 @@ Groendyke C, Welch D, Hunter DR (2012).
   data.}
 \newblock \emph{Biometrics}, \textbf{68}(3), 755--765.
 
+\bibitem[{Hamilton and Ferry(2018)}]{Hamilton2018}
+Hamilton NE, Ferry M (2018).
+\newblock \enquote{{ggtern}: Ternary Diagrams Using {ggplot2}.}
+\newblock \emph{Journal of Statistical Software, Code Snippets},
+  \textbf{87}(3), 1--17.
+\newblock \doi{10.18637/jss.v087.c03}.
+
 \bibitem[{Harko \emph{et~al.}(2014)Harko, Lobo, and Mak}]{Harko2014}
 Harko T, Lobo FS, Mak MK (2014).
 \newblock \enquote{{Exact analytical solutions of the
@@ -113,5 +120,24 @@ Pfeilsticker A (1863).
   Berücksichtigung der statistischen Verhältnisse}.}
 \newblock
   \urlprefix\url{http://www.archive.org/details/beitrgezurpatho00pfeigoog}.
+
+\bibitem[{Wickham(2016)}]{Wickham2016}
+Wickham H (2016).
+\newblock \emph{ggplot2: Elegant Graphics for Data Analysis}.
+\newblock Springer-Verlag New York.
+\newblock ISBN 978-3-319-24277-4.
+\newblock \urlprefix\url{https://ggplot2.tidyverse.org}.
+
+\bibitem[{Wickham \emph{et~al.}(2019)Wickham, Averick, Bryan, Chang, McGowan,
+  François, Grolemund, Hayes, Henry, Hester, Kuhn, Pedersen, Miller, Bache,
+  Müller, Ooms, Robinson, Seidel, Spinu, Takahashi, Vaughan, Wilke, Woo, and
+  Yutani}]{Wickham2019}
+Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G,
+  Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller
+  K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C,
+  Woo K, Yutani H (2019).
+\newblock \enquote{Welcome to the {tidyverse}.}
+\newblock \emph{Journal of Open Source Software}, \textbf{4}(43), 1686.
+\newblock \doi{10.21105/joss.01686}.
 
 \end{thebibliography}

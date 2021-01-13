@@ -226,12 +226,37 @@ d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(
 
 \ben{**The goals of this section is to present parts of the data science pipeline, introduce how we help, why they are useful and the ideas behind it.**}
 
+In this section we will present the tools in this package and how they aid in the  data analysis pipeline. We present a modification of Figure \ref{fig:pipeline} from the Section \ref{sec:intro} with Figure \ref{fig:pipeline2} with uses of our package. We recommend the package user keep this image around as a reference. All user functions are aimed to be as friendly as possible, and we focus on providing the user "tidyverse" style functions, that encourage piping and also follow clear verb naming schemes \citep{Wickham2019}. There are 2 different ways \pkg{EpiCompare} can be incorporated in the data analysis pipeline for epidemics, either at the very beginning when pre-processing data and visualizing raw data, or after modeling has been done and a generative model is fit. Figure \ref{fig:pipeline2} captures these different paths, and we will highlight both approaches and how to leverage \pkg{EpiCompare} in the subsections below.
+
 \begin{figure}[!ht]
     \centering
     \includegraphics[width = 1\textwidth]{images/pipeline2.png}
     \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
     \label{fig:pipeline2}
 \end{figure}
+
+
+## Data Preprocessing
+
+The first step of most data analysis is cleaning up the data to be explored. There are multiple ways to collect the epidemiological data. Sometimes individual records with times of different states of the epidemic (infection, recovery, etc.) as well as individual information like network structure, location, and-sub population information will be collected, whereas other data collections will focus population/sub-population counts of individuals in each epidemic state\footnote{\@Shannon include citations}. We focus on understanding the overall impact on the population/sub-populations we provide a function to transform information about each agent’s start time of each state (e.g. start of infection, etc). This transformation between from agent information to aggregate information is very useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools aim to allow the user to easily group agents and define new subpopulations to explore. This is important as many case studies have highlighted the usefulness to identify differing subpopulations\footnote{\@Shannon cite} and many state based models provide for subpopulation based states in their analysis\footnote{\@Shannon cite}. 
+
+We provide a "tidyverse"-styled function, `agents_to_aggregate` to transform agent information into aggregate state information,  As a "tidy" function, our function `agents_to_aggregate` allows the user to identify any subpopulations by first doing `group_by` from `dplyr`, and also allows for infinite epidemic states - which can be for models with assumptions of sub population based states (e.g. youth infections), as well as indicators for death and birth dates. Our function, `agents_to_aggregate` allows for states to be skipped - captured with `NA` values and multiple starts of a state - (e.g. multiple infections) as long as the original data is stored in columns that are constrained to ordering ideas\footnote{make this more clear?}. Currently this function is constrained to integer time steps (for example days), but transformations (linear or otherwise) of the time columns can make the time steps more (or less) . `agents_to_aggregate` then returns a standardized count for each state for each time point.  We see `agents_to_aggregate` as a really powerful tool, but also very useful to quickly transform agents information to be used in aggregate state-based models and compare state-based models to observed data.
+
+## EDA
+
+With raw data, getting to know our data now-a-days very frequently means figuring out good combinations of visualizations, numerical summaries and subsetting. An expert coder can start from `agents_to_aggregate` to successfully do this in many ways, but we’ve also developed tools to rapidly explore your data if your have a 3 unique states models (like the SIR model). Our `geom_aggregate` provides a rapid way to explore different subpopulations experience of the epidemic, and combines the ideas behind agents_to_aggregate for the SIR case, with `geom_path` and `coord_term` to visualize any number of groups epidemic trajectory in 3d simplex space using `ggplot2` and `ggtern` \citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models were developed because (1) SIR models are the most common and basic state-based models\footnote{\@Shannon: cite} and (2) our simplex representation of these epidemics emphasizes a "time-invarance" representation of the data (for a refresher see Section \ref{sec:time-invariant}).
+
+## Model Fitting and Simulations
+
+Although this package does not focus on estimating a model for the data, we do provide some power functions for simulation of basic state models with Bernoulli approximation of ODE state models encoded in simulate_agents and simulate_SIR_agents (which can naturally be combined with agents_to_aggregate ).  **Description of these models, reference to Shannon R0 paper, etc...** 
+
+## Post-processing
+
+...
+
+## Comparions and Assessment
+
+...
 
 
 
