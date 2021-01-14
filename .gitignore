@@ -28,3 +28,7 @@ jss/jss-article-rnw/article.out
 jss/jss-article-rnw/article.aux
 *_cache/
 doc
+.tex
+.bbl
+.log
+.blg
