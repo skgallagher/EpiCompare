@@ -1,6 +1,3 @@
-% To remove when JSS.cls is fixed
-% https://github.com/rstudio/rticles/issues/329
-\RequirePackage[2020/02/02]{latexrelease}
 \documentclass[
   shortnames]{jss}
 
@@ -12,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -49,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -337,14 +332,126 @@ to cover each other, and is defined mathematically as \[
 d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
+\section[Package overview]{Package tool overview}\label{sec:overview}
+
+\textcolor{violet}{**The goals of this section is to present parts of the data science pipeline, introduce how we help, why they are useful and the ideas behind it.**}
+
+In this section we will present the tools in this package and how they
+aid in the data analysis pipeline. We present a modification of Figure
+\ref{fig:pipeline} from the Section \ref{sec:intro} with Figure
+\ref{fig:pipeline2} with uses of our package. We recommend the package
+user keep this image around as a reference. All user functions are aimed
+to be as friendly as possible, and we focus on providing the user
+``tidyverse'' style functions, that encourage piping and also follow
+clear verb naming schemes \citep{Wickham2019}. There are 2 different
+ways \pkg{EpiCompare} can be incorporated in the data analysis pipeline
+for epidemics, either at the very beginning when pre-processing data and
+visualizing raw data, or after modeling has been done and a generative
+model is fit. Figure \ref{fig:pipeline2} captures these different paths,
+and we will highlight both approaches and how to leverage
+\pkg{EpiCompare} in the subsections below.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width = 1\textwidth]{images/pipeline2.png}
+    \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
+    \label{fig:pipeline2}
+\end{figure}
+
+\hypertarget{data-preprocessing}{%
+\subsection{Data Preprocessing}\label{data-preprocessing}}
+
+The first step of most data analysis is cleaning up the data to be
+explored. There are multiple ways to collect the epidemiological data.
+Sometimes individual records with times of different states of the
+epidemic (infection, recovery, etc.) as well as individual information
+like network structure, location, and-sub population information will be
+collected, whereas other data collections will focus
+population/sub-population counts of individuals in each epidemic
+state\footnote{\@Shannon include citations}. We focus on understanding
+the overall impact on the population/sub-populations we provide a
+function to transform information about each agent's start time of each
+state (e.g.~start of infection, etc). This transformation between from
+agent information to aggregate information is very useful for seeing the
+overall trend of the epidemic (and how it impacts different
+subpopulations). Our tools aim to allow the user to easily group agents
+and define new subpopulations to explore. This is important as many case
+studies have highlighted the usefulness to identify differing
+subpopulations\footnote{\@Shannon cite} and many state based models
+provide for subpopulation based states in their
+analysis\footnote{\@Shannon cite}.
+
+We provide a ``tidyverse''-styled function,
+\texttt{agents\_to\_aggregate} to transform agent information into
+aggregate state information, As a ``tidy'' function, our function
+\texttt{agents\_to\_aggregate} allows the user to identify any
+subpopulations by first doing \texttt{group\_by} from \texttt{dplyr},
+and also allows for infinite epidemic states - which can be for models
+with assumptions of sub population based states (e.g.~youth infections),
+as well as indicators for death and birth dates. Our function,
+\texttt{agents\_to\_aggregate} allows for states to be skipped -
+captured with \texttt{NA} values and multiple starts of a state -
+(e.g.~multiple infections) as long as the original data is stored in
+columns that are constrained to ordering
+ideas\footnote{make this more clear?}. Currently this function is
+constrained to integer time steps (for example days), but
+transformations (linear or otherwise) of the time columns can make the
+time steps more (or less) . \texttt{agents\_to\_aggregate} then returns
+a standardized count for each state for each time point. We see
+\texttt{agents\_to\_aggregate} as a really powerful tool, but also very
+useful to quickly transform agents information to be used in aggregate
+state-based models and compare state-based models to observed data.
+
+\hypertarget{eda}{%
+\subsection{EDA}\label{eda}}
+
+With raw data, getting to know our data now-a-days very frequently means
+figuring out good combinations of visualizations, numerical summaries
+and subsetting. An expert coder can start from
+\texttt{agents\_to\_aggregate} to successfully do this in many ways, but
+we've also developed tools to rapidly explore your data if your have a 3
+unique states models (like the SIR model). Our \texttt{geom\_aggregate}
+provides a rapid way to explore different subpopulations experience of
+the epidemic, and combines the ideas behind agents\_to\_aggregate for
+the SIR case, with \texttt{geom\_path} and \texttt{coord\_term} to
+visualize any number of groups epidemic trajectory in 3d simplex space
+using \texttt{ggplot2} and \texttt{ggtern}
+\citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models
+were developed because (1) SIR models are the most common and basic
+state-based models\footnote{\@Shannon: cite} and (2) our simplex
+representation of these epidemics emphasizes a ``time-invarance''
+representation of the data (for a refresher see Section
+\ref{sec:time-invariant}).
+
+\hypertarget{model-fitting-and-simulations}{%
+\subsection{Model Fitting and
+Simulations}\label{model-fitting-and-simulations}}
+
+Although this package does not focus on estimating a model for the data,
+we do provide some power functions for simulation of basic state models
+with Bernoulli approximation of ODE state models encoded in
+simulate\_agents and simulate\_SIR\_agents (which can naturally be
+combined with agents\_to\_aggregate ). \textbf{Description of these
+models, reference to Shannon R0 paper, etc\ldots{}}
+
+\hypertarget{post-processing}{%
+\subsection{Post-processing}\label{post-processing}}
+
+\ldots{}
+
+\hypertarget{comparions-and-assessment}{%
+\subsection{Comparions and Assessment}\label{comparions-and-assessment}}
+
+\ldots{}
+
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
 In this section, we highlight a number of the functionalities available
 in \kg{EpiCompare}. These functionalities include data cleaning,
 visualization, simulation, and comparison, in accordance with the data
-analysis pipeline REF\ref{}. We show a full data analysis from beginning
-to end that can be accomplished in a streamlined and standardized
-manner.
+analysis pipeline \ref{fig:pipeline}. We show a full data analysis from
+beginning to end that can be accomplished in a streamlined and
+standardized manner.
 
 \subsection{Data and exploratory analysis}
 
@@ -764,15 +871,16 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \end{CodeChunk}
 
-\section[Package overview]{Package tool overview}\label{sec:overview}
+\hypertarget{helpful-rmd-tricks}{%
+\section{Helpful Rmd tricks}\label{helpful-rmd-tricks}}
 
 \hypertarget{rmd-code-formatting-info}{%
 \subsection{RMD Code formatting info}\label{rmd-code-formatting-info}}
@@ -817,3 +925,4 @@ R> x
 
 
 \end{document}
+
