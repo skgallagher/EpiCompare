@@ -74,6 +74,7 @@ Pittsburgh, PA 15213\\
 \usepackage{wrapfig}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{rotating}
 
 \usepackage{amsmath} \usepackage{amsthm}
 
@@ -346,118 +347,166 @@ Hausdorff distance is defined mathematically as \[
 d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y),\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
-\section[Package overview]{Package tool overview}\label{sec:overview}
+\section[Package overview]{Overview of
+\pkg{EpiCompare}}\label{sec:overview}
 
 \textcolor{violet}{**The goals of this section is to present parts of the data science pipeline, introduce how we help, why they are useful and the ideas behind it.**}
 
-In this section we will present the tools in this package and how they
-aid in the data analysis pipeline. We present a modification of Figure
-\ref{fig:pipeline} from the Section \ref{sec:intro} with Figure
-\ref{fig:pipeline2} with uses of our package. We recommend the package
-user keep this image around as a reference. All user functions are aimed
-to be as friendly as possible, and we focus on providing the user
-``tidyverse'' style functions, that encourage piping and also follow
-clear verb naming schemes \citep{Wickham2019}. There are 2 different
-ways \pkg{EpiCompare} can be incorporated in the data analysis pipeline
-for epidemics, either at the very beginning when pre-processing data and
-visualizing raw data, or after modeling has been done and a generative
-model is fit. Figure \ref{fig:pipeline2} captures these different paths,
-and we will highlight both approaches and how to leverage
-\pkg{EpiCompare} in the subsections below.
+In this section, we present the tools implemented in \pkg{EpiCompare}
+and explain how they aid in the data analysis pipeline. In Fig.
+\ref{fig:pipeline2}, we illustrate how our package fits into the data
+analysis pipeline introduced in Fig. \ref{fig:pipeline}. All
+front-facing functions are aimed to be as user-friendly as possible, and
+we focus on providing the user ``tidyverse'' style functions, that
+encourage piping and also follow clear verb naming schemes
+\citep{Wickham2019}. Although users can typically incorporate
+\pkg{EpiCompare} into any step in the data analysis process, there are
+two primary points of entry. The first point of entry is the very
+beginning with pre-processing and visualizing raw data, and the second
+point of entry is after modeling and simulation. Figure
+\ref{fig:pipeline2} captures these different paths, and we will
+highlight both approaches and how to leverage \pkg{EpiCompare} in the
+subsections below.
 
-\begin{figure}[!ht]
+\begin{sidewaysfigure}[!ht]
     \centering
-    \includegraphics[width = 1\textwidth]{images/pipeline2.png}
+    \includegraphics[width = 1\textwidth]{images/pipeline2_v2.pdf}
     \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
     \label{fig:pipeline2}
-\end{figure}
+\end{sidewaysfigure}
 
-\hypertarget{data-preprocessing}{%
-\subsection{Data Preprocessing}\label{data-preprocessing}}
+\textbf{Data Pre-processing}
 
 The first step of most data analysis is cleaning up the data to be
 explored. There are multiple ways to collect the epidemiological data.
 Sometimes individual records with times of different states of the
 epidemic (infection, recovery, etc.) as well as individual information
 like network structure, location, and sub-population information will be
-collected, whereas other data collections will focus aggregate counts of
-individuals in each epidemic state. In fact, usually only the number of
-new infections at each time step is observed and the compartment totals
-are then imputed from that along with other information about the
+collected, whereas other data collections will focus on aggregate counts
+of individuals in each epidemic state. In fact, usually only the number
+of new infections at each time step is observed and the compartment
+totals are then imputed from that along with other information about the
 disease and the population of interest. We focus on understanding the
-overall impact of an outbreak at the aggregate/population level. We
-provide a function to transform information about each
-individual/agent's start time of each state (e.g.~start of infection,
-etc). This transformation between agent information to aggregate
-information is useful for seeing the overall trend of the epidemic (and
-how it impacts different subpopulations). Our tools aim to allow the
-user to easily group agents and define new subpopulations to explore.
-This is important as case studies highlight the usefulness of
-identifying differing subpopulations (e.g.~age, sex) and many state
-based models provide for subpopulation-based states in their analysis
+overall impact of an outbreak at the aggregate/population level. In
+\pkg{EpiCompare}, we provide a function to transform information about
+each individual/agent's initial time of entry into each state
+(e.g.~start of infection, start of recovery, etc). This transformation
+between \textit{agent} information to \textit{aggregate} information is
+useful for seeing the overall trend of the epidemic (and how it impacts
+different subpopulations). Our tools allow the user to easily group
+agents and define new subpopulations to explore. This is important as
+case studies highlight the usefulness of identifying differing
+subpopulations (e.g.~age, sex) and many state based models provide for
+subpopulation-based states in their analysis
 \citep{rvachev1985,anderson1992,worby2015}.
 
 We provide a ``tidyverse''-styled function,
-\texttt{agents\_to\_aggregate} to transform agent information into
-aggregate state information, As a ``tidy'' function, our function
-\texttt{agents\_to\_aggregate} allows the user to identify any
-subpopulations by first doing \texttt{group\_by} from \texttt{dplyr},
-and also allows for infinite epidemic states - which can be for models
-with assumptions of sub population based states (e.g.~youth infections),
-as well as indicators for death and birth dates. Our function,
-\texttt{agents\_to\_aggregate} allows for states to be skipped -
-captured with \texttt{NA} values and multiple starts of a state -
-(e.g.~multiple infections) as long as the original data is stored in
-columns that are constrained to ordering
-ideas\footnote{make this more clear?}. Currently this function is
-constrained to integer time steps (for example days), but
-transformations (linear or otherwise) of the time columns can make the
-time steps more (or less) . \texttt{agents\_to\_aggregate} then returns
-a standardized count for each state for each time point. We see
-\texttt{agents\_to\_aggregate} as a really powerful tool, but also very
-useful to quickly transform agents information to be used in aggregate
-state-based models and compare state-based models to observed data.
+\texttt{agents\_to\_aggregate()} to transform agent information into
+aggregate state information. As a ``tidy'' function, our function
+\texttt{agents\_to\_aggregate()} allows the user to identify and analyze
+subpopulations by first executing a \texttt{group\_by()} from
+\pkg{dplyr}. The function \texttt{agents\_to\_aggregate} is flexible in
+that there is no limit on the amount of permitted epidemiological states
+so users can incorporate information from compartments such as
+``Exposed'', ``iMmune'', or ``Hospitalized'' groups, for instance, and
+also permits indicators for death/exit and birth/entry dates. Our
+function, \texttt{agents\_to\_aggregate()} does not require agents to
+pass through every state listed and agents are allowed to start in any
+state. This function is constrained to integer time steps (for example
+days), but transformations (linear or otherwise) of the time columns can
+account for finer grained time steps (e.g.~hours or minutes). The
+function \texttt{agents\_to\_aggregate()} returns the total number of
+individuals in each state at each time point. We view
+\texttt{agents\_to\_aggregate()} as powerful tool in the step of
+pre-processing data, one that quickly and simply transforms individual
+level information into an aggregate view that can be processed and
+analyzed in a simpler manner.
 
-\hypertarget{eda}{%
-\subsection{EDA}\label{eda}}
+\textbf{EDA}
 
-With raw data, getting to know our data now-a-days very frequently means
-figuring out good combinations of visualizations, numerical summaries
-and subsetting. An expert coder can start from
-\texttt{agents\_to\_aggregate} to successfully do this in many ways, but
-we've also developed tools to rapidly explore your data if your have a 3
-unique states models (like the SIR model). Our \texttt{geom\_aggregate}
-provides a rapid way to explore different subpopulations experience of
-the epidemic, and combines the ideas behind agents\_to\_aggregate for
-the SIR case, with \texttt{geom\_path} and \texttt{coord\_term} to
-visualize any number of groups epidemic trajectory in 3d simplex space
-using \texttt{ggplot2} and \texttt{ggtern}
-\citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models
-were developed because (1) SIR models are some of the most common and
-basic epidemic state-based models and (2) our simplex representation of
-these epidemics emphasizes a ``time-invarance'' representation of the
-data (for a refresher see Section \ref{sec:time-invariant}).
+With raw data, exploratory analysis frequently means figuring out good
+combinations of visualizations, numerical summaries, and groupings. An
+expert coder can start from \texttt{agents\_to\_aggregate()} to
+successfully accomplish EDA in many ways, but we have also developed
+tools to allow a novice coder to rapidly explore data, as long as there
+three unique epidemiological states (like the SIR model). Our
+\texttt{geom\_aggregate()} provides a rapid way to explore different
+subpopulations' experiences of the epidemic in the ternary lens. It
+combines the ideas behind \texttt{agents\_to\_aggregate()} with
+\pkg{ggplot2}'s \texttt{geom\_path()} and \pkg{ggtern}'s
+\texttt{coord\_tern()} to visualize any number of groups epidemic
+trajectory in 3d simplex \citep{Wickham2016, Hamilton2018}. We developed
+these out-of-the-box visualization tools for SIR models because (1) SIR
+models are some of the most common and basic epidemic state-based models
+and (2) our simplex representation of these epidemics emphasizes a
+``time-invarance'' representation of the data (see Section
+\ref{sec:time-invariant}).
 
-\hypertarget{model-fitting-and-simulations}{%
-\subsection{Model Fitting and
-Simulations}\label{model-fitting-and-simulations}}
+\textbf{Model Fitting and Simulations}
 
 Although this package does not focus on estimating a model for the data,
-we do provide some power functions for simulation of basic state models
-with Bernoulli approximation of ODE state models encoded in
-simulate\_agents and simulate\_SIR\_agents (which can naturally be
-combined with agents\_to\_aggregate ). \textbf{Description of these
-models, reference to Shannon R0 paper, etc\ldots{}}
+we do provide some flexible functions for simulation of basic
+discrete-time epidemic-state models with Bernoulli/Multinomial
+transitions which can be used to (noisily) approximate ODEs which
+describe transitions from one state to the next. These functions can be
+naturally combined with \texttt{agents\_to\_aggregate()} to proceed in
+the pipeline. The function \texttt{simulate\_SIR\_agents()} simulates an
+SIR epidemic with user inputs for the number of simulations, the initial
+number in each state, the infection and recovery parameters
+\((\beta, \gamma\)), and the total number of discrete time steps. This
+function allows for easy access to SIR model analysis and comparison.
+Beyond SIR models, the function \texttt{simulate\_agents()} takes as
+input a user-specified transition matrix and other epidemic parameters
+to allow the user to create simulations of an outbreak for \textit{any}
+number of states and any number of transitions among them. This allows
+for users to explore the space of models in an intuitive way without
+getting bogged down by too much mathematical detail. For consistency, we
+have made output from \texttt{simulate\_agents()} and
+\texttt{simulate\_SIR\_agents()} compatible with
+\texttt{agents\_to\_aggregate()} so aggregate information may easily be
+accessed.
 
-\hypertarget{post-processing}{%
-\subsection{Post-processing}\label{post-processing}}
+\textbf{Post-processing}
 
-\ldots{}
+Post-processing of modeling and simulation consists of making summary
+statistics, plots, tables, and other ways to disseminate information to
+the public. For example, comma separated value files (\texttt{.csv}) are
+a standard way to share information within tables. However, model output
+is often far more complicated than what a traditional \texttt{.csv}
+would allow. As a result, a number of epidemic modeling packages return
+a special class, specific to their modeling. The special classes often
+contain a plethora of information from residuals, model diagnostics,
+input parameters, and more. While incredibly useful, these special
+classes can be difficult for novice coders to navigate.
 
-\hypertarget{comparions-and-assessment}{%
-\subsection{Comparions and Assessment}\label{comparions-and-assessment}}
+To this end, we have adapted a series of \texttt{fortify}-style
+functions, called \texttt{fortify\_aggregate()} which transform output
+from packages like \pkg{pomp} and \pkg{EpiModel} into tidy-styled data
+frames which contain information about the total number of individuals
+in each state at a given time, for a given simulation. These fortify
+functions have output that is consistent with that of
+\texttt{agents\_to\_aggregate()}.
 
-\ldots{}
+\textbf{Comparisons and Assessment}
+
+Comparison and assessment of model fit or comparisons of one model to
+another model can be performed in a variety of ways including mean
+square error, AIC, plots, and more. Perhaps the most useful tool
+\pkg{EpiCompare} has to offer to the expert, for comparison and
+assessment of models, is in its post-processing tools which create a
+standard output. It is then a matter of writing a script or function
+made for that standard output to assess the results from multiple models
+in the way the user desires.
+
+However, for those who like more concrete tools, \pkg{EpiCompare} offers
+functions to compare prediction regions to one another including
+\texttt{geom\_prediction\_band()} (which plots the region), and
+\texttt{create\_\{convex\_hull,delta\_ball\}\_structure()}(which returns
+the \texttt{R} output for the given structure), and \texttt{contained()}
+(which allows the user to determine if one set of points is contained in
+a prediction band). Additionally, we offer ways to determine if model
+outputs are compatible with one another, that is how extreme one output
+is to another. \textcolor{orange}{Ben says something about distance}
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
