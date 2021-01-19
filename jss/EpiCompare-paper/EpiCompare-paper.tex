@@ -197,11 +197,11 @@ when a primary infection is introduced to a susceptible population.
 numerical summary of an epidemic, which allows epidemics to be compared
 to one another in both different time and geographic scales. For
 example, \(R_0\) for Covid-19 is estimated to be between 2-3, seasonal
-influenza between 1.2-2, and modern measles outbreaks as big as 12
+influenza between 1.2-2, and modern measles outbreaks as large as 12
 \citep{midas2020,biggerstaff2014,namee2018}.
 
-Estimator(s) for \(R_0\) are dependent on the epidemic modeling
-framework, which consists of which states an individual can occupy
+Estimators for \(R_0\) are dependent on the epidemic modeling framework,
+which consists of which states an individual can occupy
 (e.g.~susceptible, infectious, recovered) and a description of how
 individuals move from one state to the next over time (see
 \cite{hethcote1994}). A common epidemic modeling framework is the SIR
@@ -223,8 +223,8 @@ epidemic to another. For example, consider the scenarios where the first
 epidemic is generated from a SIR model with \((S(0) = 990, I(0) = 10)\),
 \(\beta_1 = 0.3\) and \(\gamma_1 = 0.15\), and the second epidemic is
 generated from a SIR model with \((S(0) = 990, I(0) = 10)\),
-\(\beta_2 = 0.24\) and \(\gamma_1 = 0.12\) over 40 days. Both epidemics
-have the same value of
+\(\beta_2 = 0.24\) and \(\gamma_1 = 0.12\) over the first 15 days. Both
+epidemics have the same value of
 \(R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2\). The epidemic
 trajectories are shown in the \(state\) vs.~time plots in Figure
 \ref{fig:different-scales-standard}. At a glance, we may assume that
@@ -248,12 +248,13 @@ However, when we plot the trajectories as a single curve using the
 ternary plot in the time-invariant view, we immediately see a different
 story. In this time-invariant view in Fig.
 \ref{fig:different-scales-tern}, the points seem to overlap and form the
-same trajectory. In other words, we can see there is something
-fundamentally linking these two different epidemics, and this
-fundamental link turns out to be \(R_0\).
+same trajectory. Now it seems to be that Model 2 is following the same
+trajectory as Model 1 but is not as far along in the infection process.
+We can see there is something fundamentally linking these two different
+epidemics, and this fundamental link turns out to be \(R_0\).
 
-More formally, let two Kermack and McKendrick (see Eq.\eqref{eq:sir-ode}
-) SIR models be denoted \((S_1(t), I_1(t), R_1(t))\) and
+More formally, let two Kermack and McKendrick SIR models(see
+Eq.\eqref{eq:sir-ode} ) be denoted \((S_1(t), I_1(t), R_1(t))\) and
 \((S_2(t), I_2(t), R_2(t))\), respectively, for \(t > 0\). Assume both
 models have initial values \((S(0), I(0), R(0))\). Let
 \(R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}\) where
@@ -263,7 +264,7 @@ rate, respectively, for SIR model \(i=1, 2\). Equivalently,
 some \(a > 0\).
 
 \begin{theorem}\label{thm:sir-scale}
-Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
+Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
 The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent
@@ -305,39 +306,44 @@ plots to compare the spread of a disease for groups within a population
 without time as a confounding factor. We show an example of this in a
 later section.
 
-But time-invariant analysis is also useful for epidemic models with more
-than three states. The constraints in three dimensions that are met with
-the SIR model (there are three epidemic states and for each time step,
-the sum of total number of individuals in each state is the population
-size at that time\$) actually represents a space of 3d simplices, and
-the ternary plot specifically represents these simplices, after scaling
-to examine such values as proportions between 0 and 1 (ternary plots are
-known as a 3d unit simplex due to it's scaling). This same scaling for
-larger models (i.e.~with more states) can be done onto different
-simplexes. In this package we present tools to help compare models
-(mostly through simulations). s tool compares these objects after
-projecting them into a one-dimension-fewer space through the simplexical
-structure of the data.
+Moreover, time-invariant analysis is also useful for epidemic models
+with more than three epidemic states. The constraints in three
+dimensions that are met with the SIR model (there are three epidemic
+states and for each time step, the sum of total number of individuals in
+each state is the population size at that time) represents a space of 3d
+simplices, and the ternary plot specifically represents these simplices,
+after scaling the values in each state as proportions of the total
+population at that time (ternary plots are known as a 3d unit simplex
+due to it's scaling). This same scaling for larger models (i.e.~with
+more states) can be done onto different simplexes. In this package we
+present tools to help compare models (mostly through simulations).
+\pkg{EpiCompare}'s tools permits comparisons of \(d\)-dimensional
+objects by projecting them into (\(d-1\))-dimensional space.
 
-In \pkg{EpiCompare} we allow for the comparison epidemics in these
-higher dimensional spaces by first projecting onto these simplexes. Even
-though higher dimensional models may not be able to visualized, we
-provide multiple tools to aid in the comparison of models and epidemics.
-The first of which uses multiple simulations under specific model
-parameters to assess the bairabilty of the model fit. In
-\pkg{EpiCompare} we provide ways to create prediction regions for a true
-epidemic under the model assumptions using these simulations. These
-regions require representing multi-dimensional structures for functions
-to completely contain epidemics, and treat these simulations and
-epidmeics as filamental objects. We extend off of papers like
-\citet{Dalmasso2019a} to create these bands. These high dimensional
-bands allow the user to assess if the true epidemic is within the band
-(there-by assessing the model's representation of the epidemic), and
-also compare who different models are from each other through distances
-that compare sets. We recommend using the Hausdorff distance to compare
-such sets as it captures how much bigger the sets would have to expand
-to cover each other, and is defined mathematically as \[
-d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
+Even though higher dimensional models may not be able to visualized
+simply, we provide a number of tools to aid in the comparison of models
+and epidemics. The first of which uses multiple simulations under
+specific model parameters to assess the \textcolor{orange}{variability?}
+bairabilty of the model fit. In \pkg{EpiCompare}, we provide ways to
+create prediction regions for a `true' epidemic under a fully specified
+model. These regions require representing multi-dimensional structures
+for functions to completely contain epidemics. \pkg{EpiCompare} treats
+these simulations and epidemics as \textit{filamental} objects --
+\textcolor{orange}{need a description for filamental, Ben feel free to change}
+where not only the outbreak trajectory points are important but also
+their form which can be considered a function.
+\textcolor{orange}{could be useful to have a picture/example here? like  three curves and 2 metrics one where closer under a pointwise distance and the other closer in filamental distance? I'll sketch up an idea unless you have something in your proposal already}
+
+We extend off of papers like \citet{Dalmasso2019a} to create these
+bands. These high dimensional bands allow the user to assess if the true
+epidemic is within the band (thereby assessing the model's
+representation of the epidemic). With these bands, we can compare
+\textit{models} to \textit{models} by assessing the distance between the
+two bands of model representation. We recommend using the Hausdorff
+distance to compare two bands to one another, as this distance captures
+how much bigger the sets would have to expand to cover each other. The
+Hausdorff distance is defined mathematically as \[
+d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y),\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
 \section[Package overview]{Package tool overview}\label{sec:overview}
