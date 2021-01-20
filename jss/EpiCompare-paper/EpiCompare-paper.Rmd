@@ -36,6 +36,7 @@ keywords:
   plain:     [keywords, not capitalized, Java]
 preamble: >
   \usepackage{amsmath}
+  \usepackage{amsthm}
 output: 
   rticles::jss_article:
     number_sections: TRUE     #added argument option 
@@ -116,9 +117,9 @@ Time-invariant analysis, as it appears in \pkg{EpiCompare} solves the above issu
 
 ## $R_0$  and time-invariant analysis {short-title="r0" #r0}
 
- By definition, $R_0$ is the number of expected secondary infections when a primary infection is introduced to a susceptible population.  $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, which allows epidemics to be compared to one another in both different time and geographic scales. For example, $R_0$ for Covid-19 is estimated to be between 2-3, seasonal influenza between 1.2-2, and modern measles outbreaks between 5-6 \citep{midas2020,biggerstaff2014,namee2018}.
+ By definition, $R_0$ is the number of expected secondary infections when a primary infection is introduced to a susceptible population.  $R_0$ is also, maybe, the most famous \textit{time-invariant} numerical summary of an epidemic, which allows epidemics to be compared to one another in both different time and geographic scales. For example, $R_0$ for Covid-19 is estimated to be between 2-3, seasonal influenza between 1.2-2, and modern measles outbreaks as large as 12 \citep{midas2020,biggerstaff2014,namee2018}.
 
-Estimator(s) for $R_0$ are dependent on the epidemic modeling framework, which consists of which states an individual can occupy (e.g. susceptible, infectious, recovered) and a description of how individuals move from one state to the next over time (see \cite{hethcote1994}).  A common epidemic modeling framework is the SIR model, originally introduced by @kermack1927.  Transitions from one state to the next are defined by a series of ordinary differential equations, where $N$ is the (fixed) total number individuals, $\beta$ is the rate of infection, and $\gamma$ is rate of recovery,
+Estimators for $R_0$ are dependent on the epidemic modeling framework, which consists of which states an individual can occupy (e.g. susceptible, infectious, recovered) and a description of how individuals move from one state to the next over time (see \cite{hethcote1994}).  A common epidemic modeling framework is the SIR model, originally introduced by @kermack1927.  Transitions from one state to the next are defined by a series of ordinary differential equations, where $N$ is the (fixed) total number individuals, $\beta$ is the rate of infection, and $\gamma$ is rate of recovery,
 \begin{align}\label{eq:sir-ode}
       S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
       I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
@@ -127,7 +128,7 @@ Estimator(s) for $R_0$ are dependent on the epidemic modeling framework, which c
 From this, $\hat{R}_0 = \frac{\hat{\beta}}{\hat{\gamma}}$, the ratio of the estimated infection rate compared to the estimated recovery rate.
 
 
-With regards to traditional epidemic $state$ vs. $time$ plots, $R_0$ is difficult to visualize, especially with respect from one epidemic to another. For example, consider the scenarios where the first epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_1 = 0.3$ and $\gamma_1 = 0.15$, and the second epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_2 = 0.24$ and $\gamma_1 = 0.12$ over 40 days.  Both epidemics have the same value of $R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2$.  The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:sir-ex}.  At a glance, we may assume that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may think Model 2 has a larger $R_0$ because it has a slightly larger peak of infection than Model 1.
+With regards to traditional epidemic $state$ vs. $time$ plots, $R_0$ is difficult to visualize, especially with respect from one epidemic to another. For example, consider the scenarios where the first epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_1 = 0.3$ and $\gamma_1 = 0.15$, and the second epidemic is generated from a SIR model with $(S(0) = 990, I(0) = 10)$, $\beta_2 = 0.24$ and $\gamma_1 = 0.12$ over the first 15 days.  Both epidemics have the same value of $R_0 = \beta_1/ \gamma_1 = \beta_2 / \gamma_2 = 2$.  The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:different-scales-standard}.  At a glance, we may assume that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may think Model 2 has a larger $R_0$ because we may think the number of infections in that model has not yet peaked at time 15.
 
 
 ```{r echo = FALSE}
@@ -186,15 +187,15 @@ ggplot(data = df_long,
        title = latex2exp::TeX("Comparing two epidemics over first 15 days with same $R_0$")) +
   coord_cartesian(xlim = c(0, 15))
 ```
-However, when we plot the trajectories as a single curve using the ternary plot in the time-invariant view, we immediately see a different story.  In this time-invariant view in Fig. \ref{fig:ternary-ex}, the points seem to overlap and form the same trajectory.  In other words, we can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
+However, when we plot the trajectories as a single curve using the ternary plot in the time-invariant view, we immediately see a different story.  In this time-invariant view in Fig. \ref{fig:different-scales-tern}, the points seem to overlap and form the same trajectory.  Now it seems to be that Model 2 is following the same trajectory as Model 1 but is not as far along in the infection process.  We can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
 
-More formally, let two Kermack and McKendrick (see Eq. \eqref{eq:sir-ode}) SIR models be denoted $(S_1(t), I_1(t), R_1(t))$ and $(S_2(t), I_2(t), R_2(t))$, respectively, for $t > 0$. Assume both models have initial values $(S(0), I(0), R(0))$.  Let $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$.  Equivalently, $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$ for some $a > 0$. 
+More formally, let two Kermack and McKendrick  SIR models(see Eq.\eqref{eq:sir-ode} )  be denoted $(S_1(t), I_1(t), R_1(t))$ and $(S_2(t), I_2(t), R_2(t))$, respectively, for $t > 0$. Assume both models have initial values $(S(0), I(0), R(0))$.  Let $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$.  Equivalently, $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$ for some $a > 0$. 
 
 \begin{theorem}\label{thm:sir-scale}
-Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
+Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
-The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Appendix \ref{app:proof}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these two models in a ternary plot.  This means with our time-invariant ternary plot, that at a glance, we can tell if two epidemics have different values of $R_0$.
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Proof \ref{proof:thm}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model. Taking the sample simulations from Fig. \ref{fig:different-scales-standard}, Fig. \ref{fig:different-scales-tern} presents these two models in a ternary plot.  This means with our time-invariant ternary plot, that at a glance, we can tell if two epidemics have different values of $R_0$.
 
 
 ```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:different-scales-tern}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered."}
@@ -216,11 +217,13 @@ Although the result of Theorem \ref{thm:sir-scale} allows for easy visual compar
 
 
 
-But time-invariant analysis is also useful for epidemic models with more than three states. The constraints in three dimensions that are met with the SIR model (that is $\sum_{i=1}^3 (\text{number in state}(i)) = N(t)$) actually represents a space of 3d simplices, and the ternary plot specifically represents these simplices, after scaling to examine such values as proportions between 0 and 1 (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through simulations).  s tool compares these objects after projecting them into a one-dimension-fewer space through the simplexical structure of the data.
+Moreover, time-invariant analysis is also useful for epidemic models with more than three epidemic states. The constraints in three dimensions that are met with the SIR model (there are three epidemic states and for each time step, the sum of total number of individuals in each state is the population size at that time) represents a space of 3d simplices, and the ternary plot specifically represents these simplices, after scaling the values in each state as proportions of the total population at that time (ternary plots are known as a 3d unit simplex due to it's scaling). This same scaling for larger models (i.e. with more states) can be done onto different simplexes. In this package we present tools to help compare models (mostly through simulations).  \pkg{EpiCompare}'s tools permits comparisons of $d$-dimensional objects by projecting them into ($d-1$)-dimensional space.
 
-In \pkg{EpiCompare} we allow for the comparison epidemics in these higher dimensional spaces by first projecting onto these simplexes. Even though higher dimensional models may not be able to visualized, we provide multiple tools to aid in the comparison of models and epidemics. The first of which uses multiple simulations under specific model parameters to assess the bairabilty of the model fit. In \pkg{EpiCompare} we provide ways to create prediction regions for a true epidemic under the model assumptions using these simulations. These regions require representing multi-dimensional structures for functions to completely contain epidemics, and treat these simulations and epidmeics as filamental objects. We extend off of papers like \citet{Dalmasso2019a} to create these bands. These high dimensional bands allow the user to assess if the true epidemic is within the band (there-by assessing the model's representation of the epidemic), and also compare who different models are from each other through distances that compare sets. We recommend using the Hausdorff distance to compare such sets as it captures how much bigger the sets would have to expand to cover each other, and is defined mathematically as 
+ Even though higher dimensional models may not be able to visualized simply, we provide a number of tools to aid in the comparison of models and epidemics. The first of which uses multiple simulations under specific model parameters to assess the \shannon{variability?} bairabilty of the model fit. In \pkg{EpiCompare}, we provide ways to create prediction regions for a `true' epidemic under a fully specified model. These regions require representing multi-dimensional structures for functions to completely contain epidemics.  \pkg{EpiCompare} treats these simulations and epidemics as \textit{filamental} objects -- \shannon{need a description for filamental, Ben feel free to change} where not only the outbreak trajectory points are important but also their form which can be considered a function. \shannon{could be useful to have a picture/example here? like  three curves and 2 metrics one where closer under a pointwise distance and the other closer in filamental distance? I'll sketch up an idea unless you have something in your proposal already}
+ 
+ We extend off of papers like \citet{Dalmasso2019a} to create these bands. These high dimensional bands allow the user to assess if the true epidemic is within the band (thereby assessing the model's representation of the epidemic).  With these bands, we can compare \textit{models} to \textit{models} by assessing the distance between the two bands of model representation. We recommend using the Hausdorff distance to compare two bands to one another, as this distance captures how much bigger the sets would have to expand to cover each other.  The Hausdorff distance is defined mathematically as 
 \[
-d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y) \;,\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
+d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(x,y),\; \sup_{y \in S_2} \inf_{x \in S_1} d(x,y)\right\}\;.
 \]
 
 # Package tool overview {short-title="Package overview" #sec:overview}
@@ -239,13 +242,13 @@ In this section we will present the tools in this package and how they aid in th
 
 ## Data Preprocessing
 
-The first step of most data analysis is cleaning up the data to be explored. There are multiple ways to collect the epidemiological data. Sometimes individual records with times of different states of the epidemic (infection, recovery, etc.) as well as individual information like network structure, location, and-sub population information will be collected, whereas other data collections will focus population/sub-population counts of individuals in each epidemic state\footnote{\@Shannon include citations}. We focus on understanding the overall impact on the population/sub-populations we provide a function to transform information about each agent’s start time of each state (e.g. start of infection, etc). This transformation between from agent information to aggregate information is very useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools aim to allow the user to easily group agents and define new subpopulations to explore. This is important as many case studies have highlighted the usefulness to identify differing subpopulations\footnote{\@Shannon cite} and many state based models provide for subpopulation based states in their analysis\footnote{\@Shannon cite}. 
+The first step of most data analysis is cleaning up the data to be explored. There are multiple ways to collect the epidemiological data. Sometimes individual records with times of different states of the epidemic (infection, recovery, etc.) as well as individual information like network structure, location, and sub-population information will be collected, whereas other data collections will focus aggregate counts of individuals in each epidemic state.  In fact, usually only the number of new infections at each time step is observed and the compartment totals are then imputed from that along with other information about the disease and the population of interest.  We focus on understanding the overall impact of an outbreak at the aggregate/population level.  We provide a function to transform information about each individual/agent’s start time of each state (e.g. start of infection, etc). This transformation between agent information to aggregate information is useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools aim to allow the user to easily group agents and define new subpopulations to explore. This is important as case studies highlight the usefulness of identifying differing subpopulations (e.g. age, sex) and many state based models provide for subpopulation-based states in their analysis \citep{rvachev1985,anderson1992,worby2015}. 
 
 We provide a "tidyverse"-styled function, `agents_to_aggregate` to transform agent information into aggregate state information,  As a "tidy" function, our function `agents_to_aggregate` allows the user to identify any subpopulations by first doing `group_by` from `dplyr`, and also allows for infinite epidemic states - which can be for models with assumptions of sub population based states (e.g. youth infections), as well as indicators for death and birth dates. Our function, `agents_to_aggregate` allows for states to be skipped - captured with `NA` values and multiple starts of a state - (e.g. multiple infections) as long as the original data is stored in columns that are constrained to ordering ideas\footnote{make this more clear?}. Currently this function is constrained to integer time steps (for example days), but transformations (linear or otherwise) of the time columns can make the time steps more (or less) . `agents_to_aggregate` then returns a standardized count for each state for each time point.  We see `agents_to_aggregate` as a really powerful tool, but also very useful to quickly transform agents information to be used in aggregate state-based models and compare state-based models to observed data.
 
 ## EDA
 
-With raw data, getting to know our data now-a-days very frequently means figuring out good combinations of visualizations, numerical summaries and subsetting. An expert coder can start from `agents_to_aggregate` to successfully do this in many ways, but we’ve also developed tools to rapidly explore your data if your have a 3 unique states models (like the SIR model). Our `geom_aggregate` provides a rapid way to explore different subpopulations experience of the epidemic, and combines the ideas behind agents_to_aggregate for the SIR case, with `geom_path` and `coord_term` to visualize any number of groups epidemic trajectory in 3d simplex space using `ggplot2` and `ggtern` \citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models were developed because (1) SIR models are the most common and basic state-based models\footnote{\@Shannon: cite} and (2) our simplex representation of these epidemics emphasizes a "time-invarance" representation of the data (for a refresher see Section \ref{sec:time-invariant}).
+With raw data, getting to know our data now-a-days very frequently means figuring out good combinations of visualizations, numerical summaries and subsetting. An expert coder can start from `agents_to_aggregate` to successfully do this in many ways, but we’ve also developed tools to rapidly explore your data if your have a 3 unique states models (like the SIR model). Our `geom_aggregate` provides a rapid way to explore different subpopulations experience of the epidemic, and combines the ideas behind agents_to_aggregate for the SIR case, with `geom_path` and `coord_term` to visualize any number of groups epidemic trajectory in 3d simplex space using `ggplot2` and `ggtern` \citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models were developed because (1) SIR models are some of the most common and basic epidemic state-based models and (2) our simplex representation of these epidemics emphasizes a "time-invarance" representation of the data (for a refresher see Section \ref{sec:time-invariant}).
 
 ## Model Fitting and Simulations
 
@@ -383,7 +386,7 @@ Along with multiple epidemic states, the function \code{agents_to_aggregate} can
 
 Up to this point, we have used \pkg{EpiCompare} in the context of observed data.  We also want to compare statistical models, and \pkg{EpiCompare} aids in that process via a simple but dynamic individual-level data generator, conversion tools for popular epidemic model packages, and model assessments.  We demonstrate an example here.
 
-We first try to model the Hagelloch data with an SIR model (see Eq. \ref{eq:sir}).  In our vignette, we show how to fit a stochastic model via maximum likelihood and simulate from the model with those best fit parameters.  Our function \code{simulate_agents()} generates individual level data according to discrete multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example, the below code generates 100 simulations of an outbreak of a diseease with one initial infector in a population of $n= 188$ individuals.
+We first try to model the Hagelloch data with a stochastic SIR model, which we refer to as the 'simple SIR.'  In our vignette, we show how to fit this simple SIR model via maximum likelihood and simulate from the model with those best fit parameters.  Our function \code{simulate_agents()} generates individual level data according to discrete time multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example, the below code generates 100 simulations of an outbreak of a disease with one initial infector in a population of $n= 188$ individuals.
 
 
 ```{r}
@@ -420,7 +423,7 @@ agg_model <- agents %>% group_by(sim) %>%
   agents_to_aggregate(states = c(I, R)) %>%
   mutate(Type = "Simple SIR")
 ```
-The result of our simulation is the object \code{agents} which is a `r nrow(agents)` $\times$ `r ncol(agents)` which details the time of entry into the $S$, $I$, and $R$ states for a given simulation.  Before we examine the results of this simple SIR model, we will also examine another, more sophisticated SIR model, this time from the package \pkg{EpiModel}.  Briefly, this model first fits a contact network to the set of indivduals, where the class of the student is a covariate.  The model then simulates a SIR-epidemic on that network.
+The result of our simulation is the object \code{agents} which is a `r nrow(agents)` $\times$ `r ncol(agents)` data frame, which details the time of entry into the $S$, $I$, and $R$ states for a given simulation.  Before we examine the results of this simple SIR model, we will also examine another, more sophisticated SIR model, this time from the package \pkg{EpiModel}.  Briefly, this model first fits a contact network to the set of indivduals, where the class of the student is a covariate.  The model then simulates a SIR-epidemic on that network.
 
 ```{r cache = TRUE, results = 'hide'}
 library(EpiModel)
@@ -445,7 +448,7 @@ epimodel_sir <- netsim(est1, param, init, control)
 ```
 
 
-The output of this model is \code{epimodel_sir}, an object of class `r class(epimodel_sir)`, which contains a plethora of modeling information.  We provide the function \code{fortify_aggregate()}, which can take objects from specialized classes of modeling output and transform it into a tidy-style data frame.
+The output of this model is \code{epimodel_sir}, an object of class \code{`r class(epimodel_sir)`}, which contains a plethora of modeling information.  We provide the function \code{fortify_aggregate()}, which can take objects from specialized classes of modeling output and transform it into a tidy-style data frame.
 
 ```{r}
 fortified_net <- fortify_aggregate(epimodel_sir, 
@@ -606,32 +609,39 @@ rbind(simple_sir_info, eimodel_sir_info)  %>%
 
 
 
+# A. Appendix {-}
 
-# Helpful Rmd tricks
+## A.1 Proof of Theorem \ref{thm:sir-scale} {-}
 
-## RMD Code formatting info
+\begin{proof}\label{proof:thm}
+\cite{Harko2014} provide an analytical solution for the Kermack and McKendrick equations (Eq. \eqref{eq:sir-ode}) by reparameterizing the ODEs so that $\mathcal{S}(u) = S(t)$, $\mathcal{I}(u) = S(t)$, and $\mathcal{R}(u) = R(t)$ for $0< u_T < 1$ with
+\begin{align}\label{eq:harko-odes}
+\mathcal{S}(u) &= S(0)u\\
+\mathcal{I}(u) &= N - R(0) + NR_0^{-1}\log u - S(0)u \nonumber\\
+\mathcal{R}(u) &= R(0) - NR_0^{-1} \log u, \nonumber
+\end{align}
+and $u$ and t are related by the following integral,
+\begin{align*}
+    t &= \int_{u}^1 \frac{N}{\beta \tau (N - R(0) + R_{0}^{-1} \log \tau - S(0)\tau)}d\tau \\
+    &= \int_{u}^1 \frac{1}{\beta f(S(0), R(0), N, R_0, \tau)} d \tau\\
+    &= \int_{u}^1 \frac{1}{\beta f(\tau)} d\tau,
+\end{align*}
+where we have made the denominator of the integral a function of $N$, the initial values, $R_0$, and $\tau$, which we further condense to $f(\tau)$ for brevity.
+Then for a given $t$ we want to find $s$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Or equivalently, for a fixed $u$ want to find $v$ such that  $\mathcal{S}_1(u) = \mathcal{S}_2(v)$ and then the corresponding $t$ and $s$ are given by
+\begin{align*}
+    t & = \int_{u}^1 \frac{1}{\beta_1 f(\tau)} d\tau \\
+    s & = \int_{v}^1 \frac{1}{\beta_2 f(\tau)} d\tau.
+\end{align*}
+Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the initial values and $R_0$, then $u = v$. We then can find a relation for $s$,
+    \begin{align*}
+    s & = \int_{u}^1 \frac{1}{\beta_2 f(\tau)} d\tau  \\
+    & = \int_{u}^1 \frac{1}{a\beta_1 f(\tau)} d\tau \\ 
+    &= \frac{1}{a}\int_{u}^1 \frac{1}{\beta_1 f(\tau)} d\tau \\
+    &= \frac{1}{a}t.
+\end{align*}
+\end{proof}
 
-This is the Section \ref{sec:intro}. This template demonstrates some of the basic LaTeX that you need to know to create a JSS article.
 
-In general, don't use Markdown, but use the more precise LaTeX commands instead:
-
-* \proglang{Java}
-* \pkg{plyr}
-
-One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
-
-If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
-
-## RMD \proglang{R} code {short-title="R code" #r-code}
-
-Can be inserted in regular R markdown blocks.
-
-hags hags hags \cite{Neal2004}
-
-```{r}
-x <- 1:10
-x
-```
 
 
 
