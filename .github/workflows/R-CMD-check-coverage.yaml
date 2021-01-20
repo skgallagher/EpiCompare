@@ -47,6 +47,11 @@ jobs:
           # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev:
           sudo add-apt-repository ppa:cran/libgit2
           
+      - name: Brew Install gcc with fortran - for ggtern (1/2021)
+        if: runner.os == "macOS"
+        run: |
+          brew install gcc@5 
+          
       - name: Query dependencies 
         run: |
           install.packages('remotes')

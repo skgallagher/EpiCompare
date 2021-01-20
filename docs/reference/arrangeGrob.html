@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Takes in data from the R pomp package where the output is a data frame and
-puts it in SIR format for EpiCompare — fortify_aggregate.data.frame • EpiCompare</title>
+<title>Arrange multiple grobs on a page (<code>ggtern</code> and <code>ggplot2</code> compatible) — arrangeGrob • EpiCompare</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -47,10 +46,8 @@ puts it in SIR format for EpiCompare — fortify_aggregate.data.frame • EpiCom
 
 
 
-<meta property="og:title" content="Takes in data from the R pomp package where the output is a data frame and
-puts it in SIR format for EpiCompare — fortify_aggregate.data.frame" />
-<meta property="og:description" content="Takes in data from the R pomp package where the output is a data frame and
-puts it in SIR format for EpiCompare" />
+<meta property="og:title" content="Arrange multiple grobs on a page (<code>ggtern</code> and <code>ggplot2</code> compatible) — arrangeGrob" />
+<meta property="og:description" content="Arrange multiple grobs on a page (ggtern and ggplot2 compatible)" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -150,52 +147,114 @@ puts it in SIR format for EpiCompare" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Takes in data from the R pomp package where the output is a data frame and
-puts it in SIR format for EpiCompare</h1>
-    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/fortify-aggregate-data-frame.R'><code>R/fortify-aggregate-data-frame.R</code></a></small>
-    <div class="hidden name"><code>fortify_aggregate.data.frame.Rd</code></div>
+    <h1>Arrange multiple grobs on a page (<code>ggtern</code> and <code>ggplot2</code> compatible)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/skgallagher/EpiCompare/blob/master/R/aaa.R'><code>R/aaa.R</code></a></small>
+    <div class="hidden name"><code>arrangeGrob.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Takes in data from the R pomp package where the output is a data frame and
-puts it in SIR format for EpiCompare</p>
+    <p>Arrange multiple grobs on a page (<code>ggtern</code> and <code>ggplot2</code> compatible)</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='fortify_aggregate.html'>fortify_aggregate</a></span>(<span class='no'>data</span>, <span class='kw'>states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>package_source</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>arrangeGrob</span>(
+  <span class='no'>...</span>,
+  <span class='kw'>grobs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>...</span>),
+  <span class='no'>layout_matrix</span>,
+  <span class='kw'>vp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"arrange"</span>,
+  <span class='kw'>as.table</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>respect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>clip</span> <span class='kw'>=</span> <span class='st'>"off"</span>,
+  <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>widths</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>heights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>top</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>bottom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>left</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>right</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>padding</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>0.5</span>, <span class='st'>"line"</span>)
+)
+
+<span class='fu'>grid.arrange</span>(<span class='no'>...</span>, <span class='kw'>newpage</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>Output from a pomp simulation where the output is a data frame,
-<code><a href='https://rdrr.io/pkg/pomp/man/simulate.html'>pomp::simulate()</a></code></p></td>
+      <th>...</th>
+      <td><p>grobs, gtables, ggplot or trellis objects</p></td>
     </tr>
     <tr>
-      <th>states</th>
-      <td><p>vector of state names</p></td>
+      <th>grobs</th>
+      <td><p>list of grobs</p></td>
     </tr>
     <tr>
-      <th>package_source</th>
-      <td><p>optional package name</p></td>
+      <th>layout_matrix</th>
+      <td><p>optional layout</p></td>
+    </tr>
+    <tr>
+      <th>vp</th>
+      <td><p>viewport</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>as.table</th>
+      <td><p>logical: bottom-left to top-right (TRUE) or top-left to bottom-right (FALSE)</p></td>
+    </tr>
+    <tr>
+      <th>respect</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>clip</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>nrow</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>ncol</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>widths</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>heights</th>
+      <td><p>argument of gtable</p></td>
+    </tr>
+    <tr>
+      <th>top</th>
+      <td><p>optional string, or grob</p></td>
+    </tr>
+    <tr>
+      <th>bottom</th>
+      <td><p>optional string, or grob</p></td>
+    </tr>
+    <tr>
+      <th>left</th>
+      <td><p>optional string, or grob</p></td>
+    </tr>
+    <tr>
+      <th>right</th>
+      <td><p>optional string, or grob</p></td>
+    </tr>
+    <tr>
+      <th>padding</th>
+      <td><p>unit of length one, margin around annotations</p></td>
+    </tr>
+    <tr>
+      <th>newpage</th>
+      <td><p>open a new page</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>data frame with the following columns</p><dl'>
-<dt>t</dt><dd><p>the time</p></dd>
-<dt>sim</dt><dd><p>simulation number (factor variable) (optional column)</p></dd>
-<dt>Xk</dt><dd><p>where k = 0, ..., K</p></dd>
-
-</dl>
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The default variables that are retained are SIR, but can be modified
-  with the <code>states</code> argument.  If codestates = NULL, we will attempt
-  to find all single letter names in POMP and output those.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
