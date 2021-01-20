@@ -48,7 +48,7 @@ jobs:
           sudo add-apt-repository ppa:cran/libgit2
           
       - name: Brew Install gcc with fortran - for ggtern (1/2021)
-        if: runner.os == "macOS"
+        if: ${{matrix.config.os == 'macOS-latest'}}
         run: |
           brew install gcc@5 
           
