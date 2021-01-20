@@ -35,6 +35,9 @@
 #' }
 #' }
 #' @importFrom rlang .data
+#' 
+#' @useDynLib EpiCompare
+#' @importFrom Rcpp sourceCpp
 #'
 #' @docType package
 #' @name EpiCompare

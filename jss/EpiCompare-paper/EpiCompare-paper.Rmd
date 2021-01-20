@@ -643,5 +643,3 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 
-
-

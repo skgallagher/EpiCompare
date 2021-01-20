@@ -226,6 +226,20 @@ after December 15th, 2020.
     site on our own computers and then push - and will continue to do so
     due to complications with `reticulate` and `python` packages on the
     virtual machines in github actions.
+9.  We’ve speed up some of the interval functions with `Rcpp`. The setup
+    to use this functions was slightly complex, we drafted code using
+    `cppFunction('...')` and then needed to pipe them over to the
+    package setting. Approaches required (1) `usethis::use_rcpp()`, then
+    copying C++ code into `src/code.cpp` (needed to make sure we had
+    [`// [[Rcpp::export]]`](http://adv-r.had.co.nz/Rcpp.html#rcpp-sugar)
+    above each function. For make sure the functions would be compiled
+    and available we needed to update the package documentation with [2
+    roxygen tags](https://r-pkgs.org/src.html#cpp):
+
+<!-- end list -->
+
+    #' @useDynLib your-package-name
+    #' @importFrom Rcpp sourceCpp
 
 ## Contributors
 
