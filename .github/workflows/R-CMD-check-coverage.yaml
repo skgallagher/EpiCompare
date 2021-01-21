@@ -47,10 +47,10 @@ jobs:
           # Use cran:libgit2 PPA to avoid conflicts of libcurl4-gnutls-dev:
           sudo add-apt-repository ppa:cran/libgit2
           
-      - name: Brew Install gcc with fortran - for ggtern (1/2021)
+      - name: check where gcc with fortran is  - for ggtern (1/2021)
         if: ${{matrix.config.os == 'macOS-latest'}}
         run: |
-          brew install gcc@5 
+          which libgfortran.5.dylib
           
       - name: Query dependencies 
         run: |
@@ -77,7 +77,6 @@ jobs:
 
       - name: Install dependencies 
         run: |
-          remotes::install_cran('robustbase')
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("covr")
