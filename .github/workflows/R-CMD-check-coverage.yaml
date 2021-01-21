@@ -50,6 +50,7 @@ jobs:
       - name: check where gcc with fortran is  - for ggtern (1/2021)
         if: ${{matrix.config.os == 'macOS-latest'}}
         run: |
+          brew install gcc@5 
           which libgfortran.5.dylib
           
       - name: Query dependencies 
