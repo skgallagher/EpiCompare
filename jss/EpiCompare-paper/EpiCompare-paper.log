@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.1.4)  19 JAN 2021 17:58
-=======
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.1.4)  19 JAN 2021 10:19
->>>>>>> master
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.1.4)  21 JAN 2021 17:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2112,17 +2108,10 @@ Package pdftex.def Info: Figs/unnamed-chunk-2-1.pdf  used on input line 240.
 Package xcolor Warning: Incompatible color definition on input line 251.
 
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 258.
 
 
 Overfull \hbox (45.64333pt too wide) in paragraph at lines 257--266
-=======
-Package xcolor Warning: Incompatible color definition on input line 257.
-
-
-Overfull \hbox (45.64333pt too wide) in paragraph at lines 256--265
->>>>>>> master
 []\T1/aer/m/n/10.95 More for-mally, let two Ker-mack and McK-endrick SIR mod-el
 s(see Eq.[] ) be de-noted $\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 S[]\OT1/cmr/
 m/n/10.95 (\OML/cmm/m/it/10.95 t\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ; I[]\O
@@ -2134,37 +2123,22 @@ T1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 t\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95
 Package xcolor Warning: Incompatible color definition on input line 271.
 
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 272.
-=======
-Package xcolor Warning: Incompatible color definition on input line 271.
->>>>>>> master
 
 
 Package xcolor Warning: Incompatible color definition on input line 272.
 
-
-<<<<<<< HEAD
-Package xcolor Warning: Incompatible color definition on input line 273.
-
-=======
-Package xcolor Warning: Incompatible color definition on input line 272.
->>>>>>> master
 
 Package xcolor Warning: Incompatible color definition on input line 273.
 
-<<<<<<< HEAD
-=======
-Package xcolor Warning: Incompatible color definition on input line 272.
->>>>>>> master
+
+Package xcolor Warning: Incompatible color definition on input line 273.
+
 
 Package xcolor Warning: Incompatible color definition on input line 278.
 
 
 Package xcolor Warning: Incompatible color definition on input line 279.
-
-
-Package xcolor Warning: Incompatible color definition on input line 278.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -2176,26 +2150,15 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.282 
-=======
-l.281 
->>>>>>> master
        <./Figs/unnamed-chunk-2-1.pdf>]
 <Figs/unnamed-chunk-3-1.pdf, id=166, 665.48625pt x 490.83376pt>
 File: Figs/unnamed-chunk-3-1.pdf Graphic file (type pdf)
 <use Figs/unnamed-chunk-3-1.pdf>
-<<<<<<< HEAD
 Package pdftex.def Info: Figs/unnamed-chunk-3-1.pdf  used on input line 286.
 (pdftex.def)             Requested size: 354.12434pt x 261.18918pt.
 
 Package xcolor Warning: Incompatible color definition on input line 298.
-=======
-Package pdftex.def Info: Figs/unnamed-chunk-3-1.pdf  used on input line 285.
-(pdftex.def)             Requested size: 354.12434pt x 261.18918pt.
-
-Package xcolor Warning: Incompatible color definition on input line 297.
->>>>>>> master
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -2207,7 +2170,6 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.323 
        <./Figs/unnamed-chunk-3-1.pdf>]
 
@@ -2231,82 +2193,28 @@ Package xcolor Warning: Incompatible color definition on input line 362.
 
 Package xcolor Warning: Incompatible color definition on input line 367.
 
-
-
-pdfTeX warning: pdflatex (file ./images/pipeline2_v2.pdf): PDF inclusion: found
- PDF version <1.6>, but at most version <1.5> allowed
-<images/pipeline2_v2.pdf, id=189, 957.5775pt x 379.4175pt>
-File: images/pipeline2_v2.pdf Graphic file (type pdf)
-<use images/pipeline2_v2.pdf>
-Package pdftex.def Info: images/pipeline2_v2.pdf  used on input line 373.
-(pdftex.def)             Requested size: 636.60028pt x 252.23999pt.
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-
-
-Package xcolor Warning: Incompatible color definition on input line 401.
-=======
-l.322 
-       <./Figs/unnamed-chunk-3-1.pdf>]
-
-Package xcolor Warning: Incompatible color definition on input line 337.
-
-
-Package xcolor Warning: Incompatible color definition on input line 337.
-
-
-Package xcolor Warning: Incompatible color definition on input line 355.
-
-
-Package xcolor Warning: Incompatible color definition on input line 355.
-
-
-Package xcolor Warning: Incompatible color definition on input line 356.
-
-
-Package xcolor Warning: Incompatible color definition on input line 360.
-
-
-Package xcolor Warning: Incompatible color definition on input line 360.
-
-
-Package xcolor Warning: Incompatible color definition on input line 364.
-
-<images/pipeline2.png, id=210, 958.37695pt x 379.5774pt>
+<images/pipeline2.png, id=189, 958.37695pt x 379.5774pt>
 File: images/pipeline2.png Graphic file (type png)
 <use images/pipeline2.png>
-Package pdftex.def Info: images/pipeline2.png  used on input line 370.
-(pdftex.def)             Requested size: 442.65375pt x 175.32011pt.
+Package pdftex.def Info: images/pipeline2.png  used on input line 373.
+(pdftex.def)             Requested size: 636.60028pt x 252.14937pt.
 
-Package xcolor Warning: Incompatible color definition on input line 398.
-
-
-Package xcolor Warning: Incompatible color definition on input line 398.
+Package xcolor Warning: Incompatible color definition on input line 401.
 
 
-Package xcolor Warning: Incompatible color definition on input line 398.
+Package xcolor Warning: Incompatible color definition on input line 401.
 
 
-Package xcolor Warning: Incompatible color definition on input line 398.
+Package xcolor Warning: Incompatible color definition on input line 401.
 
 
-Package xcolor Warning: Incompatible color definition on input line 398.
+Package xcolor Warning: Incompatible color definition on input line 401.
 
 
-Package xcolor Warning: Incompatible color definition on input line 398.
->>>>>>> master
+Package xcolor Warning: Incompatible color definition on input line 401.
+
+
+Package xcolor Warning: Incompatible color definition on input line 401.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -2315,11 +2223,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [6]
 LaTeX Font Info:    Trying to load font information for T1+aett on input line 4
-<<<<<<< HEAD
 04.
-=======
-01.
->>>>>>> master
 (/usr/share/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
@@ -2328,24 +2232,12 @@ Overfull \hbox (28.84982pt too wide) in paragraph at lines 403--424
 func-tion, our func-tion \T1/aett/m/n/10.95 agents_to_aggregate()
  []
 
-<<<<<<< HEAD
-=======
-Package xcolor Warning: Incompatible color definition on input line 412.
->>>>>>> master
 
 Package xcolor Warning: Incompatible color definition on input line 438.
 
-<<<<<<< HEAD
-=======
-Overfull \hbox (0.99532pt too wide) in paragraph at lines 400--420
-\T1/aer/m/n/10.95 tion into ag-gre-gate state in-for-ma-tion, As a ``tidy'' fun
-c-tion, our func-tion \T1/aett/m/n/10.95 agents_to_aggregate
- []
->>>>>>> master
 
 Package xcolor Warning: Incompatible color definition on input line 438.
 
-<<<<<<< HEAD
 
 Package xcolor Warning: Incompatible color definition on input line 438.
 
@@ -2375,9 +2267,6 @@ m-bined with \T1/aett/m/n/10.95 agents_to_aggregate()
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
-=======
-Underfull \vbox (badness 1062) has occurred while \output is active []
->>>>>>> master
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -2386,18 +2275,8 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [7]
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 516.
 
-=======
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.424 W
-       ith raw data, getting to know our data now-a-days very frequently means 
-<./images/pipeline2.png>]
-
-Package xcolor Warning: Incompatible color definition on input line 435.
->>>>>>> master
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 8 []
@@ -2405,7 +2284,6 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [8]
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 523.
 
 
@@ -2422,30 +2300,11 @@ Package xcolor Warning: Incompatible color definition on input line 525.
 
 
 Package xcolor Warning: Incompatible color definition on input line 525.
-=======
-Package xcolor Warning: Incompatible color definition on input line 435.
-
-
-Package xcolor Warning: Incompatible color definition on input line 435.
-
-
-Package xcolor Warning: Incompatible color definition on input line 435.
-
-
-Package xcolor Warning: Incompatible color definition on input line 439.
-
-
-Package xcolor Warning: Incompatible color definition on input line 467.
-
-
-Package xcolor Warning: Incompatible color definition on input line 474.
->>>>>>> master
 
 
 Package xcolor Warning: Incompatible color definition on input line 529.
 
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 532.
 
 
@@ -2473,72 +2332,15 @@ Package xcolor Warning: Incompatible color definition on input line 532.
 Overfull \hbox (11.30743pt too wide) in paragraph at lines 539--551
  [][] 
  []
-=======
-Package xcolor Warning: Incompatible color definition on input line 475.
 
 
-Package xcolor Warning: Incompatible color definition on input line 475.
-
-
-Package xcolor Warning: Incompatible color definition on input line 476.
-
-
-Package xcolor Warning: Incompatible color definition on input line 476.
-
-
-Package xcolor Warning: Incompatible color definition on input line 480.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
->>>>>>> master
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 567.
 
-=======
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
-Package xcolor Warning: Incompatible color definition on input line 483.
->>>>>>> master
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<<<<<<< HEAD
 
 Package xcolor Warning: Incompatible color definition on input line 606.
-=======
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-\T1/aer/m/n/10.95 8 []
- []
-
-[8]
-Overfull \hbox (11.30743pt too wide) in paragraph at lines 490--502
- [][] 
- []
-
-
-Package xcolor Warning: Incompatible color definition on input line 518.
-
-
-Package xcolor Warning: Incompatible color definition on input line 557.
->>>>>>> master
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -2550,7 +2352,6 @@ as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.612 ...agents_to_aggregate(states = time_of_PRO,
                                                   ]
 <Figs/unnamed-chunk-7-1.pdf, id=258, 831.105pt x 555.07375pt>
@@ -2560,23 +2361,6 @@ Package pdftex.def Info: Figs/unnamed-chunk-7-1.pdf  used on input line 633.
 (pdftex.def)             Requested size: 354.12434pt x 236.50879pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
-=======
-l.558 
-      pdfTeX warning (ext4): destination with the same identifier (name{table.2
-}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.558 
-      ]
-<Figs/unnamed-chunk-7-1.pdf, id=292, 831.105pt x 555.07375pt>
-File: Figs/unnamed-chunk-7-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-7-1.pdf  used on input line 584.
-(pdftex.def)             Requested size: 354.12434pt x 236.50879pt.
-
-Package xcolor Warning: Incompatible color definition on input line 598.
->>>>>>> master
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -2588,7 +2372,6 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.640 
       ]
 
@@ -2601,18 +2384,6 @@ Package pdftex.def Info: Figs/unnamed-chunk-9-1.pdf  used on input line 667.
 (pdftex.def)             Requested size: 354.12434pt x 291.21935pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
-=======
-l.605 ...             min_max_time = c(0, 55)) %>%
-                                                   <./Figs/unnamed-chunk-7-1.pd
-f>]
-<Figs/unnamed-chunk-9-1.pdf, id=306, 655.44875pt x 539.01375pt>
-File: Figs/unnamed-chunk-9-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-9-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-9-1.pdf  used on input line 618.
-(pdftex.def)             Requested size: 354.12434pt x 291.21935pt.
-
-Package xcolor Warning: Incompatible color definition on input line 630.
->>>>>>> master
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -2624,7 +2395,6 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.674 
        <./Figs/unnamed-chunk-7-1.pdf>]
 
@@ -2634,14 +2404,6 @@ Package xcolor Warning: Incompatible color definition on input line 679.
 File: Figs/unnamed-chunk-10-1.pdf Graphic file (type pdf)
 <use Figs/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: Figs/unnamed-chunk-10-1.pdf  used on input line 699.
-=======
-l.637 
-       <./Figs/unnamed-chunk-9-1.pdf>]
-<Figs/unnamed-chunk-10-1.pdf, id=321, 831.105pt x 228.855pt>
-File: Figs/unnamed-chunk-10-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-10-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-10-1.pdf  used on input line 650.
->>>>>>> master
 (pdftex.def)             Requested size: 354.12434pt x 97.51176pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2656,13 +2418,8 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.706 
        <./Figs/unnamed-chunk-9-1.pdf>]
-=======
-l.696 R> ## This is the SIR representation
-                                           <./Figs/unnamed-chunk-10-1.pdf>]
->>>>>>> master
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 13
  []
@@ -2670,15 +2427,11 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [13pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
  has been already used, duplicate ignored
 
-<<<<<<< HEAD
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.758 +                        verbose = FALSE)
                                                 <./Figs/unnamed-chunk-10-1.pdf>
 ]
-=======
-Package xcolor Warning: Incompatible color definition on input line 770.
->>>>>>> master
 
 Package xcolor Warning: Incompatible color definition on input line 819.
 
@@ -2691,11 +2444,7 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 <Figs/unnamed-chunk-17-1.pdf, id=310, 845.1575pt x 533.995pt>
 File: Figs/unnamed-chunk-17-1.pdf Graphic file (type pdf)
 <use Figs/unnamed-chunk-17-1.pdf>
-<<<<<<< HEAD
 Package pdftex.def Info: Figs/unnamed-chunk-17-1.pdf  used on input line 857.
-=======
-Package pdftex.def Info: Figs/unnamed-chunk-17-1.pdf  used on input line 808.
->>>>>>> master
 (pdftex.def)             Requested size: 354.12434pt x 223.74673pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2707,17 +2456,10 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 [15]
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 874.
 
 
 Overfull \hbox (145.25377pt too wide) in paragraph at lines 890--890
-=======
-Package xcolor Warning: Incompatible color definition on input line 825.
-
-
-Overfull \hbox (145.25377pt too wide) in paragraph at lines 841--841
->>>>>>> master
 []\T1/aer/m/n/10.95 Table 3: [][]Top and bot-tom 2 rows of \T1/aett/m/n/10.95 a
 ll_together_df[] 
  []
@@ -2732,33 +2474,21 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.918 ...  position = c(1:length(compression_df))[
-=======
-l.869 ...  position = c(1:length(compression_df))[
->>>>>>> master
                                                   pdfTeX warning (ext4): destin
 ation with the same identifier (name{table.3}) has been already used, duplicate
  ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.918 ...  position = c(1:length(compression_df))[
                                                    <./Figs/unnamed-chunk-17-1.p
 df>]
 Overfull \hbox (2.84352pt too wide) in paragraph at lines 935--943
-=======
-l.869 ...  position = c(1:length(compression_df))[
-                                                   <./Figs/unnamed-chunk-17-1.p
-df>]
-Overfull \hbox (2.84352pt too wide) in paragraph at lines 886--894
->>>>>>> master
  [][] 
  []
 
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 953.
 
 
@@ -2773,22 +2503,6 @@ Package xcolor Warning: Incompatible color definition on input line 958.
 
 
 Package xcolor Warning: Incompatible color definition on input line 958.
-=======
-Package xcolor Warning: Incompatible color definition on input line 904.
-
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 906.
-
-
-Package xcolor Warning: Incompatible color definition on input line 909.
-
-
-Package xcolor Warning: Incompatible color definition on input line 909.
-
-
-Package xcolor Warning: Incompatible color definition on input line 909.
->>>>>>> master
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -2800,17 +2514,10 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-<<<<<<< HEAD
 l.975 \end{align*}
                   ]
 
 Package xcolor Warning: Incompatible color definition on input line 976.
-=======
-l.926 \end{align*}
-                  ]
-
-Package xcolor Warning: Incompatible color definition on input line 927.
->>>>>>> master
 
 (./EpiCompare-paper.bbl
 
@@ -2925,7 +2632,6 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 [20])
 
-<<<<<<< HEAD
 Package xcolor Warning: Incompatible color definition on input line 988.
 
 
@@ -2939,35 +2645,15 @@ Package xcolor Warning: Incompatible color definition on input line 988.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 988--988
-=======
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 939--939
->>>>>>> master
 
  []
 
 
-<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 988--988
-=======
-Underfull \hbox (badness 10000) in paragraph at lines 939--939
->>>>>>> master
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-<<<<<<< HEAD
 (Font)              Font shape `T1/pzc/m/it' tried instead on input line 988.
 
 Package xcolor Warning: Incompatible color definition on input line 988.
@@ -2979,25 +2665,11 @@ Package xcolor Warning: Incompatible color definition on input line 988.
 Package xcolor Warning: Incompatible color definition on input line 988.
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 988.
-=======
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 939.
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-
-Package xcolor Warning: Incompatible color definition on input line 939.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 939.
->>>>>>> master
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 21
  []
 
-<<<<<<< HEAD
 [21]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 22 []
@@ -3009,7 +2681,7 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.988 \end{document}
-                     <./images/pipeline2_v2.pdf>]
+                     <./images/pipeline2.png>]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 988.
 (./EpiCompare-paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 988.
@@ -3017,20 +2689,10 @@ Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 988.
 Package rerunfilecheck Info: File `EpiCompare-paper.out' has not changed.
 (rerunfilecheck)             Checksum: FF2FE4CCD29E7DCDFADE263740326D5F;686.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 988.
-=======
-[20]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 939.
-(./EpiCompare-paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 939.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 939.
-Package rerunfilecheck Info: File `EpiCompare-paper.out' has not changed.
-(rerunfilecheck)             Checksum: FCC1070CBD09A66145E2761008C2EDA0;1226.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 939.
->>>>>>> master
  ) 
 Here is how much of TeX's memory you used:
  8490 strings out of 479383
- 123892 string characters out of 5875831
+ 123850 string characters out of 5875831
  432958 words of memory out of 5000000
  25269 multiletter control sequences out of 15000+600000
  450935 words of font info for 103 fonts, out of 8000000 for 9000
@@ -3044,7 +2706,6 @@ usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmr6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
-<<<<<<< HEAD
 ></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texmf-dist/fonts/type1/publ
@@ -3052,21 +2713,10 @@ ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmsy8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></u
 sr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf
 -dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on EpiCompare-paper.pdf (22 pages, 568219 bytes).
-=======
-></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmss10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
-msy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr
-/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type
-1/urw/zapfchan/uzcmi8a.pfb>
-Output written on EpiCompare-paper.pdf (20 pages, 866887 bytes).
->>>>>>> master
+Output written on EpiCompare-paper.pdf (22 pages, 859309 bytes).
 PDF statistics:
- 527 PDF objects out of 1000 (max. 8388607)
- 448 compressed objects within 5 object streams
+ 495 PDF objects out of 1000 (max. 8388607)
+ 428 compressed objects within 5 object streams
  88 named destinations out of 1000 (max. 500000)
  118 words of extra memory for PDF output out of 10000 (max. 10000000)
 
