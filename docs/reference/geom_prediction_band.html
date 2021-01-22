@@ -385,11 +385,11 @@ all parameters are input correctly.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>); <span class='kw pkg'>EpiCompare</span><span class='kw ns'>:::</span><span class='fu'>update_approved_layers</span>()
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggtern</span>); <span class='kw pkg'>EpiCompare</span><span class='kw ns'>:::</span><span class='fu'><a href='update_approved_layers.html'>update_approved_layers</a></span>()
 <span class='co'>#                ^ this doesn't generally need to be done</span>
 
 <span class='co'># for speed purposes</span>
-<span class='no'>smaller_pomp_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'>pomp_df</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;</span> <span class='fl'>10</span>)
+<span class='no'>smaller_pomp_df</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EpiCompare</span><span class='kw ns'>::</span><span class='no'><a href='pomp_df.html'>pomp_df</a></span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>.id</span> <span class='kw'>&lt;</span> <span class='fl'>10</span>)
 
 <span class='no'>vis_data</span> <span class='kw'>&lt;-</span> <span class='no'>smaller_pomp_df</span> <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='st'>"S"</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='st'>"I"</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='st'>"R"</span>) <span class='kw'>%&gt;%</span>
@@ -432,7 +432,7 @@ all parameters are input correctly.</p>
  <span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/coord_tern.html'>coord_tern</a></span>() +
  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span>(<span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"Convex hull CB"</span>)</div><div class='output co'>#&gt; <span class='message'>Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span></div><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># run this if you want to see them all</span>
-<span class='fu'><a href='https://rdrr.io/pkg/ggtern/man/arrangeGrob.html'>grid.arrange</a></span>(<span class='no'>vis_data</span>, <span class='no'>vis_spherical</span>,
+<span class='fu'><a href='arrangeGrob.html'>grid.arrange</a></span>(<span class='no'>vis_data</span>, <span class='no'>vis_spherical</span>,
             <span class='no'>vis_delta_ball</span>, <span class='no'>vis_kde</span>,
             <span class='no'>vis_convex_hull</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='message'>Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></div><div class='output co'>#&gt; <span class='message'>Due to dist_params$dist_approach = "equa_dist", this may take a little while - see `filament_compression` examples for a work-around if you're making this plot multiple times</span></div><div class='img'><img src='geom_prediction_band-1.png' alt='' width='700' height='433' /></div><div class='input'># }
 

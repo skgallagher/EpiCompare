@@ -57,6 +57,27 @@ dist_along_path_direction <- function(data_df){
 }
 
 
+#' Distance/direction between points along path relative to eculidean distance
+#'
+#' @description Calculates the distance and direction between each point of a
+#'   path
+#'
+#' @param df (n x d) data.frame, assumes rows are ordered in path
+#'
+#' @return
+#' \item{distance}{vector of distances beween points (n - 1)}
+#' \item{direction}{data.frame of direction between points ((n - 1) x d)}
+#' @export
+distanglepath_df <- function(df){
+  out = distalongpath(as.matrix(df))
+  df_out <- as.data.frame(out[[2]])
+  names(df_out) <- names(df)
+  out[[2]] <- df_out
+  return(out)
+}
+
+
+
 #' step along 2d path with angle
 #'
 #' @param start_point (x,y) starting point
@@ -162,7 +183,7 @@ equa_dist_points_angle <- function(df, num_splits = 13){
 equa_dist_points_direction <- function(df, num_splits = 13){
   d <- ncol(df)
 
-  dist_and_direct <- dist_along_path_direction(df)
+  dist_and_direct <- distanglepath_df(df)
   dist <- dist_and_direct[[1]]
   direction <- dist_and_direct[[2]]
 
@@ -379,8 +400,15 @@ dist_matrix_innersq_direction <- function(x, position = NULL,
     UseMethod("dist_matrix_innersq_direction")
 }
 
-
-
+#' inner l2 distance between filaments
+#'
+#' @param m1 data.frame (n x p)
+#' @param m2 data.frame (n x p)
+#'
+#' @return distance between filaments
+l2filamentdist_df  <- function(m1, m2){
+  l2filamentdist(as.matrix(m1), as.matrix(m2))
+}
 
 #' @export
 #' @rdname dist_matrix_innersq_direction
@@ -415,9 +443,11 @@ dist_matrix_innersq_direction.list <- function(x,  position = NULL,
   for (i in c(1:n_mat)) {
     for (j in c(i:n_mat)) {
 
-      output_mat[i,j] <- sum(
-        (x[[i]][, position] - x[[j]][, position])^2
-      )
+      output_mat[i,j] <- l2filamentdist_df(x[[i]][, position],
+                                           x[[j]][, position])
+      #output_mat[i,j] <- sum(
+      #  (x[[i]][, position] - x[[j]][, position])^2
+      #)
       # ^ same as:
       # sum(apply(
       # (x[[i]][, position] - x[[j]][, position])^2,

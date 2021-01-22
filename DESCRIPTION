@@ -24,12 +24,15 @@ Imports:
     dplyr,
     geometry,
     ggplot2,
+    grid,
+    gtable,
     igraph,
     ks,
     magrittr,
     purrr,
     RANN,
     raster,
+    Rcpp,
     rdist,
     rgeos,
     rlang,
@@ -45,6 +48,7 @@ Suggests:
     gridExtra,
     kableExtra,
     knitr,
+    lattice,
     MASS, 
     outbreaks,
     plotly,
@@ -58,3 +62,5 @@ VignetteBuilder:
     knitr
 URL: https://github.com/skgallagher/EpiCompare
 BugReports: https://github.com/skgallagher/EpiCompare/issues
+LinkingTo: 
+    Rcpp
