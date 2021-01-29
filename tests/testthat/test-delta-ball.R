@@ -100,6 +100,21 @@ test_that("get_delta basic tests", {
   testthat::expect_error(get_delta())
 })
 
+testthat::test_that("test get_delta_nn, basic", {
+  df_big <- data.frame(x = rnorm(5000),
+                       y = rnorm(5000))
+  mm_delta_nn <- get_delta_nn(df_big)
+  mm_delta_simple <- get_delta(dist_mat = as.matrix(dist(df_big)))$mm_delta
+
+  testthat::expect_equal(mm_delta_nn, mm_delta_simple)
+  
+  d <- data.frame(x = 1:5)
+  testthat::expect_equal(get_delta_nn(d),1)
+  
+  d2 <- data.frame(x = c(1,3:5))
+  testthat::expect_equal(get_delta_nn(d2),2)
+})
+
 test_that("test inner_delta_ball_wrapper - basic", {
   #square - no center ----------------
   data <- data.frame(x = c(0,0,1,1),

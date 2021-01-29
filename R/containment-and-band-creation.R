@@ -247,8 +247,8 @@ create_delta_ball_structure <- function(data_points, data_columns = NULL,
   }
 
   # delta_ball approach
-  delta_info <- get_delta(data = delta_ball_info)
-  delta <- delta_info[[2]]
+  delta_info <- get_delta_nn(data = delta_ball_info)
+  delta <- delta_info
 
   # class info
   class(delta_ball_info) <- c("delta_ball_structure", class(delta_ball_info))

@@ -20,15 +20,33 @@ get_delta <- function(data = NULL, dist_mat = NULL){
   if (is.null(dist_mat) & is.null(data)) {
     stop("need to provide either data or dist_mat")
   }
-
-  if (is.null(dist_mat)) {
-    dist_mat <- as.matrix(stats::dist(data))
+  
+  if (!is.null(data)){
+    if (is.null(dist_mat)) {
+      dist_mat <- as.matrix(stats::dist(data))
+    }
+    return(list(dist_mat = dist_mat, mm_delta = get_delta_nn(data = data)))
   }
 
   diag(dist_mat) <- max(dist_mat)
   mm_delta <- apply(dist_mat, MARGIN = 1, min) %>% max
   diag(dist_mat) <- 0
   return(list(dist_mat = dist_mat, mm_delta = mm_delta))
+}
+
+#' calculate maxmin distance between points
+#'
+#' Fast calculation of maxmin distance using kd trees and nearest neighbors from
+#' the \code{RANN} package.
+#'
+#' @param data data.frame (with only columns that are needed)
+#'
+#' @return minimum radius for all points to be covered
+#' @export
+get_delta_nn <- function(data){
+  check <- RANN::nn2(data, data, k = 2, treetype = "kd", eps = 0)
+  mm_delta <- check$nn.dists[,2] %>% max()
+  return(mm_delta)
 }
 
 #' Performs delta ball approach (2d approach)
@@ -55,8 +73,8 @@ delta_structure <- function(data_deep_points, xy_columns = c("x", "y")){
     dplyr::select(dplyr::one_of(xy_columns)) %>%
     dplyr::rename(x = xy_columns[1], y = xy_columns[2])
 
-  d_out <- get_delta(data_deep_points)
-  delta = d_out$mm_delta
+  d_out <- get_delta_nn(data = data_deep_points)
+  delta = d_out
   structure_df <- inner_delta_ball_wrapper(data_deep_points,
                                            remove_duplicates = TRUE)
   names(structure_df)[names(structure_df) == "x"] <- xy_columns[1]
@@ -113,8 +131,8 @@ inner_delta_ball_wrapper <- function(data_raw, xy_columns = c("x", "y"),
   sp::coordinates(data) <- xy_columns
 
   # get delta value --------------------
-  d <- get_delta(data_raw)
-  delta <- d$mm_delta/2
+  d <- get_delta_nn(data = data_raw)
+  delta <- d/2
 
   # create correct edges --------------------
   dtri_data_edges <- rgeos::gDelaunayTriangulation(data, onlyEdges = T,
