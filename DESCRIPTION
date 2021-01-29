@@ -50,6 +50,7 @@ Suggests:
     knitr,
     lattice,
     MASS, 
+    microbenchmark,
     outbreaks,
     plotly,
     pomp,

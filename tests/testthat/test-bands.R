@@ -135,6 +135,169 @@ test_that("get_closest static tests",{
   testthat::expect_equivalent(table(check$z), table(c(rep(1,21), rep(2,4))))
 })
 
+test_that("get_closest_nn static tests",{
+  # single point:
+  border_points <- data.frame(x = 0, y = 0)
+  inner_points <- border_points[0,]
+  xrange <- seq(-5,5, length.out = 11)
+  yrange <- xrange
+  delta <- 1.1 # only get 4 points (diagonal points not included)
+  check <- get_closest_nn(border_points, inner_points, delta, xrange, yrange)
+  
+  close_to_point <- data.frame(x = c(1,0,0,0,-1),
+                               y = c(0,1,0,-1,0),
+                               check = 2)
+  testthat::expect_true(
+    all((check %>% dplyr::filter(.data$z == 2) %>%
+           dplyr::left_join(close_to_point, by = c("x", "y")) %>%
+           dplyr::pull(.data$check) %>% is.na %>% sum) == 0))
+  testthat::expect_true(all(table(check$z) == c(116, 5)))
+  
+  
+  # small square box:
+  border_points <- data.frame(x = c(-1,0,1,
+                                    -1,  1,
+                                    -1,0,1),
+                              y = c(1,1,1,
+                                    0,  0,
+                                    -1,-1,-1))
+  inner_points <- data.frame(x = 0, y = 0)
+  xrange <- seq(-5,5, length.out = 11) + .01
+  yrange <- xrange
+  delta <- .5 # only points that basically the same points
+  check <- get_closest_nn(border_points, inner_points, delta, xrange, yrange)
+  
+  
+  testthat::expect_true(all(check %>%
+                              dplyr::filter((.data$x > 2.1 | .data$x < -1.9) |
+                                              (.data$y > 2.1 | .data$y < -1.9)) %>%
+                              dplyr::pull(.data$z) == 1))
+  
+  testthat::expect_true(
+    all(check %>%
+          dplyr::filter((.data$x == 1.01 & .data$y %in% c(1.01, .01, -.99))  |
+                          (.data$x == -0.99 & .data$y %in% c(1.01, .01, -.99)) |
+                          (.data$y == 1.01 & .data$x %in% c(1.01, .01, -.99))  |
+                          (.data$y == -0.99 & .data$x %in% c(1.01, .01, -.99))) %>%
+          dplyr::pull(.data$z) == 2))
+  
+  testthat::expect_true(
+    all(check %>% dplyr::filter(.data$x == 0.01, .data$y == .01) %>%
+          dplyr::pull(.data$z) == 3))
+  
+  testthat::expect_true(all(table(check$z) == c(11^2-8-1, 8,1)))
+  
+  # large square box:
+  border_points <- data.frame(x = c(-2,-1,0,1,2,
+                                    -2,       2,
+                                    -2,       2,
+                                    -2,       2,
+                                    -2,-1,0,1,2),
+                              y = c(2,2,2,2,2,
+                                    1,      1,
+                                    0,      0,
+                                    -1,    -1,
+                                    -2,-2,-2,-2,-2))
+  inner_points <- data.frame(x = c(-1,0,1,
+                                   -1,0,1,
+                                   -1,0,1),
+                             y = c(1,1,1,
+                                   0,0,0,
+                                   -1,-1,-1))
+  xrange <- seq(-5,5, length.out = 11) + .01
+  yrange <- xrange
+  delta <- .5 # only get 4 points (diagonal points not included)
+  check <- get_closest_nn(border_points, inner_points, delta = delta,
+                          xrange = xrange,
+                          yrange = yrange)
+  
+  testthat::expect_true(all(check %>%
+                              dplyr::filter((.data$x > 3.1 | .data$x < -2.9) |
+                                              (.data$y > 3.1 | .data$y < -2.9)) %>%
+                              dplyr::pull(.data$z) == 1))
+  
+  testthat::expect_true(
+    all(check %>%
+          dplyr::filter((.data$x == 2.01 & .data$y %in% c(2.01, 1.01, .01, -.99, -1.99))  |
+                          (.data$x == -1.99 & .data$y %in% c(2.01, 1.01, .01, -.99, -1.99)) |
+                          (.data$y == 2.01 & .data$x %in% c(2.01, 1.01, .01, -.99, -1.99))  |
+                          (.data$y == -1.99 & .data$x %in% c(2.01, 1.01, .01, -.99, -1.99))) %>%
+          dplyr::pull(.data$z) == 2))
+  
+  testthat::expect_true(
+    all(check %>%
+          dplyr::filter((.data$x == 1.01 & .data$y %in% c( 1.01, .01, -.99))  |
+                          (.data$x == .01 & .data$y %in% c( 1.01, .01, -.99)) |
+                          (.data$x == -.99 & .data$y %in% c( 1.01, .01, -.99)) ) %>%
+          dplyr::pull(.data$z) == 3))
+  
+  
+  # create gridpoints
+  border_points <- data.frame(x = c(-2,2,
+                                    -2,2),
+                              y = c(2,2,
+                                    -2,-2))
+  inner_points <- border_points[0,]
+  delta = .5
+  check <- get_closest_nn(border_points, inner_points, delta = delta,
+                          gridbreaks = 5)
+  # no "inside"
+  testthat::expect_true(all(check$z != 3))
+  
+  border_points_check <- check %>%
+    dplyr::inner_join(border_points, by = c("x","y"))
+  testthat::expect_true(all(dim(border_points_check) == c(4,3)))
+  testthat::expect_true(all(border_points_check$z == 2))
+  testthat::expect_equivalent(table(check$z), table(c(rep(1,21), rep(2,4))))
+})
+
+
+testthat::test_that("get_closest_nn benchmark tests ", {
+  
+  over_delta <- .1
+  
+  data_deep_points <- data.frame(x = rnorm(200),
+                                 y = rnorm(200))
+  delta_info <- delta_structure(data_deep_points)
+  
+  structure <- delta_info$structure
+  
+  delta <- delta_info$delta
+  
+  inner_df <- dplyr::setdiff(data_deep_points %>%
+                               dplyr::select(.data$x,.data$y),
+                             structure %>%
+                               dplyr::select(.data$x,.data$y))
+  
+  border_points <- structure %>% dplyr::select(.data$x,.data$y)
+  inner_points <- inner_df
+  
+  xrange <- seq(min(border_points$x) - over_delta,
+                max(border_points$x) + over_delta,
+                length.out = 100)
+  
+  yrange <- seq(min(border_points$y) - over_delta,
+                max(border_points$y) + over_delta,
+                length.out = 100)
+  
+  get_closest_nn_info <- get_closest_nn(border_points, inner_points, delta,
+                                        xrange, yrange)
+  get_closest_info <- get_closest(border_points, inner_points, delta,
+                                  xrange, yrange)
+  
+  testthat::expect_equal(get_closest_nn_info, get_closest_info)
+  
+  mbm <- microbenchmark::microbenchmark(
+    "get_closest" = get_closest(border_points, inner_points, delta,
+                                xrange, yrange),
+    "get_closest_nn" = get_closest_nn(border_points, inner_points, delta,
+                                      xrange, yrange), times = 10L
+  )
+  
+  mbm_df <- summary(mbm)
+  testthat::expect_true(mbm_df$mean[1] > mbm_df$mean[2])
+})
+
 test_that("check_inside_elipsoid tests", {
             # all false since Sigma not PSD (and warning )
             Sigma <- matrix(c(0,1,1,0), nrow = 2)

@@ -100,6 +100,79 @@ get_closest <- function(border_points, inner_points, delta,
   return(updated_gridpoints)
 }
 
+#' create a grid of points indicating near border or not (and inside or outside)
+#' using \code{RANN::nn2}.
+#'
+#' This is internal code using \code{RANN::nn2} (faster).
+#'
+#' @param border_points data.frame of points from delta ball approach that are
+#'   "border points"
+#' @param inner_points data.frame of points from delta ball approach that are
+#'   interior points.
+#' @param delta float, size of delta ball radius
+#' @param xrange vector, ordered values to examine in the x dimension (default
+#'   is NULL - will then be created using gridbreaks)
+#' @param yrange vector, ordered values to examine in the y dimension (default
+#'   is NULL - will then be created using gridbreaks)
+#' @param gridbreaks int, number of gridpoint in x and y dimensions if xrange or
+#'   yrange is not provided
+#'
+#' @return data frame, with \code{expand.grid} of xrange, yrange in columns
+#'   \code{x} and \code{y} and a column \code{z} that indicates if it is: (1)
+#'   not within delta to border points or inner_points, (2) if closest to
+#'   border_points and (3) if closest to an inner_point.
+get_closest_nn <- function(border_points, inner_points, delta,
+                        xrange = NULL, yrange = NULL, gridbreaks = 100){
+  if (is.null(xrange)) {
+    xrange <- seq(min(border_points$x), max(border_points$x),
+                  length.out = gridbreaks)
+  }
+  if (is.null(yrange)) {
+    yrange <- seq(min(border_points$y), max(border_points$y),
+                  length.out = gridbreaks)
+  }
+  gridpoints <- expand.grid(xrange, yrange) %>%
+    dplyr::rename(x = "Var1", y = "Var2")
+  
+  if (nrow(border_points) > 1){
+    # first <- raster::pointDistance(gridpoints,border_points,
+    #                               lonlat = FALSE,
+    #                               allpairs = TRUE)
+    # first_min <- apply(first, 1, min)
+    first_min <- RANN::nn2(border_points, gridpoints, k = 1)$nn.dist
+  } else if (nrow(border_points) == 1) {
+    first_min <- raster::pointDistance(gridpoints,border_points,
+                                       lonlat = FALSE,
+                                       allpairs = TRUE)
+    # ^ ok to keep as it's just getting the distance to 1 point (no need to nn)
+  } else {
+    first_min <- rep(Inf, nrow(gridpoints))
+  }
+  
+  if (nrow(inner_points) > 1) {
+    # second <- raster::pointDistance(gridpoints, inner_points,
+    #                                 lonlat = FALSE,
+    #                                 allpairs = TRUE)
+    # second_min <- apply(second, 1, min)
+    second_min <- RANN::nn2(inner_points, gridpoints, k = 1)$nn.dist
+  } else if (nrow(inner_points) == 1) {
+    second_min <- raster::pointDistance(gridpoints,inner_points,
+                                        lonlat = FALSE,
+                                        allpairs = TRUE)
+    # ^ ok to keep as it's just getting the distance to 1 point (no need to nn)
+  } else {
+    second_min <- rep(Inf, nrow(gridpoints))
+  }
+  
+  z <- apply(cbind(delta, first_min, second_min), 1, which.min)
+  
+  updated_gridpoints <- gridpoints %>%
+    dplyr::mutate(z = z)
+  
+  return(updated_gridpoints)
+}
+
+
 #' Project onto a simplex where observations in the unit simplex x
 #'
 #' Minimizes: \eqn{1/2 ||w-v||^2_2 \quad} s.t. \eqn{sum_i w_i = 1, w_i \geq 0}
@@ -566,11 +639,11 @@ delta_ball_compute_group_paths_to_points <- function(data, scales, params,
                 max(border_points$y) + over_delta,
                 length.out = grid_size[2])
   
-  updated_gridpoints <- get_closest(border_points, inner_points,
-                                    delta,
-                                    xrange = xrange,
-                                    yrange = yrange,
-                                    gridbreaks = NULL)
+  updated_gridpoints <- get_closest_nn(border_points, inner_points,
+                                      delta,
+                                      xrange = xrange,
+                                      yrange = yrange,
+                                      gridbreaks = NULL)
 
   update_gridpoints_mat <- tidyr::pivot_wider(updated_gridpoints,
                                               names_from = "y",
