@@ -252,7 +252,7 @@ test_that("get_closest_nn static tests",{
 })
 
 
-testthat::test_that("get_closest_nn benchmark tests ", {
+test_that("get_closest_nn benchmark tests ", {
   
   over_delta <- .1
   
@@ -485,6 +485,125 @@ test_that("project_onto_simplex", {
     testthat::expect_true(all(proj_x >= 0))
   }
 })
+
+# inner function tests ------------------------
+
+test_that("test delta_ball_compute_group_paths_to_points, basic",{
+  curve1 <- data.frame(x = (1:50)/2,
+                       y = (1:50)/2,
+                       id = "1")
+  curve2 <- curve1 %>%
+    mutate(x = x + sqrt(2)/2,
+           y = y - sqrt(2)/2,
+           id = "2")
+  curve3 <- curve1 %>%
+    mutate(x = x - sqrt(2)/2,
+           y = y + sqrt(2)/2,
+           id = "3")
+  all_curves <- rbind(curve1, curve2, curve3)
+  
+  curve4 <- curve1 %>% mutate(id = "4")
+  curve4$index <- curve4$x > 12.5
+  curve4$x <- curve4$x + sqrt(2) * c(-1,1)[curve4$index+1]
+  curve4$y <- curve4$y + sqrt(2) * c(1,-1)[curve4$index+1]
+  curve4 <- curve4 %>% select(-index)
+  
+  curve5 <- curve2 %>%
+    mutate(x = x - 1.52 * sqrt(2)/2,
+           y = y + 1.52 * sqrt(2)/2,
+           id = "5")
+  
+  
+  all_curves <- rbind(curve1, curve2, curve3, curve4, curve5) %>%
+    mutate(z = 60-x-y,
+           x = x + 10,
+           y = y + 10) %>% 
+    rename(x = x, y = z, z = y, sim_group = "id")
+  
+  if (FALSE){ # visualize
+    all_curves %>% ggplot() +
+      geom_line(aes(x = x , y = y, z = z, color = sim_group)) + coord_tern()
+  }
+  
+  
+  
+  
+  data <- all_curves %>% 
+    mutate(PANEL = 1, group = -1)
+  scales <- NA # not needed for this step...
+  params <- NA # also not needed
+  pb_type <- NULL # also not needed
+  grid_size = rep(100,2)
+  conf_levels = c(.5,.9)
+  over_delta = .1
+  dist_params <- list("dist_approach" = "auto",
+                      "num_steps" = "auto",
+                      "quantile_approach" = "depth",
+                      "quantile_approach_params" = 
+                        list())
+  
+  
+  out_structure5 <- delta_ball_compute_group_paths_to_points(data,
+                                                             scales,
+                                                             params,
+                                                             pb_type,
+                                                             grid_size,
+                                                             conf_levels[1],
+                                                             over_delta,
+                                                             dist_params)
+  
+  out_structure2 <- delta_ball_compute_group_paths_to_points(data,
+                                                             scales,
+                                                             params,
+                                                             pb_type,
+                                                             grid_size,
+                                                             conf_levels[2],
+                                                             over_delta,
+                                                             dist_params)
+  
+  o2 <- out_structure2 %>% select(x,y,z) 
+  
+  # each point in 1,3 & 5 is closer to a o2 than the any point in the other curves
+  
+  nn_out1_o2 <- RANN::nn2(data %>% filter(sim_group %in% c(1)) %>% select(x,y,z),
+                          o2 , k = 1)$nn.dists
+  nn_out5_o2 <- RANN::nn2(data %>% filter(sim_group %in% c(5)) %>% select(x,y,z),
+                          o2 , k = 1)$nn.dists
+  nn_out3_o2 <- RANN::nn2(data %>% filter(sim_group %in% c(3)) %>% select(x,y,z),
+                          o2 , k = 1)$nn.dists
+  nn_out_rest_o2 <- RANN::nn2(data %>% 
+                                filter(!(sim_group %in% c(1,3,5))) %>% 
+                                select(x,y,z),
+                              o2 , k = 1)$nn.dists
+  
+  closest_o2 <- cbind(nn_out1_o2, nn_out5_o2, nn_out3_o2, nn_out_rest_o2) %>% 
+    apply(1, which.min)
+  
+  closer_to_creaters_o2 <- all(closest_o2 != 4)
+  
+  testthat::expect_true(closer_to_creaters_o2)
+  
+  o5 <- out_structure5 %>% select(x,y,z) 
+  
+  # each point in 1 & 5 is closer to a o2 than the any point in the other curves
+  
+  nn_out1_o5 <- RANN::nn2(data %>% filter(sim_group %in% c(1)) %>% select(x,y,z),
+                          o5, k = 1)$nn.dists
+  nn_out5_o5 <- RANN::nn2(data %>% filter(sim_group %in% c(5)) %>% select(x,y,z),
+                          o5, k = 1)$nn.dists
+  nn_out_rest_o5 <- RANN::nn2(data %>% 
+                                filter(!(sim_group %in% c(1,5))) %>% 
+                                select(x,y,z),
+                              o5, k = 1)$nn.dists
+  
+  closest_o5 <- cbind(nn_out1_o5, nn_out5_o5, nn_out_rest_o5) %>% 
+    apply(1, which.min)
+  
+  closer_to_creaters_o5 <- all(closest_o5 != 3)
+  
+  testthat::expect_true(closer_to_creaters_o5)
+})
+
 
 # simulation for geom_prediction_band testing --------------------
 

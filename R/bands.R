@@ -654,7 +654,7 @@ delta_ball_compute_group_paths_to_points <- function(data, scales, params,
   
   
   cl <- grDevices::contourLines(x = xrange, y = yrange,
-                                z = update_gridpoints_mat,levels = c(2))
+                                z = update_gridpoints_mat, levels = c(2))
   
   lengths <- vapply(cl, function(x) length(x$x), integer(1))
   xs <- unlist(lapply(cl, "[[", "x"), use.names = FALSE)
@@ -675,6 +675,8 @@ delta_ball_compute_group_paths_to_points <- function(data, scales, params,
   return(vis_df)
   
 }
+
+
 
 
 #' convex hull function for compute_group ggplot object (for top paths' points)
