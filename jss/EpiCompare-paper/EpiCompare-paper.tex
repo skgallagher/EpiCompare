@@ -9,7 +9,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +46,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -302,8 +304,8 @@ and explain how they aid in the data analysis pipeline. In Fig.
 \ref{fig:pipeline2}, we illustrate how our
 \textcolor{violet}{\sout{package fits} package's functions fit} into the
 data analysis pipeline introduced in Fig. \ref{fig:pipeline}. All
-front-facing functions are aimed to be as user-friendly as possible, and
-we focus on providing the user ``tidyverse'' style functions, that
+front-facing functions are aimed to be as user-friendly as possible. We
+also focus on providing the user ``tidyverse'' style functions, that
 encourage piping and also follow clear verb naming schemes
 \citep{Wickham2019}. Although users can typically incorporate
 \pkg{EpiCompare} into any step in the data analysis process, there are
@@ -316,38 +318,37 @@ subsections below.
 
 \textbf{Data Pre-processing}
 
-The first step of most data analysis is cleaning up the data
+The first step of most data analysis is cleaning the data
 \textcolor{violet}{so it can \sout{to}} be explored. There are multiple
-ways to collect the epidemiological data. Sometimes individual records
+ways to collect epidemiological data. Sometimes individual records
 \textcolor{violet}{are collected}, with times of different states of the
 epidemic (infection, recovery, etc.) as well as individual information
 like network structure, location, and sub-population
 information\textcolor{violet}{.\sout{will be collected, whereas}}
-\textcolor{violet}{O}ther data collections will focus on aggregate
-counts of individuals in each epidemic state. In fact, usually only the
-number of new infections at each time step is observed and the
-compartment totals
+\textcolor{violet}{O}ther data collections focus on aggregate counts of
+individuals in each epidemic state. In fact, usually only the number of
+new infections at each time step (e.g.~weekly case counts) is observed.
+Compartment totals
 \textcolor{violet}{(amounts of individuals in each state)} are then
-imputed from that along with other information about the disease and the
-population of interest. \textcolor{violet}{In \pkg{EpiCompare}, w}e
-focus on understanding the overall impact of an outbreak at the
-aggregate/population level,
+imputed from those case counts along with other information about the
+disease and the population of interest.
+\textcolor{violet}{In \pkg{EpiCompare}, w}e focus on understanding the
+overall impact of an outbreak at the aggregate/population level,
 \textcolor{violet}{which allows examination of overall trends of an epidemic more easily}.
 
 \textcolor{violet}{[Ben says: the following rewrite was done because the original text seemed to repeat the same thing 2x, once in text and the second time with the function }\texttt{agents\_to\_aggregate}\textcolor{violet}{. The following two paragraphs try to merge the introduction of the function and it's capabilities into one story.]}
 
 \textcolor{violet}{[Ben says: this whole paragraph is new]} In order to
-help the practitioner to a point in which they can examine their
-epidemics from an aggregate/ population lens, we provide a function
-called \texttt{agents\_to\_aggregate}. This function transforms data
-that contains information about individual/agents' initial entry into
+help the practitioner examine epidemics from an aggregate/ population
+lens, we provide a function called \texttt{agents\_to\_aggregate}. This
+function transforms data about individual/agents' initial entry into
 each state (e.g.~start of infection, start of recovery, etc) to an
 aggregate view of how many individuals where in a state at a given time.
 There are often situations where grouping agents into subpopulations
 (e.g.~subpopulations defined by age or sex) can highlight different
-aggregate level trends. Papers like
-\citet{rvachev1985,anderson1992,worby2015} also develop state-based
-models that account for subpopulations in their
+aggregate level trends. For example, research by
+\citet{rvachev1985,anderson1992,worby2015} develop state-based models
+that account for subpopulations in their
 models\footnote{\textcolor{violet}{[Ben says: I don't really like this sentence, but I'm trying to include the references - are they needed?]}}.
 This function allows the user to easily group agents into new
 subpopulations by using the \pkg{tidyverse} paradigm to first
@@ -355,23 +356,22 @@ subpopulations by using the \pkg{tidyverse} paradigm to first
   the \pkg{dplyr} package.} the subpopulation defining features and then
 aggregate (using \texttt{agents\_to\_aggregate}) conditional on these
 subpopulations.
+\textcolor{orange}{I think these last two sentences are repetitive}
 
 \textcolor{violet}{[Ben says: this whole paragraph is new]} The
 \texttt{agents\_to\_aggregate} function is also flexible to deal with a
-wide range of information about each individual. It can account for
-infinitely many states, allowing the practioner to aggregate information
-relative to the standard ``Suspectible'', ``Infectious'', and
-``Recovered'' states (CITE) or also add states like ``Exposed'',
-``iMmune'', ``Hospitalized'' and more. Additionally,
+wide range of information about each individual. It can, theoretically,
+account for infinitely many states, allowing the practitioner to
+aggregate information relative to the standard ``Suspectible'',
+``Infectious'', and ``Recovered'' states (CITE) or also add states like
+``Exposed'', ``iMmune'', ``Hospitalized'' and more. Additionally,
 \texttt{agents\_to\_aggregate} also permits indicators for death/exit
-and birth/entry dates (that change the overall number of individuals in
-the population). This function is the highest tested function in this
-package, and can deal with many nuances that might come-about in the
-individual data. For these reasons, we view
-\texttt{agents\_to\_aggregate()} as powerful tool in the step of
-pre-processing data, one that quickly and simply transforms individual
-level information into an aggregate view that can be processed and
-analyzed in a simpler manner.
+and birth/entry dates (that change the overall population size).
+\textcolor{orange}{Don't think this is necessary \sout{This function is the highest tested function in this package, and can deal with many nuances that might come-about in the individual data.}}
+The function \texttt{agents\_to\_aggregate()} is a powerful tool in the
+step of pre-processing data, one that quickly and simply transforms
+individual level information into an aggregate view that can be
+processed and analyzed in a simpler manner.
 
 \textcolor{violet}{\sout{In \pkg{EpiCompare}, we provide a function to transform information about each individual/agent’s initial time of entry into each state (e.g. start of infection, start of recovery, etc). This transformation between \textit{agent} information to \textit{aggregate} information is useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools allow the user to easily group agents and define new subpopulations to explore. This is important as case studies highlight the usefulness of identifying differing subpopulations (e.g. age, sex) and many state based models provide for subpopulation-based states in their analysis}}
 \citep{rvachev1985,anderson1992,worby2015}.
@@ -386,22 +386,23 @@ analyzed in a simpler manner.
 \textcolor{violet}{[Ben says: I'm went back and thought that the version before this version was clearer. Wanna take a look and discuss? Side by side: [github](https://github.com/skgallagher/EpiCompare/commit/7dbb4996d1d3169d3e3a426bc9820c417ea87beb)]}
 
 \textcolor{violet}{[Ben says: this is actually an older version:]} With
-raw data, getting to know our data now-a-days very frequently means
-figuring out good combinations of visualizations, numerical summaries
-and subsetting. An expert coder can start from
-\texttt{agents\_to\_aggregate} to successfully do this in many ways, but
-we've also developed tools to rapidly explore your data if your have a 3
-unique states models (like the SIR model). Our \texttt{geom\_aggregate}
-provides a rapid way to explore different subpopulations experience of
-the epidemic, and combines the ideas behind agents\_to\_aggregate for
-the SIR case, with \texttt{geom\_path} and \texttt{coord\_term} to
-visualize any number of groups epidemic trajectory in 3d simplex space
-using \texttt{ggplot2} and \texttt{ggtern}
-\citep{Wickham2016, Hamilton2018}. Visualization tools for SIR models
-were developed because (1) SIR models are some of the most common and
-basic epidemic state-based models and (2) our simplex representation of
-these epidemics emphasizes a ``time-invarance'' representation of the
-data (for a refresher see Section \ref{sec:time-invariant}).
+raw data, ``getting to know'' our data currently means figuring out good
+combinations of visualizations, numerical summaries and subsets. An
+expert coder can start from \texttt{agents\_to\_aggregate} to
+successfully do this in many ways, but \pkg{EpiCompare} also includes
+tools to rapidly explore your data if your has at least three epidemic
+states (although these tools work best with exactly three epidemic
+states). Our \texttt{geom\_aggregate} provides a rapid way to explore
+different subpopulations' experience of the epidemic, and combines the
+ideas behind \texttt{agents\_to\_aggregate} for the SIR case, with
+\texttt{geom\_path} and \texttt{coord\_tern} to visualize any number of
+groups epidemic trajectory in 3d simplex space using \pkg{ggplot2} and
+\pkg{ggtern} \citep{Wickham2016, Hamilton2018}. Visualization tools for
+SIR models were developed because (1) SIR models are some of the most
+common and basic epidemic state-based models and (2) our simplex
+representation of these epidemics emphasizes a ``time-invarance''
+representation of the data (for a refresher see Section
+\ref{sec:time-invariant}).
 
 \textcolor{violet}{[Ben says: The 2 things I really like about the earlier (now current) version is (1) the introduction seems to make more sense in getting at what EDA really is, (2) the way it disucsses SIR models only 1 potential model instead of putting it as *the* model.]}
 
@@ -419,20 +420,19 @@ data (for a refresher see Section \ref{sec:time-invariant}).
 \textbf{Model Fitting and Simulations}
 \textcolor{violet}{[Ben says: see footnote 3 about the introduction to this paragraph.]}
 
-Although this package does not focus on estimating a model for the data,
-we do provide some flexible functions for simulation of basic
-discrete-time epidemic-state models with Bernoulli/Multinomial
-transitions which can be used to (noisily) approximate ODEs which
-describe transitions from one state to the next\footnote{The original
-  sentence seemed clearer to me (it may even be a run-on sentence now).
-  I'm wondering if you didn't like the original sentence relative to the
-  ``truth-ful-ness'' of the statement? Here's the original sentence
-  slightly edited: ``Although this package does not focus on estimating
-  a model for the data, we do provide some power functions for
-  simulation of basic state models with Bernoulli approximation of ODE
-  state models encoded in simulate\_agents and simulate\_SIR\_agents''.}.
-These functions can be naturally combined with
-\texttt{agents\_to\_aggregate()} to proceed in the pipeline. The
+Although this package does not focus on fitting a model to data, we do
+provide some flexible functions for simulation of basic discrete-time
+epidemic-state
+models.\sout{ with Bernoulli or Multinomial transitions which can be used to (noisily) approximate ODEs which describe transitions from one state to the next}\footnote{The
+  original sentence seemed clearer to me (it may even be a run-on
+  sentence now). I'm wondering if you didn't like the original sentence
+  relative to the ``truth-ful-ness'' of the statement? Here's the
+  original sentence slightly edited: ``Although this package does not
+  focus on estimating a model for the data, we do provide some power
+  functions for simulation of basic state models with Bernoulli
+  approximation of ODE state models encoded in simulate\_agents and
+  simulate\_SIR\_agents''.}. These functions can be naturally combined
+with \texttt{agents\_to\_aggregate()} to proceed in the pipeline. The
 function \texttt{simulate\_SIR\_agents()} simulates an SIR epidemic with
 user inputs for the number of simulations, the initial number in each
 state, the infection and recovery parameters \((\beta, \gamma\)), and
@@ -455,11 +455,12 @@ statistics, plots, tables, and other ways to disseminate information to
 the public. For example, comma separated value files (\texttt{.csv}) are
 a standard way to share information within tables. However, model output
 is often far more complicated than what a traditional \texttt{.csv}
-would allow. As a result, a number of epidemic modeling packages return
-a special class, specific to their modeling. The special classes often
-contain a plethora of information from residuals, model diagnostics,
-input parameters, and more. While incredibly useful, these special
-classes can be difficult for novice coders to navigate.
+would allow. \textcolor{orange}{Do we need three sentences about csvs?}
+As a result, a number of epidemic modeling packages return a special
+class, specific to their modeling. The special classes often contain a
+plethora of information from residuals, model diagnostics, input
+parameters, and more. While incredibly useful, these special classes can
+be difficult for novice coders to navigate.
 
 To this end, we have adapted a series of \texttt{fortify}-style
 functions, called \texttt{fortify\_aggregate()} which transform output
@@ -918,8 +919,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0\\
-EpiModel SIR & 0.0028813 & 0\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -968,4 +969,3 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
-
