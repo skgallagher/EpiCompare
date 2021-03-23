@@ -162,33 +162,47 @@ analysis}\label{sec:time-invariant}
 
 \textcolor{violet}{the vast majority of this section has been changed / needs more updates.}
 
+\textcolor{orange}{time invariance vs. time invariant analysis??}
+
+\textcolor{orange}{I again changed this section a lot, but hopefully it's more in line with what you are thinking.  The story I want to tell is 1) introduce the concept of time invariance; 2) demonstrate time invariance through R0 and tell why it is important; 3) visualize R0 from the SIR model with a time-invariant plot; and 4) talk about models beyond SIR.}
+
+\textcolor{orange}{I noticed the ternary plot kinda fell out of this section and it's not really detailed anywhere else in the paper.  So I put it back in.  It's a non-standard plot and a feature of EpiCompare so I think it's worth talking about, and I think it's appropriate to introduce in this section.}
+
 \pkg{EpiCompare} delivers \textit{time-invariance} centric analysis by
 (1) taking a global, not marginal view of how epidemics move through
-time and (2) by treating full epidemics as filaments, not functions
-(breaking away from a time-centric view). The following section aims to
-highlight the strengths of \textit{time-invariance} and define the
+\sout{time} \textcolor{orange}{populations} and (2) by treating full
+epidemics as
+filaments\sout{ not functions (breaking away from a time-centric view)}
+and not points produced by functions of time. The following section aims
+to highlight the strengths of \textit{time-invariance} and define the
 mathematical foundations that \pkg{EpiCompare}'s tools stand upon.
 
-Epidemics are complex objects, and hard to assess and compare to one
-another due to the differences in the diseases, the location where the
-outbreak occurs, how the effected population reacts, and the time
-aspects (including start of the epidemic, speed of infection and more).
-Time-invariant analysis attempts to make different epidemics easier to
-compare by removing many time dependent aspects of an epidemic and
-instead focus on the overall ``life'' of an epidemic, emphasizing the
-number of lives affected.
+\textcolor{orange}{Mathematically}, epidemics are complex objects. They
+are hard to assess and compare to one another due to the differences in
+the diseases, the location where the outbreak occurs, how the
+\textcolor{orange}{a?}ffected population reacts, and the timefeatures
+(including start of the epidemic, speed of infection and more).
+Time-invariant analysis \sout{attempts to make}
+\textcolor{orange}{makes} different epidemics easier to compare by
+removing many time dependent aspects of an epidemic. Instead
+\textcolor{orange}{it} focuses on the overall \sout{"life"}
+\textcolor{orange}{trajectory} of an epidemic, emphasizing the number of
+lives affected.
+\textcolor{orange}{really like the lives affected part; I think that's a powerful statement}
 
 \subsection[motivating through R0]{Motivating time-invariance through
 \(R_0\)}\label{r0}
 
-Time-invariance analysis, as it appears in \pkg{EpiCompare}, can be seen
-as an attempt to escape many difficulties comparing different epidemics.
+Time-invariance analysis, as it appears in \pkg{EpiCompare},
+\sout{can be seen as an attempt to escape} \textcolor{orange}{bypasses}
+many difficulties \textcolor{orange}{in} comparing different epidemics.
 With time-invariant analysis, comparing the decades-long outbreak of HIV
-in the US to a 10 day outbreak of norovirus on a cruise ship is still
-possible. Time-dependent problems can arise when estimation of certain
-epidemiological parameters, including the reproductive number \(R_0\),
-which \citet{Gallagher2020} showed can be heavily impacted by choices of
-beginning and ending time points of an epidemic.
+in the US to a 10 day outbreak of norovirus on a cruise ship is
+\sout{still} possible. Time-dependent problems can arise when estimation
+of certain epidemiological parameters, including the reproductive number
+\(R_0\), which \citet{Gallagher2020} show can be \sout{heavily impacted}
+\textcolor{orange}{strongly effected} by choices of beginning and ending
+time points of an epidemic.
 
 \textcolor{violet}{
 Story: 
@@ -196,13 +210,14 @@ Story:
 }
 
 \(R_0\) is probably the most famous time-invariant numerical summary of
-an epidemic and is associated with the Susceptible-Infectious-Recovered
-(SIR) model. For a demonstration of \(R_0\) getting lost in a
-time-dependent analysis we introduce the \citet{Kermack1927}'s common
-SIR model. This model captures the transitions from one state to the
-next as a system of ordinary differential equations, where \(N\) is the
-total number of individuals, \(\beta\) is the rate of infection, and
-\(\gamma\) is the rate of recovery,
+an epidemic and is \textcolor{orange}{often} associated with the
+Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}. For a
+demonstration of \(R_0\) getting lost in a time-dependent analysis we
+introduce the \citet{Kermack1927}'s common SIR model. This model
+captures the transitions from one state to the next as a system of
+ordinary differential equations, where \(N\) is the total number of
+individuals, \(\beta\) is the rate of infection, and \(\gamma\) is the
+rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -211,34 +226,59 @@ total number of individuals, \(\beta\) is the rate of infection, and
 \end{align}
 
 From this model, \(R_0 = \beta/\gamma\), aka the ratio of the estimated
-infection rate compared to the estimated recovery rate.
+infection rate compared to the estimated recovery rate. Since \(\beta\)
+and \(\gamma\) are both rates (of infection and recovery, respectively),
+the ratio of the two, \(R_0\), is a time-invariant quantity.
+\textcolor{orange}{Once $R_0$ is estimated, then important epidemic quantities can be inferred such as a the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic and the total number of infections, the final size.  Moreover, $R_0$ allows us to compare different disease outbreaks and different outbreaks on the same scale.  }
 
-Interestingly, with regards to traditional epidemic \(state\)
-vs.~\(time\) plots, when comparing different epidemics their \(R_0\)s
-are often impossible to compare. This can be seen is a basic example,
-where we have 2 different epidemics that start in a population of 1000
-with 10 individuals infected, but with different parameters related to
-equation \ref{eq:ODE}. Specifically suppose that
-\(\beta_1, \gamma_1 = (a,b)\) and \(\beta_2, \gamma_2 = (c,d)\) and that
+\subsection[visualizing r0]{Visualizing \(R_0\)}\label{vis-r0}
+
+With regards to traditional epidemic \(state\) vs.~\(time\) plots, when
+\sout{comparing}\textcolor{orange}{examining} different epidemics their
+\(R_0\)s are often impossible to compare. This can be seen in a basic
+example, where we have two different epidemics that start in two
+populations of 1000 people with 10 individuals
+\textcolor{orange}{initially} infected, but with
+\sout{different parameters}
+\textcolor{orange}{different infection and recovery rates (see Eq. \ref{eq:sir-ODE}}).
+Specifically suppose that \(\beta_1, \gamma_1 = (a,b)\) and
+\(\beta_2, \gamma_2 = (ca,cb)\) where \(a, b, c > 0\). Further suppose
 we observe both of these epidemics for 15 days. The epidemic
 trajectories are shown in the \(state\) vs.~time plots in Figure
-\ref{fig:different-scales-standard}. At a glance, we may assume that
-Model 1 has a larger \(R_0\) than Model 2 because the peak of infection
-occurs more quickly than in Model 2. On the other hand, we may think
-Model 2 has a larger \(R_0\) because we may think the number of
-infections in that model has not yet peaked at time 15. Yet both
-epidemics have the same \(R_0\) of 2.
+\ref{fig:different-scales-standard}. At a glance, we may \sout{assume}
+\textcolor{orange}{believe} that Model 1 has a larger \(R_0\) than Model
+2 because the peak of infection occurs more quickly than in Model 2. On
+the other hand, we may \sout{think} \textcolor{orange}{believe} Model 2
+has a larger \(R_0\) because we may think the number of infections in
+that model has not yet peaked at time 15. Yet, both epidemics have the
+same \(R_0\) of 2.
 
-However, when we treat both epidemics a functional data through a space
-that tells us the proportion of the population each each class, as is
-seen in figure 3 we see a different story. The points seem to overlap
-and form the same trajectory. Now it seems to be that Model 2 is
-following the same trajectory as Model 1 but is not as far along in the
-infection process. We can see there is something fundamentally linking
-these two different epidemics, and this fundamental link turns out to be
-\(R_0\).
+\textcolor{orange}{Introduce ternary plots here.  The below paragraphs are mostly new}
 
-We can see this mathematically if we let our two epidemics be presented
+However, time-invariant centric analysis allows us to visualize \(R_0\)
+for the Kermack and McKendrick SIR model. We call the epidemic
+trajectory of number of individuals in each state a \textit{filament}.
+Mathematically, a filament \(\psi\) for the SIR model \(\psi\) this is
+the set of points of the number in each state for each time point, \[
+\psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t=0:T}.
+\]
+
+Since the number in each state is non-negative and the sum over the
+three states for a given time point sums to \(N\), then \(\psi\) will
+lay in a 2d triangular plane, i.e.~a ternary plot. As a result, we can
+visualize the global trajectory of an epidemic in a single 2d plot and
+ultimately \(R_0\). \textcolor{orange}{Show pic here?}
+
+We visualize the two epidemics in a global, ternary view in Figure
+\ref{fig:different-scales-tern}. Without getting into too much detail of
+the intricacies of this plot, we immediately see the points of the two
+filaments \(\psi\) seem to form the same trajectory. Now, it is much
+clearer that Model 2 is following the same trajectory as Model 1 but is
+not as far along in the infection process. We can see there is something
+fundamentally linking these two different epidemics, and this
+fundamental link turns out to be \(R_0\).
+
+We can show this mathematically if we let our two epidemics be presented
 as \(\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}\),
 \(\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}\) respectively. As with the
 example, assume both models have the same initial values
@@ -272,17 +312,32 @@ model.
 \end{figure}
 \end{CodeChunk}
 
-\subsection[Beyond R0 and SIR]{Beyond \(R_0\) and Kerman's and
+\begin{CodeChunk}
+\begin{figure}[H]
+
+{\centering \includegraphics{Figs/unnamed-chunk-3-1} 
+
+}
+
+\caption{\label{fig:different-scales-tern}Example of two epidemics with different $\beta$ and $\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered.}\label{fig:unnamed-chunk-3}
+\end{figure}
+\end{CodeChunk}
+
+\subsection[Beyond R0 and SIR]{Beyond \(R_0\) and Kermack's and
 McKendrick SIR Models}\label{beyond-r0-sir}
 
-Through \(R_0\) we saw that treating epidemics more like a function of
-the time points in some higher dimensional space (nicely visualizable
-with a ternary plot for the SIR models), then we could better compare
-the overall structure of the epidemic and how it impacted the
-population. Without knowing the generative structure underlying these
-two epidemics, we propose that time-invariant tools can help compare
-them in smart ways, and that these ideas can extend past the CITE
-kermack1927 model and to epidemics with more states.
+Through \(R_0\) \textcolor{orange}{example}, we see that treating
+epidemics more like a
+\sout{function of the time points in some higher dimensional space (nicely visualizable with a ternary plot for the SIR models)}
+\textcolor{orange}{filaments embedded in a lower dimensional space},
+then we can better compare the overall structure of the epidemic and
+\sout{how it impacted the population}
+\textcolor{orange}{see how the population was directly impacted}.
+\sout{Without knowing the generative structure underlying these two epidemics},
+\textcolor{orange}{When the underlying generative model is unknown for epidemic trajectories},
+we propose that time-invariant tools can help compare them in smart
+ways, and that these ideas can extend past the CITE kermack1927 model
+and to epidemics with more states.
 
 \textcolor{violet}{
 to be continued - (1) highlight filamental view of the epidemics through their simplex space (2) describe distances that could compare different epidemics with this mindset. Also motivate uncertainty for epidemics now that we have a filamental view (3) emphasis that this idea should extend to higher dimensions (4) present the idea that one could also compare bands together.
@@ -334,7 +389,7 @@ imputed from those case counts along with other information about the
 disease and the population of interest.
 \textcolor{violet}{In \pkg{EpiCompare}, w}e focus on understanding the
 overall impact of an outbreak at the aggregate/population level,
-\textcolor{violet}{which allows examination of overall trends of an epidemic more easily}.
+\textcolor{violet}{which allows for examination of overall trends of an epidemic more easily}.
 
 \textcolor{violet}{[Ben says: the following rewrite was done because the original text seemed to repeat the same thing 2x, once in text and the second time with the function }\texttt{agents\_to\_aggregate}\textcolor{violet}{. The following two paragraphs try to merge the introduction of the function and it's capabilities into one story.]}
 
@@ -342,36 +397,27 @@ overall impact of an outbreak at the aggregate/population level,
 help the practitioner examine epidemics from an aggregate/ population
 lens, we provide a function called \texttt{agents\_to\_aggregate}. This
 function transforms data about individual/agents' initial entry into
-each state (e.g.~start of infection, start of recovery, etc) to an
-aggregate view of how many individuals where in a state at a given time.
+each state (e.g.~start of infection, start of recovery, etc.) to an
+aggregate view of how many individuals were in a state at a given time.
 There are often situations where grouping agents into subpopulations
 (e.g.~subpopulations defined by age or sex) can highlight different
 aggregate level trends. For example, research by
 \citet{rvachev1985,anderson1992,worby2015} develop state-based models
-that account for subpopulations in their
-models\footnote{\textcolor{violet}{[Ben says: I don't really like this sentence, but I'm trying to include the references - are they needed?]}}.
-This function allows the user to easily group agents into new
-subpopulations by using the \pkg{tidyverse} paradigm to first
-\texttt{group\_by()}\footnote{The \texttt{group\_by} function is from
-  the \pkg{dplyr} package.} the subpopulation defining features and then
-aggregate (using \texttt{agents\_to\_aggregate}) conditional on these
-subpopulations.
-\textcolor{orange}{I think these last two sentences are repetitive}
+that account for subpopulations. In \pkg{EpiCompare}, we facilitate
+subpopulation analysis by combining \pkg{dplyr}::\texttt{group\_by} and
+\texttt{agent\_to\_aggregate} to provide aggregation at a group level.
 
 \textcolor{violet}{[Ben says: this whole paragraph is new]} The
-\texttt{agents\_to\_aggregate} function is also flexible to deal with a
+\texttt{agents\_to\_aggregate} function is flexible and can deal with a
 wide range of information about each individual. It can, theoretically,
-account for infinitely many states, allowing the practitioner to
-aggregate information relative to the standard ``Suspectible'',
-``Infectious'', and ``Recovered'' states (CITE) or also add states like
-``Exposed'', ``iMmune'', ``Hospitalized'' and more. Additionally,
-\texttt{agents\_to\_aggregate} also permits indicators for death/exit
-and birth/entry dates (that change the overall population size).
-\textcolor{orange}{Don't think this is necessary \sout{This function is the highest tested function in this package, and can deal with many nuances that might come-about in the individual data.}}
-The function \texttt{agents\_to\_aggregate()} is a powerful tool in the
-step of pre-processing data, one that quickly and simply transforms
-individual level information into an aggregate view that can be
-processed and analyzed in a simpler manner.
+account for infinitely many states. This functionality allows the
+practitioner to aggregate information relative to the standard states
+(e.g.~``Susceptible'', ``Infectious'', and ``Recovered'') as well as add
+states (e.g.~``Exposed'', ``iMmune'', ``Hospitalized'') (CITE).
+Additionally, \texttt{agents\_to\_aggregate} also permits indicators for
+death/exit and birth/entry dates. Overall, the function
+\texttt{agents\_to\_aggregate()} is a powerful tool for pre-processing
+data.
 
 \textcolor{violet}{\sout{In \pkg{EpiCompare}, we provide a function to transform information about each individual/agent’s initial time of entry into each state (e.g. start of infection, start of recovery, etc). This transformation between \textit{agent} information to \textit{aggregate} information is useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools allow the user to easily group agents and define new subpopulations to explore. This is important as case studies highlight the usefulness of identifying differing subpopulations (e.g. age, sex) and many state based models provide for subpopulation-based states in their analysis}}
 \citep{rvachev1985,anderson1992,worby2015}.
@@ -388,21 +434,21 @@ processed and analyzed in a simpler manner.
 \textcolor{violet}{[Ben says: this is actually an older version:]} With
 raw data, ``getting to know'' our data currently means figuring out good
 combinations of visualizations, numerical summaries and subsets. An
-expert coder can start from \texttt{agents\_to\_aggregate} to
-successfully do this in many ways, but \pkg{EpiCompare} also includes
-tools to rapidly explore your data if your has at least three epidemic
-states (although these tools work best with exactly three epidemic
-states). Our \texttt{geom\_aggregate} provides a rapid way to explore
-different subpopulations' experience of the epidemic, and combines the
-ideas behind \texttt{agents\_to\_aggregate} for the SIR case, with
-\texttt{geom\_path} and \texttt{coord\_tern} to visualize any number of
-groups epidemic trajectory in 3d simplex space using \pkg{ggplot2} and
-\pkg{ggtern} \citep{Wickham2016, Hamilton2018}. Visualization tools for
-SIR models were developed because (1) SIR models are some of the most
-common and basic epidemic state-based models and (2) our simplex
-representation of these epidemics emphasizes a ``time-invarance''
-representation of the data (for a refresher see Section
-\ref{sec:time-invariant}).
+expert coder has many ways to successfully explore the data in an
+aggregate lens using \texttt{agents\_to\_aggregate}. \pkg{EpiCompare}
+also includes tools to rapidly explore data that has three epidemic
+states. Building on the tools in \pkg{ggplot2} and \pkg{ggtern}, our
+\texttt{geom\_aggregate} provides a rapid way to explore different
+subpopulations' experience of an epidemic by combining the ideas behind
+\texttt{agents\_to\_aggregate} for three-state models to examine
+subpopulation trajectories in a 3d simplex space
+\citep{Wickham2016, Hamilton2018}. \textcolor{orange}{come back?}
+Visualization tools for three-state models were developed because (1)
+SIR models are some of the most common and basic epidemic state-based
+models and (2) our simplex representation of these epidemics emphasizes
+a ``time-invarance'' representation of the data (for a refresher see
+Section \ref{sec:time-invariant}).
+\textcolor{orange}{make sure SIR is defined before}
 
 \textcolor{violet}{[Ben says: The 2 things I really like about the earlier (now current) version is (1) the introduction seems to make more sense in getting at what EDA really is, (2) the way it disucsses SIR models only 1 potential model instead of putting it as *the* model.]}
 
@@ -418,35 +464,28 @@ representation of the data (for a refresher see Section
 \citep{Wickham2016, Hamilton2018}.\textcolor{violet}{\sout{We developed these out-of-the-box visualization tools for SIR models because (1) SIR models are some of the most common and basic epidemic state-based models and (2) our simplex representation of these epidemics emphasizes a "time-invarance" representation of the data (see Section \ref{sec:time-invariant}).}}
 
 \textbf{Model Fitting and Simulations}
-\textcolor{violet}{[Ben says: see footnote 3 about the introduction to this paragraph.]}
 
 Although this package does not focus on fitting a model to data, we do
 provide some flexible functions for simulation of basic discrete-time
-epidemic-state
-models.\sout{ with Bernoulli or Multinomial transitions which can be used to (noisily) approximate ODEs which describe transitions from one state to the next}\footnote{The
-  original sentence seemed clearer to me (it may even be a run-on
-  sentence now). I'm wondering if you didn't like the original sentence
-  relative to the ``truth-ful-ness'' of the statement? Here's the
-  original sentence slightly edited: ``Although this package does not
-  focus on estimating a model for the data, we do provide some power
-  functions for simulation of basic state models with Bernoulli
-  approximation of ODE state models encoded in simulate\_agents and
-  simulate\_SIR\_agents''.}. These functions can be naturally combined
-with \texttt{agents\_to\_aggregate()} to proceed in the pipeline. The
-function \texttt{simulate\_SIR\_agents()} simulates an SIR epidemic with
-user inputs for the number of simulations, the initial number in each
-state, the infection and recovery parameters \((\beta, \gamma\)), and
-the total number of discrete time steps. This function allows for easy
-access to SIR model analysis and comparison. Beyond SIR models, the
-function \texttt{simulate\_agents()} takes as input a user-specified
-transition matrix and other epidemic parameters to allow the user to
-create simulations of an outbreak for \textit{any} number of states and
-any number of transitions among them. This allows for users to explore
-the space of models in an intuitive way without getting bogged down by
-too much mathematical detail. For consistency, we have made output from
-\texttt{simulate\_agents()} and \texttt{simulate\_SIR\_agents()}
-compatible with \texttt{agents\_to\_aggregate()} so aggregate
-information may easily be accessed.
+epidemic-state models. These functions produce individual level
+information and can be naturally combined with
+\texttt{agents\_to\_aggregate()} to view these simulations through an
+aggregate lens. The function \texttt{simulate\_SIR\_agents()} simulates
+an SIR epidemic with user inputs for the number of simulations, the
+initial number in each state, the infection and recovery parameters
+\((\beta, \gamma\)), and the total number of discrete time steps. This
+function allows for easy access to SIR model analysis and comparison.
+Beyond SIR models, the function \texttt{simulate\_agents()} takes as
+input a user-specified transition matrix and other epidemic parameters
+to allow the user to create simulations of an outbreak for \textit{any}
+number of states and any number of transitions among them. This
+flexibility in states can be used to also reflect group-based dynamics.
+This allows for users to explore the space of models in an intuitive way
+without getting bogged down by too much mathematical detail. For
+consistency, we have made output from \texttt{simulate\_agents()} and
+\texttt{simulate\_SIR\_agents()} compatible with
+\texttt{agents\_to\_aggregate()} so aggregate information may easily be
+accessed.
 
 \textbf{Post-processing}
 
@@ -493,8 +532,8 @@ is to another. \textcolor{orange}{Ben says something about distance}
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
-In this section, we highlight a number of the functionalities available
-in \pkg{EpiCompare}. These functionalities include data cleaning,
+In this section, we highlight a number of the functionality available in
+\pkg{EpiCompare}. These functionality include data cleaning,
 visualization, simulation, and comparison, in accordance with the data
 analysis pipeline \ref{fig:pipeline}. We show a full data analysis from
 beginning to end that can be accomplished in a streamlined and
