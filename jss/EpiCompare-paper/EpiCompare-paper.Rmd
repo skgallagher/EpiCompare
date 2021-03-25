@@ -134,14 +134,14 @@ Mathematically, epidemics are complex objects.  They are hard to assess and comp
 
 ## Motivating time-invariance through $R_0$ {short-title="motivating through R0" #r0}
 
-Time-invariance analysis, as it appears in \pkg{EpiCompare}, \sout{can be seen as an attempt to escape} \shannon{bypasses}  many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimation of certain epidemiological parameters, including the reproductive number $R_0$, which \citet{Gallagher2020} show can be \sout{heavily impacted} \shannon{strongly effected} by choices of beginning and ending time points of an epidemic. 
+Time-invariance analysis, as it appears in \pkg{EpiCompare}, \sout{can be seen as an attempt to escape} \shannon{bypasses}  many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimation of certain epidemiological parameters, including the reproduction number $R_0$.
 
 \ben{
 Story: 
 (1) basic definition of $R_0$, (2) emphasis that $R_0$ captures a lot of information about an epidemic. Given 3 number example and discuss how one would usually interpret what the differences in $R_0$ meant (3) maybe connect to \# of $R_0$ estimates for COVID-19 (Aronson et al 2020). 
 }
 
-$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is \shannon{often} associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}. For a demonstration of $R_0$ getting lost in a time-dependent analysis we introduce the \citet{Kermack1927}’s common SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
+$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is \shannon{often} associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}.  \shannon{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a naive population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. } To demonstrate the difficulty of discerning $R_0$in a time-dependent analysis, we \shannon{first} introduce the \citet{Kermack1927}’s common SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
