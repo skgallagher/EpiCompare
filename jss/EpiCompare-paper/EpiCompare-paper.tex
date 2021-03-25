@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -84,7 +82,7 @@ Pittsburgh, PA 15213\\
 
 \section[Intro]{Introduction}\label{sec:intro}
 
-\textcolor{violet}{I something wory about including a full paragraph of introduction before we emphasis where and why we think this tool is useful. Especially the first "where" it could be useful, as I'm not sure how it connets to the more "global" view of the epidemic research area.}
+\textcolor{violet}{[Ben says: I something wory about including a full paragraph of introduction before we emphasis where and why we think this tool is useful. Especially the first "where" it could be useful, as I'm not sure how it connets to the more "global" view of the epidemic research area.]}
 
 The recent (and on-going) COVID-19 global pandemic has galvanized public
 interest in understanding more about infectious disease modeling and has
@@ -100,35 +98,39 @@ project epidemic scenarios under pre-specified parameters
 \citep[e.g.][]{ferguson2020}. At the same time, descriptive statistics
 and visualizations from universities, many branches and levels of
 government, and news organizations are an important first step of the
-process \citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021} .
+process \citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
+\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly.]}
 
 With the many visualization and exploratory tools, models and modeling
 paradigms, and reviews and comparisons in the literature and through the
 MIDAS (Models of Infectious Disease Agent Study) network
 \citep{midasnetwork2021}, this field has a lot of devices to aid an
-individual practitioner decide the correct approach. For
-example,\proglang{R} packages such as \pkg{surveillance},
-\pkg{EpiModel}, and \pkg{pomp} have all made significant steps in
-standardizing the flow of the data analysis pipeline for epidemic
-modeling through digitizing data sets, making accessible statistical
-models, and providing a plethora of educational material for both coding
-novices and experts alike \citep{surveillance2017,Jenness2018,King2016}.
+individual practitioner decide the correct approach. For example,
+\proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and
+\pkg{pomp} have all made significant steps in standardizing the flow of
+the data analysis pipeline for epidemic modeling through digitizing data
+sets, making accessible statistical models, and providing a plethora of
+educational material for both coding novices and experts alike
+\citep{surveillance2017,Jenness2018,King2016}.
 
 At the same time, analysis packages often only address a specific
-portion of the analysis pipeline, for instance focusing on certain types
-of models. Modeling tools, which usually require learning
-package-specific syntax, often don't provide easy ways to compare and
-assess their models on new data. Moreover, exploring and modeling
-epidemics require transforming and \textit{tidying} data in different
-ways. To fill these gaps, we present our \proglang{R} package
-\pkg{EpiCompare}. Our package's primary focus is to aid and advance
-research in the area of comparison and assessment of epidemic and
-epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the
-data analysis pipeline of infectious diseases as 1) data pre-processing,
-2) exploratory data analysis (EDA), 3) modeling and simulating, 4)
-post-processing, and 5) comparison and assessment; where each previous
-part of the pipeline influences the next. \pkg{EpiCompare} provides
-tools to aids practitioners in all areas of this pipeline.
+portion of the analysis
+pipeline\textcolor{violet}{\sout{, for instance focusing on certain types of models.}}
+\textcolor{violet}{These m}odeling
+tools\textcolor{violet}{\sout{, which}} usually require learning
+package-specific syntax\textcolor{violet}{\sout{,}} and often don't
+provide easy ways to compare and assess their models on new data.
+Moreover, exploring\textcolor{violet}{, \sout{and}} modeling
+\textcolor{violet}{and comparing} epidemics require transforming and
+\textit{tidying} data in different ways. To fill these gaps, we present
+our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus
+is to aid and advance research in the area of comparison and assessment
+of epidemic and epidemiological models. In Figure \ref{fig:pipeline}, we
+illustrate the data analysis pipeline of infectious diseases as 1) data
+pre-processing, 2) exploratory data analysis (EDA), 3) modeling and
+simulating, 4) post-processing, and 5) comparison and assessment; where
+each previous part of the pipeline influences the next. \pkg{EpiCompare}
+provides tools to aids practitioners in all areas of this pipeline.
 
 \begin{figure}[!ht]
     \centering
@@ -142,53 +144,55 @@ tools to aids practitioners in all areas of this pipeline.
 process that evolves over time, often need to be compared in a way not
 constrained to initial times or time scales to understand the processes
 at play.
-\textcolor{violet}{Moreover, many current comparison tools for state-space models (e.g. SIR models) highlight the proportion of individuals in each state (at a given time) in a piece-wise / marginal  fashion. This approach may reduce the amount of connections that can be seen, similar to projections of a multidimensional distribution onto a single axis at a time.}
-Tools in \pkg{EpiCompare} give the user the ability to extend their
-toolkit to evaluate epidemics within a time-invariant lens. The goal of
-\pkg{EpiCompare} is not to supplant existing infectious disease modeling
-tools and software but, rather, is a concerted effort to create standard
-and fair comparisons among models developed for disease outbreaks and
-outbreak data.
+\textcolor{violet}{Time-invariant analysis can also make it easier to compare state-space models in a more global, holistic fashion. \sout{Moreover, m} M}any
+current \textcolor{violet}{time-dependent} comparison tools for
+state-space models (e.g.~SIR models)
+\textcolor{violet}{\sout{highlight} examine} the proportion of
+individuals in each state (at a given time) in a piece-wise / marginal
+fashion. \textcolor{violet}{These \sout{This}}
+approach\textcolor{violet}{es} may reduce the amount of connections that
+can be seen, similar to projections of a multidimensional distribution
+onto a single axis at a time. Tools in \pkg{EpiCompare} give the user
+the ability to extend their toolkit to evaluate epidemics within a
+time-invariant lens. The goal of \pkg{EpiCompare} is not to supplant
+existing infectious disease modeling tools and software but, rather, is
+a concerted effort to create standard and fair comparisons among models
+developed for disease outbreaks and outbreak data.
 
 This paper is broken up into the following sections; section
 \ref{sec:time-invariant} motivates and showcases tools of time-invariant
 analysis, section \ref{sec:overview} presents an outline of how
 \pkg{EpiCompare} aids a practitioner in every step of the pipeline and
-section \ref{sec:tour} provides a thorough demonstrating of the tools
-through a detailed example of a full data analysis pipeline.
+section \ref{sec:tour} provides a \textcolor{violet}{\sout{thorough}}
+demonstrating of the tools through a detailed example of a full data
+analysis pipeline.
 
 \section[Time-invariant]{Motivation and tools for time-invariant
 analysis}\label{sec:time-invariant}
 
-\textcolor{violet}{the vast majority of this section has been changed / needs more updates.}
-
 \textcolor{orange}{time invariance vs. time invariant analysis??}
 
-\textcolor{orange}{I again changed this section a lot, but hopefully it's more in line with what you are thinking.  The story I want to tell is 1) introduce the concept of time invariance; 2) demonstrate time invariance through R0 and tell why it is important; 3) visualize R0 from the SIR model with a time-invariant plot; and 4) talk about models beyond SIR.}
+\textcolor{orange}{I again changed this section a lot, but hopefully it's more in line with what you are thinking.  The story I want to tell is 1) introduce the concept of time invariance; 2) demonstrate time invariance through R0 and tell why it is important; 3) visualize R0 from the SIR model with a time-invariant plot\footnote{\textcolor{violet}{[Ben says: defend how this fits into the narrative?]}} and 4) talk }\textcolor{violet}{Time invariance in}
+\sout{about}\textcolor{orange}{ models beyond SIR.}
 
 \textcolor{orange}{I noticed the ternary plot kinda fell out of this section and it's not really detailed anywhere else in the paper.  So I put it back in.  It's a non-standard plot and a feature of EpiCompare so I think it's worth talking about, and I think it's appropriate to introduce in this section.}
 
 \pkg{EpiCompare} delivers \textit{time-invariance} centric analysis by
 (1) taking a global, not marginal view of how epidemics move through
-\sout{time} \textcolor{orange}{populations} and (2) by treating full
-epidemics as
-filaments\sout{ not functions (breaking away from a time-centric view)}
+populations and (2) by treating full epidemics as filaments\footnote{\textcolor{violet}{[Ben says: Do we need a footnote explaining what this is more clearly?]}}
 and not points produced by functions of time. The following section aims
 to highlight the strengths of \textit{time-invariance} and define the
 mathematical foundations that \pkg{EpiCompare}'s tools stand upon.
 
-\textcolor{orange}{Mathematically}, epidemics are complex objects. They
-are hard to assess and compare to one another due to the differences in
-the diseases, the location where the outbreak occurs, how the
-\textcolor{orange}{a?}ffected population reacts, and the timefeatures
-(including start of the epidemic, speed of infection and more).
-Time-invariant analysis \sout{attempts to make}
-\textcolor{orange}{makes} different epidemics easier to compare by
-removing many time dependent aspects of an epidemic. Instead
-\textcolor{orange}{it} focuses on the overall \sout{"life"}
-\textcolor{orange}{trajectory} of an epidemic, emphasizing the number of
-lives affected.
-\textcolor{orange}{really like the lives affected part; I think that's a powerful statement}
+Mathematically, epidemics are complex objects. They are hard to assess
+and compare to one another due to the differences in the diseases, the
+location where the outbreak occurs, how the affected population reacts,
+and the time \textcolor{violet}{related} features (including start of
+the epidemic, speed of infection and more). Time-invariant analysis make
+different epidemics easier to compare by removing many time dependent
+aspects of an epidemic. Instead it focuses on the overall trajectory of
+an epidemic, emphasizing the number of lives affected.
+\textcolor{orange}{[Shannon says: really like the lives affected part; I think that's a powerful statement.]}
 
 \subsection[motivating through R0]{Motivating time-invariance through
 \(R_0\)}\label{r0}
@@ -356,9 +360,8 @@ to be continued - (1) highlight filamental view of the epidemics through their s
 
 In this section, we present the tools implemented in \pkg{EpiCompare}
 and explain how they aid in the data analysis pipeline. In Fig.
-\ref{fig:pipeline2}, we illustrate how our
-\textcolor{violet}{\sout{package fits} package's functions fit} into the
-data analysis pipeline introduced in Fig. \ref{fig:pipeline}. All
+\ref{fig:pipeline2}, we illustrate how our package's functions fit into
+the data analysis pipeline introduced in Fig. \ref{fig:pipeline}. All
 front-facing functions are aimed to be as user-friendly as possible. We
 also focus on providing the user ``tidyverse'' style functions, that
 encourage piping and also follow clear verb naming schemes
@@ -368,72 +371,58 @@ two primary points of entry. The first point of entry is the very
 beginning with pre-processing and visualizing raw data, and the second
 point of entry is after modeling and simulation. Figure
 \ref{fig:pipeline2} captures these different paths, and we will
-highlight both approaches and how to leverage \pkg{EpiCompare} in the
-subsections below.
+highlight\footnote{\textcolor{violet}{[Ben says: we need to make sure we actually do highlight ]}}
+both approaches and how to leverage \pkg{EpiCompare} in the subsections
+below.
 
 \textbf{Data Pre-processing}
 
-The first step of most data analysis is cleaning the data
-\textcolor{violet}{so it can \sout{to}} be explored. There are multiple
-ways to collect epidemiological data. Sometimes individual records
-\textcolor{violet}{are collected}, with times of different states of the
-epidemic (infection, recovery, etc.) as well as individual information
-like network structure, location, and sub-population
-information\textcolor{violet}{.\sout{will be collected, whereas}}
-\textcolor{violet}{O}ther data collections focus on aggregate counts of
+The first step of most data analysis is cleaning the data so it can be
+explored. There are multiple ways to collect epidemiological data.
+Sometimes individual records are collected, with times of different
+states of the epidemic (infection, recovery, etc.) as well as individual
+information like network structure, location, and sub-population
+information. Other data collections focus on aggregate counts of
 individuals in each epidemic state. In fact, usually only the number of
 new infections at each time step (e.g.~weekly case counts) is observed.
-Compartment totals
-\textcolor{violet}{(amounts of individuals in each state)} are then
+Compartment totals (amounts of individuals in each state) are then
 imputed from those case counts along with other information about the
-disease and the population of interest.
-\textcolor{violet}{In \pkg{EpiCompare}, w}e focus on understanding the
-overall impact of an outbreak at the aggregate/population level,
-\textcolor{violet}{which allows for examination of overall trends of an epidemic more easily}.
+disease and the population of interest. In \pkg{EpiCompare}, we focus on
+understanding the overall impact of an outbreak at the
+aggregate/population level, which allows for examination of overall
+trends of an epidemic more easily.
 
-\textcolor{violet}{[Ben says: the following rewrite was done because the original text seemed to repeat the same thing 2x, once in text and the second time with the function }\texttt{agents\_to\_aggregate}\textcolor{violet}{. The following two paragraphs try to merge the introduction of the function and it's capabilities into one story.]}
+In order to help the practitioner examine epidemics from an aggregate/
+population lens, we provide a function called
+\texttt{agents\_to\_aggregate}. This function transforms data about
+individual/agents' initial entry into each state (e.g.~start of
+infection, start of recovery, etc.) to an aggregate view of how many
+individuals were in a state at a given time. There are often situations
+where grouping agents into subpopulations (e.g.~subpopulations defined
+by age or sex) can highlight different aggregate level trends. For
+example, research by \citet{rvachev1985,anderson1992,worby2015} develop
+state-based models that account for subpopulations. In \pkg{EpiCompare},
+we facilitate subpopulation analysis by combining
+\pkg{dplyr}::\texttt{group\_by} and \texttt{agent\_to\_aggregate} to
+provide aggregation at a group level.
 
-\textcolor{violet}{[Ben says: this whole paragraph is new]} In order to
-help the practitioner examine epidemics from an aggregate/ population
-lens, we provide a function called \texttt{agents\_to\_aggregate}. This
-function transforms data about individual/agents' initial entry into
-each state (e.g.~start of infection, start of recovery, etc.) to an
-aggregate view of how many individuals were in a state at a given time.
-There are often situations where grouping agents into subpopulations
-(e.g.~subpopulations defined by age or sex) can highlight different
-aggregate level trends. For example, research by
-\citet{rvachev1985,anderson1992,worby2015} develop state-based models
-that account for subpopulations. In \pkg{EpiCompare}, we facilitate
-subpopulation analysis by combining \pkg{dplyr}::\texttt{group\_by} and
-\texttt{agent\_to\_aggregate} to provide aggregation at a group level.
-
-\textcolor{violet}{[Ben says: this whole paragraph is new]} The
-\texttt{agents\_to\_aggregate} function is flexible and can deal with a
-wide range of information about each individual. It can, theoretically,
-account for infinitely many states. This functionality allows the
-practitioner to aggregate information relative to the standard states
-(e.g.~``Susceptible'', ``Infectious'', and ``Recovered'') as well as add
-states (e.g.~``Exposed'', ``iMmune'', ``Hospitalized'') (CITE).
+The \texttt{agents\_to\_aggregate} function is flexible and can deal
+with a wide range of information about each individual. It can,
+theoretically, account for infinitely many states. This functionality
+allows the practitioner to aggregate information relative to the
+standard states (e.g.~``Susceptible'', ``Infectious'', and
+``Recovered'') as well as add states (e.g.~``Exposed'', ``iMmune'',
+``Hospitalized'')
+(CITE\footnote{\textcolor{violet}{[Ben says: this was originally to back up the claim that SIR is the "standard" states - now we might need to have a paper that says that SIR is the standard states and also suggests other states...]}}).
 Additionally, \texttt{agents\_to\_aggregate} also permits indicators for
 death/exit and birth/entry dates. Overall, the function
 \texttt{agents\_to\_aggregate()} is a powerful tool for pre-processing
 data.
 
-\textcolor{violet}{\sout{In \pkg{EpiCompare}, we provide a function to transform information about each individual/agent’s initial time of entry into each state (e.g. start of infection, start of recovery, etc). This transformation between \textit{agent} information to \textit{aggregate} information is useful for seeing the overall trend of the epidemic (and how it impacts different subpopulations). Our tools allow the user to easily group agents and define new subpopulations to explore. This is important as case studies highlight the usefulness of identifying differing subpopulations (e.g. age, sex) and many state based models provide for subpopulation-based states in their analysis}}
-\citep{rvachev1985,anderson1992,worby2015}.
-
-\textbackslash ben\{\sout{We provide a "tidyverse"-styled function, }\texttt{agents\_to\_aggregate()}\textcolor{violet}{\sout{ to transform agent information into aggregate state information.  As a "tidy" function, our function }}\texttt{agents\_to\_aggregate()}
-\textcolor{violet}{\sout{allows the user to identify and analyze subpopulations by first executing a }}\texttt{group\_by()}
-\textbackslash ben\{\sout{{ from \pkg{dplyr}. The function }}\texttt{agents\_to\_aggregate}\textcolor{violet}{\sout{is flexible in that there is no limit on the amount of permitted epidemiological states so users can incorporate information from compartments such as "Exposed", "iMmune", or "Hospitalized" groups, for instance, and also permits indicators for death/exit and birth/entry dates. Our function,}}
-\texttt{agents\_to\_aggregate()}\textcolor{violet}{\sout{ does not require agents to pass through every state listed and agents are allowed to start in any state. This function is constrained to integer time steps (for example days), but transformations (linear or otherwise) of the time columns can account for finer grained time steps (e.g. hours or minutes). The function }}\texttt{agents\_to\_aggregate()}\textcolor{violet}{\sout{ returns the total number of individuals in each state at each time point.  We view }}\texttt{agents\_to\_aggregate()}\textcolor{violet}{\sout{ as powerful tool in the step of pre-processing data, one that quickly and simply transforms individual level information into an aggregate view that can be processed and analyzed in a simpler manner.}}
-
 \textbf{EDA}
 
-\textcolor{violet}{[Ben says: I'm went back and thought that the version before this version was clearer. Wanna take a look and discuss? Side by side: [github](https://github.com/skgallagher/EpiCompare/commit/7dbb4996d1d3169d3e3a426bc9820c417ea87beb)]}
-
-\textcolor{violet}{[Ben says: this is actually an older version:]} With
-raw data, ``getting to know'' our data currently means figuring out good
-combinations of visualizations, numerical summaries and subsets. An
+With raw data, ``getting to know'' our data currently means figuring out
+good combinations of visualizations, numerical summaries and subsets. An
 expert coder has many ways to successfully explore the data in an
 aggregate lens using \texttt{agents\_to\_aggregate}. \pkg{EpiCompare}
 also includes tools to rapidly explore data that has three epidemic
@@ -442,26 +431,14 @@ states. Building on the tools in \pkg{ggplot2} and \pkg{ggtern}, our
 subpopulations' experience of an epidemic by combining the ideas behind
 \texttt{agents\_to\_aggregate} for three-state models to examine
 subpopulation trajectories in a 3d simplex space
-\citep{Wickham2016, Hamilton2018}. \textcolor{orange}{come back?}
+\citep{Wickham2016, Hamilton2018}.
+\textcolor{orange}{[Shannon says: come back?]}\footnote{\textcolor{violet}{[Ben says: what does this note mean?]}}
 Visualization tools for three-state models were developed because (1)
 SIR models are some of the most common and basic epidemic state-based
 models and (2) our simplex representation of these epidemics emphasizes
 a ``time-invarance'' representation of the data (for a refresher see
 Section \ref{sec:time-invariant}).
-\textcolor{orange}{make sure SIR is defined before}
-
-\textcolor{violet}{[Ben says: The 2 things I really like about the earlier (now current) version is (1) the introduction seems to make more sense in getting at what EDA really is, (2) the way it disucsses SIR models only 1 potential model instead of putting it as *the* model.]}
-
-\textcolor{violet}{\sout{With raw data, exploratory analysis frequently means figuring out good combinations of visualizations, numerical summaries, and groupings. An expert coder can start from}}
-\texttt{agents\_to\_aggregate()}
-\textcolor{violet}{\sout{to successfully accomplish EDA in many ways, but we have also developed tools to allow a novice coder to rapidly explore data, as long as there three unique epidemiological states (like the SIR model). Our}}
-\texttt{geom\_aggregate()}
-\textcolor{violet}{\sout{provides a rapid way to explore different subpopulations' experiences of the epidemic in the ternary lens. It combines the ideas behind}}
-\texttt{agents\_to\_aggregate()}
-\textbackslash ben\{\sout{with \pkg{ggplot2}'s} \texttt{geom\_path()}
-\textcolor{violet}{\sout{and \pkg{ggtern}'s}} \texttt{coord\_tern()}
-\textcolor{violet}{\sout{to visualize any number of groups epidemic trajectory in 3d simplex}}
-\citep{Wickham2016, Hamilton2018}.\textcolor{violet}{\sout{We developed these out-of-the-box visualization tools for SIR models because (1) SIR models are some of the most common and basic epidemic state-based models and (2) our simplex representation of these epidemics emphasizes a "time-invarance" representation of the data (see Section \ref{sec:time-invariant}).}}
+\textcolor{orange}{[Shannon says: make sure SIR is defined before.]}
 
 \textbf{Model Fitting and Simulations}
 
@@ -958,8 +935,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1008,3 +985,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
