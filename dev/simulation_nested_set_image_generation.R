@@ -283,4 +283,6 @@ vis <- grid.arrange(grobs = c(ggvis, ggvis_below),
                     top = grid::textGrob("Simulation-based nested set",
                                          gp = grid::gpar(fontsize = 25, 
                                                          fontface = 'bold')))
-ggsave(vis, filename = "~/Desktop/nested_set_vis.png", width = 4*6+1, height = 6*(5/4)+1)
+scale = 1/3
+ggsave(vis, filename = "~/Desktop/nested_set_vis.pdf", 
+       width = (4*6+1)*scale, height = (6*(5/4)+1)*scale)

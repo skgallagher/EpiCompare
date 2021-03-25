@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -73,7 +71,7 @@ Pittsburgh, PA 15213\\
 \usepackage{xcolor}
 \usepackage{rotating}
 
-\usepackage{amsmath} \usepackage{amsthm} \usepackage{afterpage} \usepackage[normalem]{ulem}
+\usepackage{amsmath} \usepackage{amssymb} \usepackage{amsthm} \usepackage{afterpage} \usepackage[normalem]{ulem}
 
 \begin{document}
 
@@ -197,7 +195,7 @@ an epidemic, emphasizing the number of lives affected.
 \textcolor{orange}{[Shannon says: really like the lives affected part; I think that's a powerful statement.]}
 
 \subsection[motivating through R0]{Motivating time-invariance through
-\(R_0\)}\label{r0}
+\(R_0\)\footnote{\textcolor{violet}{Is this still a relevant title for this section?}}}\label{r0}
 
 Time-invariance analysis, as it appears in \pkg{EpiCompare},
 \sout{can be seen as an attempt to escape} \textcolor{orange}{bypasses}
@@ -207,23 +205,20 @@ in the US to a 10 day outbreak of norovirus on a cruise ship is
 \sout{still} possible. Time-dependent problems can arise when estimation
 of certain epidemiological parameters, including the reproduction number
 \(R_0\).
-
-\textcolor{violet}{
-Story: 
-(1) basic definition of $R_0$, (2) emphasis that $R_0$ captures a lot of information about an epidemic. Given 3 number example and discuss how one would usually interpret what the differences in $R_0$ meant (3) maybe connect to \# of $R_0$ estimates for COVID-19 (Aronson et al 2020). 
-}
+\textcolor{violet}{We will use $R_0$ to motivate the usefulness of time-invariaten analysis in this section.}
 
 \(R_0\) is probably the most famous time-invariant numerical summary of
 an epidemic and is \textcolor{orange}{often} associated with the
 Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}.
-\textcolor{orange}{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a naive population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. }
+\textcolor{orange}{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a \textcolor{violet}{\sout{naive} completely susceptible}\footnote{\textcolor{violet}{[Ben says: I feel like naive is unclear - even if that's the technical term.]}} population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. }\textcolor{violet}{[Ben says: could we expand on this difficulty / show it really is difficult with 1 more sentence?]}
 To demonstrate the difficulty of discerning \(R_0\)in a time-dependent
 analysis, we \textcolor{orange}{first} introduce the
-\citet{Kermack1927}'s common SIR model. This model captures the
-transitions from one state to the next as a system of ordinary
-differential equations, where \(N\) is the total number of individuals,
-\(\beta\) is the rate of infection, and \(\gamma\) is the rate of
-recovery,
+\citet{Kermack1927}'s
+\textcolor{violet}{\sout{common}}\footnote{\textcolor{violet}{[Ben says: is it common? maybe just remove it?]}}
+SIR model. This model captures the transitions from one state to the
+next as a system of ordinary differential equations, where \(N\) is the
+total number of individuals, \(\beta\) is the rate of infection, and
+\(\gamma\) is the rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -237,20 +232,49 @@ and \(\gamma\) are both rates (of infection and recovery, respectively),
 the ratio of the two, \(R_0\), is a time-invariant quantity.
 \textcolor{orange}{Once $R_0$ is estimated, then important epidemic quantities can be inferred such as a the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic and the total number of infections, the final size.  Moreover, $R_0$ allows us to compare different disease outbreaks and different outbreaks on the same scale.  }
 
-\subsection[visualizing r0]{Visualizing \(R_0\)}\label{vis-r0}
+\subsection[visualizing r0]{\sout{ Visualizing $R_0$}}\label{vis-r0}
 
-With regards to traditional epidemic \(state\) vs.~\(time\) plots, when
+\textcolor{violet}{[Ben says: It's unclear to me why we have a subtitle here - isn't it just more motivation of time-invariant anlysis with $R_0$? Also, I feel like the story is weak here. The point is to leverage $R_0$ to show the value of time-invariant analysis - this seems a bit more like just discussing properties of $R_0$. In the follow rewrite I use "[" and "]" to indicate that this is a section from your earlier draft.]}
+
+\textcolor{violet}{[Ben says: replacement of following paragraph: presentation rearranged to emphasis the figure first (when presenting the problem), and then discussing it.]}
+Traditional \(state\) vs.~\(time\) plots, like seen in Fig.
+\ref{fig:different-scales-standard}, present information about epidemics
+in a time-dependent and piece-wise fashion, and make comparing different
+epidemic \(R_0\)s impossible. In Fig.
+\ref{fig:different-scales-standard} we compare {[}two different
+epidemics that start in two populations of 1000 people with 10
+individuals initially infected, but with different infection and
+recovery rates (see Eq. \ref{eq:sir-ode}){]}. More specifically, we've
+observed both epidemics for 15 days, with the first
+epidemic\footnote{In the plot it says model - probably want to say epidemic?}
+(in red) having parameters \(\beta_1, \gamma_1 = (1,2)\) and the second
+epidemic (in blue) having parameters \(\beta_2, \gamma_2 = (2,4)\).
+{[}At a glance, we may believe that
+\sout{Model}\textcolor{violet}{epidemic} 1 has a larger \(R_0\) than
+\sout{Model}\textcolor{violet}{epidemic} 2 because the peak of infection
+occurs more quickly than in Model 2
+\textcolor{violet}{(remember $R_0$ relates to the rate of infection)}.
+On the other hand, we may believe
+\sout{Model}\textcolor{violet}{epidemic} 2 has a larger \(R_0\) because
+its unclear if the number of infections in that
+\sout{model}\textcolor{violet}{epidemic} has not yet peaked at time 15.
+Yet, both epidemics have the same \(R_0\) of 2{]}.
+
+\textcolor{violet}{[Ben says: bring Fig. \ref{fig:different-scales-standard} here.]}
+
+\textcolor{violet}{[Ben says: this paragraph is replaced with the one above]}With
+regards to traditional epidemic \(state\) vs.~\(time\) plots, when
 \sout{comparing}\textcolor{orange}{examining} different epidemics their
 \(R_0\)s are often impossible to compare. This can be seen in a basic
 example, where we have two different epidemics that start in two
 populations of 1000 people with 10 individuals
 \textcolor{orange}{initially} infected, but with
 \sout{different parameters}
-\textcolor{orange}{different infection and recovery rates (see Eq. \ref{eq:sir-ODE}}).
+\textcolor{orange}{different infection and recovery rates (see Eq. \ref{eq:sir-ode}}).
 Specifically suppose that \(\beta_1, \gamma_1 = (a,b)\) and
 \(\beta_2, \gamma_2 = (ca,cb)\) where \(a, b, c > 0\). Further suppose
 we observe both of these epidemics for 15 days. The epidemic
-trajectories are shown in the \(state\) vs.~time plots in Figure
+trajectories are shown in the \(state\) vs.~\(time\) plots in Figure
 \ref{fig:different-scales-standard}. At a glance, we may \sout{assume}
 \textcolor{orange}{believe} that Model 1 has a larger \(R_0\) than Model
 2 because the peak of infection occurs more quickly than in Model 2. On
@@ -261,6 +285,35 @@ same \(R_0\) of 2.
 
 \textcolor{orange}{Introduce ternary plots here.  The below paragraphs are mostly new}
 
+\textcolor{violet}{[Ben says: another rewrite of the paragraph below.]}
+A time-invariant approach to visualizing epidemics, which will be
+described more below, provides a simple way to compare \(R_0\) values of
+epidemics that are generated from the Kermack and McKendrick SIR model.
+In these visuals, we treat epidemics as \textit{trajectories}. A
+trajectory can be mathematically viewed as a set of points is space that
+have an ordering, and that all points on the line between these order
+points are also contained in the geometric object. For a SIR epidemic,
+we can represent the associated filament \(\psi\) as
+
+\[
+\psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]},
+\] where the an mapping \(\xi : t \to \mathbb{R}\) that is monotonically
+increasing would not change the definition of \(\psi\),
+i.e.~\(\psi_\xi = \psi\) where :
+
+\[
+\psi_\xi = \left \{(S(\xi(t)), I(\xi(t)), R(\xi(t))): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]}.
+\] {[}Since the number in each state is non-negative and the sum over
+the three states for a given time point sums to \(N\), then
+\textcolor{violet}{all points in} \(\psi\) will lay in a
+\textcolor{violet}{\sout{2d triangular plane, i.e. a ternary plot}}
+\textcolor{violet}{two-dimensional triangular plane in the three-dimensional space, which can be visualized in a two-dimensional ternary plot}.
+As a result, we can visualize the global trajectory of an epidemic in a
+single
+\textcolor{violet}{ternary plot \sout{2d plot and ultimately $R_0$}}.
+\textcolor{orange}{[Shannon says: Show pic here?]}{]}
+
+\textcolor{violet}{[Ben says: this paragraph was replaced with the paragraph above]}
 However, time-invariant centric analysis allows us to visualize \(R_0\)
 for the Kermack and McKendrick SIR model. We call the epidemic
 trajectory of number of individuals in each state a \textit{filament}.
@@ -275,19 +328,23 @@ lay in a 2d triangular plane, i.e.~a ternary plot. As a result, we can
 visualize the global trajectory of an epidemic in a single 2d plot and
 ultimately \(R_0\). \textcolor{orange}{Show pic here?}
 
+\textcolor{violet}{[This section could be a bit less wordy. But generally good.]}
 We visualize the two epidemics in a global, ternary view in Figure
 \ref{fig:different-scales-tern}. Without getting into too much detail of
 the intricacies of this plot, we immediately see the points of the two
 filaments \(\psi\) seem to form the same trajectory. Now, it is much
-clearer that Model 2 is following the same trajectory as Model 1 but is
-not as far along in the infection process. We can see there is something
-fundamentally linking these two different epidemics, and this
+clearer that \textcolor{violet}{\sout{Model} epidemic} 2 is following
+the same trajectory as \textcolor{violet}{\sout{Model} epidemic} 1 but
+is not as far along in the infection process. We can see there is
+something fundamentally linking these two different epidemics, and this
 fundamental link turns out to be \(R_0\).
 
-We can show this mathematically if we let our two epidemics be presented
-as \(\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}\),
-\(\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}\) respectively. As with the
-example, assume both models have the same initial values
+We can show this mathematically\textcolor{violet}{.\sout{ if we} L}et
+our two epidemics be presented as
+\(\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}\),
+\(\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}\)
+respectively.\footnote{\textcolor{violet}{[Ben says: Originally this was a sentence fragment.]}}
+As with the example, assume both models have the same initial values
 \((S(0), I(0), R(0))\), and let
 \(R_0 =\frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}\) where
 \(\beta_i\) and \(\gamma_i\) are the average infection rate and recovery
@@ -304,8 +361,9 @@ result from \cite{Harko2014} and is shown in detail in Proof
 \ref{proof:thm}. The consequence of Theorem \ref{thm:sir-scale} is that
 for two SIR models that have the same initial percent of individuals in
 each state and \(R_0\) then for every point on the epidemic path of the
-first SIR model is also a point on the epidemic path of the second SIR
-model.
+first SIR model \textcolor{violet}{\sout{is also} can be mapped to} a
+point on the epidemic path of the second SIR
+model.\textcolor{violet}{[We've changed how we describe these two objects when they are related to the theorem - is that desirable?]}
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -329,14 +387,15 @@ model.
 \end{figure}
 \end{CodeChunk}
 
-\subsection[Beyond R0 and SIR]{Beyond \(R_0\) and Kermack's and
-McKendrick SIR Models}\label{beyond-r0-sir}
+\subsection[Beyond R0 and SIR]{\textcolor{violet}{Time-invariant analysis}
+Beyond \(R_0\) and Kermack's and McKendrick SIR
+Models}\label{beyond-r0-sir}
 
-Through \(R_0\) \textcolor{orange}{example}, we see that treating
-epidemics more like a
+Through \textcolor{violet}{the} \(R_0\) \textcolor{orange}{example}, we
+see that treating epidemics \textcolor{violet}{\sout{more}} like a
 \sout{function of the time points in some higher dimensional space (nicely visualizable with a ternary plot for the SIR models)}
-\textcolor{orange}{filaments embedded in a lower dimensional space},
-then we can better compare the overall structure of the epidemic and
+\textcolor{orange}{filaments embedded in a lower dimensional space}\textcolor{violet}{\sout{, then we can} allows us to}
+better compare the overall structure of the epidemic and
 \sout{how it impacted the population}
 \textcolor{orange}{see how the population was directly impacted}.
 \sout{Without knowing the generative structure underlying these two epidemics},
@@ -355,7 +414,7 @@ to be continued - (1) highlight filamental view of the epidemics through their s
 \afterpage{\clearpage}
 \begin{sidewaysfigure}[!ht]
     \centering
-    \includegraphics[width = 1\textwidth]{images/pipeline2.pdf}
+    \includegraphics[width = 1\textwidth]{images/pipeline2_1.pdf}
     \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
     \label{fig:pipeline2}
 \end{sidewaysfigure}
@@ -937,8 +996,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -987,3 +1046,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+

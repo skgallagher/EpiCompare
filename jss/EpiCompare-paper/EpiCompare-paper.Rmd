@@ -36,6 +36,7 @@ keywords:
   plain:     [keywords, not capitalized, Java]
 preamble: >
   \usepackage{amsmath}
+  \usepackage{amssymb}
   \usepackage{amsthm}
   \usepackage{afterpage}
   \usepackage[normalem]{ulem} 
@@ -132,16 +133,19 @@ Time-invariant analysis, as it appears in \pkg{EpiCompare} solves the above issu
 
 Mathematically, epidemics are complex objects.  They are hard to assess and compare to one another due to the differences in the diseases, the location where the outbreak occurs,  how the affected population reacts, and the time \ben{related} features (including start of the epidemic, speed of infection and more). Time-invariant analysis make different epidemics easier to compare by removing many time dependent aspects of an epidemic. Instead it focuses on the overall trajectory of an epidemic, emphasizing the number of lives affected. \shannon{[Shannon says: really like the lives affected part; I think that's a powerful statement.]}
 
-## Motivating time-invariance through $R_0$ {short-title="motivating through R0" #r0}
+## Motivating time-invariance through $R_0$^[\ben{Is this still a relevant title for this section?}] {short-title="motivating through R0" #r0}
 
-Time-invariance analysis, as it appears in \pkg{EpiCompare}, \sout{can be seen as an attempt to escape} \shannon{bypasses}  many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimation of certain epidemiological parameters, including the reproduction number $R_0$.
+Time-invariance analysis, as it appears in \pkg{EpiCompare}, \sout{can be seen as an attempt to escape} \shannon{bypasses}  many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimation of certain epidemiological parameters, including the reproduction number $R_0$. \ben{We will use $R_0$ to motivate the usefulness of time-invariaten analysis in this section.}
 
-\ben{
-Story: 
-(1) basic definition of $R_0$, (2) emphasis that $R_0$ captures a lot of information about an epidemic. Given 3 number example and discuss how one would usually interpret what the differences in $R_0$ meant (3) maybe connect to \# of $R_0$ estimates for COVID-19 (Aronson et al 2020). 
-}
 
-$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is \shannon{often} associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}.  \shannon{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a naive population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. } To demonstrate the difficulty of discerning $R_0$in a time-dependent analysis, we \shannon{first} introduce the \citet{Kermack1927}’s common SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
+
+<!-- \ben{ -->
+<!-- Story:  -->
+<!-- (1) basic definition of $R_0$, (2) emphasis that $R_0$ captures a lot of information about an epidemic. Given 3 number example and discuss how one would usually interpret what the differences in $R_0$ meant (3) maybe connect to \# of $R_0$ estimates for COVID-19 (Aronson et al 2020).  -->
+<!-- } -->
+
+$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is \shannon{often} associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}.  \shannon{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a \ben{\sout{naive} completely susceptible}\footnote{\ben{[Ben says: I feel like naive is unclear - even if that's the technical term.]}} population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. }\ben{[Ben says: could we expand on this difficulty / show it really is difficult with 1 more sentence?]} To demonstrate the difficulty of discerning $R_0$in a time-dependent analysis, we \shannon{first} introduce the \citet{Kermack1927}’s \ben{\sout{common}}\footnote{\ben{[Ben says: is it common? maybe just remove it?]}} SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
+
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -151,28 +155,48 @@ $R_0$ is probably the most famous time-invariant numerical summary of an epidemi
 
 From this model, $R_0 = \beta/\gamma$, aka the ratio of the estimated infection rate compared to the estimated recovery rate.  Since $\beta$ and $\gamma$ are both rates (of infection and recovery, respectively), the ratio of the two, $R_0$, is a time-invariant quantity.  \shannon{Once $R_0$ is estimated, then important epidemic quantities can be inferred such as a the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic and the total number of infections, the final size.  Moreover, $R_0$ allows us to compare different disease outbreaks and different outbreaks on the same scale.  }
 
-## Visualizing $R_0$ {short-title="visualizing r0" #vis-r0}
+## \ben{Time invariant visualization of differences in $R_0}\sout{ Visualizing $R_0$} {short-title="visualizing r0" #vis-r0}
 
-With regards to traditional epidemic $state$ vs. $time$ plots, when \sout{comparing}\shannon{examining} different epidemics their $R_0$s are often impossible to compare. This can be seen in a basic example, where we have two different epidemics that start in two populations of 1000 people with 10 individuals \shannon{initially} infected, but with \sout{different parameters} \shannon{different infection and recovery rates (see Eq. \ref{eq:sir-ODE}}). Specifically suppose that $\beta_1, \gamma_1 = (a,b)$ and $\beta_2, \gamma_2 = (ca,cb)$ where $a, b, c > 0$. Further suppose we observe both of these epidemics for 15 days. The epidemic trajectories are shown in the $state$ vs. time plots in Figure \ref{fig:different-scales-standard}.  At a glance, we may \sout{assume} \shannon{believe} that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may \sout{think} \shannon{believe} Model 2 has a larger $R_0$ because we may think the number of infections in that model has not yet peaked at time 15. Yet, both epidemics have the same $R_0$ of 2.
+\ben{[Ben says: It's unclear to me why we have a subtitle here - isn't it just more motivation of time-invariant anlysis with $R_0$? Also, I feel like the story is weak here. The point is to leverage $R_0$ to show the value of time-invariant analysis - this seems a bit more like just discussing properties of $R_0$. In the follow rewrite I use "[" and "]" to indicate that this is a section from your earlier draft.]}
+
+
+\ben{[Ben says: replacement of following paragraph: presentation rearranged to emphasis the figure first (when presenting the problem), and then discussing it.]} Traditional $state$ vs. $time$ plots, like seen in Fig. \ref{fig:different-scales-standard}, present information about epidemics in a time-dependent and piece-wise fashion, and make comparing different epidemic $R_0$s impossible. In Fig. \ref{fig:different-scales-standard} we compare [two different epidemics that start in two populations of 1000 people with 10 individuals initially infected, but with different infection and recovery rates (see Eq. \ref{eq:sir-ode})]. More specifically, we've observed both epidemics for 15 days, with the first epidemic\footnote{In the plot it says model - probably want to say epidemic?} (in red) having parameters $\beta_1, \gamma_1 = (1,2)$ and the second epidemic (in blue) having  parameters $\beta_2, \gamma_2 = (2,4)$. [At a glance, we may believe that \sout{Model}\ben{epidemic} 1 has a larger $R_0$ than \sout{Model}\ben{epidemic} 2 because the peak of infection occurs more quickly than in Model 2 \ben{(remember $R_0$ relates to the rate of infection)}.  On the other hand, we may believe \sout{Model}\ben{epidemic} 2 has a larger $R_0$ because its unclear if the  number of infections in that \sout{model}\ben{epidemic} has not yet peaked at time 15. Yet, both epidemics have the same $R_0$ of 2].
+
+\ben{[Ben says: bring Fig. \ref{fig:different-scales-standard} here.]}
+
+\ben{[Ben says: this paragraph is replaced with the one above]}With regards to traditional epidemic $state$ vs. $time$ plots, when \sout{comparing}\shannon{examining} different epidemics their $R_0$s are often impossible to compare. This can be seen in a basic example, where we have two different epidemics that start in two populations of 1000 people with 10 individuals \shannon{initially} infected, but with \sout{different parameters} \shannon{different infection and recovery rates (see Eq. \ref{eq:sir-ode}}). Specifically suppose that $\beta_1, \gamma_1 = (a,b)$ and $\beta_2, \gamma_2 = (ca,cb)$ where $a, b, c > 0$. Further suppose we observe both of these epidemics for 15 days. The epidemic trajectories are shown in the $state$ vs. $time$ plots in Figure \ref{fig:different-scales-standard}.  At a glance, we may \sout{assume} \shannon{believe} that Model 1 has a larger $R_0$ than Model 2 because the peak of infection occurs more quickly than in Model 2.  On the other hand, we may \sout{think} \shannon{believe} Model 2 has a larger $R_0$ because we may think the number of infections in that model has not yet peaked at time 15. Yet, both epidemics have the same $R_0$ of 2.
 
 \shannon{Introduce ternary plots here.  The below paragraphs are mostly new}
 
-However, time-invariant centric analysis allows us to visualize $R_0$ for the Kermack and McKendrick SIR model.  We call the epidemic trajectory of number of individuals in each state a \textit{filament}.  Mathematically, a filament $\psi$ for the SIR model  $\psi$ this is the set of points of the number in each state for each time point,
+\ben{[Ben says: another rewrite of the paragraph below.]} A time-invariant approach to visualizing epidemics, which will be described more below, provides a simple way to compare $R_0$ values of epidemics that are generated from the Kermack and McKendrick SIR model. In these visuals, we treat epidemics as \textit{trajectories}. A trajectory can be mathematically viewed as a set of points is space that have an ordering, and that all points on the line between these order points are also contained in the geometric object. For a SIR epidemic, we can represent the associated filament $\psi$ as 
+
+$$
+\psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]},
+$$
+where the an mapping $\xi : t \to \mathbb{R}$ that is monotonically increasing would not change the definition of $\psi$, i.e. $\psi_\xi = \psi$ where : 
+
+$$
+\psi_\xi = \left \{(S(\xi(t)), I(\xi(t)), R(\xi(t))): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]}.
+$$
+[Since the number in each state is non-negative and the sum over the three states for a given time point sums to $N$, then \ben{all points in} $\psi$ will lay in a \ben{\sout{2d triangular plane, i.e. a ternary plot}} \ben{two-dimensional triangular plane in the three-dimensional space, which can be visualized in a two-dimensional ternary plot}.  As a result, we can visualize the global trajectory of an epidemic in a single \ben{ternary plot \sout{2d plot and ultimately $R_0$}}.  \shannon{[Shannon says: Show pic here?]}]
+
+
+\ben{[Ben says: this paragraph was replaced with the paragraph above]} However, time-invariant centric analysis allows us to visualize $R_0$ for the Kermack and McKendrick SIR model.  We call the epidemic trajectory of number of individuals in each state a \textit{filament}.  Mathematically, a filament $\psi$ for the SIR model  $\psi$ this is the set of points of the number in each state for each time point,
 $$
 \psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t=0:T}.
 $$
 
 Since the number in each state is non-negative and the sum over the three states for a given time point sums to $N$, then $\psi$ will lay in a 2d triangular plane, i.e. a ternary plot.  As a result, we can visualize the global trajectory of an epidemic in a single 2d plot and ultimately $R_0$.  \shannon{Show pic here?}
 
-We visualize the two epidemics in a global, ternary view in Figure \ref{fig:different-scales-tern}.  Without getting into too much detail of the intricacies of this plot, we immediately see the points of the two filaments $\psi$ seem to form the same trajectory.  Now, it is much clearer that Model 2 is following the same trajectory as Model 1 but is not as far along in the infection process.  We can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
+\ben{[This section could be a bit less wordy. But generally good.]} We visualize the two epidemics in a global, ternary view in Figure \ref{fig:different-scales-tern}.  Without getting into too much detail of the intricacies of this plot, we immediately see the points of the two filaments $\psi$ seem to form the same trajectory.  Now, it is much clearer that \ben{\sout{Model} epidemic} 2 is following the same trajectory as \ben{\sout{Model} epidemic} 1 but is not as far along in the infection process.  We can see there is something fundamentally linking these two different epidemics, and this fundamental link turns out to be $R_0$.
 
-We can show this mathematically if we let our two epidemics be presented as $\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}$, $\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}$ respectively.  As with the example, assume both models have the same initial values $(S(0), I(0), R(0))$, and let $R_0 =\frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$. And define $a>0$ to be the relative scalar such that $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$.
+We can show this mathematically\ben{.\sout{ if we} L}et our two epidemics be presented as $\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}$, $\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}$ respectively.\footnote{\ben{[Ben says: Originally this was a sentence fragment.]}}  As with the example, assume both models have the same initial values $(S(0), I(0), R(0))$, and let $R_0 =\frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ where $\beta_i$ and $\gamma_i$ are the average infection rate and recovery rate, respectively, for SIR model $i=1, 2$. And define $a>0$ to be the relative scalar such that $\beta_2 = a \beta_1$ if and only if $\gamma_2 = a \gamma_1$.
 
 \begin{theorem}\label{thm:sir-scale}
 Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
-The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Proof \ref{proof:thm}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model is also a point on the epidemic path of the second SIR model.
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Proof \ref{proof:thm}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model \ben{\sout{is also} can be mapped to} a point on the epidemic path of the second SIR model.\ben{[We've changed how we describe these two objects when they are related to the theorem - is that desirable?]}
 
 
 
@@ -279,9 +303,9 @@ ggplot(data = df %>%
 
 
 
-##  Beyond $R_0$ and Kermack’s and McKendrick SIR Models {short-title="Beyond R0 and SIR" #beyond-r0-sir}
+##  \ben{Time-invariant analysis} Beyond $R_0$ and Kermack’s and McKendrick SIR Models {short-title="Beyond R0 and SIR" #beyond-r0-sir}
 
-Through $R_0$ \shannon{example}, we see that treating epidemics more like a \sout{function of the time points in some higher dimensional space (nicely visualizable with a ternary plot for the SIR models)} \shannon{filaments embedded in a lower dimensional space}, then we can better compare the overall structure of the epidemic and \sout{how it impacted the population} \shannon{see how the population was directly impacted}. \sout{Without knowing the generative structure underlying these two epidemics}, \shannon{When the underlying generative model is unknown for epidemic trajectories}, we propose that time-invariant tools can help compare them in smart ways, and that these ideas can extend past the CITE kermack1927 model and to epidemics with more states. 
+Through \ben{the} $R_0$ \shannon{example}, we see that treating epidemics \ben{\sout{more}} like a \sout{function of the time points in some higher dimensional space (nicely visualizable with a ternary plot for the SIR models)} \shannon{filaments embedded in a lower dimensional space}\ben{\sout{, then we can} allows us to} better compare the overall structure of the epidemic and \sout{how it impacted the population} \shannon{see how the population was directly impacted}. \sout{Without knowing the generative structure underlying these two epidemics}, \shannon{When the underlying generative model is unknown for epidemic trajectories}, we propose that time-invariant tools can help compare them in smart ways, and that these ideas can extend past the CITE kermack1927 model and to epidemics with more states. 
 
 \ben{
 to be continued - (1) highlight filamental view of the epidemics through their simplex space (2) describe distances that could compare different epidemics with this mindset. Also motivate uncertainty for epidemics now that we have a filamental view (3) emphasis that this idea should extend to higher dimensions (4) present the idea that one could also compare bands together.
@@ -312,7 +336,7 @@ d_\text{Hausdorff}(S_1, S_2) = \max \left\{ \sup_{x \in S_1} \inf_{y \in S_2} d(
 \afterpage{\clearpage}
 \begin{sidewaysfigure}[!ht]
     \centering
-    \includegraphics[width = 1\textwidth]{images/pipeline2.pdf}
+    \includegraphics[width = 1\textwidth]{images/pipeline2_1.pdf}
     \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
     \label{fig:pipeline2}
 \end{sidewaysfigure}
