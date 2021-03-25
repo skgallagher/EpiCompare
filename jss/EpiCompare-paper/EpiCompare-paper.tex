@@ -503,10 +503,16 @@ Section \ref{sec:time-invariant}).
 
 \textbf{Model Fitting and Simulations}
 
-Although this package does not focus on fitting a model to data, we do
-provide some flexible functions for simulation of basic discrete-time
-epidemic-state models. These functions produce individual level
-information and can be naturally combined with
+\textcolor{violet}{[Ben says: think about this section and if it highlights that we can bring in outside models...]}
+
+\textcolor{violet}{After getting a good sense of what a past or current epidemice looks like through EDA, the next step is often model fitting and/or simulations. In this step, and the next step (post-processing), we discuss how to include practioners' use of tools to create models and simulations that exist outside of \pkg{EpiCompare}.}
+This package does not focus on fitting a model to data, we do provide
+some flexible functions for simulation of basic discrete-time
+epidemic-state models.
+\textcolor{violet}{After estimating or predicting transition rates between states,}
+these functions produce individual level
+\textcolor{violet}{simulations\sout{information}} and can be
+\textcolor{violet}{\sout{naturally}} combined with
 \texttt{agents\_to\_aggregate()} to view these simulations through an
 aggregate lens. The function \texttt{simulate\_SIR\_agents()} simulates
 an SIR epidemic with user inputs for the number of simulations, the
@@ -527,6 +533,22 @@ accessed.
 
 \textbf{Post-processing}
 
+\textcolor{violet}{[Ben says: I think we should remind the reader that we care more about simulations, in order to compare fitted models between themselves and the true epidemics.]}
+
+\textcolor{violet}{[Ben says: this replaces the first paragraph below]}
+
+\textcolor{violet}{If the practitioner wishes to compare between models and with their true epidemics, one needs to process their models and simulations.}
+\textcolor{violet}{In general, [p}ost-processing of modeling and
+simulation consists of making summary statistics, plots, tables, and
+other ways to disseminate information to the public.{]}
+\textcolor{violet}{The summaries can be very complex, and a}{[}s a
+result, a number of epidemic modeling \textcolor{violet}{\proglang{R}}
+packages return a special class, specific to their modeling. The special
+classes often contain a plethora of information from residuals, model
+diagnostics, input parameters, and more. While incredibly useful, these
+special classes can be difficult for novice coders to navigate.{]}
+
+\textcolor{violet}{[Ben says: replaced with above paragraph]}
 Post-processing of modeling and simulation consists of making summary
 statistics, plots, tables, and other ways to disseminate information to
 the public. For example, comma separated value files (\texttt{.csv}) are
@@ -539,15 +561,29 @@ plethora of information from residuals, model diagnostics, input
 parameters, and more. While incredibly useful, these special classes can
 be difficult for novice coders to navigate.
 
-To this end, we have adapted a series of \texttt{fortify}-style
-functions, called \texttt{fortify\_aggregate()} which transform output
-from packages like \pkg{pomp} and \pkg{EpiModel} into tidy-styled data
-frames which contain information about the total number of individuals
-in each state at a given time, for a given simulation. These fortify
-functions have output that is consistent with that of
+To this end, we have \textcolor{violet}{provide\sout{adapted}} a series
+of \texttt{fortify}-style
+\textcolor{violet}{methods\sout{functions}}\footnote{\textcolor{violet}{[Ben says: Not tied to this change.]}},
+called \texttt{fortify\_aggregate()} which transform output from
+packages like \pkg{pomp} and \pkg{EpiModel} into tidy-styled data frames
+which contain information about the total number of individuals in each
+state at a given time, for a given simulation. These fortify functions
+have output that is consistent with that of
 \texttt{agents\_to\_aggregate()}.
 
+\textcolor{violet}{[Ben says: new paragraph]} To utilize simulations
+epidemics in later time-invariant analysis we also provide a function to
+convert temporally defined epidemics to filamental representations.
+Specifically, we provide the function \texttt{filament\_compression} to
+convert simulation(s) to filaments as expressed by presenting the
+epidemic as a ordering of some common fixed number of points so that
+they are equally spaced along the original path in the proportional
+state
+space\footnote{\textcolor{violet}{[Ben: this should be cleaned up.]}}.
+
 \textbf{Comparisons and Assessment}
+
+\textcolor{violet}{[This still needs to be worked on - just a reminder.]}
 
 Comparison and assessment of model fit or comparisons of one model to
 another model can be performed in a variety of ways including mean
