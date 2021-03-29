@@ -82,8 +82,6 @@ Pittsburgh, PA 15213\\
 
 \section[Intro]{Introduction}\label{sec:intro}
 
-\textcolor{violet}{[Ben says: I something wory about including a full paragraph of introduction before we emphasis where and why we think this tool is useful. Especially the first "where" it could be useful, as I'm not sure how it connets to the more "global" view of the epidemic research area.]}
-
 The recent (and on-going) COVID-19 global pandemic has galvanized public
 interest in understanding more about infectious disease modeling and has
 highlighted the usefulness of research in the area of infectious disease
@@ -98,8 +96,9 @@ project epidemic scenarios under pre-specified parameters
 \citep[e.g.][]{ferguson2020}. At the same time, descriptive statistics
 and visualizations from universities, many branches and levels of
 government, and news organizations are an important first step of the
-process \citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
-\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly.]}
+process
+\textcolor{violet}{as has been seen in the current COVID-19 epidemic}\citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
+\footnote{\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly. *This is less so the case now.]}}
 
 With the many visualization and exploratory tools, models and modeling
 paradigms, and reviews and comparisons in the literature and through the
@@ -170,55 +169,52 @@ analysis pipeline.
 \section[Time-invariant]{Motivation and tools for time-invariant
 analysis}\label{sec:time-invariant}
 
-\textcolor{orange}{time invariance vs. time invariant analysis??}
+\pkg{EpiCompare} delivers \textit{time-invariant} analysis by (1) taking
+a global, not marginal view of how epidemics move through populations
+and (2) by treating full epidemics as filamental trajectories\footnote{\textcolor{violet}{[Ben says: Do we need a footnote explaining what this is more clearly?]}}
+and not points produced by functions of
+time\footnote{\textcolor{orange}{[Shannon says: this notation needs to be cleaned up.]}}
+(this will be explained in Section \ref{sec:r0}). The following section
+aims to highlight the strengths of \textit{time-invariance} and define
+the mathematical foundations that \pkg{EpiCompare}'s tools stand upon.
 
-\textcolor{orange}{I again changed this section a lot, but hopefully it's more in line with what you are thinking.  The story I want to tell is 1) introduce the concept of time invariance; 2) demonstrate time invariance through R0 and tell why it is important; 3) visualize R0 from the SIR model with a time-invariant plot\footnote{\textcolor{violet}{[Ben says: defend how this fits into the narrative?]}} and 4) talk }\textcolor{violet}{Time invariance in}
-\sout{about}\textcolor{orange}{ models beyond SIR.}
-
-\textcolor{orange}{I noticed the ternary plot kinda fell out of this section and it's not really detailed anywhere else in the paper.  So I put it back in.  It's a non-standard plot and a feature of EpiCompare so I think it's worth talking about, and I think it's appropriate to introduce in this section.}
-
-\pkg{EpiCompare} delivers \textit{time-invariance} centric analysis by
-(1) taking a global, not marginal view of how epidemics move through
-populations and (2) by treating full epidemics as filaments\footnote{\textcolor{violet}{[Ben says: Do we need a footnote explaining what this is more clearly?]}}
-and not points produced by functions of time. The following section aims
-to highlight the strengths of \textit{time-invariance} and define the
-mathematical foundations that \pkg{EpiCompare}'s tools stand upon.
-
-Mathematically, epidemics are complex objects. They are hard to assess
-and compare to one another due to the differences in the diseases, the
-location where the outbreak occurs, how the affected population reacts,
-and the time \textcolor{violet}{related} features (including start of
-the epidemic, speed of infection and more). Time-invariant analysis make
+Mathematically, epidemics are complex objects. They can be hard to
+assess and compare to one another due to the differences in the
+diseases, the location where the outbreak occurs, how the affected
+population reacts, and the time related features (including start of the
+epidemic, speed of infection and more). Time-invariant analysis make
 different epidemics easier to compare by removing many time dependent
 aspects of an epidemic. Instead it focuses on the overall trajectory of
 an epidemic, emphasizing the number of lives affected.
-\textcolor{orange}{[Shannon says: really like the lives affected part; I think that's a powerful statement.]}
 
 \subsection[motivating through R0]{Motivating time-invariance through
-\(R_0\)\footnote{\textcolor{violet}{Is this still a relevant title for this section?}}}\label{r0}
+\(R_0\)\footnote{\textcolor{violet}{Is this still a relevant title for this section? Think about this header after the rewrite.}}}\label{r0}
 
 Time-invariance analysis, as it appears in \pkg{EpiCompare},
 \sout{can be seen as an attempt to escape} \textcolor{orange}{bypasses}
 many difficulties \textcolor{orange}{in} comparing different epidemics.
 With time-invariant analysis, comparing the decades-long outbreak of HIV
 in the US to a 10 day outbreak of norovirus on a cruise ship is
-\sout{still} possible. Time-dependent problems can arise when estimation
-of certain epidemiological parameters, including the reproduction number
-\(R_0\).
-\textcolor{violet}{We will use $R_0$ to motivate the usefulness of time-invariaten analysis in this section.}
+\sout{still} possible. Time-dependent problems can arise when estimating
+epidemiological parameters, including the reproduction number \(R_0\).
+\textcolor{violet}{We will use $R_0$ to motivate the usefulness of time-invariant analysis in this section.}
 
 \(R_0\) is probably the most famous time-invariant numerical summary of
-an epidemic and is \textcolor{orange}{often} associated with the
-Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2001}.
-\textcolor{orange}{$R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a \textcolor{violet}{\sout{naive} completely susceptible}\footnote{\textcolor{violet}{[Ben says: I feel like naive is unclear - even if that's the technical term.]}} population \citep{anderson1992}. $R_0$ can be a difficult quantity to estimate and is typically sensitive to time-based parameters such as the beginning and end of an epidemic \citep{Gallagher2020}. }\textcolor{violet}{[Ben says: could we expand on this difficulty / show it really is difficult with 1 more sentence?]}
-To demonstrate the difficulty of discerning \(R_0\)in a time-dependent
-analysis, we \textcolor{orange}{first} introduce the
-\citet{Kermack1927}'s
-\textcolor{violet}{\sout{common}}\footnote{\textcolor{violet}{[Ben says: is it common? maybe just remove it?]}}
-SIR model. This model captures the transitions from one state to the
-next as a system of ordinary differential equations, where \(N\) is the
-total number of individuals, \(\beta\) is the rate of infection, and
-\(\gamma\) is the rate of recovery,
+an epidemic and is often associated with the
+Susceptible-Infectious-Recovered (SIR) model
+\citep{hethcote2001}\footnote{[Shannon: correct CITation]}. \(R_0\) is a
+one-number summary of a disease and is defined as the expected number of
+infections caused by a single infector who is added to a completely
+susceptible population \citep{anderson1992}. \(R_0\) can be a difficult
+quantity to estimate and is typically sensitive to time-based parameters
+such as the beginning and end of an epidemic \citep{Gallagher2020}.
+\textcolor{violet}{[Ben says: \@Shannon could we expand on this difficulty / show it really is difficult with 1 more sentence? It might benefit from listing the difficulting in estimating a robust $R_0$ value (difficulties: time steps used, scale and "start" and final start, assumptions about population growth and underlying model fit).]}
+To demonstrate the difficulty of discerning \(R_0\) in a time-dependent
+analysis, we first introduce the \citet{Kermack1927}'s SIR model. This
+model captures the transitions from one state to the next as a system of
+ordinary differential equations, where \(N\) is the total number of
+individuals, \(\beta\) is the rate of infection, and \(\gamma\) is the
+rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -226,11 +222,14 @@ total number of individuals, \(\beta\) is the rate of infection, and
     R^\prime(t) &= \gamma I(t) \nonumber.
 \end{align}
 
-From this model, \(R_0 = \beta/\gamma\), aka the ratio of the estimated
-infection rate compared to the estimated recovery rate. Since \(\beta\)
-and \(\gamma\) are both rates (of infection and recovery, respectively),
-the ratio of the two, \(R_0\), is a time-invariant quantity.
-\textcolor{orange}{Once $R_0$ is estimated, then important epidemic quantities can be inferred such as a the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic and the total number of infections, the final size.  Moreover, $R_0$ allows us to compare different disease outbreaks and different outbreaks on the same scale.  }
+From this model, \(R_0 = \beta/\gamma\), aka the ratio of the infection
+rate compared to the recovery rate. Since \(\beta\) and \(\gamma\) are
+both rates, the ratio of the two, \(R_0\), is a time-invariant quantity.
+Once \(R_0\) is estimated, practioners can infer important epidemic
+quantities such as the total number of infections or the percent of a
+population needed to be vacccinated to stop the sustained spread of an
+epidemic. Moreover, \(R_0\) allows us to compare different diseases and
+different instances of outbreaks on the same scale.
 
 \subsection[visualizing r0]{\sout{ Visualizing $R_0$}}\label{vis-r0}
 
@@ -289,11 +288,12 @@ same \(R_0\) of 2.
 A time-invariant approach to visualizing epidemics, which will be
 described more below, provides a simple way to compare \(R_0\) values of
 epidemics that are generated from the Kermack and McKendrick SIR model.
-In these visuals, we treat epidemics as \textit{trajectories}. A
-trajectory can be mathematically viewed as a set of points is space that
-have an ordering, and that all points on the line between these order
-points are also contained in the geometric object. For a SIR epidemic,
-we can represent the associated filament \(\psi\) as
+In these visuals, we treat epidemics as
+\textit{filamental trajectories}. A filamental trajectory can be
+mathematically viewed as a set of points is space that have an ordering,
+and that all points on the line between these order points are also
+contained in the geometric object. For a SIR epidemic, we can represent
+the associated filamental trajectory \(\psi\) as
 
 \[
 \psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]},
@@ -311,22 +311,15 @@ the three states for a given time point sums to \(N\), then
 As a result, we can visualize the global trajectory of an epidemic in a
 single
 \textcolor{violet}{ternary plot \sout{2d plot and ultimately $R_0$}}.
-\textcolor{orange}{[Shannon says: Show pic here?]}{]}
+\textcolor{orange}{[Shannon says: Show pic here?]}{]}\footnote{Which?}
 
 \textcolor{violet}{[Ben says: this paragraph was replaced with the paragraph above]}
-However, time-invariant centric analysis allows us to visualize \(R_0\)
-for the Kermack and McKendrick SIR model. We call the epidemic
-trajectory of number of individuals in each state a \textit{filament}.
-Mathematically, a filament \(\psi\) for the SIR model \(\psi\) this is
-the set of points of the number in each state for each time point, \[
+\sout{However, time-invariant centric analysis allows us to visualize $R_0$ for the Kermack and McKendrick SIR model.  We call the epidemic trajectory of number of individuals in each state a \textit{filament}.  Mathematically, a filament $\psi$ for the SIR model  $\psi$ this is the set of points of the number in each state for each time point,}
+\[
 \psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t=0:T}.
 \]
 
-Since the number in each state is non-negative and the sum over the
-three states for a given time point sums to \(N\), then \(\psi\) will
-lay in a 2d triangular plane, i.e.~a ternary plot. As a result, we can
-visualize the global trajectory of an epidemic in a single 2d plot and
-ultimately \(R_0\). \textcolor{orange}{Show pic here?}
+\sout{Since the number in each state is non-negative and the sum over the three states for a given time point sums to $N$, then $\psi$ will lay in a 2d triangular plane, i.e. a ternary plot.  As a result, we can visualize the global trajectory of an epidemic in a single 2d plot and ultimately $R_0$.  \textcolor{orange}{Show pic here?}}
 
 \textcolor{violet}{[This section could be a bit less wordy. But generally good.]}
 We visualize the two epidemics in a global, ternary view in Figure
@@ -389,24 +382,61 @@ model.\textcolor{violet}{[We've changed how we describe these two objects when t
 
 \subsection[Beyond R0 and SIR]{\textcolor{violet}{Time-invariant analysis}
 Beyond \(R_0\) and Kermack's and McKendrick SIR
-Models}\label{beyond-r0-sir}
+Models\footnote{Probably will need to change this title...}}\label{beyond-r0-sir}
 
-Through \textcolor{violet}{the} \(R_0\) \textcolor{orange}{example}, we
-see that treating epidemics \textcolor{violet}{\sout{more}} like a
-\sout{function of the time points in some higher dimensional space (nicely visualizable with a ternary plot for the SIR models)}
-\textcolor{orange}{filaments embedded in a lower dimensional space}\textcolor{violet}{\sout{, then we can} allows us to}
-better compare the overall structure of the epidemic and
-\sout{how it impacted the population}
-\textcolor{orange}{see how the population was directly impacted}.
-\sout{Without knowing the generative structure underlying these two epidemics},
-\textcolor{orange}{When the underlying generative model is unknown for epidemic trajectories},
-we propose that time-invariant tools can help compare them in smart
-ways, and that these ideas can extend past the CITE kermack1927 model
-and to epidemics with more states.
+Through the \(R_0\) example, we see that treating epidemics like a
+filamental trajectories embedded in a lower dimensional space allows us
+to better compare the overall structure of the epidemic and see how the
+population was directly impacted.
+\textcolor{violet}{In this section we will present time-invariant tools that can be useful even when the underlying generative model for the epidemic is unknown. We will also present how this tools can be used when the epidemics have more than 3 states.}
+\sout{trajectories, we propose that time-invariant tools can help compare them in smart ways, and that these ideas can extend past the CITE kermack1927 model and to epidemics with more states. }
 
-\textcolor{violet}{
-to be continued - (1) highlight filamental view of the epidemics through their simplex space (2) describe distances that could compare different epidemics with this mindset. Also motivate uncertainty for epidemics now that we have a filamental view (3) emphasis that this idea should extend to higher dimensions (4) present the idea that one could also compare bands together.
-}
+\textcolor{violet}{New paragraph} Viewing epidemics as filamental
+trajectories provide a lot new ways to compare and examine epidemics in
+a time-invariant manner. For epidemics that have ``played'' themselves
+out, one way to represent their filamental trajectories to avoid impacts
+of temporal structure is to define them as a sequence of points their
+trajectory with equi-distance between each point. This also creates a
+natural distance between this type of representation between epidemics,
+specifically: \[
+d_\text{equi-distance}(\psi_1, \psi_2)  = \int_{s \in [0,1]} (\psi_1'(s) - \psi_2'(s))^2 ds
+\] where \(\psi_i'(s)\) the point along \(\psi_1\) that is \(s\)
+fraction of \(|\psi_1|\) distance away from the start of \(\psi_i\).
+This distance is naturally time-invariant, and can be plugged into
+multiple distance-based assessment tools to examine the overall
+extremeness of points, including psuedo-density estimators and
+depth/local depth functions
+\citep[for examples see][]{Ciollaro2016, Geenens2017}. This can be very
+useful when comparing between a set of simulation epidemics and the true
+epidemic, and does not constrain the number of states of the model,
+though we recommend projecting the points into the unit
+simplex\footnote{\textcolor{violet}{I'm not sure we've talked about this before...}}
+(by making all values the proportion of the population in the given
+state).
+
+\textcolor{violet}{New paragraph:} If the set of epidemics that one is
+examining have only gone through a single cycle of the outbreak (before
+the population of individuals have become susceptible again), then
+additional time-invariant tools, including prediction regions can we
+leveraged. In these setting we go a step farther and treat epidemics
+more like geometric filaments than filamental trajectories. In
+\pkg{EpiCompare} we create prediction regions that contain a the top
+(\(1-\alpha\)) proportion of simulated curves by defining geometric
+regions defined by the union of small filaments around the subset of
+simulations (subset by measures like the above psuedo-density estimates
+or depth estimates). These regions look at where in the state-space we
+expect the epidemic to traverse, and we can compare prediction regions
+defined by different models using the Haussdorf distance as well as
+examining how well the truth epidemic matches the simulations by
+examining if the epidemic's trajectory lies within the prediction
+region. All these geometrics structures and distances notations apply to
+epidemics with any number of states, and at the end of Section
+\ref{sec:overview} we also highlight how these prediction regions can
+aid in visual comparisons for epidemics with 3 states (like the SIR
+models).
+
+\textcolor{violet}{[Ben says: Old recommendations:
+to be continued - (1) highlight filamental view of the epidemics through their simplex space (2) describe distances that could compare different epidemics with this mindset. Also motivate uncertainty for epidemics now that we have a filamental view (3) emphasis that this idea should extend to higher dimensions (4) present the idea that one could also compare bands together.]}
 
 \section[Package overview]{Overview of
 \pkg{EpiCompare}}\label{sec:overview}
@@ -493,7 +523,7 @@ subpopulations' experience of an epidemic by combining the ideas behind
 \texttt{agents\_to\_aggregate} for three-state models to examine
 subpopulation trajectories in a 3d simplex space
 \citep{Wickham2016, Hamilton2018}.
-\textcolor{orange}{[Shannon says: come back?]}\footnote{\textcolor{violet}{[Ben says: what does this note mean?]}}
+\textcolor{orange}{[Shannon says: come back - think about spaces and trajectories?]}\footnote{\textcolor{violet}{[Ben says: what does this note mean?]}}
 Visualization tools for three-state models were developed because (1)
 SIR models are some of the most common and basic epidemic state-based
 models and (2) our simplex representation of these epidemics emphasizes
