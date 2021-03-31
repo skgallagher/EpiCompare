@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -194,8 +192,7 @@ aspects of an epidemic. Instead,
 the number of lives affected.
 
 \subsection[motivating through R0]{Motivating time-invariant analysis
-through \textcolor{orange}{the reproduction number}
-\(R_0\)\footnote{\textcolor{violet}{Is this still a relevant title for this section? Think about this header after the rewrite.}}}\label{sec:r0}
+through the reproduction number \(R_0\)}\label{sec:r0}
 
 Time-invariant analysis, as it appears in \pkg{EpiCompare},
 \textcolor{orange}{bypasses} many difficulties \textcolor{orange}{in}
@@ -204,7 +201,8 @@ the decades-long outbreak of HIV in the US to a 10 day outbreak of
 norovirus on a cruise ship is \sout{still} possible. Time-dependent
 problems can arise when estimating epidemiological parameters, including
 the reproduction number \(R_0\).
-\sout{\textcolor{violet}{We will use $R_0$ to motivate the usefulness of time-invariant analysis in this section.}}\footnote{\textcolor{orange}{I don't think this is a necessary sentence}}
+\sout{\textcolor{violet}{We will use $R_0$ to motivate the usefulness of time-invariant analysis in this section.}}\footnote{\textcolor{orange}{I don't think this is a necessary sentence.}
+  \textcolor{violet}{I still think it adds value to the story and I'm not sure people really read section titles that are long.}}
 
 \(R_0\) is probably the most famous time-invariant numerical summary of
 an epidemic and is often associated with the
@@ -212,14 +210,15 @@ Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2000}.
 \(R_0\) is a one-number summary of a disease and is defined as the
 expected number of infections caused by a single infector who is added
 to a completely susceptible population \citep{anderson1992}.
-\textcolor{orange}{This definition concerns the \textit{generations} of new infections produced by $R_0$ but says nothing about the scale of time in which these new infections can occur.  However, data informing models are often temporally anchored (e.g. weekly case counts).  As a result, $R_0$ can be a difficult quantity to estimate and disentangle from time-based data.  For example, \cite{Gallagher2020} demonstrate how $R_0$ can be sensitive to time-based parameters such as the beginning and end of an epidemic, two quantities that generally do not have precise definitions.}
-\textcolor{violet}{[Ben says: \@Shannon could we expand on this difficulty / show it really is difficult with 1 more sentence? It might benefit from listing the difficulting in estimating a robust $R_0$ value (difficulties: time steps used, scale and "start" and final start, assumptions about population growth and underlying model fit).]}\textcolor{orange}{[Shannon says I added the few sentences to more smoothly introduce r0]}
-To demonstrate the difficulty of discerning \(R_0\) in a time-dependent
-analysis, we first introduce \citet{Kermack1927}'s SIR model. This model
-captures the transitions from one state to the next as a system of
-ordinary differential equations, where \(N\) is the total number of
-individuals, \(\beta\) is the rate of infection, and \(\gamma\) is the
-rate of recovery,
+\textcolor{violet}{This means that $R_0$ is a time-invariant parameter yet is estimated with time-based data, which can make it a [difficult quantity to estimate.]}
+\textcolor{violet}{\sout{This definition concerns the \textit{generations} of new infections produced by $R_0$ but says nothing about the scale of time in which these new infections can occur.  However, data informing models are often temporally anchored (e.g. weekly case counts).}}\footnote{\textcolor{violet}{This was a bit unclear including defining a new term.   As a result, $R_0$ can be a difficult quantity to estimate and disentangle from time-based data.  For example,}}\textcolor{orange}{ \cite{Gallagher2020} demonstrate\textcolor{violet}{s} how $R_0$ can be sensitive to time-based parameters such as the beginning and end of an epidemic, two quantities that generally}\textcolor{violet}{hard to define precisely.\sout{do not have precise definitions}}.
+To demonstrate the difficulty of discerning \(R_0\) in
+\textcolor{violet}{\sout{a}other}\footnote{\textcolor{violet}{I change this so we don't confused readers that we're going show the impact in tools beyond just the estimation itself.}}
+time-dependent analysis, we first introduce \citet{Kermack1927}'s SIR
+model. This model captures the transitions from one state to the next as
+a system of ordinary differential equations, where \(N\) is the total
+number of individuals, \(\beta\) is the rate of infection, and
+\(\gamma\) is the rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -228,20 +227,24 @@ rate of recovery,
 \end{align}
 
 From this model, \(R_0 = \beta/\gamma\), aka the ratio of the infection
-rate compared to the recovery rate. Since \(\beta\) and \(\gamma\) are
-both rates, the ratio of the two, \(R_0\), is a time-invariant quantity.
-Once \(R_0\) is estimated, practioners can infer important epidemic
+rate compared to the recovery rate.
+\textcolor{violet}{From this definition, given 
+\sout{Since}} \(\beta\) and \(\gamma\) are both rates,
+\textcolor{violet}{it should be clear that} the ratio of the two,
+\(R_0\), is a time-invariant
+quantity.\footnote{\textcolor{violet}{I am trying to make it look like we are not repeating ourselves by saying $R_0$ is time-invariant.}}
+Once \(R_0\) is estimated, practitioners can infer important epidemic
 quantities such as the total number of infections or the percent of a
 population needed to be vacccinated to stop the sustained spread of an
 epidemic. Moreover, \(R_0\) allows us to compare different diseases and
 different instances of outbreaks on the same scale.
 
 \textcolor{violet}{[Ben says: It's unclear to me why we have a subtitle here - isn't it just more motivation of time-invariant anlysis with $R_0$? Also, I feel like the story is weak here. The point is to leverage $R_0$ to show the value of time-invariant analysis - this seems a bit more like just discussing properties of $R_0$. In the follow rewrite I use "[" and "]" to indicate that this is a section from your earlier draft.]}
-\textcolor{orange}{[Shannon says: Tried to tie this better to the previous part since it's no longer a new section.  also highlighted tie to TIA and r0.  I also wanted to bring the punch line (overlapping epidemics = same r0) closer to the beginning so those who don't want to slog through mathematical details can get the takeaway.]}
+\textcolor{orange}{[Shannon says: Tried to tie this better to the previous part since it's no longer a new section.  also highlighted tie to time-invariant analysis and $R_0$.  I also wanted to bring the punch line (overlapping epidemics = same r0) closer to the beginning so those who don't want to slog through mathematical details can get the takeaway.]}
 
-\textcolor{orange}{Time-invariant analysis helps practicioners to more easily compare $R_0$ from different outbreaks.}
+\textcolor{orange}{Time-invariant analysis helps practitioners to more easily compare $R_0$ from different outbreaks.}
 For example, consider two epidemics generated from the Kermack and
-McKendrick SIR equations. Tne first epidemic has parameters
+McKendrick SIR equations. The first epidemic has parameters
 \(\beta_1, \gamma_1 = (0.8,0.4)\) and the second has
 \(\beta_2, \gamma_2 = (0.64,0.32)\). Both epidemics have populations of
 1000 people with 10 individuals initially infected. Additionally note
@@ -283,7 +286,7 @@ epidemics have the same value of \(R_0\).
 \begin{CodeChunk}
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/unnamed-chunk-3-1} 
+{\centering \includegraphics[width=0.49\linewidth]{images/vis3d} \includegraphics[width=0.49\linewidth]{Figs/unnamed-chunk-3-2} 
 
 }
 
@@ -300,9 +303,9 @@ SIR epidemic, we can represent the associated filamental trajectory
 
 \[
 \psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]},
-\] where a mapping \(\xi : s \to \mathbb{R}\) that is monotonically
-increasing would not change the definition of \(\psi\),
-i.e.~\(\psi_\xi = \psi\) where :
+\] where a mapping \(\xi : s \to \mathbb{R}\) that is strictly
+monotonically increasing would not change the definition of \(\psi\),
+i.e.~\(\psi_\xi \equiv \psi\) where :
 
 \[
 \psi_\xi = \left \{(S(\xi(s)), I(\xi(s)), R(\xi(s))): S, I, R \ge 0, S + I + R = N \right \}_{s\in[0,T]}.
@@ -345,8 +348,7 @@ for two SIR models that have the same initial percent of individuals in
 each state and \(R_0\) then for every point on the epidemic path of the
 first SIR model \textcolor{violet}{\sout{is also} can be mapped to} a
 point on the epidemic path of the second SIR model.
-\textcolor{orange}{In other words, the two epidemics form the same filamental trajectory. For SIR models with similar initial state percentages, time-invariant analysis, time-invariant analysis allows practicioners to compare values of $R_0$ at a glance.}
-\textcolor{violet}{[We've changed how we describe these two objects when they are related to the theorem - is that desirable? ]}\textcolor{orange}{added that sentence to for that}
+\textcolor{orange}{In other words, the two epidemics form the same filamental trajectory. For SIR models with similar initial state percentages, time-invariant analysis allows practitioners to compare values of $R_0$ at a glance.}
 
 \subsection[Beyond R0 and SIR]{\textcolor{violet}{Time-invariant analysis}
 Beyond \(R_0\) and Kermack's and McKendrick SIR
@@ -596,6 +598,38 @@ space\footnote{\textcolor{violet}{[Ben: this should be cleaned up.]}}.
 
 \textcolor{violet}{[This still needs to be worked on - just a reminder.]}
 
+As introduced in Section \ref{sec:beyond-r0-sir} there's a lot of
+potential for time-invariant tools to help compare and assess epidemics
+and models/simulations. In \pkg{EpiCompare} we provide a set of
+comparison and assessment tools for models that extend beyond the
+standard performance metrics (e.g.~means squared error, AIC) and focus
+on assessing the structural information the models capture. This
+approaches work well on models where online one ``cycle'' of the
+epidemic has occurred (no recovered individuals have been susceptible
+again). Epidemics are complex objects, and we provide tools to create
+prediction regions out of simulated epidemics. For 3-state epidemic
+models, we provide the \texttt{ggplot}/\texttt{ggtern} extension
+\texttt{geom\_prediction\_band()} which creates a prediction region
+around the top \(1-\alpha\) proportion of the simulations (where the
+simulations treated as filaments). In \pkg{Epicompare} we also provide
+these prediction regions for epidemic models with with more than 3
+states. With \texttt{create\_convex\_hull\_structure} and
+`\texttt{create\_delta\_ball\_structure} that will create different
+geometric representations of prediction regions and an assoicated
+\texttt{contained} method that assesses if a new epidemic (seen as a
+filament) is contained in the prediction region.
+
+We also provide functions to calculate the extremeness of a true
+epidemic compared to simulated epidemics through the equi-distance
+filamental trajectory representation as mentioned in Section
+\ref{sec:beyond-r0-sir}. Specifically, functions like
+\texttt{distance\_psuedo\_density\_function} can calculate a
+psuedo-density estimate of the true epidemic relative to simulated ones.
+Functions \texttt{distance\_depth\_function} and
+\texttt{local\_distance\_depth\_function} provide depth scores that
+suggest how geometrically central an epidemic is to simulations.
+
+\textcolor{violet}{[Ben says: Replaced with paragraphs above.]}
 Comparison and assessment of model fit or comparisons of one model to
 another model can be performed in a variety of ways including mean
 square error, AIC, plots, and more. Perhaps the most useful tool
@@ -606,7 +640,8 @@ made for that standard output to assess the results from multiple models
 in the way the user
 desires\footnote{\textcolor{violet}{[Ben says: Shannon, doesn't this below in the previous section?, I might drop this paragraph except for the introduction sentence - is it really true that the standardization is most valuable?]}}.
 
-However, for those who like more concrete tools, \pkg{EpiCompare} offers
+\textcolor{violet}{[Ben says: Replaced with paragraphs above.]} However,
+for those who like more concrete tools, \pkg{EpiCompare} offers
 functions to compare prediction regions to one another including
 \texttt{geom\_prediction\_band()} (which plots the region), and
 \texttt{create\_\{convex\_hull,delta\_ball\}\_structure()}(which returns
@@ -1044,8 +1079,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1094,3 +1129,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+

@@ -131,9 +131,9 @@ Time-invariant analysis, as it appears in \pkg{EpiCompare} solves the above issu
 
 Mathematically, epidemics are complex objects.  They can be hard to assess and compare to one another due to the differences in the diseases, the location where the outbreak occurs,  how the affected population reacts, and the time related features (including start of the epidemic, speed of infection and more). Time-invariant analysis makes different epidemics easier to compare by removing many time dependent aspects of an epidemic. Instead, \shannon{time-invariant analysis} focuses on the overall \shannon{shape and direction, a filamental trajctory,} \sout{trajectory of }an epidemic.  \shannon{These filamental trajectories,  in turn,} emphasize the number of lives affected. 
 
-## Motivating time-invariant analysis through \shannon{the reproduction number} $R_0$^[\ben{Is this still a relevant title for this section? Think about this header after the rewrite.}] {short-title="motivating through R0" #sec:r0}
+## Motivating time-invariant analysis through the reproduction number $R_0$ {short-title="motivating through R0" #sec:r0}
 
-Time-invariant analysis, as it appears in \pkg{EpiCompare}, \shannon{bypasses} many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimating epidemiological parameters, including the reproduction number $R_0$. \sout{\ben{We will use $R_0$ to motivate the usefulness of time-invariant analysis in this section.}}^[\shannon{I don't think this is a necessary sentence}]
+Time-invariant analysis, as it appears in \pkg{EpiCompare}, \shannon{bypasses} many difficulties \shannon{in} comparing different epidemics. With time-invariant analysis, comparing the decades-long outbreak of HIV in the US to a 10 day outbreak of norovirus on a cruise ship is \sout{still} possible. Time-dependent problems can arise when estimating epidemiological parameters, including the reproduction number $R_0$. \sout{\ben{We will use $R_0$ to motivate the usefulness of time-invariant analysis in this section.}}^[\shannon{I don't think this is a necessary sentence.} \ben{I still think it adds value to the story and I'm not sure people really read section titles that are long.}]
 
 
 
@@ -142,7 +142,7 @@ Time-invariant analysis, as it appears in \pkg{EpiCompare}, \shannon{bypasses} m
 <!-- (1) basic definition of $R_0$, (2) emphasis that $R_0$ captures a lot of information about an epidemic. Given 3 number example and discuss how one would usually interpret what the differences in $R_0$ meant (3) maybe connect to \# of $R_0$ estimates for COVID-19 (Aronson et al 2020).  -->
 <!-- } -->
 
-$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is often associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2000}.  $R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a completely susceptible population \citep{anderson1992}.  \shannon{This definition concerns the \textit{generations} of new infections produced by $R_0$ but says nothing about the scale of time in which these new infections can occur.  However, data informing models are often temporally anchored (e.g. weekly case counts).  As a result, $R_0$ can be a difficult quantity to estimate and disentangle from time-based data.  For example, \cite{Gallagher2020} demonstrate how $R_0$ can be sensitive to time-based parameters such as the beginning and end of an epidemic, two quantities that generally do not have precise definitions.} \ben{[Ben says: \@Shannon could we expand on this difficulty / show it really is difficult with 1 more sentence? It might benefit from listing the difficulting in estimating a robust $R_0$ value (difficulties: time steps used, scale and "start" and final start, assumptions about population growth and underlying model fit).]}\shannon{[Shannon says I added the few sentences to more smoothly introduce r0]} To demonstrate the difficulty of discerning $R_0$ in a time-dependent analysis, we first introduce \citet{Kermack1927}’s SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
+$R_0$ is probably the most famous time-invariant numerical summary of an epidemic and is often associated with the Susceptible-Infectious-Recovered (SIR) model \citep{hethcote2000}.  $R_0$ is a one-number summary of a disease and is defined as the expected number of infections caused by a single infector who is added to a completely susceptible population \citep{anderson1992}. \ben{This means that $R_0$ is a time-invariant parameter yet is estimated with time-based data, which can make it a [difficult quantity to estimate.]}  \ben{\sout{This definition concerns the \textit{generations} of new infections produced by $R_0$ but says nothing about the scale of time in which these new infections can occur.  However, data informing models are often temporally anchored (e.g. weekly case counts).}}\footnote{\ben{This was a bit unclear including defining a new term.   As a result, $R_0$ can be a difficult quantity to estimate and disentangle from time-based data.  For example,}}\shannon{ \cite{Gallagher2020} demonstrate\ben{s} how $R_0$ can be sensitive to time-based parameters such as the beginning and end of an epidemic, two quantities that generally}\ben{hard to define precisely.\sout{do not have precise definitions}}. To demonstrate the difficulty of discerning $R_0$ in \ben{\sout{a}other}\footnote{\ben{I change this so we don't confused readers that we're going show the impact in tools beyond just the estimation itself.}} time-dependent analysis, we first introduce \citet{Kermack1927}’s SIR model. This model captures the transitions from one state to the next as a system of ordinary differential equations, where $N$ is the total number of individuals, $\beta$ is the rate of infection, and $\gamma$ is the rate of recovery,
 
 
 \begin{align}\label{eq:sir-ode}
@@ -151,15 +151,16 @@ $R_0$ is probably the most famous time-invariant numerical summary of an epidemi
     R^\prime(t) &= \gamma I(t) \nonumber.
 \end{align}
 
-From this model, $R_0 = \beta/\gamma$, aka the ratio of the infection rate compared to the recovery rate. Since $\beta$ and $\gamma$ are both rates, the ratio of the two, $R_0$, is a time-invariant quantity.  Once $R_0$ is estimated, practioners can infer important epidemic quantities such as the total number of infections or the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic.  Moreover, $R_0$ allows us to compare different diseases and different instances of outbreaks on the same scale.  
+From this model, $R_0 = \beta/\gamma$, aka the ratio of the infection rate compared to the recovery rate. \ben{From this definition, given 
+\sout{Since}} $\beta$ and $\gamma$ are both rates, \ben{it should be clear that} the ratio of the two, $R_0$, is a time-invariant quantity.\footnote{\ben{I am trying to make it look like we are not repeating ourselves by saying $R_0$ is time-invariant.}}  Once $R_0$ is estimated, practitioners can infer important epidemic quantities such as the total number of infections or the percent of a population needed to be vacccinated to stop the sustained spread of an epidemic.  Moreover, $R_0$ allows us to compare different diseases and different instances of outbreaks on the same scale.  
 
 
 
 \ben{[Ben says: It's unclear to me why we have a subtitle here - isn't it just more motivation of time-invariant anlysis with $R_0$? Also, I feel like the story is weak here. The point is to leverage $R_0$ to show the value of time-invariant analysis - this seems a bit more like just discussing properties of $R_0$. In the follow rewrite I use "[" and "]" to indicate that this is a section from your earlier draft.]}
-\shannon{[Shannon says: Tried to tie this better to the previous part since it's no longer a new section.  also highlighted tie to TIA and r0.  I also wanted to bring the punch line (overlapping epidemics = same r0) closer to the beginning so those who don't want to slog through mathematical details can get the takeaway.]}
+\shannon{[Shannon says: Tried to tie this better to the previous part since it's no longer a new section.  also highlighted tie to time-invariant analysis and $R_0$.  I also wanted to bring the punch line (overlapping epidemics = same r0) closer to the beginning so those who don't want to slog through mathematical details can get the takeaway.]}
 
 
-\shannon{Time-invariant analysis helps practicioners to more easily compare $R_0$ from different outbreaks.} For example, consider two epidemics generated from the Kermack and McKendrick SIR equations. Tne first epidemic has parameters $\beta_1, \gamma_1 = (0.8,0.4)$ and the second has $\beta_2, \gamma_2 = (0.64,0.32)$.  Both epidemics have populations of 1000 people with 10 individuals initially infected.  Additionally note that the two reproduction numbers are the same for each epidemic, $R_0 = 2=0.8/0.4 = 0.64/0.32$.  We plot the epidemics with traditional $state$ vs. $time$ plots. In Fig. \ref{fig:different-scales-standard} we show the time-based paths for the $S$, $I$, and $R$ states for the first 15 days of observed data.  In this time-variant view, we may believe that \ben{epidemic} 1 has a larger $R_0$ than \ben{epidemic} 2 because the peak of infection occurs more quickly than in Epidemic 2.  On the other hand, we may believe \ben{epidemic} 2 has a larger $R_0$ because its unclear if the  number of infections in that \sout{model}\ben{epidemic} has not yet peaked at time 15.  In this time-variant view, we cannot determine if one epidemic has larger value of $R_0$.
+\shannon{Time-invariant analysis helps practitioners to more easily compare $R_0$ from different outbreaks.} For example, consider two epidemics generated from the Kermack and McKendrick SIR equations. The first epidemic has parameters $\beta_1, \gamma_1 = (0.8,0.4)$ and the second has $\beta_2, \gamma_2 = (0.64,0.32)$.  Both epidemics have populations of 1000 people with 10 individuals initially infected.  Additionally note that the two reproduction numbers are the same for each epidemic, $R_0 = 2=0.8/0.4 = 0.64/0.32$.  We plot the epidemics with traditional $state$ vs. $time$ plots. In Fig. \ref{fig:different-scales-standard} we show the time-based paths for the $S$, $I$, and $R$ states for the first 15 days of observed data.  In this time-variant view, we may believe that \ben{epidemic} 1 has a larger $R_0$ than \ben{epidemic} 2 because the peak of infection occurs more quickly than in Epidemic 2.  On the other hand, we may believe \ben{epidemic} 2 has a larger $R_0$ because its unclear if the  number of infections in that \sout{model}\ben{epidemic} has not yet peaked at time 15.  In this time-variant view, we cannot determine if one epidemic has larger value of $R_0$.
 
 ```{r echo = FALSE}
 devtools::load_all()
@@ -226,8 +227,8 @@ ggplot(data = df_long,
 we plot the filamental trajectories of the two epidemics in a time-invariant view. We will explain how and why this works shortly. The important takeaway is that in this time-invariant view, it is apparent that these epidemics are on "the same path." In this case, this indicates that two epidemics have the same value of $R_0$.
 
 
-```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:different-scales-tern}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered."}
-ggplot(data = df %>%
+```{r warning = FALSE, message = FALSE, echo = FALSE, fig.cap = "\\label{fig:different-scales-tern}Example of two epidemics with different $\\beta$ and $\\gamma$ paremeters but the same initial reproduction number $R_0$ = 2.  Both plots are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$.  These are plotted in the time-invariant view, where we can see the number of susceptible, infectious, and recovered.", fig.show="hold", out.width="49%"}
+tern_vis <- ggplot(data = df %>%
          filter(t <= 15)) +
   geom_path(aes(x = S, y = I, z = R,
                      col = type)) +
@@ -236,6 +237,54 @@ ggplot(data = df %>%
     coord_tern() + 
   theme_sir() +
   scale_color_manual(values = c("red", "blue"), name = "Epidemic") 
+
+df_tri <- data.frame(t = 0:3,
+                     S = c(1,0,0,1),
+                     I = c(0,1,0,0),
+                     R = c(0,0,1,0),
+                     name = c("S", "I", "R", "S"),
+                     type = "border") %>% 
+  mutate(type = as.character(type))
+df2 <- df %>% filter(t <= 15) %>%
+  mutate(N = S+I+R,
+        S = S/N,
+        I = I/N,
+        R = R/N) %>%
+  select(-N) 
+
+if (F){
+  plotly_vis <- df2 %>% 
+    plotly::plot_ly(x = ~S, y = ~R, z = ~I, color = ~type) %>%
+    plotly::add_trace(type = 'scatter3d', mode = "lines+markers",
+                      marker = list(size = 5),
+                      line = list(width = 4)) %>%
+    plotly::add_trace(data = df_tri, 
+                      x = ~S, 
+                      y = ~R,
+                      z = ~I,
+                      type = "mesh3d", color = I("blue"), opacity = .1) %>%
+    plotly::add_text(data = df_tri[1:3,], 
+                      x = ~S, 
+                      y = ~R,
+                      z = ~I, 
+                     text= ~name, color = I("black")) %>%
+    plotly::layout(scene = list(
+        camera = list(eye = list(x = 1.5, y = 1.5, z = 1.2)),
+        aspectratio = list(x = 1, y = 1, z = 1),
+        xaxis = list(title = ""),
+        yaxis = list(title = ""),
+        zaxis = list(title = "")),
+        showlegend = FALSE)
+    #plotly::add_surface(data = df_tri, x = ~S, y = ~I, z = ~R, color = ~type) 
+  
+  Sys.setenv("PATH" = paste(Sys.getenv("PATH"), 
+                            "/Users/benjaminleroy/miniconda3/bin", 
+                            sep = .Platform$path.sep))
+  plotly::orca(plotly_vis, file = "images/vis3d.png",width = 8 * 120, height = 8 * 120)
+} 
+
+knitr::include_graphics("images/vis3d.png")
+plot(tern_vis)
 ```
 
 
@@ -246,7 +295,7 @@ ggplot(data = df %>%
 $$
 \psi = \left \{(S(t), I(t), R(t)): S, I, R \ge 0, S + I + R = N \right \}_{t\in[0,T]},
 $$
-where a mapping $\xi : s \to \mathbb{R}$ that is monotonically increasing would not change the definition of $\psi$, i.e. $\psi_\xi = \psi$ where : 
+where a mapping $\xi : s \to \mathbb{R}$ that is strictly monotonically increasing would not change the definition of $\psi$, i.e. $\psi_\xi \equiv \psi$ where : 
 
 $$
 \psi_\xi = \left \{(S(\xi(s)), I(\xi(s)), R(\xi(s))): S, I, R \ge 0, S + I + R = N \right \}_{s\in[0,T]}.
@@ -264,7 +313,7 @@ The filamental trajectories in Fig. \ref{fig:different-scales-tern} seem to over
 Let there be two SIR models as described above.  Then for all $t > 0$ there exists an $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
-The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Proof \ref{proof:thm}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model \ben{\sout{is also} can be mapped to} a point on the epidemic path of the second SIR model. \shannon{In other words, the two epidemics form the same filamental trajectory. For SIR models with similar initial state percentages, time-invariant analysis, time-invariant analysis allows practicioners to compare values of $R_0$ at a glance.}  \ben{[We've changed how we describe these two objects when they are related to the theorem - is that desirable? ]}\shannon{added that sentence to for that}
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent result from \cite{Harko2014} and is shown in detail in Proof \ref{proof:thm}.  The consequence of Theorem \ref{thm:sir-scale} is that for two SIR models that have the same initial percent of individuals in each state and $R_0$ then for every point on the epidemic path of the first SIR model \ben{\sout{is also} can be mapped to} a point on the epidemic path of the second SIR model. \shannon{In other words, the two epidemics form the same filamental trajectory. For SIR models with similar initial state percentages, time-invariant analysis allows practitioners to compare values of $R_0$ at a glance.}  
 
 
 
