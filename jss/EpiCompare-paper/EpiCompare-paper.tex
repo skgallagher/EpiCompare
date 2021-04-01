@@ -242,6 +242,7 @@ different instances of outbreaks on the same scale.
 \textcolor{violet}{[Ben says: It's unclear to me why we have a subtitle here - isn't it just more motivation of time-invariant anlysis with $R_0$? Also, I feel like the story is weak here. The point is to leverage $R_0$ to show the value of time-invariant analysis - this seems a bit more like just discussing properties of $R_0$. In the follow rewrite I use "[" and "]" to indicate that this is a section from your earlier draft.]}
 \textcolor{orange}{[Shannon says: Tried to tie this better to the previous part since it's no longer a new section.  also highlighted tie to time-invariant analysis and $R_0$.  I also wanted to bring the punch line (overlapping epidemics = same r0) closer to the beginning so those who don't want to slog through mathematical details can get the takeaway.]}
 
+\textcolor{violet}{[Ben says: this paragraph needs to still be looked at. Also I'm not sure why this particular paragraph was changed so much at all. Currentlly, the way we present comparing these epidemic's $R_0$s isn't well grouped/motivated.]}
 \textcolor{orange}{Time-invariant analysis helps practitioners to more easily compare $R_0$ from different outbreaks.}
 For example, consider two epidemics generated from the Kermack and
 McKendrick SIR equations. The first epidemic has parameters
@@ -250,18 +251,19 @@ McKendrick SIR equations. The first epidemic has parameters
 1000 people with 10 individuals initially infected. Additionally note
 that the two reproduction numbers are the same for each epidemic,
 \(R_0 = 2=0.8/0.4 = 0.64/0.32\). We plot the epidemics with traditional
-\(state\) vs.~\(time\) plots. In Fig.
-\ref{fig:different-scales-standard} we show the time-based paths for the
-\(S\), \(I\), and \(R\) states for the first 15 days of observed data.
-In this time-variant view, we may believe that
+\(state\) vs.~\(time\)
+plots\footnote{This sentecne is out of place / doesn't connect with the other sentences.}.
+In Fig. \ref{fig:different-scales-standard} we show the time-based paths
+for the \(S\), \(I\), and \(R\) states for the first 15 days of observed
+data. In this time-variant view, we may believe that
 \textcolor{violet}{epidemic} 1 has a larger \(R_0\) than
 \textcolor{violet}{epidemic} 2 because the peak of infection occurs more
 quickly than in Epidemic 2. On the other hand, we may believe
 \textcolor{violet}{epidemic} 2 has a larger \(R_0\) because its unclear
-if the number of infections in that
-\sout{model}\textcolor{violet}{epidemic} has not yet peaked at time 15.
-In this time-variant view, we cannot determine if one epidemic has
-larger value of \(R_0\).
+if the number of infections in that \textcolor{violet}{epidemic} has not
+yet peaked at time 15. In this time-variant view, we cannot determine if
+one epidemic has larger value of
+\(R_0\)\footnote{\textcolor{violet}{This sentnce doesn't connect wit previous examples.}}.
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -276,12 +278,11 @@ larger value of \(R_0\).
 
 \textcolor{orange}{NEW} A time-invariant approach to visualizing
 epidemics, in comparison, allows us to directly compare \(R_0\) from a
-single plot. In Fig. \ref{fig:different-scales-tern} we plot the
-filamental trajectories of the two epidemics in a time-invariant view.
-We will explain how and why this works shortly. The important takeaway
-is that in this time-invariant view, it is apparent that these epidemics
-are on ``the same path.'' In this case, this indicates that two
-epidemics have the same value of \(R_0\).
+single plot.
+\textcolor{violet}{For every time point $t$ we have $S(t),I(t), R(t)$, so we can treat epdiemics as a trajectory in this three-dimensional space, as we visual in the left subplot of Figure \ref{fig:different-sacles-tern}. For state space models like in our example, given the constraint that $S(t) + I(t)+R(t)$ is always equal to $N$ (the total population size), we can visual these point ina a two-dimesional \textit{ternary} plot, as seen in Figure \ref{fig:different-scales-tern}'s right subplot. \sout{In Fig. \ref{fig:different-scales-tern}
+we plot the filamental trajectories of the two epidemics in a time-invariant view. We will explain how and why this works shortly. The important takeaway is that in this time-invariant view, i}I}t
+is apparent that these epidemics are on ``the same path.'' In this case,
+this indicates that two epidemics have the same value of \(R_0\).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -294,7 +295,7 @@ epidemics have the same value of \(R_0\).
 \end{figure}
 \end{CodeChunk}
 
-\textcolor{orange}{The reason why we can visually compare $R_0$ in Fig. \ref{fig:different-scales-tern} is because of the time-invariant nature of the filamental trajectory associated with an epidemic.}
+\textcolor{violet}{Underlying our time-invariant visualization that allowed for the comparison of $R_0$ in Fig. \ref{fig:different-scales-tern} is the treatment of the epidemic as a single filamental trajectory in the state space. \sout{The reason why we can visually compare $R_0$ in Fig. \ref{fig:different-scales-tern} is because of the time-invariant nature of the filamental trajectory associated with an epidemic.}}
 A filamental trajectory can be mathematically viewed as a set of points
 in space that have an ordering, and that all points on the line between
 these ordered points are also contained in the geometric object. For a
@@ -309,8 +310,9 @@ i.e.~\(\psi_\xi \equiv \psi\) where :
 
 \[
 \psi_\xi = \left \{(S(\xi(s)), I(\xi(s)), R(\xi(s))): S, I, R \ge 0, S + I + R = N \right \}_{s\in[0,T]}.
-\] Since the number in each state is non-negative and the sum over the
-three states for a given time point sums to \(N\), then
+\] \textcolor{violet}{[Ben says: removed this paragraph now]} Since the
+number in each state is non-negative and the sum over the three states
+for a given time point sums to \(N\), then
 \textcolor{violet}{all points in} \(\psi\) will lay in a
 \textbackslash ben\{two-dimensional triangular plane in
 three-dimensional space.
@@ -323,9 +325,10 @@ single
 
 \sout{\textcolor{violet}{[This section could be a bit less wordy. But generally good.]} We visualize the two epidemics in a global, ternary view in Figure \ref{fig:different-scales-tern}.  Without getting into too much detail of the intricacies of this plot, we immediately see the points of the two filaments $\psi$ seem to form the same trajectory.  Now, it is much clearer that \textcolor{violet}{\sout{Model} epidemic} 2 is following the same trajectory as \textcolor{violet}{\sout{Model} epidemic} 1 but is not as far along in the infection process. }
 
-The filamental trajectories in Fig. \ref{fig:different-scales-tern} seem
-to overlap, and we may suspect that something is fundamentally linking
-these two different epidemics together. Mathematically, we can show this
+\textcolor{violet}{As suggested a few paragraphs back, t}he filamental
+trajectories in Fig. \ref{fig:different-scales-tern} seem to overlap,
+and we may suspect that something is fundamentally linking these two
+different epidemics together. Mathematically, we can show this
 fundamental link turns is \(R_0\). Let our two epidemics be presented as
 \(\{(S_1(t), I_1(t), R_1(t))\}_{t\geq0}\),
 \(\{(S_2(s), I_2(s), R_2(s))\}_{s \geq 0}\) respectively. As with the
