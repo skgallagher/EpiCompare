@@ -239,18 +239,18 @@ tern_vis <- ggplot(data = df %>%
   scale_color_manual(values = c("red", "blue"), name = "Epidemic") 
 
 df_tri <- data.frame(t = 0:3,
-                     S = c(1,0,0,1),
-                     I = c(0,1,0,0),
-                     R = c(0,0,1,0),
+                     S = c(1,0,0,1)*1000,
+                     I = c(0,1,0,0)*1000,
+                     R = c(0,0,1,0)*1000,
                      name = c("S", "I", "R", "S"),
                      type = "border") %>% 
   mutate(type = as.character(type))
-df2 <- df %>% filter(t <= 15) %>%
-  mutate(N = S+I+R,
-        S = S/N,
-        I = I/N,
-        R = R/N) %>%
-  select(-N) 
+df2 <- df %>% filter(t <= 15) #%>%
+  #mutate(N = S+I+R,
+  #      S = S/N,
+  #      I = I/N,
+  #      R = R/N) %>%
+  #select(-N) 
 
 if (F){
   plotly_vis <- df2 %>% 
@@ -267,7 +267,7 @@ if (F){
                       x = ~S, 
                       y = ~R,
                       z = ~I, 
-                     text= ~name, color = I("black")) %>%
+                     text= ~name, color = I("black"), textfont = list(size = 20)) %>%
     plotly::layout(scene = list(
         camera = list(eye = list(x = 1.5, y = 1.5, z = 1.2)),
         aspectratio = list(x = 1, y = 1, z = 1),
