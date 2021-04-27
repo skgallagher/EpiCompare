@@ -78,6 +78,7 @@ Pittsburgh, PA 15213\\
 \begin{document}
 
 \newcommand{\shannon}[1]{\textcolor{orange}{#1}}
+\newcommand{\shan}[1]{\textcolor{brown}{#1}}
 \newcommand{\ben}[1]{\textcolor{violet}{#1}}
 
 \newtheorem{theorem}{Theorem}
@@ -185,8 +186,8 @@ population reacts, and the time
 \sout{related}\textcolor{orange}{related} features (including start of
 the epidemic, speed of infection and more). Time-invariant analysis
 makes different epidemics easier to compare by removing many time
-dependent aspects of an epidemic. Instead,
-\textcolor{orange}{time-invariant analysis} focuses
+dependent aspects of an epidemic. \sout{Instead,}
+\textcolor{orange}{Time-invariant analysis} focuses
 \textcolor{orange}{on the global pattern of an epidemic, via filamental trajectories,  and emphasizes the number of lives affected.}
 \textcolor{violet}{[Ben wants to try this sentence again.]}
 
@@ -435,11 +436,11 @@ below.
 \textbf{Data Pre-processing}
 
 The first step of most data analysis is ``cleaning'' the data
-\textcolor{orange}{to a format that is friendly for both computers and programmers}\footnote{\textcolor{violet}{[Ben says: I'm unsure this is needed and naturally adds more text. Willing to accept...]}}
+\textcolor{orange}{to a format that is friendly for both computers and programmers}\footnote{\textcolor{violet}{[Ben says: I'm unsure this is needed and naturally adds more text. Willing to accept...]}\textcolor{brown}{When in doubt, remove.}}
 so it can be explored.
 \sout{There are multiple ways to collect epidemiological data.}
 \textcolor{violet}{In epidemology, there are multiple different formats the data can arrive in.}
-\footnote{\textcolor{orange}{[Shannon suggests: "Epidemiological data are collected in many different formats."]} \textcolor{violet}{[Ben says: I see the point you're trying to make and made a new edit - but it's less connected to the previous sentence since "format" is the end.]}}
+\footnote{\textcolor{orange}{[Shannon suggests: "Epidemiological data are collected in many different formats."]} \textcolor{violet}{[Ben says: I see the point you're trying to make and made a new edit - but it's less connected to the previous sentence since "format" is the end.]}\textcolor{brown}{What about adding a linking sentence "Before data can be explored, it must be colleected.  Epidemiological data are collected in many different formats."}}
 Sometimes individual records are collected, with times of different
 states of the epidemic (infection, recovery, etc.) as well as individual
 information like network structure, location, and sub-population
@@ -448,7 +449,7 @@ individuals in each epidemic state. In fact, many times only the number
 of new infections at each time step (e.g.~weekly case counts) is
 observed. Compartment totals (amounts of individuals in each state) are
 then imputed from those case
-counts\sout{ along with}\textcolor{orange}{and}\footnote{\textcolor{violet}{[Ben says: Declined. I'm unclear why we should. Is the sentence unclear? Maybe it's the way it's a compound sentence? - If so a rewrite would be better?]}}
+counts\sout{ along with}\textcolor{orange}{and}\footnote{\textcolor{violet}{[Ben says: Declined. I'm unclear why we should. Is the sentence unclear? Maybe it's the way it's a compound sentence? - If so a rewrite would be better?]}\textcolor{brown}{Upon reflection, I think it's fine.}}
 other information about the disease and the population of interest. In
 \pkg{EpiCompare}, we focus on understanding the overall impact of an
 outbreak at the aggregate/population level, which allows for streamlined
@@ -460,9 +461,9 @@ This function transforms data about individual/agents' initial entry
 into each state (e.g.~start of infection, start of recovery, etc.) to an
 aggregate view of how many individuals were in a state at a given time.
 There are often situations where
-\textcolor{violet}{\sout{grouping} aggregating}\footnote{\textcolor{violet}{[Ben says: reason - connect to languare from sentence before.]}}
+\textcolor{violet}{\sout{grouping} aggregating}\footnote{\textcolor{violet}{[Ben says: reason - connect to languare from sentence before.]}\textcolor{brown}{fine}}
 agents into subpopulations
-(e.g.~sub\sout{populations}\textcolor{orange}{ groups}\footnote{\textcolor{violet}{[Ben says: declined. I'm unclear why we'd do this.]}}
+(e.g.~sub\sout{populations}\textcolor{orange}{ groups}\footnote{\textcolor{violet}{[Ben says: declined. I'm unclear why we'd do this.]}\textcolor{brown}{fine}}
 defined by age or sex) can highlight different aggregate level trends.
 For example, research by \citet{rvachev1985,anderson1992,worby2015}
 develop state-based models that account for differing disease dynamics
@@ -470,7 +471,7 @@ in different subpopulations. In \pkg{EpiCompare}, we facilitate
 subpopulation analysis by combining the function
 \pkg{dplyr}::\texttt{group\_by()} and \texttt{agent\_to\_aggregate()} to
 provide aggregation
-\sout{at a}\textcolor{orange}{by}\footnote{\textcolor{violet}{[Ben says: declined. unclear about this change. Also would it not be "by groups"? Orignial seems to flow more.]}}
+\sout{at a}\textcolor{orange}{by}\footnote{\textcolor{violet}{[Ben says: declined. unclear about this change. Also would it not be "by groups"? Orignial seems to flow more.]}\textcolor{brown}{fine}}
 group level.
 
 The \texttt{agents\_to\_aggregate()} function is flexible and can deal
@@ -483,17 +484,17 @@ more complex states (e.g.~``Exposed'', ``iMmune'', ``Hospitalized'').
 Additionally, \texttt{agents\_to\_aggregate()} permits indicators for
 death/exit and birth/entry dates. Overall, this function is a powerful
 tool for pre-processing data,
-\textcolor{orange}{and it lowers the barrier for entry into data analysis for less experienced practicioners.}\footnote{\textcolor{orange}{[Shannon says: I added this in theme with 'highlighting a point of entry']} \textcolor{violet}{[Ben says: I'm unclear about this comment but I'm find with the addition...]}}
+\textcolor{orange}{and it lowers the barrier for entry into data analysis for less experienced practicioners.}\footnote{\textcolor{orange}{[Shannon says: I added this in theme with 'highlighting a point of entry']} \textcolor{violet}{[Ben says: I'm unclear about this comment but I'm find with the addition...]}\textcolor{brown}{We say in the intro about highlighting two points of entry into EpiCompare.}}
 
 \textbf{EDA}
 
-\textcolor{violet}{\sout{With raw data, "Getting to know" our} In the early stages of a project, getting to know the}\footnote{\textcolor{orange}{[Shannon suggested: "Getting to know" our]} \textcolor{violet}{[Ben says: even though I was the original one with the quotes - one should always stray away from it. I kept the implicit connection to the section we're in given I'm not sure people are reading the titles super well.]}}
+\textcolor{violet}{\sout{With raw data, "Getting to know" our} In the early stages of a project, getting to know the}\footnote{\textcolor{orange}{[Shannon suggested: "Getting to know" our]} \textcolor{violet}{[Ben says: even though I was the original one with the quotes - one should always stray away from it. I kept the implicit connection to the section we're in given I'm not sure people are reading the titles super well.]}\textcolor{brown}{I don't like getting to know without quotes -- it's too colloquial.  What about 'The practicioner famliarizes herself with data through...' }}
 data currently means figuring out useful combinations of visualizations
 \textcolor{violet}{\sout{,}and} numerical summaries and
-\sout{\sout{subsets}\textcolor{orange}{groupings}}\textcolor{violet}{exploring different groupings of the data}\footnote{\textcolor{violet}{[Ben says: the action "figuring out" and "groupings" was a bit unclear what actually was going to happen - so I changed it.]}}.
+\sout{\sout{subsets}\textcolor{orange}{groupings}}\textcolor{violet}{exploring different groupings of the data}\footnote{\textcolor{violet}{[Ben says: the action "figuring out" and "groupings" was a bit unclear what actually was going to happen - so I changed it.]}\textcolor{brown}{fine}}.
 \textcolor{violet}{\sout{An expert coder has many ways to successfully explore the data in an aggregate lens using }}\texttt{agents\_to\_aggregate()}\textcolor{violet}{\sout{. For less experienced coders, \pkg{EpiCompare} also includes tools to rapidly explore data that has three epidemic states.} An expert coder can start from }
 \texttt{agents\_to\_aggregate()}
-\textcolor{violet}{to successfully accomplish EDA in many ways, but \pkg{EpiCompare} also includes tools that allow a novice coder to rapidly explore data, as long as there three unique epidemiological states (like the SIR model).}\footnote{\textcolor{violet}{[Ben says: I'm reverting to the old text - it's much clearer. - happy to have a a discussion on it. The crossed out text didn't capture what an expert coder was really going to do and how that differed.]}}
+\textcolor{violet}{to successfully accomplish EDA in many ways, but \pkg{EpiCompare} also includes tools that allow a novice coder to rapidly explore data, as long as there three unique epidemiological states (like the SIR model).}\footnote{\textcolor{violet}{[Ben says: I'm reverting to the old text - it's much clearer. - happy to have a a discussion on it. The crossed out text didn't capture what an expert coder was really going to do and how that differed.]}\textcolor{brown}{fine}}
 Building on \textcolor{violet}{\sout{the tools in}} \pkg{ggplot2} and
 \pkg{ggtern} \textcolor{violet}{packages}, \pkg{EpiCompare}`s
 \texttt{geom\_aggregate()} provides a rapid way to explore different
@@ -514,7 +515,7 @@ epidemics emphasizes a ``time-invarance'' representation of the data
 
 After getting a good sense of what a past or current epidemic looks like
 with EDA, the next step is often model fitting and/or simulations.
-\sout{In this step and the next step (post-processing), we discuss how to \textcolor{orange}{easily include external models and simulations originating outside into the \pkg{EpiCompare} data analysis pipeline.}}\textcolor{violet}{In this step and the next step (post-proessing), we highlight how practitioners can pair models and simulations of epidemics from outside of \pkg{EpiCompare} with analysis and simulation tools in \pkg{EpiCompare}.}\footnote{\textcolor{violet}{[Ben says: the original rewrite didn't seem to clear - specifically in how the practitioner would be using outside models in this step.]}}
+\sout{In this step and the next step (post-processing), we discuss how to \textcolor{orange}{easily include external models and simulations originating outside into the \pkg{EpiCompare} data analysis pipeline.}}\textcolor{violet}{In this step and the next step (post-proessing), we highlight how practitioners can pair models and simulations of epidemics from outside of \pkg{EpiCompare} with analysis and simulation tools in \pkg{EpiCompare}.}\footnote{\textcolor{violet}{[Ben says: the original rewrite didn't seem to clear - specifically in how the practitioner would be using outside models in this step.]}\textcolor{brown}{fine}}
 While \pkg{EpiCompare} does not focus on fitting model(s) to data, we do
 provide some flexible functions for simulation of basic discrete-time
 epidemic-state models.
@@ -569,7 +570,7 @@ have output that is consistent with that of
 
 \textcolor{orange}{[Shannon says: Here Ben talks about filament compression and tidy\_dist mats, etc.]}
 \textcolor{violet}{[Ben says: not currently thinking about including tidy\_dist stuff - will need to think about this as it is including in the pipeline 2 image...]}
-\footnote{\textcolor{violet}{[Ben says: are these comments still relevant?]}}
+\footnote{\textcolor{violet}{[Ben says: are these comments still relevant?]}\textcolor{brown}{These comments are resolved}}
 
 To utilize simulations of epidemics in later time-invariant analysis we
 also provide a function to convert temporally defined epidemics to
@@ -658,7 +659,7 @@ the \texttt{R} output for the given structure), and \texttt{contained()}
 (which allows the user to determine if one set of points is contained in
 a prediction band). Additionally, we offer ways to determine if model
 outputs are compatible with one another, that is how extreme one output
-is to another. \textcolor{orange}{Ben says something about distance}
+is to another.
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
