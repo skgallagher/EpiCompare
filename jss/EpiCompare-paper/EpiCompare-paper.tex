@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -366,7 +364,7 @@ fraction of \(|\psi_1|\) distance away from the start of
 \(\psi_i\).\footnote{\textcolor{orange}{I think you're trying to say something about a distance based on the equally space points.  Some clarifying questions:  is $\psi^\prime$ the derivative?  Does proportion make more sense than fraction? or simply $\frac{|\psi|}{s}$? It's only naturally time-invariant if we have a well defined ending point, right?}}
 This distance is naturally time-invariant, and can be plugged into
 multiple distance-based assessment tools to examine the overall
-``extremeness'\,' of points, including pseudo-density estimators and
+``extremeness'' of points, including pseudo-density estimators and
 depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be \sout{very} useful when comparing
@@ -595,8 +593,30 @@ results.
 
 \textbf{Comparisons and Assessment}
 
-\textcolor{violet}{[Ben says: I didn't look at this section - it looks like your comments are more "let's" talk about this and not suggestions / feedback.]}
+\textcolor{violet}{Finally,} {[}In \pkg{EpiCompare} we provide a set of
+comparison and assessment tools for models
+\textcolor{violet}{(and model's simulations)} that extend beyond the
+standard performance metrics (e.g.~mean squared error or AIC).{]}
+\textcolor{violet}{Aligned with the discussion in Section \ref{sec:beyond-r0-sir}, \pkg{EpiCompare} provides a set of time-invariant tools to compare and evaluate epidemic models and simulations. We have found these tools to be specifically applicable for situations where only one "season" or "cycle" of the epidemic has occurred (e.g. one flue season).}\footnote{\textcolor{violet}{[Ben says: Shannon - is this a clear enough use of season / cycle?]}}
 
+\textcolor{violet}{One tool we provide to assess models is through the creation of geometric prediction regions, useful when we treat epidemics like filaments. If we have a set of simulated epidemics from a model, we can create a geometric prediction region for the expected trajectory of the epdiemice in the state space.}
+{[}For three-state epidemic models, we provide the
+\texttt{ggplot}/\texttt{ggtern} extension
+\texttt{geom\_prediction\_band()} which creates a prediction region
+around the top \(1-\alpha\) proportion of the simulations.{]}
+\textcolor{violet}{In this visual setting, comparing this prediction to the true epidemic trajectory or comparing the prediction regions defined by two different models' simulations can be done visually.}
+{[}In \pkg{EpiCompare} we also provide these prediction regions for
+epidemic models with with more than three states. The functions
+\texttt{create\_convex\_hull\_structure()} and
+\texttt{create\_delta\_ball\_structure()} create different geometric
+representations of prediction regions for any
+\textcolor{violet}{dimensional} state-based model. For both of these
+geometric objects, we provide functions to check if a path is contained
+(\texttt{contained()}) and the ability to assess the Hausdorff distance
+between prediction regions based on simulations from different model
+(\texttt{hassdorf\_dist()}).{]}
+
+\textcolor{violet}{[Ben says: this paragraph is replaced by the two above, see "[" segments - they refer to items below.]}\footnote{\textcolor{violet}{Ben says: Here are some thoughts for the replacment work: (1) The introduction is cleaned up the confusion around "cycle" - hopefully? (2) Shannon's proposed intro wasn't used due to not wanting to claim that this step is always the "last step" of the pipeline. (3) more focus was placed on why we are providing this tools.}}
 \textcolor{orange}{Finally, \pkg{EpiCompare} can be used the last step of the data analysis pipeline with its comparison and assessment utility functions.}
 As introduced in Section \ref{sec:beyond-r0-sir} there's a
 \sout{lot of}\textcolor{orange}{much} potential for time-invariant tools
@@ -626,40 +646,18 @@ both of these geometric objects, we provide functions to check if a path
 is contained (\texttt{contained()}) and the ability to assess the
 Hausdorff distance between prediction regions based on simulations from
 different model (\texttt{hassdorf\_dist()}).
-\footnote{\textcolor{violet}{[Ben says: should we discuss the details of geom\_prediction\_bands more? ]}\textcolor{orange}{[Shannon says: I don't think so, best left to the vignette and data example]}}
 
-We also provide functions to calculate the ``extremeness'' of a true
-epidemic {[}\textcolor{orange}{trajectory?}{]} compared to simulated
-epidemics via the equi-distance filamental trajectory representation as
-mentioned in Section \ref{sec:beyond-r0-sir}. Specifically, functions
-like \texttt{distance\_pseudo\_density\_function()} can calculate a
+\textcolor{violet}{[Ben says: this paragraph is still kept.]} We also
+provide functions to calculate the ``extremeness'' of a true epidemic
+trajectory\footnote{\textcolor{violet}{Ben says: accepted.}} compared to
+simulated epidemics via the equi-distance filamental trajectory
+representation as mentioned in Section \ref{sec:beyond-r0-sir}.
+Specifically, functions like
+\texttt{distance\_pseudo\_density\_function()} can calculate a
 pseudo-density estimate of the true epidemic relative to simulated ones.
 Functions \texttt{distance\_depth\_function()} and
 \texttt{local\_distance\_depth\_function()} provide depth scores that
 suggest how geometrically central an epidemic is to simulations.
-\footnote{\textcolor{violet}{[Ben says: should we define these more in this paragraph? Introducted in 2.2. as well and not defined.]}\textcolor{orange}{[Shannon says: I'd throw a citation or two but again limit the detail.]}}
-
-\textcolor{violet}{[Ben says: Replaced with paragraphs above.]}
-Comparison and assessment of model fit or comparisons of one model to
-another model can be performed in a variety of ways including mean
-square error, AIC, plots, and more. Perhaps the most useful tool
-\pkg{EpiCompare} has to offer to the expert, for comparison and
-assessment of models, is in its post-processing tools which create a
-standard output. It is then a matter of writing a script or function
-made for that standard output to assess the results from multiple models
-in the way the user
-desires\footnote{\textcolor{violet}{[Ben says: Shannon, doesn't this below in the previous section?, I might drop this paragraph except for the introduction sentence - is it really true that the standardization is most valuable?]}\textcolor{orange}{I agree with you now that this section is nice and filled in.  Let's drop this paragraph.}}.
-
-\textcolor{violet}{[Ben says: Replaced with paragraphs above.]} However,
-for those who like more concrete tools, \pkg{EpiCompare} offers
-functions to compare prediction regions to one another including
-\texttt{geom\_prediction\_band()} (which plots the region), and
-\texttt{create\_\{convex\_hull,delta\_ball\}\_structure()}(which returns
-the \texttt{R} output for the given structure), and \texttt{contained()}
-(which allows the user to determine if one set of points is contained in
-a prediction band). Additionally, we offer ways to determine if model
-outputs are compatible with one another, that is how extreme one output
-is to another.
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
@@ -1090,8 +1088,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1148,3 +1146,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
