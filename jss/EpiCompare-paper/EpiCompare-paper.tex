@@ -9,7 +9,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +46,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -364,7 +366,7 @@ fraction of \(|\psi_1|\) distance away from the start of
 \(\psi_i\).\footnote{\textcolor{orange}{I think you're trying to say something about a distance based on the equally space points.  Some clarifying questions:  is $\psi^\prime$ the derivative?  Does proportion make more sense than fraction? or simply $\frac{|\psi|}{s}$? It's only naturally time-invariant if we have a well defined ending point, right?}}
 This distance is naturally time-invariant, and can be plugged into
 multiple distance-based assessment tools to examine the overall
-``extremeness'' of points, including pseudo-density estimators and
+``extremeness'\,' of points, including pseudo-density estimators and
 depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be \sout{very} useful when comparing
@@ -437,7 +439,7 @@ subsections below.
 The first step of most data analysis is ``cleaning'' the raw data so it
 can be explored. Before data can be explored, they must be collected.
 Raw data can appear in many different
-formats.\footnote{\textcolor{violet}{[Ben says: the previous too sentences are very short and seem choppy when I read them - do they for you as well?]}}
+formats.\footnote{\textcolor{violet}{[Ben says: the previous too sentences are very short and seem choppy when I read them - do they for you as well?]}\textcolor{orange}{I think we can get rid of the 'raw data can appear...' sentence.}}
 Sometimes individual records are collected, with times of different
 states of the epidemic (infection, recovery, etc.) as well as individual
 information like network structure, location, and sub-population
@@ -457,25 +459,26 @@ This function transforms data about individual/agents' initial entry
 into each state (e.g.~start of infection, start of recovery, etc.) to an
 aggregate view of how many individuals were in a state at a given time.
 There are often situations where
-\textcolor{violet}{\sout{aggregating} grouping}\footnote{\textcolor{violet}{[We use aggregating two times in this sentence. I'm open to other synonyms as well, but it seems repetitive.]}}
-agents into subpopulations (e.g.~subpopulations defined by age or sex)
-can highlight different aggregate level trends. For example, research by
+\textcolor{violet}{\sout{aggregating} grouping}\textbackslash footnote\{\textcolor{violet}{[We use aggregating two times in this sentence. I'm open to other synonyms as well, but it seems repetitive. ]}
+\textcolor{orange}{It was grouping before ;).  Fine with me.} agents
+into subpopulations (e.g.~subpopulations defined by age or sex) can
+highlight different aggregate level trends. For example, research by
 \citet{rvachev1985,anderson1992,worby2015} develop state-based models
 that account for differing disease dynamics in different subpopulations.
 In \pkg{EpiCompare}, we facilitate subpopulation analysis by combining
 the function \pkg{dplyr}::\texttt{group\_by()} and
 \texttt{agent\_to\_aggregate()} to provide aggregation at a
 subpopulation
-level\footnote{\textcolor{violet}{[Ben says: This sentence seems a bit repetitive with "supopulation". ]}}.
+level\footnote{\textcolor{violet}{[Ben says: This sentence seems a bit repetitive with "supopulation". ]}\textcolor{orange}{agreed.  I like 'to provide summaries at a'}}.
 
 Besides aiding subpopulation analysis, \texttt{agents\_to\_aggregate()}
 can
-\textcolor{violet}{\sout{deal with} accommodate}\footnote{\textcolor{violet}{[Ben says: I think the original word is a bit vague it as "deal with" could mean "accommodate" or "avoid traps associated with", etc. Again, I'm open to other synonyms.]}}
+\textcolor{violet}{\sout{deal with} accommodate}\footnote{\textcolor{violet}{[Ben says: I think the original word is a bit vague it as "deal with" could mean "accommodate" or "avoid traps associated with", etc. Again, I'm open to other synonyms.]}\textcolor{orange}{I like accomodate}}
 a wide range of information about each individual. In fact, this
-function account for infinitely many states. This functionality allows
-the practitioner to aggregate information relative to common states
-(e.g.~``Susceptible'', ``Infectious'', and ``Recovered'') as well as
-more complex states (e.g.~``Exposed'', ``iMmune'', ``Hospitalized'').
+function can account for infinitely many states. This functionality
+allows the practitioner to aggregate information relative to common
+states (e.g.~``Susceptible'', ``Infectious'', and ``Recovered'') as well
+as more complex states (e.g.~``Exposed'', ``iMmune'', ``Hospitalized'').
 Additionally, \texttt{agents\_to\_aggregate()} permits indicators for
 death/exit and birth/entry dates. Overall, this function is a powerful
 tool for pre-processing data.
@@ -493,7 +496,7 @@ coder to rapidly explore data, provided there \textcolor{violet}{are}
 three unique epidemiological states (like in the SIR model). Building on
 \pkg{ggplot2} and \pkg{ggtern} packages, \pkg{EpiCompare}'s
 \texttt{geom\_aggregate()} provides a
-\textcolor{violet}{\sout{rapid}}\footnote{\textcolor{violet}{[Ben says: this word is used in the sentence before, and I don't think it adds too much to this sentence.]}}
+\textcolor{violet}{\sout{rapid}}\footnote{\textcolor{violet}{[Ben says: this word is used in the sentence before, and I don't think it adds too much to this sentence.]} \textcolor{orange}{accepted}}
 way to explore how different subpopulations experience of an epidemic
 \citep{Wickham2016, Hamilton2018}. The function
 \texttt{geom\_aggregate()} provides a visualization tool to holistically
@@ -503,7 +506,7 @@ three-dimensional state space. Visualization tools for three-state
 models were developed because (1) SIR models are some of the most common
 and basic epidemic state-based models and (2) our three-dimensional
 simplex representation of these epidemics emphasizes a
-\textcolor{violet}{\sout{"time-invarance"}time-invariant}\footnote{\textcolor{violet}{[Ben says: I don't think we really need quotation marks here as we've discussed the idea in the previous sections.]}}
+\textcolor{violet}{\sout{"time-invarance"}time-invariant}\footnote{\textcolor{violet}{[Ben says: I don't think we really need quotation marks here as we've discussed the idea in the previous sections.]} \textcolor{orange}{agreed}}
 representation of the data (for a refresher see Section
 \ref{sec:time-invariant}).
 
@@ -542,7 +545,7 @@ accessed.
 
 \textbf{Post-processing}
 
-\footnote{\textcolor{violet}{[Ben says: I found the structure of this section slightly confusing. It appears that the 2 subsections are (1) model based transformation and (2) simulation based transformations. The fact that there are 2 points isn't quickly apparent when reading it, and I found it odd that the 3rd sentence of the first paragraph introduces model processing (which the second paragraph also discusses).]}}
+\footnote{\textcolor{violet}{[Ben says: I found the structure of this section slightly confusing. It appears that the 2 subsections are (1) model based transformation and (2) simulation based transformations. The fact that there are 2 points isn't quickly apparent when reading it, and I found it odd that the 3rd sentence of the first paragraph introduces model processing (which the second paragraph also discusses).]}\textcolor{orange}{agreed that this section needs some work.  but to me those aren't the clear points, it seems like (1) put external model results in the same format and (2) transform model output to filaments.  that said i don't see how we're over-selling the package.  would 'transform and disseminate' be better?}}
 If practitioners wish to compare models-to-observations or even
 models-to-models, they needs to post-process their models and
 simulations to disseminate the results in an easily digestible format.
@@ -583,7 +586,7 @@ results.\footnote{\textcolor{violet}{[Ben says: This sentence still doesn't seem
 Finally, in \pkg{EpiCompare} we provide a set of comparison and
 assessment tools for model and simulation results that extend beyond the
 standard performance metrics (e.g.~mean squared error or AIC).
-Corresponding\footnote{\textcolor{violet}{[Ben says: "corresponding to" doesn't seem to be the correct phrase here. If we wanted to use "corresponding" I might imagine saying "corresponding to the araguments for time-invariant analysis in Section 2.2, EpiCompare provides such tools." I'm open to keeping it if you think it's the perfect work choice.]}}
+Corresponding\footnote{\textcolor{violet}{[Ben says: "corresponding to" doesn't seem to be the correct phrase here. If we wanted to use "corresponding" I might imagine saying "corresponding to the araguments for time-invariant analysis in Section 2.2, EpiCompare provides such tools." I'm open to keeping it if you think it's the perfect word choice.]}\textcolor{orange}{"To support the ideas presented in Sec."?}}
 to Section \ref{sec:beyond-r0-sir}, \pkg{EpiCompare} provides a set of
 time-invariant tools to compare and evaluate epidemic models and
 simulations. We have found these tools to be specifically applicable for
@@ -591,7 +594,7 @@ situations where only one ``season'' or
 ``cycle''\footnote{\textcolor{violet}{[Ben says: I think we can remove the paratheses here.]}}
 of the epidemic has occurred.
 
-\footnote{\textcolor{violet}{[Ben says: multiple parts of this paragraph might benefit with capturing a bit more of the motivation in the rewrite of Section 2 for the tools we're presenting.]}}One
+\footnote{\textcolor{violet}{[Ben says: multiple parts of this paragraph might benefit with capturing a bit more of the motivation in the rewrite of Section 2 for the tools we're presenting.]}\textcolor{orange}{I'm not saying 'no' but I'd do it in an appendix and not the main text.  I don't think equations belong in Section 3.}}One
 tool we provide to assess models is through the creation of geometric
 prediction regions, which are useful when we treat epidemics like
 filaments. If there is a set of simulated epidemics from a model, we can
@@ -1055,8 +1058,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0\\
-EpiModel SIR & 0.0028813 & 0\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1113,4 +1116,3 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
-
