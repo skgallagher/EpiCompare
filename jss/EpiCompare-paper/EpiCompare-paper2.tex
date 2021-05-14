@@ -179,31 +179,32 @@ analysis pipeline.
 \hypertarget{time-invariant-analysis}{%
 \section{Time-invariant analysis}\label{time-invariant-analysis}}
 
-EpiCompare emphasizes the value of analyzing epidemics in a
+\pkg{EpiCompare} emphasizes the value of analyzing epidemics in a
 \textit{time-invariant} way - approaches that remove some or all of the
 impact of start/end times and recording time scales when preforming the
-analysis. In this section we will highlight weaknesses of
+analysis. In this section we highlight some weaknesses of
 time-\textit{de}pendent analysis and define the mathematical
 underpinning of the time-invariant approach we take. To accomplish this
-goal we will first demonstrate the inability of time-dependent tools to
-well quantify a classic epidemic parameter, the reproduction number
-\(R_0\). Then we will motivate new time-invariant approaches for more
-complex situations where \(R_0\) doesn't capture the complexities of
-outbreaks. This will lead us to our final subsection that defines ways
-to view epidemics in a time-invariant lense and discusses natural
-properties of these representations that allow for clearer ways to
-compare models and epidemics.
+goal we first demonstrate the inability of time-dependent tools to
+\sout{well quantify}\textcolor{orange}{simply capture} a classic
+epidemic parameter, the reproduction number \(R_0\). Then we motivate
+new time-invariant approaches for more complex situations where \(R_0\)
+does not capture the complexities of outbreaks. This leads to the final
+subsection that defines ways to view epidemics in a time-invariant lens
+and discusses natural properties of these representations that allow for
+clearer ways to compare models and epidemics.
 
 \subsection[Motivation through the reproduction number $R_0$]{Motivation
 of time-invariant analysis through the reproduction number
 \(R_0\)}\label{sec:r0_subsection}
 
-Epidemiological research is often interested in understanding intrinsic
-properties of the epidemic, independent from when the epidemic occurred
-or how frequently data was collected. One of the most famous numerical
-summaries of an epidemic is the reproduction number - \(R_0\). This
-intrinsic
-property\footnote{added to shorten this long sentence and connect that it is an intrinsic property}
+Epidemiological research is
+\textcolor{orange}{often interested}\footnote{\textcolor{orange}{I used often intsead of "a lot of epidemiological research" which sounds too colloquial}}
+in understanding intrinsic properties of the epidemic, independent from
+when the epidemic occurred or how frequently data was collected. One of
+the most famous numerical summaries of an epidemic is the reproduction
+number - \(R_0\). \textcolor{orange}{} This intrinsic
+property\}\footnote{\textcolor{orange}{added to shorten this long sentence and connect that it is an intrinsic property}}
 is a time-invariant value that is defined as the expected number of
 infections caused by a single infect or who is added to a completely
 susceptible population \citep{anderson1992}. \citet{Gallagher2020}
@@ -211,8 +212,8 @@ showed that the estimation of \(R_0\) can be sensitive to time-dependent
 parameters like estimation of the beginning and end of an epidemic. This
 time-dependent sensitivity in estimating \(R_0\) reflects a general
 problem in epidemiology surrounding how to transform time-dependent
-information into insights into desirable, intrinsic properties of an
-epidemic.
+information into insights into desirable, \textcolor{orange}{intrinsic}
+properties of an epidemic.
 
 In many situations, epidemiologists want a much deeper understand of an
 epidemic than just the reproduction number. One common time-dependent
@@ -222,11 +223,12 @@ a given state (e.g.~infected) at a given time. Figure
 \ref{fig:different-scales-standard} visualizes two different simulated
 epidemics with population states (S)usceptible, (I)nfectious and
 (R)ecovered. These simulations have been generated under a discrete
-approximation of \citet{Kermack1927}'s SIR model. The Kermack and
-McKendrick model captures the transitions from one state to the next as
-a system of ordinary differential equations, where \(N\) is the total
-number of individuals, \(\beta\) is the rate of infection, and
-\(\gamma\) is the rate of recovery,
+approximation of \citet{Kermack1927}'s SIR model.
+j\textcolor{orange}{The Kermack and McKendrick} model captures the
+transitions from one state to the next as a system of ordinary
+differential equations, where \(N\) is the total number of individuals,
+\(\beta\) is the rate of infection, and \(\gamma\) is the rate of
+recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -260,7 +262,7 @@ population (1000 total people with 10 infected) and have the same
 (\(\beta_1, \gamma_1 = 0.8, 0.4\), and
 \(\beta_2, \gamma_2 = .64, .32\)). Even for simple generative models,
 this time-dependent visualization cannot be used to compare a very
-simple but powerful numerical summary, \(R_0\).
+simple but powerful numerical summary, \textcolor{orange}{$R_0$}.
 
 \hypertarget{ternary-plots-a-time-invariant-visualization-tool}{%
 \subsection{Ternary plots: a time-invariant visualization
@@ -272,19 +274,20 @@ practitioner to compare simulated epidemics' \(R_0\) values but also
 presented epidemics' trajectory data so that only the marginal
 information for each state can be examined at a given time. A more
 holistic approach to visualizing the overall path of our simulated
-epidemics is to examine how each epidemic traverses the
-three-dimensional \((S(t),I(t),R(t))\) space. Figure 3's left plot does
-just that, presenting the trajectories of the simulated epidemics in
-this three-dimensional space. For state space models like in our
+epidemics is to examine \textcolor{orange}{how} each epidemic traverses
+the three-dimensional \((S(t),I(t),R(t))\) space. Figure 3's left plot
+does just that, presenting the trajectories of the simulated epidemics
+in this three-dimensional space. For state space models like in our
 example, given the constraint that \(S(t) + I(t)+R(t)\) is always equal
 to \(N\) (the total population size) we can visual these point in a a
 two-dimensional \textit{ternary} plot, as seen in Figure
 \ref{fig:different-scales-tern}'s right plot. In this both of Figure
 \ref{fig:different-scales-tern}'s plots we observe that the two
 epidemics are on the same trajectory in this three-dimensional space. In
-this simple generative example setting, being on the same trajectory
-indicates that \textcolor{violet}{the} two epidemics have the same
-\(R_0\) value. This can be proven mathematically.
+this simple generative example setting,
+\textcolor{orange}{being on the same trajectory} indicates that
+\textcolor{violet}{the} two epidemics have the same \(R_0\) value. This
+can be proven mathematically.
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -349,7 +352,7 @@ extremeness score relative to the extremeness scores of the simulations
 very easily.
 
 \sout{When the goal is to predict the future impact / trajectory of a epidemic,}
-In addition to being used to better understand completed epidemics,
+\textcolor{orange}{In addition to being used to better understand completed epidemics,}
 time-invariant tools can be used to aid prediction of future epidemics
 by providing a state-space regions in which we expect the true epidemic
 to traverse. In settings where the epidemic only generates a single
