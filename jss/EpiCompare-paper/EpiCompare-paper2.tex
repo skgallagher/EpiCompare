@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -186,55 +184,55 @@ analysis. In this section we highlight some weaknesses of
 time-\textit{de}pendent analysis and define the mathematical
 underpinning of the time-invariant approach we take. To accomplish this
 goal we first demonstrate the inability of time-dependent tools to
-\sout{well quantify}\textcolor{orange}{simply capture} a classic
-epidemic parameter, the reproduction number \(R_0\). Then we motivate
-new time-invariant approaches for more complex situations where \(R_0\)
-does not capture the complexities of outbreaks. This leads to the final
-subsection that defines ways to view epidemics in a time-invariant lens
-and discusses natural properties of these representations that allow for
-clearer ways to compare models and epidemics.
+\textcolor{violet}{adequately}
+quantify\footnote{\textcolor{violet}{[Ben says: original suggestion was "simply capture", and original phrase was "well quantify".]}}
+a classic epidemic parameter, the reproduction number \(R_0\). Then we
+motivate new time-invariant approaches for more complex situations where
+\(R_0\) does not capture the complexities of outbreaks. This leads to
+the final subsection that defines ways to view epidemics in a
+time-invariant lens and discusses natural properties of these
+representations that allow for clearer ways to compare models and
+epidemics.
 
 \subsection[Motivation through the reproduction number $R_0$]{Motivation
 of time-invariant analysis through the reproduction number
 \(R_0\)}\label{sec:r0_subsection}
 
-Epidemiological research is
-\textcolor{orange}{often interested}\footnote{\textcolor{orange}{I used often intsead of "a lot of epidemiological research" which sounds too colloquial}}
-in understanding intrinsic properties of the epidemic, independent from
-when the epidemic occurred or how frequently data was collected. One of
-the most famous numerical summaries of an epidemic is the reproduction
-number - \(R_0\). \textcolor{orange}{} This intrinsic
-property\}\footnote{\textcolor{orange}{added to shorten this long sentence and connect that it is an intrinsic property}}
-is a time-invariant value that is defined as the expected number of
+Epidemiological research is often interested in understanding intrinsic
+properties of the epidemic, independent from when the epidemic occurred
+or how frequently data was collected. One of the most famous numerical
+summaries of an epidemic is the reproduction number - \(R_0\). This
+\textcolor{violet}{numerical summary} \sout{intrinsic property} is a
+time-invariant value that is defined as the expected number of
 infections caused by a single infect or who is added to a completely
 susceptible population \citep{anderson1992}. \citet{Gallagher2020}
 showed that the estimation of \(R_0\) can be sensitive to time-dependent
 parameters like estimation of the beginning and end of an epidemic. This
 time-dependent sensitivity in estimating \(R_0\) reflects a general
 problem in epidemiology surrounding how to transform time-dependent
-information into insights into desirable, \textcolor{orange}{intrinsic}
-properties of an epidemic.
+information into insights into desirable, intrinsic properties of an
+epidemic.
 
 In many situations, epidemiologists want a much deeper understand of an
 epidemic than just the reproduction number. One common time-dependent
-tool \textcolor{orange}{used to better understand epidemics} is a series
-of time series line plots that track the proportion of the population in
-a given state (e.g.~infected) at a given time. Figure
+tool used to better understand epidemics is a series of time series line
+plots that track the proportion of the population in a given state
+(e.g.~infected) at a given time. Figure
 \ref{fig:different-scales-standard} visualizes two different simulated
 epidemics with population states (S)usceptible, (I)nfectious and
 (R)ecovered. These simulations have been generated under a discrete
-approximation of \citet{Kermack1927}'s SIR model.
-j\textcolor{orange}{The Kermack and McKendrick} model captures the
-transitions from one state to the next as a system of ordinary
-differential equations, where \(N\) is the total number of individuals,
-\(\beta\) is the rate of infection, and \(\gamma\) is the rate of
-recovery,
+approximation of \citet{Kermack1927}'s SIR model. The Kermack and
+McKendrick model captures the transitions from one state to the next as
+a system of ordinary differential equations
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
     I^\prime(t) &= \frac{\beta S(t)I(t)}{N} - \gamma I(t) \nonumber\\
-    R^\prime(t) &= \gamma I(t) \nonumber.
+    R^\prime(t) &= \gamma I(t) \nonumber,
 \end{align}
+
+where \(N\) is the total number of individuals, \(\beta\) is the rate of
+infection, and \(\gamma\) is the rate of recovery.
 
 From this model, the reproduction number is the ratio of the infection
 rate to the recovery rate, \(R_0 = \beta/\gamma\).
@@ -262,7 +260,7 @@ population (1000 total people with 10 infected) and have the same
 (\(\beta_1, \gamma_1 = 0.8, 0.4\), and
 \(\beta_2, \gamma_2 = .64, .32\)). Even for simple generative models,
 this time-dependent visualization cannot be used to compare a very
-simple but powerful numerical summary, \textcolor{orange}{$R_0$}.
+simple but powerful numerical summary, \(R_0\).
 
 \hypertarget{ternary-plots-a-time-invariant-visualization-tool}{%
 \subsection{Ternary plots: a time-invariant visualization
@@ -274,20 +272,18 @@ practitioner to compare simulated epidemics' \(R_0\) values but also
 presented epidemics' trajectory data so that only the marginal
 information for each state can be examined at a given time. A more
 holistic approach to visualizing the overall path of our simulated
-epidemics is to examine \textcolor{orange}{how} each epidemic traverses
-the three-dimensional \((S(t),I(t),R(t))\) space. Figure 3's left plot
-does just that, presenting the trajectories of the simulated epidemics
-in this three-dimensional space. For state space models like in our
+epidemics is to examine how each epidemic traverses the
+three-dimensional \((S(t),I(t),R(t))\) space. Figure 3's left plot does
+just that, presenting the trajectories of the simulated epidemics in
+this three-dimensional space. For state space models like in our
 example, given the constraint that \(S(t) + I(t)+R(t)\) is always equal
 to \(N\) (the total population size) we can visual these point in a a
 two-dimensional \textit{ternary} plot, as seen in Figure
-\ref{fig:different-scales-tern}'s right plot. In this both of Figure
+\ref{fig:different-scales-tern}'s right plot. In both of Figure
 \ref{fig:different-scales-tern}'s plots we observe that the two
-epidemics are on the same trajectory in this three-dimensional space. In
-this simple generative example setting,
-\textcolor{orange}{being on the same trajectory} indicates that
-\textcolor{violet}{the} two epidemics have the same \(R_0\) value. This
-can be proven mathematically.
+epidemics are on the same trajectory. In this simple generative example
+setting, being on the same trajectory indicates that the two epidemics
+have the same \(R_0\) value. This can be proven mathematically.
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -319,18 +315,18 @@ Filaments}\label{time-invariance-beyond-sir-models-trajectories-and-filaments}}
 
 Through the \(R_0\) example, we see that treating epidemics like
 filamental trajectories embedded in a lower dimensional space
-(i.e.~through a time-invariant lens) allows us to better compare the
-overall structure of the epidemic and see how the population is directly
-impacted. In this section we present time-invariant tools that can be
-applied to complex epidemics where the epidemic's generative process is
-unknown and can have more than three states. These tools leverage the
-idea that an epidemic can be viewed as a trajectory and that many
-properties of the epidemic are well captured when we do so. This
-approach is useful when the epidemic of interest has only gone through a
-single realization of its outbreak (before the population of individuals
-become susceptible again).
+\sout{(i.e. through a time-invariant lens)}\footnote{\textcolor{violet}{[Ben says: the next sentence mentions time-invariance - where you thinking something more global?]}}
+allows us to better compare the overall structure of the epidemic and
+see how the population is directly impacted. In this section we present
+time-invariant tools that can be applied to complex epidemics where the
+epidemic's generative process is unknown and can have more than three
+states. These tools leverage the idea that an epidemic can be viewed as
+a trajectory and that many properties of the epidemic are well captured
+when we do so. This approach is useful when the epidemic of interest has
+only gone through a single realization of its outbreak (before the
+population of individuals become susceptible again).
 
-The first set of tools allows a practioner to define distances between
+The first set of tools allows a practitioner to define distances between
 epidemics whose time features do not align. For completed epidemics, one
 way to better examine their properties is to represent their filamental
 trajectories as a finite sequence of equally spaced points. This
@@ -338,21 +334,20 @@ representation induces a natural distance between epidemics,
 specifically:
 
 \[
-d_\text{equi-distance}(\psi_1, \psi_2)  = \int_{s \in [0,1]} (\tilde{\psi}_1(s) - \tilde{\psi}_2(s))^2 ds
+d_\text{equi-distance}(\psi_1, \psi_2)  = \int_{s \in [0,1]} (\tilde{\psi}_1(s) - \tilde{\psi}_2(s))^2 ds \nonumber,
 \] where \(\tilde{\psi}_i(s)\) is the point along \(\psi_i\) that is
-\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\), where
-\(|\psi_i|\) is the length of \(\psi_i\). This distance is naturally
+\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\) (where
+\(|\psi_i|\) is the length of \(\psi_i\)). This distance is naturally
 time-invariant, and can be plugged into multiple distance-based
-assessment tools to examine the overall ``extremeness'\,' of points,
+assessment tools to examine the overall ``extremeness'' of points,
 including pseudo-density estimators and depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
-estimators can be useful when comparing the true epidemic to a a set of
+estimators can be useful when comparing the true epidemic to a set of
 simulated epidemics, and practitioners can interpret the epidemic's
 extremeness score relative to the extremeness scores of the simulations
 very easily.
 
-\sout{When the goal is to predict the future impact / trajectory of a epidemic,}
-\textcolor{orange}{In addition to being used to better understand completed epidemics,}
+In addition to being used to better understand completed epidemics,
 time-invariant tools can be used to aid prediction of future epidemics
 by providing a state-space regions in which we expect the true epidemic
 to traverse. In settings where the epidemic only generates a single
@@ -378,7 +373,7 @@ strong starting point to do just that.
 \afterpage{\clearpage}
 \begin{sidewaysfigure}[!ht]
     \centering
-    \includegraphics[width = 1\textwidth]{images/pipeline2_1.pdf}
+    \includegraphics[width = 1\textwidth]{images/pipeline2_2.pdf}
     \caption{How \pkg{EpiCompare} supplements and aids in the epidemiological data analysis pipeline.}
     \label{fig:pipeline2}
 \end{sidewaysfigure}
@@ -1057,8 +1052,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0117621 & 0.01\\
+EpiModel SIR & 0.0356503 & 0.01\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1115,3 +1110,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
