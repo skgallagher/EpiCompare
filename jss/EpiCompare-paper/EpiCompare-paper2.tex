@@ -9,7 +9,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +46,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -177,7 +179,7 @@ analysis pipeline.
 \hypertarget{time-invariant-analysis}{%
 \section{Time-invariant analysis}\label{time-invariant-analysis}}
 
-{[}EpiCompare emphasizes the value of analyzing epidemics in a
+EpiCompare emphasizes the value of analyzing epidemics in a
 \textit{time-invariant} way - approaches that remove some or all of the
 impact of start/end times and recording time scales when preforming the
 analysis. In this section we will highlight weaknesses of
@@ -196,32 +198,35 @@ compare models and epidemics.
 of time-invariant analysis through the reproduction number
 \(R_0\)}\label{sec:r0_subsection}
 
-A lot of epidemiological research is interested in understanding
-intrinsic properties of the epidemic, not depending upon exactly when
-the epidemic occurred or how frequently data was collected. One of the
-most famous numerical summaries of an epidemic is the reproduction
-number - \(R_0\), a time-invariant value that is {[}defined as the
-expected number of infections caused by a single infect or who is added
-to a completely susceptible population.{]} Interestingly,
-\citet{Gallagher2020} has shown that the estimation of \(R_0\) {[}can be
-sensitive to time-dependent parameters{]} like estimation of {[}the
-beginning and end of an epidemic{]}. This time-dependent sensitivity in
-estimating \(R_0\) reflects a general problem in epidemiology
-surrounding how to transform time-dependent information into insights
-into desirable properties of an epidemic.
+Epidemiological research is often interested in understanding intrinsic
+properties of the epidemic, independent from when the epidemic occurred
+or how frequently data was collected. One of the most famous numerical
+summaries of an epidemic is the reproduction number - \(R_0\). This
+intrinsic
+property\footnote{added to shorten this long sentence and connect that it is an intrinsic property}
+is a time-invariant value that is defined as the expected number of
+infections caused by a single infect or who is added to a completely
+susceptible population \citep{anderson1992}. \citet{Gallagher2020}
+showed that the estimation of \(R_0\) can be sensitive to time-dependent
+parameters like estimation of the beginning and end of an epidemic. This
+time-dependent sensitivity in estimating \(R_0\) reflects a general
+problem in epidemiology surrounding how to transform time-dependent
+information into insights into desirable, intrinsic properties of an
+epidemic.
 
 In many situations, epidemiologists want a much deeper understand of an
-epidemic than just the reproducible number. One common time-dependent
-tool is a series of time series line plots that track the proportion of
-the population in a given state (e.g.~infected) at a given time. Figure
+epidemic than just the reproduction number. One common time-dependent
+tool \textcolor{orange}{used to better understand epidemics} is a series
+of time series line plots that track the proportion of the population in
+a given state (e.g.~infected) at a given time. Figure
 \ref{fig:different-scales-standard} visualizes two different simulated
-epidemics with population states (s)usceptible, (i)nfectious and
-(r)ecovered. These simulations are actually generated under a discrete
-approximation of \citet{Kermack1927}'s SIR model. {[}This model captures
-the transitions from one state to the next as a system of ordinary
-differential equations, where \(N\) is the total number of individuals,
-\(\beta\) is the rate of infection, and \(\gamma\) is the rate of
-recovery,{]}
+epidemics with population states (S)usceptible, (I)nfectious and
+(R)ecovered. These simulations have been generated under a discrete
+approximation of \citet{Kermack1927}'s SIR model. The Kermack and
+McKendrick model captures the transitions from one state to the next as
+a system of ordinary differential equations, where \(N\) is the total
+number of individuals, \(\beta\) is the rate of infection, and
+\(\gamma\) is the rate of recovery,
 
 \begin{align}\label{eq:sir-ode}
     S^\prime(t) &= -\frac{\beta S(t)I(t)}{N} \\
@@ -229,8 +234,8 @@ recovery,{]}
     R^\prime(t) &= \gamma I(t) \nonumber.
 \end{align}
 
-{[}From this model, the reproduction number is the ratio of the
-infection rate to the recovery rate, \(R_0 = \beta/\gamma\).{]}
+From this model, the reproduction number is the ratio of the infection
+rate to the recovery rate, \(R_0 = \beta/\gamma\).
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -247,15 +252,15 @@ Even though Figure \ref{fig:different-scales-standard}'s visual analysis
 might be able to present more complex properties of the epidemic, one
 might wish to understand how these two simulated epidemics' \(R_0\)
 values compare. Even though these two simulated epidemics appear
-different in these figures ({[}including having different infection
-peaks{]}), there is no real intuitive way to compare the epidemic's
-\(R_0\). In fact, both of these simulated epidemics started out the same
-population (1000 people with 10 infected) and have the same \(R_0\)
-value, just with slightly different infection and recovery rates
+different in these figures (including having different infection peaks),
+there is no real intuitive way to compare the epidemics' \(R_0\) values.
+In fact, both of these simulated epidemics started with the same
+population (1000 total people with 10 infected) and have the same
+\(R_0\) value, just with slightly different infection and recovery rates
 (\(\beta_1, \gamma_1 = 0.8, 0.4\), and
-\(\beta_2, \gamma_2 = .64, .32\)). Even with simple generative models,
-this time-dependent visualization tools is not able to be used to
-compare a very simple but powerful numerical summary.
+\(\beta_2, \gamma_2 = .64, .32\)). Even for simple generative models,
+this time-dependent visualization cannot be used to compare a very
+simple but powerful numerical summary, \(R_0\).
 
 \hypertarget{ternary-plots-a-time-invariant-visualization-tool}{%
 \subsection{Ternary plots: a time-invariant visualization
@@ -265,20 +270,21 @@ The faceted time series plot, like that seen in Figure
 \ref{fig:different-scales-standard}, not only fails to allow the
 practitioner to compare simulated epidemics' \(R_0\) values but also
 presented epidemics' trajectory data so that only the marginal
-information for each state could be examined at a given time. A more
+information for each state can be examined at a given time. A more
 holistic approach to visualizing the overall path of our simulated
-epidemics would be to examine each epidemic traverses the
+epidemics is to examine how each epidemic traverses the
 three-dimensional \((S(t),I(t),R(t))\) space. Figure 3's left plot does
 just that, presenting the trajectories of the simulated epidemics in
-this three-dimensional space. {[}For state space models like in our
+this three-dimensional space. For state space models like in our
 example, given the constraint that \(S(t) + I(t)+R(t)\) is always equal
 to \(N\) (the total population size) we can visual these point in a a
-two-dimesional \textit{ternary} plot, as seen in Figure
-\ref{fig:different-scales-tern}'s right plot.{]} In this both of Figure
-\ref{fig:different-scales-tern}'s plots we an observe that the epidemics
-are on the same trajectory. In this simple generative example setting,
-{[}this indicates that \textcolor{violet}{the} two epidemics have the
-same \(R_0\) value{]}. This can be proven mathematically.
+two-dimensional \textit{ternary} plot, as seen in Figure
+\ref{fig:different-scales-tern}'s right plot. In this both of Figure
+\ref{fig:different-scales-tern}'s plots we observe that the two
+epidemics are on the same trajectory in this three-dimensional space. In
+this simple generative example setting, being on the same trajectory
+indicates that \textcolor{violet}{the} two epidemics have the same
+\(R_0\) value. This can be proven mathematically.
 
 \begin{CodeChunk}
 \begin{figure}[H]
@@ -292,68 +298,70 @@ same \(R_0\) value{]}. This can be proven mathematically.
 \end{CodeChunk}
 
 \begin{theorem}\label{thm:sir-scale}
- Let there be two \citet{Kermack1927}'s SIR models ($(S_1(t),I_1(t),R_1(t))_{t\geq 0}$ and $(S_1(s),I_1(s),R_1(s))_{s\geq 0}$), with $(S_1(0),I_1(0),R_1(0))=S_2(0),I_2(0),R_2(0))$  Let both models have the same $R_0$ (aka $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$ and define $a > 0$ such that $\beta_2 = a\beta_1$. [Then for all $t > 0$ there exists an $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.]
+ Let there be two \citet{Kermack1927}'s SIR models ($(S_1(t),I_1(t),R_1(t))_{t\geq 0}$ and $(S_1(s),I_1(s),R_1(s))_{s\geq 0}$), with $(S_1(0),I_1(0),R_1(0))=S_2(0),I_2(0),R_2(0))$  Let both models have the same $R_0$ (i.e. $R_0 = \frac{\beta_1}{\gamma_1} = \frac{\beta_2}{\gamma_2}$) and define $a > 0$ such that $\beta_2 = a\beta_1$. Then for all $t > 0$ there exists $s>0$ such that $(S_1(t), I_1(t), R_1(t)) = (S_2(s), I_2(s), R_2(s))$.  Moreover, $s = \frac{1}{a}t$.
 \end{theorem}
 
-{[}The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent
+The proof of Theorem \ref{thm:sir-scale} relies on a fairly recent
 result from \cite{Harko2014} and is shown in detail in Proof
 \ref{proof:thm}. The consequence of Theorem \ref{thm:sir-scale} is that
 for two SIR models that have the same initial percent of individuals in
-each state and \(R_0\) then for every point on the epidemic path of the
+each state and \(R_0\), then every point on the epidemic path of the
 first SIR model can be mapped to a point on the epidemic path of the
 second SIR model. In other words, the two epidemics form the same
-filamental trajectory.{]}
+filamental trajectory.
 
 \hypertarget{time-invariance-beyond-sir-models-trajectories-and-filaments}{%
 \subsection{Time-invariance beyond SIR models: Trajectories and
 Filaments}\label{time-invariance-beyond-sir-models-trajectories-and-filaments}}
 
-{[}Through the \(R_0\) example, we see that treating epidemics like
-filamental trajectories embedded in a lower dimensional space allows us
-better compare the overall structure of the epidemic and see how the
-population is directly impacted.{]} In this section we present
-time-invariant tools that can be applied to complex epidemics where the
-epidemic's generative process is unknown and can have more than three
-states. These tools leverage the idea that an epidemic can be viewed as
-a trajectory and that many properties of the epidemic are well captured
-when we do so. This approach is useful when the epidemic of interest has
-only gone {[}through a single realization of its outbreak (before the
-population of individuals become susceptible again){]}.
+Through the \(R_0\) example, we see that treating epidemics like
+filamental trajectories embedded in a lower dimensional space
+(i.e.~through a time-invariant lens) allows us to better compare the
+overall structure of the epidemic and see how the population is directly
+impacted. In this section we present time-invariant tools that can be
+applied to complex epidemics where the epidemic's generative process is
+unknown and can have more than three states. These tools leverage the
+idea that an epidemic can be viewed as a trajectory and that many
+properties of the epidemic are well captured when we do so. This
+approach is useful when the epidemic of interest has only gone through a
+single realization of its outbreak (before the population of individuals
+become susceptible again).
 
 The first set of tools allows a practioner to define distances between
-epidemics whose time features don't well align. For completed epidemics,
-one way to better examine their properties is to represent their
-filamental trajectories as a finite sequence of equally spaced points.
-{[}This representation induces a natural distance
-\textcolor{violet}{\sout{between this type of representation}} between
-epidemics, specifically:{]}
+epidemics whose time features do not align. For completed epidemics, one
+way to better examine their properties is to represent their filamental
+trajectories as a finite sequence of equally spaced points. This
+representation induces a natural distance between epidemics,
+specifically:
 
 \[
 d_\text{equi-distance}(\psi_1, \psi_2)  = \int_{s \in [0,1]} (\tilde{\psi}_1(s) - \tilde{\psi}_2(s))^2 ds
-\] where \(\tilde{\psi}_i(s)\) the point along \(\psi_i\) that is
-\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\). This
-distance is naturally time-invariant, and can be plugged into multiple
-distance-based assessment tools to examine the overall ``extremeness''
-of points, including pseudo-density estimators and depth/local depth
-functions \citep[for examples see][]{Ciollaro2016, Geenens2017}. These
-extremeness estimators can be useful when comparing the true epidemic to
-a a set of simulated epidemics,{]} and practitioners can interpret the
-univariate epidemic's extremeness score relative to the extremeness
-scores of the simulations very easily.
+\] where \(\tilde{\psi}_i(s)\) is the point along \(\psi_i\) that is
+\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\), where
+\(|\psi_i|\) is the length of \(\psi_i\). This distance is naturally
+time-invariant, and can be plugged into multiple distance-based
+assessment tools to examine the overall ``extremeness'\,' of points,
+including pseudo-density estimators and depth/local depth functions
+\citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
+estimators can be useful when comparing the true epidemic to a a set of
+simulated epidemics, and practitioners can interpret the epidemic's
+extremeness score relative to the extremeness scores of the simulations
+very easily.
 
-When the goal is to predict the future impact / trajectory of a
-epidemic, time-invariant tools can help describe state-space regions in
-which we expect the true epidemic to traverse. In settings where the
-epidemic only goes a single outbreak, these regions can be very telling
-if simulation models well capture the epidemic's structure. In
-\pkg{EpiCompare} we create geometric prediction regions around all but
-the \(\alpha\) proportion of most extreme simulated epidemics. These
-geometric regions can also be used to compared simulation models that
-have different time scales, parameters and even different statistical
-philosophies, through set different distances. Although visualization is
-the easiest when the epidemic has three states, prediction regions can
-be useful to assess and compare simulation models where the epidemics
-have multiple states.
+\sout{When the goal is to predict the future impact / trajectory of a epidemic,}
+In addition to being used to better understand completed epidemics,
+time-invariant tools can be used to aid prediction of future epidemics
+by providing a state-space regions in which we expect the true epidemic
+to traverse. In settings where the epidemic only generates a single
+outbreak, these regions can be very telling if simulation models capture
+the epidemic's structure. In \pkg{EpiCompare} we create geometric
+prediction regions around all but the \(\alpha\) proportion of most
+extreme simulated trajectories. These geometric regions can also be used
+to compared simulation models that have different time scales,
+parameters and even different statistical philosophies, through set
+different distances. Although visualization is the easiest when the
+epidemic has three states, prediction regions can be useful to assess
+and compare simulation models where the epidemics have multiple states.
 
 Overall, there are many tools to aid in the assessment and comparison of
 epidemics and models that avoid being affected by time-based parameters.
@@ -1046,8 +1054,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0117621 & 0.01\\
-EpiModel SIR & 0.0356503 & 0.01\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1104,4 +1112,3 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
-
