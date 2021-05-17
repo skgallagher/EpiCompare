@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.3.7)  14 MAY 2021 13:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.3.7)  17 MAY 2021 13:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -814,7 +814,7 @@ Package xcolor Warning: Incompatible color definition on input line 428.
 Package xcolor Warning: Incompatible color definition on input line 433.
 
 
-Package xcolor Warning: Incompatible color definition on input line 442.
+Package xcolor Warning: Incompatible color definition on input line 441.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -831,57 +831,66 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.455 
+l.454 
        <./images/pipeline2_1.pdf>]
 LaTeX Font Info:    Trying to load font information for T1+aett on input line 4
-57.
+56.
 (/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 461.
 
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 466.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 472.
+Package xcolor Warning: Incompatible color definition on input line 464.
 
 
-Package xcolor Warning: Incompatible color definition on input line 476.
+Package xcolor Warning: Incompatible color definition on input line 470.
 
 
-Package xcolor Warning: Incompatible color definition on input line 499.
+Package xcolor Warning: Incompatible color definition on input line 470.
 
 
-Package xcolor Warning: Incompatible color definition on input line 501.
+Package xcolor Warning: Incompatible color definition on input line 479.
 
 
-Package xcolor Warning: Incompatible color definition on input line 501.
+Package xcolor Warning: Incompatible color definition on input line 483.
 
 
-Package xcolor Warning: Incompatible color definition on input line 501.
+Package xcolor Warning: Incompatible color definition on input line 505.
 
 
-Package xcolor Warning: Incompatible color definition on input line 501.
+Package xcolor Warning: Incompatible color definition on input line 507.
 
 
-Package xcolor Warning: Incompatible color definition on input line 509.
+Package xcolor Warning: Incompatible color definition on input line 507.
 
 
-Package xcolor Warning: Incompatible color definition on input line 511.
+Package xcolor Warning: Incompatible color definition on input line 507.
+
+
+Package xcolor Warning: Incompatible color definition on input line 507.
+
+
+Package xcolor Warning: Incompatible color definition on input line 515.
+
+
+Package xcolor Warning: Incompatible color definition on input line 517.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -892,17 +901,10 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 ]
 
-Package xcolor Warning: Incompatible color definition on input line 518.
+Package xcolor Warning: Incompatible color definition on input line 523.
 
 
-Package xcolor Warning: Incompatible color definition on input line 548.
-
-
-Overfull \hbox (20.7272pt too wide) in paragraph at lines 560--568
-[]\T1/aer/m/n/10.95 To this end, \T1/aer/b/n/10.95 Epi-Com-pare \T1/aer/m/n/10.
-95 pro-vides a se-ries of \T1/aett/m/n/10.95 for-tify\T1/aer/m/n/10.95 -style m
-eth-ods, called \T1/aett/m/n/10.95 for-tify_aggregate()
- []
+Package xcolor Warning: Incompatible color definition on input line 561.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -911,31 +913,20 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 [11]
 
-Package xcolor Warning: Incompatible color definition on input line 576.
+Package xcolor Warning: Incompatible color definition on input line 588.
 
 
-Package xcolor Warning: Incompatible color definition on input line 582.
+Overfull \hbox (20.7272pt too wide) in paragraph at lines 602--610
+[]\T1/aer/m/n/10.95 To this end, \T1/aer/b/n/10.95 Epi-Com-pare \T1/aer/m/n/10.
+95 pro-vides a se-ries of \T1/aett/m/n/10.95 for-tify\T1/aer/m/n/10.95 -style m
+eth-ods, called \T1/aett/m/n/10.95 for-tify_aggregate()
+ []
 
 
-Package xcolor Warning: Incompatible color definition on input line 589.
-
-
-Package xcolor Warning: Incompatible color definition on input line 590.
-
-
-Package xcolor Warning: Incompatible color definition on input line 594.
-
-
-Package xcolor Warning: Incompatible color definition on input line 597.
-
-
-Package xcolor Warning: Incompatible color definition on input line 620.
+Package xcolor Warning: Incompatible color definition on input line 618.
 
 
 Package xcolor Warning: Incompatible color definition on input line 624.
-
-
-Underfull \vbox (badness 1281) has occurred while \output is active []
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -944,170 +935,185 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 [12]
 
-Package xcolor Warning: Incompatible color definition on input line 633.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Package xcolor Warning: Incompatible color definition on input line 638.
+Package xcolor Warning: Incompatible color definition on input line 668.
 
 
-Package xcolor Warning: Incompatible color definition on input line 645.
+Package xcolor Warning: Incompatible color definition on input line 669.
 
 
-Package xcolor Warning: Incompatible color definition on input line 645.
+Package xcolor Warning: Incompatible color definition on input line 673.
 
 
-Package xcolor Warning: Incompatible color definition on input line 646.
-
-
-Package xcolor Warning: Incompatible color definition on input line 646.
-
-
-Package xcolor Warning: Incompatible color definition on input line 647.
-
-
-Package xcolor Warning: Incompatible color definition on input line 647.
-
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Package xcolor Warning: Incompatible color definition on input line 654.
-
-
-Overfull \hbox (11.30743pt too wide) in paragraph at lines 661--673
- [][] 
- []
-
-
-Package xcolor Warning: Incompatible color definition on input line 689.
+Package xcolor Warning: Incompatible color definition on input line 676.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 13
  []
 
-[13pdfTeX warning (ext4): destination with the same identifier (name{table.1}) 
-has been already used, duplicate ignored
+[13]
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.693 
-      ]
+Package xcolor Warning: Incompatible color definition on input line 699.
 
-Package xcolor Warning: Incompatible color definition on input line 728.
 
-<Figs/unnamed-chunk-7-1.pdf, id=349, 831.105pt x 555.07375pt>
-File: Figs/unnamed-chunk-7-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-7-1.pdf  used on input line 755.
-(pdftex.def)             Requested size: 354.12434pt x 236.50879pt.
+Package xcolor Warning: Incompatible color definition on input line 703.
+
+
+Package xcolor Warning: Incompatible color definition on input line 714.
+
+
+Package xcolor Warning: Incompatible color definition on input line 716.
+
+
+Package xcolor Warning: Incompatible color definition on input line 716.
+
+
+Package xcolor Warning: Incompatible color definition on input line 717.
+
+
+Package xcolor Warning: Incompatible color definition on input line 717.
+
+
+Package xcolor Warning: Incompatible color definition on input line 718.
+
+
+Package xcolor Warning: Incompatible color definition on input line 718.
+
+
+Package xcolor Warning: Incompatible color definition on input line 722.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 725.
+
+
+Package xcolor Warning: Incompatible color definition on input line 729.
+
+
+Package xcolor Warning: Incompatible color definition on input line 734.
+
+
+Overfull \hbox (11.30743pt too wide) in paragraph at lines 745--757
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Package xcolor Warning: Incompatible color definition on input line 773.
+
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 14 []
  []
 
-[14pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
-has been already used, duplicate ignored
+[14]
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.762 
-      ]
-
-Package xcolor Warning: Incompatible color definition on input line 769.
-
-<Figs/unnamed-chunk-9-1.pdf, id=358, 655.44875pt x 539.01375pt>
-File: Figs/unnamed-chunk-9-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-9-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-9-1.pdf  used on input line 789.
-(pdftex.def)             Requested size: 354.12434pt x 291.21935pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Package xcolor Warning: Incompatible color definition on input line 812.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 15
  []
 
-[15pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
- has been already used, duplicate ignored
+[15pdfTeX warning (ext4): destination with the same identifier (name{table.1}) 
+has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.796 
-       <./Figs/unnamed-chunk-7-1.pdf>]
+l.829 +        aes(x = t, y = X1, col = type)) +
+                                                pdfTeX warning (ext4): destinat
+ion with the same identifier (name{table.2}) has been already used, duplicate i
+gnored
 
-Package xcolor Warning: Incompatible color definition on input line 801.
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.829 +        aes(x = t, y = X1, col = type)) +
+                                                ]
+<Figs/unnamed-chunk-7-1.pdf, id=370, 831.105pt x 555.07375pt>
+File: Figs/unnamed-chunk-7-1.pdf Graphic file (type pdf)
+<use Figs/unnamed-chunk-7-1.pdf>
+Package pdftex.def Info: Figs/unnamed-chunk-7-1.pdf  used on input line 839.
+(pdftex.def)             Requested size: 354.12434pt x 236.50879pt.
 
-<Figs/unnamed-chunk-10-1.pdf, id=372, 831.105pt x 228.855pt>
-File: Figs/unnamed-chunk-10-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-10-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-10-1.pdf  used on input line 821.
-(pdftex.def)             Requested size: 354.12434pt x 97.51176pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Package xcolor Warning: Incompatible color definition on input line 853.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 16 []
  []
 
-[16pdfTeX warning (ext4): destination with the same identifier (name{figure.6})
+[16pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.828 
-       <./Figs/unnamed-chunk-9-1.pdf>]
+l.868 ...nt view of Hagelloch measles outbreak") +
+                                                   <./Figs/unnamed-chunk-7-1.pd
+f>]
+<Figs/unnamed-chunk-9-1.pdf, id=384, 655.44875pt x 539.01375pt>
+File: Figs/unnamed-chunk-9-1.pdf Graphic file (type pdf)
+<use Figs/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: Figs/unnamed-chunk-9-1.pdf  used on input line 873.
+(pdftex.def)             Requested size: 354.12434pt x 291.21935pt.
+
+Package xcolor Warning: Incompatible color definition on input line 885.
+
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 17
  []
 
-[17pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+[17pdfTeX warning (ext4): destination with the same identifier (name{figure.6})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.880 +                        verbose = FALSE)
-                                                <./Figs/unnamed-chunk-10-1.pdf>
-]
-
-Package xcolor Warning: Incompatible color definition on input line 941.
-
+l.902 \end{CodeInput}
+                      <./Figs/unnamed-chunk-9-1.pdf>]
+<Figs/unnamed-chunk-10-1.pdf, id=398, 831.105pt x 228.855pt>
+File: Figs/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+<use Figs/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: Figs/unnamed-chunk-10-1.pdf  used on input line 905.
+(pdftex.def)             Requested size: 354.12434pt x 97.51176pt.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 18 []
  []
 
-[18]
-<Figs/unnamed-chunk-17-1.pdf, id=402, 845.1575pt x 533.995pt>
-File: Figs/unnamed-chunk-17-1.pdf Graphic file (type pdf)
-<use Figs/unnamed-chunk-17-1.pdf>
-Package pdftex.def Info: Figs/unnamed-chunk-17-1.pdf  used on input line 979.
-(pdftex.def)             Requested size: 354.12434pt x 223.74673pt.
+[18pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+ has been already used, duplicate ignored
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.961 +                        par_vals,
+                                         <./Figs/unnamed-chunk-10-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 1025.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -1115,67 +1121,81 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
  []
 
 [19]
+<Figs/unnamed-chunk-17-1.pdf, id=416, 845.1575pt x 533.995pt>
+File: Figs/unnamed-chunk-17-1.pdf Graphic file (type pdf)
+<use Figs/unnamed-chunk-17-1.pdf>
+Package pdftex.def Info: Figs/unnamed-chunk-17-1.pdf  used on input line 1063.
+(pdftex.def)             Requested size: 354.12434pt x 223.74673pt.
 
-Package xcolor Warning: Incompatible color definition on input line 996.
-
-
-Overfull \hbox (145.25377pt too wide) in paragraph at lines 1012--1012
-[]\T1/aer/m/n/10.95 Table 3: [][]Top and bot-tom 2 rows of \T1/aett/m/n/10.95 a
-ll_together_df[] 
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 20 []
  []
 
-[20pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
- has been already used, duplicate ignored
+[20]
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.1033 \end{CodeInput}
-                      pdfTeX warning (ext4): destination with the same identifi
-er (name{table.3}) has been already used, duplicate ignored
+Package xcolor Warning: Incompatible color definition on input line 1080.
 
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.1033 \end{CodeInput}
-                       <./Figs/unnamed-chunk-17-1.pdf>]
-Overfull \hbox (2.84352pt too wide) in paragraph at lines 1057--1065
- [][] 
+
+Overfull \hbox (145.25377pt too wide) in paragraph at lines 1096--1096
+[]\T1/aer/m/n/10.95 Table 3: [][]Top and bot-tom 2 rows of \T1/aett/m/n/10.95 a
+ll_together_df[] 
  []
-
-
-Package xcolor Warning: Incompatible color definition on input line 1083.
-
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 1085.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1088.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1088.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1088.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 21
  []
 
-[21pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
+[21pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
+ has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.1117 \end{CodeInput}
+                      pdfTeX warning (ext4): destination with the same identifi
+er (name{table.3}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.1117 \end{CodeInput}
+                       <./Figs/unnamed-chunk-17-1.pdf>]
+Overfull \hbox (2.84352pt too wide) in paragraph at lines 1141--1149
+ [][] 
+ []
+
+
+Package xcolor Warning: Incompatible color definition on input line 1167.
+
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 1169.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1172.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1172.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1172.
+
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 22 []
+ []
+
+[22pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1099 \end{align*}
+l.1183 \end{align*}
                    ]
 
-Package xcolor Warning: Incompatible color definition on input line 1106.
+Package xcolor Warning: Incompatible color definition on input line 1190.
 
 (./EpiCompare-paper.bbl
 
@@ -1186,10 +1206,10 @@ Package xcolor Warning: Incompatible color definition on input line 53.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/aer/m/n/10.95 22 []
+[] \T1/aer/m/n/10.95 23
  []
 
-[22]
+[23]
 
 Package xcolor Warning: Incompatible color definition on input line 66.
 
@@ -1222,10 +1242,10 @@ Package xcolor Warning: Incompatible color definition on input line 140.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/aer/m/n/10.95 23
+\T1/aer/m/n/10.95 24 []
  []
 
-[23]
+[24]
 
 Package xcolor Warning: Incompatible color definition on input line 155.
 
@@ -1261,71 +1281,71 @@ Package xcolor Warning: Incompatible color definition on input line 223.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1118--1118
+Underfull \hbox (badness 10000) in paragraph at lines 1202--1202
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1118--1118
+Underfull \hbox (badness 10000) in paragraph at lines 1202--1202
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 1118.
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1118.
+Package xcolor Warning: Incompatible color definition on input line 1202.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1118.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1202.
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/aer/m/n/10.95 24 []
- []
-
-[24]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 25
  []
 
 [25]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1118.
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 26 []
+ []
+
+[26]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1202.
 (./EpiCompare-paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1118.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1118.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1202.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1202.
 
 Package rerunfilecheck Info: File `EpiCompare-paper.out' has not changed.
 (rerunfilecheck)             Checksum: BBE884F406CBB469E0F15354ADD69116;670.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1118.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1202.
  ) 
 Here is how much of TeX's memory you used:
- 9015 strings out of 481239
- 128739 string characters out of 5920378
- 423782 words of memory out of 5000000
- 23898 multiletter control sequences out of 15000+600000
+ 9023 strings out of 481239
+ 128855 string characters out of 5920378
+ 423819 words of memory out of 5000000
+ 23901 multiletter control sequences out of 15000+600000
  586580 words of font info for 123 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,10n,38p,980b,491s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,10n,38p,980b,495s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmbxsl10.pfb></usr/share/texlive/texmf-dis
@@ -1348,10 +1368,10 @@ ts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on EpiCompare-paper.pdf (25 pages, 798378 bytes).
+Output written on EpiCompare-paper.pdf (26 pages, 805803 bytes).
 PDF statistics:
- 596 PDF objects out of 1000 (max. 8388607)
- 510 compressed objects within 6 object streams
- 112 named destinations out of 1000 (max. 500000)
+ 611 PDF objects out of 1000 (max. 8388607)
+ 524 compressed objects within 6 object streams
+ 117 named destinations out of 1000 (max. 500000)
  123 words of extra memory for PDF output out of 10000 (max. 10000000)
 
