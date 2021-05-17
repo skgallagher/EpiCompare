@@ -99,31 +99,30 @@ project epidemic scenarios under pre-specified parameters
 \citep[e.g.][]{ferguson2020}. At the same time, descriptive statistics
 and visualizations from universities, many branches and levels of
 government, and news organizations are an important first step of the
-process
-\textcolor{violet}{as has been seen in the current COVID-19 epidemic}\citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
-\footnote{\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly. *This is less so the case now.]}}
+process, as has been seen in the current COVID-19
+\textcolor{orange}{\sout{epi}}\textcolor{orange}{pan}demic
+\citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
+\footnote{\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly. *This is less so the case now.]}\textcolor{orange}{Seems fine to me now}}
 
-With the many visualization and exploratory tools, models and modeling
-paradigms, and reviews and comparisons in the literature and through the
-MIDAS (Models of Infectious Disease Agent Study) network
-\citep{midasnetwork2021}, this field has a lot of devices to aid an
-individual practitioner decide the correct approach. For example,
-\proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and
-\pkg{pomp} have all made significant steps in standardizing the flow of
-the data analysis pipeline for epidemic modeling through digitizing data
-sets, making accessible statistical models, and providing a plethora of
-educational material for both coding novices and experts alike
-\citep{surveillance2017,Jenness2018,King2016}.
+With \textcolor{orange}{\sout{the}} many visualization and exploratory
+tools, models and modeling paradigms, and reviews and comparisons in the
+literature and through the MIDAS (Models of Infectious Disease Agent
+Study) network \citep{midasnetwork2021} \textcolor{orange}{available},
+this field has a \textcolor{orange}{\sout{lot of}}
+\textcolor{orange}{number of} devices to \textcolor{orange}{\sout{aid}}
+\textcolor{orange}{help} an individual practitioner decide the correct
+approach. For example, \proglang{R} packages such as \pkg{surveillance},
+\pkg{EpiModel}, and \pkg{pomp} have all made significant steps in
+standardizing the flow of the data analysis pipeline for epidemic
+modeling through digitizing data sets, making accessible statistical
+models, and providing a plethora of educational material for both coding
+novices and experts alike \citep{surveillance2017,Jenness2018,King2016}.
 
 At the same time, analysis packages often only address a specific
-portion of the analysis
-pipeline\textcolor{violet}{\sout{, for instance focusing on certain types of models.}}
-\textcolor{violet}{These m}odeling
-tools\textcolor{violet}{\sout{, which}} usually require learning
-package-specific syntax\textcolor{violet}{\sout{,}} and often don't
-provide easy ways to compare and assess their models on new data.
-Moreover, exploring\textcolor{violet}{, \sout{and}} modeling
-\textcolor{violet}{and comparing} epidemics require transforming and
+portion of the analysis pipeline. These modeling tools usually require
+learning package-specific syntax and often don't provide easy ways to
+compare and assess their models on new data. Moreover, exploring
+modeling and comparing epidemics require transforming and
 \textit{tidying} data in different ways. To fill these gaps, we present
 our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus
 is to aid and advance research in the area of comparison and assessment
@@ -141,43 +140,42 @@ provides tools to aids practitioners in all areas of this pipeline.
     \label{fig:pipeline}
 \end{figure}
 
-{[}One of \pkg{EpiCompare}'s main contribution to{]} comparison and
-assessment of epidemics is through tools that provide
-\textit{time-invariant} assessments. Epidemics, despite being defined a
-a process that evolves overt time, often needs to be compared in a way
-not constrained to initial times or time scales to understand the
-processes at play.{]} {[}With time-invariant analysis, comparing
-decades-long outbreaks of HIV in the US to a 10 day outbreak of
-norovirus on a cruise ship is
-possible.{]}\footnote{\textcolor{violet}{[Ben says: brought this sentence from a later paragraph as it’s much more introductory.]}}
-Compared to time-dependent comparison tools for state-space modeling,
-{[}time-invariant analysis can make it easier to compare state-space
-\textcolor{violet}{\sout{models} epidemic representations} in a more
-global, holistic fashion.{]} Many time-dependent comparison tools only
-{[}examine the proportion of individuals in each state (at a given time)
-in a piece-wise / marginal fashion.{]} {[}These
-\textcolor{violet}{time-dependent approaches can} reduce the amount of
-\textcolor{violet}{\sout{connections that can be seen} insights that can be drawn},
-similar to \textcolor{violet}{examining} projections of a
-multidimensional distribution onto a single axis \textcolor{violet}{one}
-at a time. Tools in \pkg{EpiCompare} give the user the ability to extend
-their toolkit to evaluate epidemics within a time-invariant lens.
-\textcolor{violet}{At the same time, t}he goal of \pkg{EpiCompare} is
-not to supplant existing infectious disease modeling tools and software
-but, rather, is a concerted effort to create standard and fair
-comparisons among models developed for disease outbreaks and outbreak
-data.{]}
+One of \pkg{EpiCompare}'s main contribution to comparison and assessment
+of epidemics is through tools that provide \textit{time-invariant}
+assessments. Epidemics, despite being defined as a process that evolves
+over time, often need to be compared in a way not constrained to initial
+times or time scales
+\textcolor{orange}{in order}\footnote{\textcolor{orange}{wanted a clearer signal that this is a bridge to a new thought}}to
+understand the processes at play. With time-invariant analysis,
+comparing decades-long outbreaks of HIV in the US to a 10 day outbreak
+of norovirus on a cruise ship is possible. Compared to time-dependent
+comparison tools for state-space modeling, time-invariant analysis can
+make it easier to compare state-space epidemic representations in a more
+global, holistic fashion. Many time-dependent comparison tools only
+examine the proportion of individuals in each state (at a given time) in
+a piece-wise / marginal fashion. These time-dependent approaches can
+reduce the amount of connections that can be seen and insights that can
+be drawn\}, similar to examining projections of a multidimensional
+distribution onto a single axis, one at a time. Tools in
+\pkg{EpiCompare}
+\textcolor{orange}{\sout{give the user the ability to extend their} \textcolor{orange}{extend the user}}
+toolkit to evaluate epidemics within a time-invariant lens. At the same
+time, the goal of \pkg{EpiCompare} is not to supplant existing
+infectious disease modeling tools and software but, rather, is a
+concerted effort to create standard and fair comparisons among models
+developed for disease outbreaks and outbreak data.
 
 This paper is broken up into the following sections; section
 \ref{sec:time-invariant} motivates and showcases tools of time-invariant
 analysis, section \ref{sec:overview} presents an outline of how
 \pkg{EpiCompare} aids a practitioner in every step of the pipeline and
-section \ref{sec:tour} provides a \textcolor{violet}{\sout{thorough}}
-demonstrating of the tools through a detailed example of a full data
-analysis pipeline.
+section \ref{sec:tour} provides a demonstration of the tools through a
+detailed
+example\textcolor{orange}{\sout{ of a full data analysis pipeline.}}
+\textcolor{orange}{from start to finish of the data analysis pipeline}\footnote{\textcolor{orange}{maybe clearer? up to you}}
 
-\hypertarget{time-invariant-analysis}{%
-\section{Time-invariant analysis}\label{time-invariant-analysis}}
+\hypertarget{sec:time-invariant}{%
+\section{Time-invariant analysis}\label{sec:time-invariant}}
 
 \pkg{EpiCompare} emphasizes the value of analyzing epidemics in a
 \textit{time-invariant} way - approaches that remove some or all of the
