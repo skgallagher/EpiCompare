@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -366,7 +364,7 @@ fraction of \(|\psi_1|\) distance away from the start of
 \(\psi_i\).\footnote{\textcolor{orange}{I think you're trying to say something about a distance based on the equally space points.  Some clarifying questions:  is $\psi^\prime$ the derivative?  Does proportion make more sense than fraction? or simply $\frac{|\psi|}{s}$? It's only naturally time-invariant if we have a well defined ending point, right?}}
 This distance is naturally time-invariant, and can be plugged into
 multiple distance-based assessment tools to examine the overall
-``extremeness'\,' of points, including pseudo-density estimators and
+``extremeness'' of points, including pseudo-density estimators and
 depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be \sout{very} useful when comparing
@@ -417,9 +415,9 @@ with 3 states (like the SIR models).
 \end{sidewaysfigure}
 
 In this section, we present the tools implemented in \pkg{EpiCompare}
-and explain how they aid in the data analysis pipeline. In Fig.
+and explain how they aid in the data analysis pipeline. In Figure
 \ref{fig:pipeline2}, we show how our package's functions fit into the
-data analysis pipeline introduced in Fig. \ref{fig:pipeline}. All
+data analysis pipeline introduced in Figure \ref{fig:pipeline}. All
 front-facing functions in \pkg{EpiCompare} are aimed to be as
 user-friendly as possible. We also focus on providing the user
 ``tidyverse'' style functions, that encourage piping objects from one
@@ -432,7 +430,7 @@ is after modeling and simulation. Figure \ref{fig:pipeline2} captures
 these different paths, and we highlight how to leverage \pkg{EpiCompare}
 functionalities in the subsections below.
 
-\textbf{Data Pre-processing}
+\textbf{Data pre-processing}
 
 The first step of most data analysis is ``cleaning'' the raw data so it
 can be explored. Before data can be explored, they must be collected.
@@ -442,19 +440,22 @@ information like network structure, location, and sub-population
 information. Other data collections focus on aggregate counts of
 individuals in each epidemic state. In fact, many times only the number
 of new infections at each time step (e.g.~weekly case counts) is
-observed. Compartment totals (amounts of individuals in each state) are
-then imputed from those case counts other information about the disease
-and the population of interest. In \pkg{EpiCompare}, we focus on
-understanding the overall impact of an outbreak at the
-aggregate/population level, which allows for streamlined examination of
-overall trends of an epidemic.
+observed. \textcolor{violet}{In this setting, c}ompartment totals
+(amounts of individuals in each state) are then imputed from those case
+counts \textcolor{violet}{and using} other information about the disease
+and the population of
+interest\footnote{\textcolor{violet}{[Ben says: updates to connect to the previous sentence more clearly and the second was grammar.]}}.
+In \pkg{EpiCompare}, we focus on understanding the overall impact of an
+outbreak at the aggregate/population level, which allows for streamlined
+examination of overall trends of an epidemic.
 
 To help the practitioner examine epidemics from an aggregate/population
 lens, we provide a function called \texttt{agents\_to\_aggregate()}.
 This function transforms data about individual/agents' initial entry
 into each state (e.g.~start of infection, start of recovery, etc.) to an
 aggregate view of how many individuals were in a state at a given time.
-There are often situations where grouping agents into subpopulations
+\footnote{\textcolor{violet}{[Ben says: I'd like to replace these two sentences will a new one. The original goal was to make a strong connection between the first sentence "There are..." to the previous sentence, but this lead to a rewrite (which I know isn't best). Suggestion: "Researchers, including \citet{rvachev1985,anderson1992,worby2015}, often are interesting in more granular trends that can be detected by aggregating conditional on subpopulations (e.g. subpopulations defined by age or sex).]}}There
+are often situations where grouping agents into subpopulations
 (e.g.~subpopulations defined by age or sex) can highlight different
 aggregate level trends. For example, research by
 \citet{rvachev1985,anderson1992,worby2015} develop state-based models
@@ -467,8 +468,8 @@ split-apply-combine paradigm for data analysis \citep{wickham2011}.
 
 {[}{[}\textcolor{red}{OLD SENTENCE} by combining the function
 \pkg{dplyr}::\texttt{group\_by()} and \texttt{agents\_to\_aggregate()}
-to provide aggregation at a subpopulation
-level\footnote{\textcolor{violet}{[Ben says: This sentence seems a bit repetitive with "supopulation". ]}\textcolor{orange}{agreed. aggregation at a group level}}.{]}{]}
+to provide
+\textcolor{violet}{group level aggregation\sout{aggregation at a subpopulation level}}\footnote{\textcolor{violet}{[Ben says: This sentence seems a bit repetitive with "supopulation". ]}\textcolor{orange}{agreed. aggregation at a group level} \textcolor{violet}{[Ben says: I think the replacement doesn't clean things up - I probably wasn't clear that I actually don't think split-apply-combine is well known. My edit to the old sentence was aimed to making it clear the process through our words "group-then-aggregate".]}}.{]}{]}
 
 Besides aiding subpopulation analysis, \texttt{agents\_to\_aggregate()}
 can accommodate a wide range of information about each individual. In
@@ -481,7 +482,7 @@ to common states (e.g.~``Susceptible'', ``Infectious'', and
 birth/entry dates. Overall, this function is a powerful tool for
 pre-processing data.
 
-\textbf{Exploratory Data Analysis (EDA)}
+\textbf{Exploratory data analysis (EDA)}
 
 In the early stages of a project, familiarizing oneself with the data
 usually means figuring out useful combinations of visualizations and
@@ -498,41 +499,43 @@ epidemic \citep{Wickham2016, Hamilton2018}. The function
 examine aggregate level information across different subpopulations by
 visualizing each subpopulation's epidemic trajectory in the
 three-dimensional state space. Visualization tools for three-state
-models were developed because (1) SIR models are some of the most common
-and basic epidemic state-based models and (2) our three-dimensional
-simplex representation of these epidemics emphasizes a time-invariant
-representation of the data (for a refresher see Section
-\ref{sec:time-invariant}).
+models were developed because \textcolor{violet}{\sout{(1)}} SIR models
+are some of the most common and basic epidemic state-based models and
+\textcolor{violet}{\sout{(2)}}\footnote{\textcolor{violet}{[Ben says: I don't think this is necessary anymore, reads more clearly without these.]}}
+our three-dimensional simplex representation of these epidemics
+emphasizes a time-invariant representation of the data (for a refresher
+see Section \ref{sec:time-invariant}).
 
-\textbf{Model Fitting and Simulations}
+\textbf{Model fitting and simulations}
 
 After getting a sense of what a past or current epidemic looks like with
 EDA, the next step in the data analysis pipeline is often model fitting
-and/or simulation. In this step and the next step (post-processing), we
-highlight how practitioners can pair models and simulations of epidemics
-from outside of \pkg{EpiCompare} with analysis and simulation tools in
-\pkg{EpiCompare}. While \pkg{EpiCompare} does not focus on fitting
-models to data, we do provide some flexible functions for simulation of
-basic discrete-time epidemic-state models. These functions simulate
-individual-level information based on practitioner estimated transition
-rates between states and can be combined with
-\texttt{agents\_to\_aggregate()} to view these simulations through an
-aggregate lens. The function \texttt{simulate\_SIR\_agents()} simulates
-a basic SIR epidemic with user inputs for the number of simulations, the
-initial number in each state, the infection and recovery parameters
-\((\beta, \gamma\)), and the total number of discrete time steps. This
-function allows for easy access to SIR model analysis and comparison.
+and/or simulation.
+\textcolor{violet}{\sout{In this step and the next step (post-processing), we highlight how practitioners can pair models and simulations of epidemics from outside of \pkg{EpiCompare} with analysis and simulation tools in \pkg{EpiCompare}.}}\footnote{\textcolor{violet}{[Ben says: I think we should drop this as it's not really true about this section and tries to weirdly introduce the next section.]}}
+While \pkg{EpiCompare} does not focus on fitting models to data, we do
+provide some flexible functions for simulation of basic discrete-time
+epidemic-state models. These functions simulate individual-level
+information based on practitioner estimated transition rates between
+states and can be combined with \texttt{agents\_to\_aggregate()} to view
+these simulations through an aggregate lens. The function
+\texttt{simulate\_SIR\_agents()} simulates a basic SIR epidemic with
+user inputs for the number of simulations, the initial number in each
+state, the infection and recovery parameters \((\beta, \gamma\)), and
+the total number of discrete time steps.
+\textcolor{violet}{\sout{This function allows for easy access to SIR model analysis and comparison.}}\footnote{\textcolor{violet}{[Ben says: see edit below as well. This sentence seemed misplaced, and we have a very similar sentence a few lines later. I'm happy to be overruled here.]}}
 Beyond SIR models, the function \texttt{simulate\_agents()} takes as
 input a user-specified state-transition matrix and other epidemic
 parameters to allow the user to create simulations for an outbreak with
 \textit{any} number of states and any number of transitions among them.
 This flexibility in states can be used to also reflect group-based
-dynamics. In turn, this allows for users to explore the space of models
-in an intuitive way without getting bogged down by too much mathematical
-detail. For consistency, we have made output from
-\texttt{simulate\_agents()} and \texttt{simulate\_SIR\_agents()}
-compatible with \texttt{agents\_to\_aggregate()} so aggregate
-information may easily be accessed.
+dynamics.
+\textcolor{violet}{\sout{In turn, this allows for} Both of these functions allow}
+users to explore the space of models in an intuitive way without getting
+bogged down by too much mathematical detail. For consistency, we have
+made output from \texttt{simulate\_agents()} and
+\texttt{simulate\_SIR\_agents()} compatible with
+\texttt{agents\_to\_aggregate()} so aggregate information may easily be
+accessed.
 
 \textbf{Post-processing}
 
@@ -540,12 +543,13 @@ information may easily be accessed.
 
 If practitioners wish to compare models-to-observations or even
 models-to-models, they need to post-process their models and simulations
-to disseminate the results in an easily digestible format. In general,
-post-processing of modeling and simulation consists of making summary
-statistics, plots, and tables. In \pkg{EpiCompare}, we provide (1)
-functions to standardize simulation and model output from external
-packages and (2) a function to transform standardized simulation and
-model output into a format amenable to time-invariant
+to disseminate the results in an easily digestible format.
+\textcolor{violet}{\sout{In general, post-processing of modeling and simulation consists of making summary statistics, plots, and tables.}}\footnote{\textcolor{violet}{[Ben says: this really isn't true anymore - that's more the next section.]}}
+In \pkg{EpiCompare}, we provide (1) functions to standardize simulation
+and model
+output\footnote{\textcolor{violet}{[Ben says: I find "output" a weird word - but my only suggested replacment is "objects", which isn't much better and is used in the next paragraph...]}}
+from external packages and (2) a function to transform standardized
+simulation and model output into a format amenable to time-invariant
 analysis.\footnote{\textcolor{orange}{new signpost.  There are two paragraphs below corresponding to the two points.  The second paragraph could use another sentence maybe.  I tried to emphasize the process of output -> standard format -> transformation to time invariant analysis.}}
 
 Modeling and simulation output can be very complex objects, and as a
@@ -563,8 +567,9 @@ have output that is consistent with that of
 \code{agents_to_aggregate()}. These standardized outputs can then be
 piped to summaries, tables, and plots.
 
-Because the fortified output contains temporal information and we
-provide the function, \code{filament_compression()}, to transform
+Because
+\textcolor{violet}{epidemic data is stored in a temporal way, \sout{the fortified output contains temporal information and}}\footnote{\textcolor{violet}{[Ben says: this isn't my best suggestion, but I think we should avoid suggesting filament\_compression is only for the fortified data - it can be used on processed raw data as well.]}}
+we provide the function, \code{filament_compression()}, to transform
 temporally defined epidemics to their filamental representations. These
 filaments can then be fairly compared to one another or passed to
 further time-invariant analysis tools described below.
@@ -612,14 +617,16 @@ results.\footnote{\textcolor{violet}{[Ben says: This sentence still doesn't seem
 
 {]}{]}
 
-\textbf{Comparisons and Assessment} \textcolor{orange}{[[ NEW TEXT}
+\textbf{Comparisons and assessment} \textcolor{orange}{[[ NEW TEXT}
 
 Finally, the data analysis pipeline often ends with plots, tables, and
 summary statistics that are used to compare different models, and
-simulations to one another. In \pkg{EpiCompare} we provide a set of
-comparison and assessment tools for model and simulation results that
-extend beyond the standard performance metrics (e.g.~mean squared error
-or AIC) and into the lens of time-invariant
+simulations to one
+another\footnote{\textcolor{violet}{[Ben says: I'm confused why this is just about comparison and not assessment. Also, I didn't really want to make tons of comments on this section, so could you add a footnote on why you rewrote it and what you were going for?]}}.
+In \pkg{EpiCompare} we provide a set of comparison and assessment tools
+for model and simulation results that extend beyond the standard
+performance metrics (e.g.~mean squared error or AIC) and into the lens
+of time-invariant
 analysis.\footnote{\textcolor{orange}{a bit of an awk transition but I wanted to use past wording about TIA.}}
 We have found these tools to be specifically applicable for situations
 where only one ``season'' or ``cycle'' of an epidemic has occurred.
@@ -1152,8 +1159,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated pseudo-density & proportion of simulations with lower estimated pseudo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1210,3 +1217,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
