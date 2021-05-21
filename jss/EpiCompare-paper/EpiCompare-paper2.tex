@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -99,24 +97,22 @@ project epidemic scenarios under pre-specified parameters
 \citep[e.g.][]{ferguson2020}. At the same time, descriptive statistics
 and visualizations from universities, many branches and levels of
 government, and news organizations are an important first step of the
-process, as has been seen in the current COVID-19
-\textcolor{orange}{\sout{epi}}\textcolor{orange}{pan}demic
+process, as has been seen in the current COVID-19 pandemic
 \citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}.
-\footnote{\textcolor{violet}{[Ben says: probably should have a conclusion sentence here - seems to end abruptly. *This is less so the case now.]}\textcolor{orange}{Seems fine to me now}}
 
-With \textcolor{orange}{\sout{the}} many visualization and exploratory
-tools, models and modeling paradigms, and reviews and comparisons in the
-literature and through the MIDAS (Models of Infectious Disease Agent
-Study) network \citep{midasnetwork2021} \textcolor{orange}{available},
-this field has a \textcolor{orange}{\sout{lot of}}
-\textcolor{orange}{number of} devices to \textcolor{orange}{\sout{aid}}
-\textcolor{orange}{help} an individual practitioner decide the correct
-approach. For example, \proglang{R} packages such as \pkg{surveillance},
-\pkg{EpiModel}, and \pkg{pomp} have all made significant steps in
-standardizing the flow of the data analysis pipeline for epidemic
-modeling through digitizing data sets, making accessible statistical
-models, and providing a plethora of educational material for both coding
-novices and experts alike \citep{surveillance2017,Jenness2018,King2016}.
+With many visualization and exploratory tools, models and modeling
+paradigms, and reviews and comparisons in the literature and through the
+MIDAS (Models of Infectious Disease Agent Study) network
+\citep{midasnetwork2021} available, this field has a number of devices
+to \textcolor{orange}{\sout{aid}}
+\textcolor{orange}{help}\footnote{\textcolor{violet}{[Ben says: I'm not sure this an improvement]}}
+an individual practitioner decide the correct approach. For example,
+\proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and
+\pkg{pomp} have all made significant steps in standardizing the flow of
+the data analysis pipeline for epidemic modeling through digitizing data
+sets, making accessible statistical models, and providing a plethora of
+educational material for both coding novices and experts alike
+\citep{surveillance2017,Jenness2018,King2016}.
 
 At the same time, analysis packages often only address a specific
 portion of the analysis pipeline. These modeling tools usually require
@@ -144,21 +140,18 @@ One of \pkg{EpiCompare}'s main contribution to comparison and assessment
 of epidemics is through tools that provide \textit{time-invariant}
 assessments. Epidemics, despite being defined as a process that evolves
 over time, often need to be compared in a way not constrained to initial
-times or time scales
-\textcolor{orange}{in order}\footnote{\textcolor{orange}{wanted a clearer signal that this is a bridge to a new thought}}to
-understand the processes at play. With time-invariant analysis,
-comparing decades-long outbreaks of HIV in the US to a 10 day outbreak
-of norovirus on a cruise ship is possible. Compared to time-dependent
-comparison tools for state-space modeling, time-invariant analysis can
-make it easier to compare state-space epidemic representations in a more
-global, holistic fashion. Many time-dependent comparison tools only
-examine the proportion of individuals in each state (at a given time) in
-a piece-wise / marginal fashion. These time-dependent approaches can
-reduce the amount of connections that can be seen and insights that can
-be drawn\}, similar to examining projections of a multidimensional
-distribution onto a single axis, one at a time. Tools in
-\pkg{EpiCompare}
-\textcolor{orange}{\sout{give the user the ability to extend their} \textcolor{orange}{extend the user}}
+times or time scales in order to understand the processes at play. With
+time-invariant analysis, comparing decades-long outbreaks of HIV in the
+US to a 10 day outbreak of norovirus on a cruise ship is possible.
+Compared to time-dependent comparison tools for state-space modeling,
+time-invariant analysis can make it easier to compare state-space
+epidemic representations in a more global, holistic fashion. Many
+time-dependent comparison tools only examine the proportion of
+individuals in each state (at a given time) in a piece-wise / marginal
+fashion. These time-dependent approaches can reduce the amount of
+connections that can be seen and insights that can be drawn\}, similar
+to examining projections of a multidimensional distribution onto a
+single axis, one at a time. Tools in \pkg{EpiCompare} extend the user
 toolkit to evaluate epidemics within a time-invariant lens. At the same
 time, the goal of \pkg{EpiCompare} is not to supplant existing
 infectious disease modeling tools and software but, rather, is a
@@ -172,7 +165,7 @@ analysis, section \ref{sec:overview} presents an outline of how
 section \ref{sec:tour} provides a demonstration of the tools through a
 detailed
 example\textcolor{orange}{\sout{ of a full data analysis pipeline.}}
-\textcolor{orange}{from start to finish of the data analysis pipeline}\footnote{\textcolor{orange}{maybe clearer? up to you}}
+\textcolor{orange}{from start to finish of the data analysis pipeline}\footnote{\textcolor{orange}{maybe clearer? up to you} \textcolor{violet}{The current suggestion isn't clearer - feel free to try again.}}
 
 \hypertarget{sec:time-invariant}{%
 \section{Time-invariant analysis}\label{sec:time-invariant}}
@@ -184,14 +177,12 @@ analysis. In this section we highlight some weaknesses of
 time-\textit{de}pendent analysis and define the mathematical
 underpinning of the time-invariant approach we take. To accomplish this
 goal we first demonstrate the inability of time-dependent tools to
-\textcolor{violet}{adequately}
-quantify\footnote{\textcolor{violet}{[Ben says: original suggestion was "simply capture", and original phrase was "well quantify".]}}
-a classic epidemic parameter, the reproduction number \(R_0\). Then we
-motivate new time-invariant approaches for more complex situations where
-\(R_0\) does not capture the complexities of outbreaks. This leads to
-the final subsection that defines ways to view epidemics in a
-time-invariant lens and discusses natural properties of these
-representations that allow for clearer ways to compare models and
+adequately quantify a classic epidemic parameter, the reproduction
+number \(R_0\). Then we motivate new time-invariant approaches for more
+complex situations where \(R_0\) does not capture the complexities of
+outbreaks. This leads to the final subsection that defines ways to view
+epidemics in a time-invariant lens and discusses natural properties of
+these representations that allow for clearer ways to compare models and
 epidemics.
 
 \subsection[Motivation through the reproduction number $R_0$]{Motivation
@@ -202,16 +193,15 @@ Epidemiological research is often interested in understanding intrinsic
 properties of the epidemic, independent from when the epidemic occurred
 or how frequently data was collected. One of the most famous numerical
 summaries of an epidemic is the reproduction number - \(R_0\). This
-\textcolor{violet}{numerical summary} \sout{intrinsic property} is a
-time-invariant value that is defined as the expected number of
-infections caused by a single infect or who is added to a completely
-susceptible population \citep{anderson1992}. \citet{Gallagher2020}
-showed that the estimation of \(R_0\) can be sensitive to time-dependent
-parameters like estimation of the beginning and end of an epidemic. This
-time-dependent sensitivity in estimating \(R_0\) reflects a general
-problem in epidemiology surrounding how to transform time-dependent
-information into insights into desirable, intrinsic properties of an
-epidemic.
+numerical summary is a time-invariant value that is defined as the
+expected number of infections caused by a single infect or who is added
+to a completely susceptible population \citep{anderson1992}.
+\citet{Gallagher2020} showed that the estimation of \(R_0\) can be
+sensitive to time-dependent parameters like estimation of the beginning
+and end of an epidemic. This time-dependent sensitivity in estimating
+\(R_0\) reflects a general problem in epidemiology surrounding how to
+transform time-dependent information into insights into desirable,
+intrinsic properties of an epidemic.
 
 In many situations, epidemiologists want a much deeper understand of an
 epidemic than just the reproduction number. One common time-dependent
@@ -314,10 +304,9 @@ filamental trajectory.
 Filaments}\label{time-invariance-beyond-sir-models-trajectories-and-filaments}}
 
 Through the \(R_0\) example, we see that treating epidemics like
-filamental trajectories embedded in a lower dimensional space
-\sout{(i.e. through a time-invariant lens)}\footnote{\textcolor{violet}{[Ben says: the next sentence mentions time-invariance - where you thinking something more global?]}}
-allows us to better compare the overall structure of the epidemic and
-see how the population is directly impacted. In this section we present
+filamental trajectories embedded in a lower dimensional space allows us
+to better compare the overall structure of the epidemic and see how the
+population is directly impacted. In this section we present
 time-invariant tools that can be applied to complex epidemics where the
 epidemic's generative process is unknown and can have more than three
 states. These tools leverage the idea that an epidemic can be viewed as
@@ -336,10 +325,10 @@ specifically:
 \[
 d_\text{equi-distance}(\psi_1, \psi_2)  = \int_{s \in [0,1]} (\tilde{\psi}_1(s) - \tilde{\psi}_2(s))^2 ds \nonumber,
 \] where \(\tilde{\psi}_i(s)\) is the point along \(\psi_i\) that is
-\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\) (where
+\(s\cdot|\psi_i|\) distance away from the start of \(\psi_i\) (with
 \(|\psi_i|\) is the length of \(\psi_i\)). This distance is naturally
 time-invariant, and can be plugged into multiple distance-based
-assessment tools to examine the overall ``extremeness'\,' of points,
+assessment tools to examine the overall ``extremeness'' of points,
 including pseudo-density estimators and depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be useful when comparing the true epidemic to a set of
@@ -1052,8 +1041,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated psuedo-density & proportion of simulations with lower estimated psuedo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0117621 & 0.01\\
+EpiModel SIR & 0.0356503 & 0.01\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1110,3 +1099,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
