@@ -554,8 +554,7 @@ analysis tools described below.
 
 \textcolor{violet}{\sout{Finally,} Often}\footnote{\textcolor{violet}{[Ben says: I feel like starting with "finally" causes a weird pause - but maybe that's just me.]}}
 the data analysis pipeline \textcolor{violet}{\sout{often}} ends with
-plots, tables, and summary statistics
-\textcolor{violet}{\sout{that} which} are used to
+plots, tables, and summary statistics that are used to
 \sout{\textcolor{violet}{compare} \textcolor{orange}{and assess}}
 \textcolor{violet}{\sout{different models, and simulations to one another} assess model preformance and compare across models or simulations.}
 In \pkg{EpiCompare} we provide a set of comparison and assessment tools
@@ -566,29 +565,30 @@ tools \textcolor{violet}{\sout{to be} are} specifically applicable for
 situations where only one season or cycle of an epidemic has occurred,
 \textcolor{violet}{or is the object of interest}.
 
-\textcolor{violet}{The first set of of tools surround the creation of prediction regions. We can create a prediction regions from model simulations to examine if our model simulations capture the true epidemic trajectory. We do so in a time-invariant way and utlize a filamental representation of the model simulations and the true epidemic.}
+\footnote{\textcolor{violet}{[Ben says: This changed introduction was done to highlight that we can use prediction regions for mutiple types of comparisons.]}}\textcolor{violet}{The first set of of tools surround the creation of prediction regions. We can create a prediction regions from model simulations to examine if our model simulations capture the true epidemic trajectory. We do so in a time-invariant way and utilizing filamental representations of the model simulations and the true epidemic.}
 {[}For three-state epidemic models, we provide the
 \texttt{ggplot}/\texttt{ggtern} extension
 \texttt{geom\_prediction\_band()} which creates a prediction region
 around the top \(1-\alpha\) proportion of the simulations. In this
-visual setting, comparing this prediction to the true epidemic
-trajectory or comparing the prediction regions defined by two different
-models' simulations can be done by eye. In \pkg{EpiCompare}, we also
-provide these prediction regions for epidemic models with with more than
-three states. The functions \texttt{create\_convex\_hull\_structure()}
-and \texttt{create\_delta\_ball\_structure()} create different geometric
+visual setting, comparing this prediction \textcolor{violet}{region} to
+the true epidemic trajectory
+\textcolor{violet}{\sout{or comparing the prediction regions defined by two different models' simulations}}\footnote{\textcolor{violet}{[Ben says: this part will be highlighted in later sentences.]}}
+can be done by eye. In \pkg{EpiCompare}, we also provide these
+prediction regions for epidemic models with with more than three states.
+The functions \texttt{create\_convex\_hull\_structure()} and
+\texttt{create\_delta\_ball\_structure()} create different geometric
 representations of prediction regions for any dimensional state-based
 model. For both of these geometric structures, we provide functions to
 check if a path is contained (\texttt{contained()}){]}.
 \textcolor{violet}{We can also use these prediction regions to visually or mathematically compare how similar two sets of simulations are. In \pkg{EpiCompare} we provide the}
 \texttt{hausdorff\_dist()}
-\textcolor{violet}{function to calculate the Hausdorff distance between multiple prediction regions.}
+\textcolor{violet}{function to calculate the Hausdorff distance between multiple prediction regions, when visual comparison is not possible.}
 
 {[}We also provide functions to calculate the ``extremeness'' of a true
 epidemic trajectory compared to simulated epidemics via the
 equi-distance filamental trajectory representation as mentioned in
 Section \ref{sec:beyond-r0-sir}.{]}
-\textcolor{violet}{We provide implementations of a few score functions that capture extremeness of epidemics relative to other epidemics, and these scores can be turned into an extremeness measure with}
+\textcolor{violet}{We provide implementations of a few distance-based score functions that capture how "reasonable" an epidemic is relative to other epidemics, and these scores can be turned into an extremeness measure with}
 \texttt{mean(sim\_scores\ \textgreater{}\ truth\_score)}.
 {[}Specifically, functions like
 \texttt{distance\_pseudo\_density\_function()} can calculate a
