@@ -9,7 +9,8 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
+Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -45,21 +46,22 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-  National Institute of Allergy\\
-  and Infectious Diseases\\
+National Institute of Allergy\\
+and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-  Carnegie Mellon University\\
+Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
+% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -364,7 +366,7 @@ fraction of \(|\psi_1|\) distance away from the start of
 \(\psi_i\).\footnote{\textcolor{orange}{I think you're trying to say something about a distance based on the equally space points.  Some clarifying questions:  is $\psi^\prime$ the derivative?  Does proportion make more sense than fraction? or simply $\frac{|\psi|}{s}$? It's only naturally time-invariant if we have a well defined ending point, right?}}
 This distance is naturally time-invariant, and can be plugged into
 multiple distance-based assessment tools to examine the overall
-``extremeness'' of points, including pseudo-density estimators and
+``extremeness'\,' of points, including pseudo-density estimators and
 depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be \sout{very} useful when comparing
@@ -685,7 +687,30 @@ suggest how geometrically central an epidemic is to simulations. {]}{]}
 
 \section[Tour]{A tour of \pkg{EpiCompare}}\label{sec:tour}
 
-\textcolor{orange}{[[NEW TEXT}
+\textcolor{orange}{[[NEWER TEXT}
+
+To conclude our paper, we demonstrate the capabilities of
+\pkg{EpiCompare} with a complete data analysis of a measles outbreak in
+1861-1862 Germany. Specifically, we demonstrate how tools in
+\pkg{EpiCompare} can be used in each step of the data analysis pipeline
+(see Fig. \ref{fig:pipeline}). Additionally, we highlight how
+time-invariant analysis (see Section \ref{sec:time-invariant}) can be
+used to enhance understanding of an outbreak.
+
+Before demonstrating \pkg{EpiCompare}, we provide some context for the
+measles outbreak presented here. The data was originally organized by
+\cite{pfeilsticker1863}, later made visible by \cite{oesterle1992}, and
+made available in an \proglang{R} by \cite{surveillance2017}. This data
+set includes a rich collection of features including household location,
+class level, and allged infector ID, and is an ideal testing ground for
+methodology in infectious disease epidemiology
+\cite{Neal2004,britton2011,groendyke2012,becker2016}. In this data set,
+there are 188 children who became infected with the measles over the
+course approximately 90 days.
+
+\textcolor{orange}{]]}
+
+\textcolor{orange}{[[LESS NEW TEXT}
 
 Finally, in this section we show how tools from \pkg{EpiCompare} can be
 used in each step of the data analysis pipeline shown in Fig.
@@ -735,10 +760,13 @@ ID & HH ID & Name & Age & Sex & Class & Symp. Start & Rash Date & Infector ID\\
 \end{CodeChunk}
 
 The Hagelloch data include a rich set of features at the individual
-level. Recorded features include household members, school level,
-household locations, date of first symptoms (prodromes), date of measles
-rash, and even the alleged infector. A subset of the data is shown in
-Table \ref{tab:hags-people}. With \pkg{EpiCompare}, we can easily
+level,
+\textcolor{orange}{and the tools in \pkg{EpiCompare} help with pre-processsing and EDA}.
+Recorded features include household members, school level, household
+locations, date of first symptoms (prodromes), date of measles rash, and
+even the alleged infector. A subset of the data is shown in Table
+\ref{tab:hags-people}. \textcolor{orange}{For example,} with
+\pkg{EpiCompare}, we can easily
 \textcolor{orange}{pre-process the data to} obtain the empirical
 cumulative incidence function with respect to the measles rash
 appearance (variable \code{ERU}) with the following tidy-style function,
@@ -1139,8 +1167,8 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated pseudo-density & proportion of simulations with lower estimated pseudo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0\\
-EpiModel SIR & 0.0028813 & 0\\
+Simple SIR & 0.0036733 & 0.00\\
+EpiModel SIR & 0.0149686 & 0.02\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1197,4 +1225,3 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
-

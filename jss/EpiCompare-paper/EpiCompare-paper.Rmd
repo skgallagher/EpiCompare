@@ -470,7 +470,19 @@ Finally, in \pkg{EpiCompare} we provide a set of comparison and assessment tools
 
 # A tour of \pkg{EpiCompare} {short-title="Tour" #sec:tour}
 
-\shannon{[[NEW TEXT}
+\shannon{[[NEWER TEXT}
+
+To conclude our paper, we demonstrate the capabilities of \pkg{EpiCompare} with a complete data analysis of a measles outbreak in 1861-1862 Germany.  Specifically, we demonstrate how tools in \pkg{EpiCompare} can be used in each step of the data analysis pipeline (see Fig. \ref{fig:pipeline}).  Additionally, we highlight how time-invariant analysis (see Section \ref{sec:time-invariant}) can be used to enhance understanding of an outbreak.
+
+
+Before demonstrating \pkg{EpiCompare}, we provide some context for the measles outbreak presented here.  The data was originally organized by \cite{pfeilsticker1863}, later made visible by \cite{oesterle1992}, and made available in an \proglang{R} by \cite{surveillance2017}. This data set includes a rich collection of features including household location, class level, and allged infector ID, and  is an ideal testing ground for methodology in infectious disease epidemiology \cite{Neal2004,britton2011,groendyke2012,becker2016}.  In this data set, there are 188 children who became infected with the measles over the course approximately 90 days.
+
+
+
+\shannon{]]}
+
+
+\shannon{[[LESS NEW TEXT}
 
 Finally, in this section we show how tools from \pkg{EpiCompare} can be used in each step of the data analysis pipeline shown in Fig. \ref{fig:pipeline}.  We analyze an outbreak of measles in the town of Hagelloch, Germany from 1861-1862, a data set organized by \cite{pfeilsticker1863}.  The data was later made visible by \cite{oesterle1992} and made available in an \proglang{R} by \cite{surveillance2017}.  This data set includes a rich collection of features and  is an ideal testing ground for methodology in infectious disease epidemiology \cite{Neal2004,britton2011,groendyke2012,becker2016}.\footnote{\shannon{The old first paragraph from data and exploratory analysis paragraph was combined with the intro as a better lead-in to what's going on.}}
 
@@ -500,7 +512,7 @@ hagelloch_raw %>% select(PN, HN, NAME, AGE, SEX, CL,  PRO, ERU, IFTO) %>%
   kable_styling(position = "center", latex_options = "hold_position")
 ```
 
-The Hagelloch data include a rich set of features at the individual level.  Recorded features include household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}. With \pkg{EpiCompare}, we can easily \shannon{pre-process the data to} obtain the empirical cumulative incidence function with respect to the measles rash appearance (variable \code{ERU}) with the following tidy-style function, \code{agents_to_aggregate()}.  The function \code{agents_to_aggregate()} is a key component of \pkg{EpiCompare}, allowing the user to easily switch from an individual-level (i.e. an agent) \sout{view} lens of a disease to an aggregate \sout{level} lens.  For example, the below code shows how we can convert the agent data to a cumulative incidence \shannon{plot} of the measles rash\sout{, in order to see how the disease spread through the population over time.} We can then compare the cumulative incidence of the rash to the cumulative incidence of the prodromes, i.e. the initial symptoms.  We do this with the below code, and a part of the cumulative incidence data output is shown in Table \ref{tab:cif-rash}.  The argument \code{integer_time_expansion} indicates whether we should include all time points in the recorded range of the data or only when there is a change in the incidence.
+The Hagelloch data include a rich set of features at the individual level, \shannon{and the tools in \pkg{EpiCompare} help with pre-processsing and EDA}.  Recorded features include household members, school level, household locations, date of first symptoms (prodromes), date of measles rash, and even the alleged infector. A subset of the data is shown in Table \ref{tab:hags-people}. \shannon{For example,} with \pkg{EpiCompare}, we can easily \shannon{pre-process the data to} obtain the empirical cumulative incidence function with respect to the measles rash appearance (variable \code{ERU}) with the following tidy-style function, \code{agents_to_aggregate()}.  The function \code{agents_to_aggregate()} is a key component of \pkg{EpiCompare}, allowing the user to easily switch from an individual-level (i.e. an agent) \sout{view} lens of a disease to an aggregate \sout{level} lens.  For example, the below code shows how we can convert the agent data to a cumulative incidence \shannon{plot} of the measles rash\sout{, in order to see how the disease spread through the population over time.} We can then compare the cumulative incidence of the rash to the cumulative incidence of the prodromes, i.e. the initial symptoms.  We do this with the below code, and a part of the cumulative incidence data output is shown in Table \ref{tab:cif-rash}.  The argument \code{integer_time_expansion} indicates whether we should include all time points in the recorded range of the data or only when there is a change in the incidence.
 
 ```{r }
 cif_rash  <- hagelloch_raw %>%
