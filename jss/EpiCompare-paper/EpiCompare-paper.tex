@@ -9,8 +9,7 @@
 \author{
 Shannon K. Gallagher\\Biostatistics Research Branch\\
 National Institute of Allergy\\
-and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data
-Science\\
+and Infectious Diseases \And Benjamin LeRoy\\Dept. of Statistics \& Data Science\\
 Carnegie Mellon University
 }
 \title{Time invariant analysis of epidemics with \pkg{EpiCompare}}
@@ -46,22 +45,21 @@ detailed example of a full data analysis pipeline.
 \Address{
     Shannon K. Gallagher\\
     Biostatistics Research Branch\\
-National Institute of Allergy\\
-and Infectious Diseases\\
+  National Institute of Allergy\\
+  and Infectious Diseases\\
     5603 Fishers Lane\\
 Rockville, MD 20852\\
   E-mail: \email{shannon.gallagher@nih.gov}\\
   URL: \url{http://skgallagher.github.io}\\~\\
       Benjamin LeRoy\\
     Dept. of Statistics \& Data Science\\
-Carnegie Mellon University\\
+  Carnegie Mellon University\\
     5000 Forbes Ave.\\
 Pittsburgh, PA 15213\\
   E-mail: \email{bpleroy@andrew.cmu.edu}\\
   URL: \url{https://benjaminleroy.github.io/}\\~\\
   }
 
-% Pandoc citation processing
 
 % Pandoc header
 \usepackage{booktabs}
@@ -366,7 +364,7 @@ fraction of \(|\psi_1|\) distance away from the start of
 \(\psi_i\).\footnote{\textcolor{orange}{I think you're trying to say something about a distance based on the equally space points.  Some clarifying questions:  is $\psi^\prime$ the derivative?  Does proportion make more sense than fraction? or simply $\frac{|\psi|}{s}$? It's only naturally time-invariant if we have a well defined ending point, right?}}
 This distance is naturally time-invariant, and can be plugged into
 multiple distance-based assessment tools to examine the overall
-``extremeness'\,' of points, including pseudo-density estimators and
+``extremeness'' of points, including pseudo-density estimators and
 depth/local depth functions
 \citep[for examples see][]{Ciollaro2016, Geenens2017}. These extremeness
 estimators can be \sout{very} useful when comparing
@@ -689,24 +687,30 @@ suggest how geometrically central an epidemic is to simulations. {]}{]}
 
 \textcolor{orange}{[[NEWER TEXT}
 
+\footnote{\textcolor{violet}{[Ben says: Generally I found this whole section to be pretty passive and not well motivated on why we'd actually do the analysis.]}}
 To conclude our paper, we demonstrate the capabilities of
 \pkg{EpiCompare} with a complete data analysis of a measles outbreak in
 1861-1862 Germany. Specifically, we demonstrate how tools in
 \pkg{EpiCompare} can be used in each step of the data analysis pipeline
-(see Fig. \ref{fig:pipeline}). Additionally, we highlight how
-time-invariant analysis (see Section \ref{sec:time-invariant}) can be
-used to enhance understanding of an outbreak.
+\footnote{\textcolor{violet}{[Ben says: based on an earlier read of this section, I might suggest something like "and streamline the analysis process" - is that a selling point you want to highlight?]}}
+\textcolor{violet}{\sout{(see Figure \ref{fig:pipeline})}}\footnote{\textcolor{violet}{[Ben says: It's unclear why you want to highlight the figure again - could you be clearere on that? / what does it add to the conv/ why should they reference it?]}}.
+Additionally, we highlight how time-invariant analysis (see Section
+\ref{sec:time-invariant}) can be used to enhance understanding of an
+outbreak\footnote{\textcolor{violet}{[Ben says: I'm not sure this is necessary to state. Additionally - is it really true do we highlight this?]}}.
 
+\footnote{\textcolor{violet}{[Ben says:The data introduction could be another subsection. Why does it fit better here?.   Other comment: This paragraph is pretty rambly. It is unclear what you want someone to take away from it. I might suggest highlight the fact that the data is "an ideal testing group for methodology".]}}
 Before demonstrating \pkg{EpiCompare}, we provide some context for the
-measles outbreak presented here. The data was originally organized by
-\cite{pfeilsticker1863}, later made visible by \cite{oesterle1992}, and
-made available in an \proglang{R} by \cite{surveillance2017}. This data
-set includes a rich collection of features including household location,
-class level, and allged infector ID, and is an ideal testing ground for
-methodology in infectious disease epidemiology
-\cite{Neal2004,britton2011,groendyke2012,becker2016}. In this data set,
-there are 188 children who became infected with the measles over the
-course approximately 90 days.
+measles outbreak presented
+here.\footnote{\textcolor{violet}{[Ben says: this first sentence is pretty sign-post-y yet it only relates to the next few sentences. Update so it's less sign-post-y.]}}
+The data was originally organized by \cite{pfeilsticker1863}, later made
+visible by \cite{oesterle1992}, and made available in an \proglang{R} by
+\cite{surveillance2017}. This data set includes a rich collection of
+features including household location, class level, and allged infector
+ID, and is an ideal testing ground for methodology in infectious disease
+epidemiology
+\cite{Neal2004,britton2011,groendyke2012,becker2016}\footnote{\textcolor{violet}{[Ben says: This citation doesn't make sense - should it be "citep"?]}}.
+In this data set, there are 188 children who became infected with the
+measles over the course approximately 90 days.
 
 \textcolor{orange}{]]}
 
@@ -759,28 +763,32 @@ ID & HH ID & Name & Age & Sex & Class & Symp. Start & Rash Date & Infector ID\\
 
 \end{CodeChunk}
 
-The Hagelloch data include a rich set of features at the individual
-level,
+\footnote{\textcolor{violet}{[Ben says: The first two sentences is very similar to the data paragraph in the section above. Given it's not really connecting the 2 sections I suggest a rewrite - could move some of this stuff above.]}}The
+Hagelloch data include a rich set of features at the individual level,
 \textcolor{orange}{and the tools in \pkg{EpiCompare} help with pre-processsing and EDA}.
 Recorded features include household members, school level, household
 locations, date of first symptoms (prodromes), date of measles rash, and
 even the alleged infector. A subset of the data is shown in Table
-\ref{tab:hags-people}. \textcolor{orange}{For example,} with
-\pkg{EpiCompare}, we can easily
+\ref{tab:hags-people}.
+\textcolor{orange}{For example,}\footnote{\textcolor{violet}{[Ben says: I'm unclear of what this is actually an example of.]}}
+with \pkg{EpiCompare}, we can easily
 \textcolor{orange}{pre-process the data to} obtain the empirical
 cumulative incidence function with respect to the measles rash
 appearance (variable \code{ERU}) with the following tidy-style function,
 \code{agents_to_aggregate()}. The function \code{agents_to_aggregate()}
 is a key component of \pkg{EpiCompare}, allowing the user to easily
 switch from an individual-level (i.e.~an agent) \sout{view} lens of a
-disease to an aggregate \sout{level} lens. For example, the below code
-shows how we can convert the agent data to a cumulative incidence
-\textcolor{orange}{plot} of the measles
+disease to an aggregate \sout{level} lens. For
+example\footnote{\textcolor{violet}{[Ben says: Same comment as before.]}},
+the below code shows how we can convert the agent data to a cumulative
+incidence \textcolor{orange}{plot} of the measles
 rash\sout{, in order to see how the disease spread through the population over time.}
 We can then compare the cumulative incidence of the rash to the
-cumulative incidence of the prodromes, i.e.~the initial symptoms. We do
-this with the below code, and a part of the cumulative incidence data
-output is shown in Table \ref{tab:cif-rash}. The argument
+cumulative incidence of the prodromes, i.e.~the
+initial\footnote{\textcolor{violet}{[Ben says: please be clearer on what these could be given you comparing them to start of the rash - which seems like an early symptom to me...]}}
+symptoms\footnote{\textcolor{violet}{[Ben says: This action in the analysis pipeline is unmotivated - which naturally makes me want to ask "why would I do this?"]}}.
+We do this with the below code, and a part of the cumulative incidence
+data output is shown in Table \ref{tab:cif-rash}. The argument
 \code{integer_time_expansion} indicates whether we should include all
 time points in the recorded range of the data or only when there is a
 change in the incidence.
@@ -816,10 +824,11 @@ Time & \# Susceptible & \# Total rash appearances\\
 \end{CodeChunk}
 
 One possible question of interest is the duration between initial onset
-of prodromes and the appearance of the measles rash. Since
-\code{agents_to_aggregate()} outputs a tidy-style data frame, it is a
-simple task to plot the two sets of incidence curves on the same graph
-(Fig. \ref{fig:cifs}).
+of prodromes and the appearance of the measles
+rash\footnote{\textcolor{violet}{[Ben says: You don't give a good definition of prodromes above, and you only use the name twice. Is this a super common term in Epi? I find it a bit taxing on the reader to remember what this is referring to.]}}.
+Since \code{agents_to_aggregate()} outputs a tidy-style data frame, it
+is a simple task to plot the two sets of incidence curves on the same
+graph (Fig. \ref{fig:cifs}).
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -830,6 +839,8 @@ R> cif_prodromes <- hagelloch_raw %>%
 +   mutate(type = "Pro")
 \end{CodeInput}
 \end{CodeChunk}
+
+\footnote{\textcolor{violet}{I'm confused why Figure 5 is included. What is the conclusion you'd like to take away? / Why do people create plots like this?}}
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -858,10 +869,11 @@ The real power of \code{agents_to_aggregate()} lies in its ability to
 aggregate over any number of pre-specified states. For example, the
 Hagelloch data sets contains two columns, \code{tI} and \code{tR}, the
 time of infection and recovery, respectively of each individual. We can
-then plot the SIR values through a time-invariant lens using
-\pkg{ggplot2} and \pkg{ggtern} functions (as shown in Fig.
-\ref{fig:hag-tern-raw}) or with our custom \code{geom},
-\code{geom_aggregate}, which takes the raw agent data as input.
+then\footnote{\textcolor{violet}{[Ben says: using "then" here captures a very progression step of analysis but I stopped here and asked "what is this following" - and the previous "step" occurred a paragraph back and wasn't described as a direct progression but just a possible thing to do.]}}
+plot the SIR values through a time-invariant lens using \pkg{ggplot2}
+and \pkg{ggtern} functions (as shown in Fig. \ref{fig:hag-tern-raw}) or
+with our custom \code{geom}, \code{geom_aggregate}, which takes the raw
+agent data as input.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -888,7 +900,8 @@ R> ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 \end{figure}
 \end{CodeChunk}
 
-Moreover, we can look at the outbreaks of the disease by group within
+\footnote{\textcolor{violet}{I found this pargraph very unmotivated. I recommend first arguing why we might a care to look into the class subpopulation grouping. And maybe comment that is is a common desire for practioners.}}Moreover,
+we can look at the outbreaks of the disease by group within
 \code{agent_to_aggregate()} or \code{geom_aggregate()}. This allows us
 to examine differences among the different groups of individuals. For
 example, we show the time invariant outbreak by class level in Figure
@@ -920,36 +933,42 @@ R> hagelloch_raw %>%
 \end{figure}
 \end{CodeChunk}
 
-Along with multiple epidemic states, the function
-\code{agents_to_aggregate()} can also be extended to populations with
-vital dynamics (e.g.~birth and death) and examples of this are shown in
-the package vignette. In summary, \code{agents_to_aggregate()} is a
-multi-purpose workhorse that may be leveraged to convert individual
-level records into aggregate information that may be more useful for
-some forms of epidemic modeling such as compartment modeling.
+\textcolor{violet}{\sout{Along with multiple epidemic states, the function}}
+\code{agents_to_aggregate()}
+\textcolor{violet}{\sout{can also be extended to populations with vital dynamics (e.g. birth and death) and examples of this are shown in the package vignette.  In summary, }}
+\code{agents_to_aggregate()}
+\textcolor{violet}{\sout{is a multi-purpose workhorse that may be leveraged to convert individual level records into aggregate information that may be more useful for some forms of epidemic modeling such as compartment modeling.}}\footnote{\textcolor{violet}{Is this not just a repeat of section 3?}}
 
 \hypertarget{modeling-and-simulation}{%
-\subsection{Modeling and Simulation}\label{modeling-and-simulation}}
+\subsection{Modeling and simulation}\label{modeling-and-simulation}}
 
 \footnote{\textcolor{orange}{section headings to align with our pipeline}}
 
 Up to this point, we have used \pkg{EpiCompare} in the context of
-observed data. We also want to compare statistical models, and
-\pkg{EpiCompare} aids in that process via a simple yet flexible
-individual-level
+observed data. \footnote{\textcolor{violet}{[Ben says: Why?]}}We also
+want to compare statistical models, and \pkg{EpiCompare} aids in that
+process via a simple yet flexible individual-level
 simulator\sout{, conversion tools for popular epidemic model packages, and model assessments.}
-We demonstrate an example here.
+We demonstrate an
+example\footnote{\textcolor{violet}{[Ben says: to me this whole section is 1 example - as such this wording is confusing to me.]}}
+here.
 
 We first try to model the Hagelloch data with a stochastic SIR model,
-which we refer to as the `simple SIR.' In our full vignette
-\textcolor{orange}{(available online),} we show how to fit this simple
-SIR model via maximum likelihood and simulate from the model with those
-best fit parameters. Our function \code{simulate_agents()} generates
-individual level data according to discrete time multinomial draws,
-which depend on the number of individuals in each state at the previous
-time step and a matrix of transition probabilities. For example, the
-below code generates 100 simulations of an outbreak of a disease with
-one initial infector in a population of \(n= 188\) individuals.
+which we refer to as the `simple
+SIR.'\footnote{\textcolor{violet}{[Ben says: could / should this be thought of as a "base" model?]}}
+In our full vignette \textcolor{orange}{(available online),} we show how
+to fit this simple SIR model via maximum likelihood and simulate from
+the model with those best fit
+parameters\footnote{\textcolor{violet}{[Ben says: should you highlight that this is a common approach?]}}.
+Our function
+\code{simulate_agents()}\textbackslash footnote\{\textcolor{violet}{[Ben Should somethings be said about the }
+\texttt{simulation\_SIR\_agents()} \textcolor{violet}{function?]}\}
+generates individual level data according to discrete time multinomial
+draws, which depend on the number of individuals in each state at the
+previous time step and a matrix of transition probabilities. For
+example, the below code generates 100 simulations of an outbreak of a
+disease with one initial infector in a population of \(n= 188\)
+individuals.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -991,12 +1010,15 @@ R> agg_model <- agents %>% group_by(sim) %>%
 
 The result of our simulation is the object \code{agents} which is a
 18800 \(\times\) 5 data frame, which details the time of entry into the
-\(S\), \(I\), and \(R\) states for a given simulation. Before we examine
-the results of this simple SIR model, we will also examine another, more
-sophisticated SIR model, this time from the package \pkg{EpiModel}
-\citep{Jenness2018}. Briefly, this model first fits a contact network to
-the set of individuals, where the class of the child is a covariate. The
-model then simulates a SIR-epidemic on that network.
+\(S\), \(I\), and \(R\) states for a given simulation.
+\footnote{\textcolor{violet}{[Ben says: please motivate - through model comparison?]}}Before
+we examine the results of this simple SIR model, we will also examine
+another, more sophisticated SIR model, this time from the package
+\pkg{EpiModel} \citep{Jenness2018}. Briefly, this model first fits a
+contact network to the set of individuals, where the class of the child
+is a
+covariate\footnote{\textcolor{violet}{[Ben says: Make this connect better to the problem at hand - why do you think you should build this bigger model?]}}.
+The model then simulates a SIR-epidemic on that network.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -1023,14 +1045,17 @@ R> epimodel_sir <- netsim(est1, param, init, control)
 
 The output of this model is \code{epimodel_sir}, an object of class
 \code{netsim}, which contains a plethora of modeling information.
+\footnote{\textcolor{violet}{[Ben says: what's the point for this sentence. It also doesn't flow/ connect to previous and later text.]}}
 
 \hypertarget{post-processing-and-comparison}{%
 \subsection{Post-processing and
 comparison}\label{post-processing-and-comparison}}
 
-The next step is to compare the Simple SIR model to the EpiModel SIR
-model. We provide the function \code{fortify_aggregate()}, which can
-take objects from specialized classes of modeling output
+The next step is to compare the simple SIR model to the EpiModel SIR
+model. We
+provide\footnote{\textcolor{violet}{[Ben says: the phrase "We provide" is very passive / distance from the current demonstration at hand. Moreover section 3 already phrases things this way.]}}
+the function \code{fortify_aggregate()}, which can take objects from
+specialized classes of modeling output
 \textcolor{orange}{(like those made by \code{netsim()})} and transform
 it into a tidy-style data frame.
 
@@ -1044,21 +1069,28 @@ R> fortified_net <- fortify_aggregate(epimodel_sir,
 \end{CodeChunk}
 
 We can then analyze the results of the two models side by side as
-time-invariant epidemic curves. The results are shown in Figure
+time-invariant\footnote{\textcolor{violet}{[Ben says: this isn't a clear phrrase here - what are you trying to say?]}}
+epidemic curves. The results are shown in Figure
 \ref{fig:hag-simple-sir}, where a 90\% prediction band is estimated from
-the delta ball method for each of the two models. For the Simple SIR
-model, we see that the data generally covers the data fairly well but
-clearly misses the second peak of infection. We also see that the
-prediction band is very large, covering up a large area of the ternary
-plot. On the other hand, for the EpiModel network model, we see that the
-prediction band covers the data quite well and takes up less area.
+the delta
+ball\footnote{\textcolor{violet}{[Ben says: this has never been discussed anyway.]}}
+method for each of the two models. For the Simple SIR model, we see that
+the data generally covers the data fairly well but clearly misses the
+second peak of
+infection\footnote{\textcolor{violet}{[Ben says: This could be better movitated with talk of model fit...]}}.
+We also see that the prediction band is very large, covering up a large
+area of the ternary plot. On the other hand, for the EpiModel network
+model, we see that the prediction band covers the data quite well and
+takes up less area.
 
 \begin{CodeChunk}
 \begin{CodeInput}
 R> both_models <- bind_rows(agg_model, fortified_net)
 R> 
 R> 
-R> g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0),
+R> g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
++                   mutate(Type = factor(Type, levels = c("Simple SIR", 
++                                                         "EpiModel SIR"))),
 +          aes(x = X0, y = X1, z = X2,
 +               sim_group = sim, fill = Type),
 +          alpha = .5,
@@ -1066,9 +1098,13 @@ R> g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0),
 \end{CodeInput}
 \end{CodeChunk}
 
+\textcolor{violet}{[Ben says: In figure 8 I changed the order of the facets given we talk about the simple model first and its more like the "base" model. I think the title should be changed?]}
+
 \begin{CodeChunk}
 \begin{CodeInput}
-R> g +   geom_path(data = both_models %>% filter(t !=0),
+R> g +   geom_path(data = both_models %>% filter(t != 0) %>%
++                   mutate(Type = factor(Type, levels = c("Simple SIR", 
++                                                         "EpiModel SIR"))),
 +             aes(x = X0, y = X1, z = X2, group = paste(Type, sim)),
 +             alpha = .3, col = "gray40") + 
 +     coord_tern() + theme_sir(base_size = 24) +
@@ -1092,20 +1128,22 @@ R> g +   geom_path(data = both_models %>% filter(t !=0),
 \end{CodeChunk}
 
 However, both models are not a good fit to the filamental path as
-opposed to the individual points in \((S, I, R)\)-space. This can be
+opposed to the individual points in \((S, I, R)\)-space. This can
+be\footnote{\textcolor{violet}{[Ben says: this is a very passive way to say such things. Try being more direct.]}}
 captured with the set of simulations both models predict (gray lines),
 which all generally have a single defined peak of infection whereas the
 data certainly looks like it has two distinct peaks, likely caused by
-our assumed super-spreader event. This observation is backed up by the
-below analysis that demonstrates that the estimated pseudo-density of
-the observed epidemic (relative to the simulations from either model) is
+our assumed super-spreader event. This observation is backed
+up\footnote{\textcolor{violet}{[Ben says: describe this?]}} by the below
+analysis that demonstrates that the estimated pseudo-density of the
+observed epidemic (relative to the simulations from either model) is
 much less likely then \textbf{any} of the simulations (reported in Table
 \ref{tab:hags-extreme})\footnote{\textcolor{orange}{Ben, do we want to add another sentence or two explaining the two columns in the table?  The second one I think makes sense to me but not the first.}}
 In conclusion, \pkg{EpiCompare} makes it clear that, at a glance, 1) the
 EpiModel network model is a better fit than the Simple SIR model, and 2)
 the fit is only good at the
 \sout{geometric filamental level as opposed to the epidemic trajectory filamental level.}
-\textcolor{orange}{individual point level as opposed to the geometric filamental level.}
+\textcolor{orange}{individual point level as opposed to the geometric filamental level.}\footnote{\textcolor{violet}{[Ben says: how would this look with the time plots? Do we add value here?]}}
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -1167,21 +1205,22 @@ R> simple_sir_true_obs_info <- tdmat %>%
 \toprule
 Type & simulations-based estimated pseudo-density & proportion of simulations with lower estimated pseudo-density\\
 \midrule
-Simple SIR & 0.0036733 & 0.00\\
-EpiModel SIR & 0.0149686 & 0.02\\
+Simple SIR & 0.0036733 & 0\\
+EpiModel SIR & 0.0028813 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \end{CodeChunk}
 
-Overall, \pkg{EpiCompare} aids in the data analysis pipeline for both
-novice and expert practitioners and coders alike. These tools encourage
-model and simulation exploration of many of the existing and
-well-supported packages that already exist, and side-by-side comparison
-thereof. Finally, we hope that practicioners will consider using
-time-invariant analysis when trying to assess and compare epidemics and
-epidemic models.
+\footnote{\textcolor{violet}{I think this paragraph captures some good goals, but I don't think we've done some of this. For example - we don't really highlight novice/expert usage, and we don't highlight side-by-side comparisons of models.}}Overall,
+\pkg{EpiCompare} aids in the data analysis pipeline for both novice and
+expert practitioners and coders alike. These tools encourage model and
+simulation exploration of many of the existing and well-supported
+packages that already exist, and side-by-side comparison thereof.
+Finally, we hope that practicioners will consider using time-invariant
+analysis when trying to assess and compare epidemics and epidemic
+models.
 
 \hypertarget{a.-appendix}{%
 \section*{A. Appendix}\label{a.-appendix}}
@@ -1225,3 +1264,4 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 \end{document}
+
