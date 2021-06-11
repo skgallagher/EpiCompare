@@ -605,19 +605,47 @@ suggest how geometrically central an epidemic is to simulations.
 
 \textcolor{orange}{I have substantially overhauled section 4.  The older versions are kept after the entirety of this section but note that much of the text (but not the structure) of this section is different.  I've tried to better motivate why we use the epicompare functions to answer our questions of interest.}
 
+UPDATE 6/11/2021. I am now adding overall goals of section and each
+subheading. Additionally there are a few updates from last draft
+(unmarked since you didn't comment on last draft).
+
+SECTION GOALS:
+
+The main goal of this section is to show how a person can use EpiCompare
+in a real data analysis. With that said my primary focus is on
+EpiCompare and not the data analysis -- a point I think you may be
+having an issue with. I've given this some thought and believe that the
+data analysis is a means for an end to us -- showing off EpiCompare.
+That said again, I've made some changes in the first paragraph below.
+
+To accomplish this main goal, I shadow the data analysis pipeline we
+have introduced and show how epicompare can be used in the steps.
+
+The secondary goals are figuring out useful information about this
+measles outbreak.
+
 \textcolor{orange}{[[NEWEST TEXT}
 
-To conclude our paper, we demonstrate how \pkg{EpiCompare} can
-streamline the data analysis process with a case study of a measles
-outbreak in 1861-1862 Germany. With the help of \pkg{EpiCompare}, we can
-answer questions such as is a SIR model a good fit for the data, does
+{[}{[}sub-section goal: outline goal of section -- how to use epicompare
+in a real situation
+
+To conclude our paper, we demonstrate how \pkg{EpiCompare} streamlines
+the data analysis process with a case study of a measles outbreak in
+1861-1862 Germany. With the help of \pkg{EpiCompare}, we can answer
+important questions such as is a SIR model a good fit for the data, does
 the outbreak spread differently within the different school classes of
 the children, and can incorporating an underlying network structure
-enhance model fit. We first begin with some context for the epidemic.
+enhance model fit? After introducing the data available in this
+outbreak, we show how \pkg{EpiCompare} can aid in each step of the data
+analysis pipeline (see Fig. \ref{fig:pipeline2}) to answer these
+questions motivated by this outbreak.{]}{]}
 
-\hypertarget{background-for-1861-1862-measles-epidemic}{%
+\hypertarget{background-for-1861-1862-measles-outbreak}{%
 \subsection{Background for 1861-1862 measles
-epidemic}\label{background-for-1861-1862-measles-epidemic}}
+outbreak}\label{background-for-1861-1862-measles-outbreak}}
+
+{[}{[}Goal of this section isto provide context for our case
+study.{]}{]}
 
 We analyze an outbreak of measles in the town of Hagelloch, Germany from
 1861-1862, a data set organized by \cite{pfeilsticker1863}. The data was
@@ -627,8 +655,11 @@ were infected with measles over the course of three months. This data
 set includes a rich collection of features including day of measles
 rash, age, sex, school class, household and household location, and
 alleged infector of each child. We show a subset of the data in Table
-\ref{tab:hags-people}. We are particularly interested if and how group
-structure plays a role in the spread of measles.
+\ref{tab:hags-people}. We are particularly interested if the SIR model
+is a good fit to our data, whether we can identify subgroups with
+differing infection behavior, and whether incorporating those subgroups
+into a network-based SIR model enhances model fit compared to the
+baseline SIR.
 
 \begin{CodeChunk}
 \begin{table}[!h]
@@ -654,17 +685,22 @@ ID & HH ID & Name & Age & Sex & Class & Symp. Start & Rash Date & Infector ID\\
 \hypertarget{pre-processing-and-eda}{%
 \subsection{Pre-processing and EDA}\label{pre-processing-and-eda}}
 
+{[}{[}The goal of this is to show how EpiCompare can be used to
+transform the data for basic tablaes and plotting, especially with
+regards to aggregating the data for the SIR model.{]}{]}
+
 We begin our analysis by first examining and transforming the raw data
-(\code{hagelloch_raw}), which is individual-level data. With
-\pkg{EpiCompare}, we can quickly determine how the epidemic progresses
-through the population at an aggregate level. By specifying the time of
-infection (\code{tI}) and the time of recovery (\code{tR}), the function
+(\code{hagelloch_raw}) to explore whether the SIR model is a good fit to
+the data. The raw data is in the format of individual-level data and
+first needs to be aggregated. By specifying the time of infection
+(\code{tI}) and the time of recovery (\code{tR}), the function
 \code{agents_to_aggregate()} calculates the number susceptible,
 infectious, and recovered individuals at each time step. Once
 aggregated, we can plot the SIR values through a time-invariant lens
 using \pkg{ggplot2} and \pkg{ggtern} functions (as shown in Fig.
 \ref{fig:hag-tern-raw}) or with our custom \code{geom},
-\code{geom_aggregate()}, which takes the raw agent data as input.
+\code{geom_aggregate()}, which takes the raw agent data as input. This
+is show in the below code.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -699,10 +735,12 @@ infection. We may wonder if the two peaks in the observed data may be
 due to random noise or if a model more complex than the simple SIR is
 needed to adequately capture these two peaks.
 
-Previous study tells us that measles outbreaks are often associated with
-children within the same grade level, and we examine if this is the case
-here. By combining the function \code{facet_wrap()} with
-\code{geom_aggregate()} we can easily analyze this scenario,
+With regards to our goal of identifying interesting subgroups with
+different infection behavior, previous study tells us that measles
+outbreaks are often associated with children within the same grade
+level, and we examine if this is the case here. By combining the
+\pkg{dplyr} function \code{facet_wrap()} with \code{geom_aggregate()} we
+can easily analyze this scenario,
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -736,6 +774,16 @@ analyze this claim with modeling and simulation.
 
 \hypertarget{modeling-and-simulation}{%
 \subsection{Modeling and Simulation}\label{modeling-and-simulation}}
+
+{[}{[}The goal is to `test' (although not formally) whether our
+observations from EDA are correct. We want to see whether SIR model is a
+good fit and whether including these found sub-groups helps model
+fit{]}{]}
+
+We now use modeling and simulation to informally test whether the
+baseline SIR model is a good fit for the data and whether incorporating
+a network-based structure dependent on the class of the children
+improves model fit.
 
 We first try to model the Hagelloch data with a baseline stochastic SIR
 model, which we refer to as the `simple SIR.' In our full vignette
@@ -790,15 +838,12 @@ R> agg_model <- agents %>% group_by(sim) %>%
 
 The result of our simulation is the object \code{agents} which is a
 18800 \(\times\) 5 data frame, which details the time of entry into the
-\(S\), \(I\), and \(R\) states for a given simulation. Ultimately, we
-would like to know if this simple SIR model is a good fit to the data,
-especially in comparison to a SIR model where we can incorporate the
-class structure.
+\(S\), \(I\), and \(R\) states for a given simulation.
 
-To fit a more complex SIR model with a network structure, we use package
-\pkg{EpiModel} \citep{Jenness2018}. The below code sets up a network of
-individuals (which includes class as a variable) and then simulates
-infections over this network.
+To fit a more complex SIR model with a network structure, we use the
+package \pkg{EpiModel} \citep{Jenness2018}. The below code sets up a
+network of individuals (which includes class as a variable) and then
+simulates infection and recovery over this network.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -834,9 +879,13 @@ contained in the objects \code{agg_model} (the simple SIR) and
 \subsection{Post-processing and
 comparison}\label{post-processing-and-comparison}}
 
-The next step is to compare the simple SIR model to the EpiModel SIR
-model. The \pkg{EpiCompare} function \code{fortify_aggregate()}, takes
-in an object from specialized classes of modeling output
+{[}{[}Finally we want to answer the questions in our analysis by
+comparing the models to the data and the models to each other{]}{]}.
+
+Ultimately we want to compare the models to the data and the models to
+one another to answer our questions of interest. The \pkg{EpiCompare}
+function \code{fortify_aggregate()} takes in an object from specialized
+classes of modeling output
 \textcolor{orange}{(like those made by \code{netsim()})} and transforms
 it into a tidy-style data frame.
 
@@ -852,17 +901,18 @@ R> fortified_net <- fortify_aggregate(epimodel_sir,
 With the two modeling objects both in the same format, we can then
 compare the models side-by-side. The results are shown in Figure
 \ref{fig:hag-simple-sir}, where a 90\% prediction region is estimated
-for the two models. For the Simple SIR model, we see that while the
-prediciton region covers the data fairly well, the prediction region
-clearly misses the second peak of infection. This indicates that the
-simple SIR is not a good fit to our data. We also see that the
+for the two models and the actual data are plotted as black dots. For
+the Simple SIR model, we see that while the prediction region covers the
+data fairly well, the prediction region clearly misses the second peak
+of infection. This indicates that the simple SIR is not a good fit to
+our data, even after incorporating noise. We also see that the
 prediction region is very large, covering up a large area of the ternary
 plot. Together, this indicates that the simple SIR model produces a
 biased model with a large amount of variance. On the other hand, for the
 EpiModel network model, we see that the prediction region covers the
-data quite well and takes up less area. With \pkg{EpiCompare}, we can
-see that the model using the class structure is a better fit to the
-outbreak than the simple SIR model.
+data quite well and takes up less area compared to the simple SIR. With
+\pkg{EpiCompare}, we see that the model using the class structure is a
+better fit to the outbreak than the simple SIR model.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -906,15 +956,16 @@ R> g +   geom_path(data = both_models %>% filter(t != 0) %>%
 \end{figure}
 \end{CodeChunk}
 
-The prediction region generated by the network model covers the observed
-data well, but that does not mean that individual filaments generated
-from the network model are good fits to the observed data. We can
-further examine the model fits by incorporating these filaments into our
-visualization. In Fig. \ref{fig:hag-simple-sir} we show the indivdual
-filaments generated from the two sets of models as gray lines. Examining
-these, we see that the individual lines typically only have one defined
-peak, whereas the data certainly looks like it has two distinct peaks,
-likely caused by our assumed super-spreader event.
+Although the prediction region generated by the network model covers the
+observed data well visually, that does not mean that individual
+filaments generated from the network model are good fits to the observed
+data. We can further examine the model fits by incorporating these
+filaments into our visualization. In Fig. \ref{fig:hag-simple-sir} we
+show the individual filaments generated from the two sets of models as
+gray lines. Examining these, we see that the individual lines typically
+only have one defined peak, whereas the data certainly looks like it has
+two distinct peaks, a feature possibly caused by our speculated
+super-spreader event.
 
 We can also examine these filaments quantitatively by using functions
 that take the distance between the filaments with the observed data. In
@@ -1020,15 +1071,15 @@ that class structure may be important in the spread of of measles. We
 then compared a baseline simple SIR model to a more complicated SIR
 model which incorporated a network structure which included the class
 structure. Based on the prediction regions generated from these models,
-we saw that the network model fit the data much better than the simple
-SIR model. However, when we examined the individual filaments generated
-by the network model, we found that the data is highly unlikely to be
-generated from such a model. For further analysis, we would recommend
-looking into models that can more accurately capture super-spreading
-events based on the observation that one child was allegedly responsible
-for nearly all of his classmates' infections. Overall, this analysis
-demonstrates how \pkg{EpiCompare} aids in the data analysis pipeline for
-both novice and expert practitioners and coders alike.
+we saw that the network model fit the data better than the simple SIR
+model. However, when we examined the individual filaments generated by
+the network model, we found that the data are unlikely to be generated
+from such a model. For further analysis, we would recommend looking into
+models that can more accurately capture super-spreading events based on
+the observation that one child was allegedly responsible for nearly all
+of his classmates' infections. Overall, this analysis demonstrates how
+\pkg{EpiCompare} aids in the data analysis pipeline for both novice and
+expert practitioners and coders alike.
 
 {]}{]}
 
