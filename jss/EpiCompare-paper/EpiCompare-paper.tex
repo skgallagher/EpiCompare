@@ -104,9 +104,8 @@ With many visualization and exploratory tools, models and modeling
 paradigms, and reviews and comparisons in the literature and through the
 MIDAS (Models of Infectious Disease Agent Study) network
 \citep{midasnetwork2021} available, this field has a number of devices
-to \textcolor{orange}{\sout{aid}}
-\textcolor{orange}{help}\footnote{\textcolor{violet}{[Ben says: I'm not sure this an improvement]}}
-an individual practitioner decide the correct approach. For example,
+to \textcolor{orange}{\sout{aid}} \textcolor{orange}{help}{[}b{]} an
+individual practitioner decide the correct approach. For example,
 \proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and
 \pkg{pomp} have all made significant steps in standardizing the flow of
 the data analysis pipeline for epidemic modeling through digitizing data
@@ -660,7 +659,6 @@ R> hagelloch_sir <- hagelloch_raw %>%
 +                       min_max_time = c(0, 55)) %>%
 +   rename(time = t, S = X0, I = X1, R = X2)
 R> 
-R> 
 R> ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 +   coord_tern() +
 +   geom_path() +
@@ -869,7 +867,6 @@ better fit to the outbreak than the simple SIR model.
 \begin{CodeInput}
 R> both_models <- bind_rows(agg_model, fortified_net)
 R> 
-R> 
 R> g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
 +                   mutate(Type = factor(Type, levels = c("Simple SIR", 
 +                                                         "EpiModel SIR"))),
@@ -1041,10 +1038,10 @@ To conclude our paper, we demonstrate the capabilities of
 \pkg{EpiCompare} with a complete data analysis of a measles outbreak in
 1861-1862 Germany. Specifically, we demonstrate how tools in
 \pkg{EpiCompare} can be used in each step of the data analysis pipeline
-\footnote{\textcolor{violet}{[Ben says: based on an earlier read of this section, I might suggest something like "and streamline the analysis process" - is that a selling point you want to highlight?]} \textcolor{orange}{check out new re-write.  new goal is to motivate question of hagelloch and then show how epicompare helps}}
-\textcolor{violet}{\sout{(see Figure \ref{fig:pipeline})}}\footnote{\textcolor{violet}{[Ben says: It's unclear why you want to highlight the figure again - could you be clearere on that? / what does it add to the conv/ why should they reference it?]}}.
-Additionally, we highlight how time-invariant analysis (see Section
-\ref{sec:time-invariant}) can be used to enhance understanding of an
+{[}c{]}\textcolor{orange}{check out new re-write.  new goal is to motivate question of hagelloch and then show how epicompare helps}\}
+(see Figure \ref{fig:pipeline}){[}d{]}. Additionally, we highlight how
+time-invariant analysis (see Section \ref{sec:time-invariant}) can be
+used to enhance understanding of an
 outbreak\footnote{\textcolor{violet}{[Ben says: I'm not sure this is necessary to state. Additionally - is it really true do we highlight this?]}}.
 
 \footnote{\textcolor{violet}{[Ben says:The data introduction could be another subsection. Why does it fit better here?.   Other comment: This paragraph is pretty rambly. It is unclear what you want someone to take away from it. I might suggest highlight the fact that the data is "an ideal testing group for methodology".]}}
@@ -1209,7 +1206,6 @@ R> hagelloch_sir <- hagelloch_raw %>%
 +   agents_to_aggregate(states = c(tI, tR),
 +                       min_max_time = c(0, 55)) %>%
 +   rename(time = t, S = X0, I = X1, R = X2)
-R> 
 R> 
 R> ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 +   coord_tern() +
@@ -1415,7 +1411,6 @@ takes up less area.
 \begin{CodeInput}
 R> both_models <- bind_rows(agg_model, fortified_net)
 R> 
-R> 
 R> g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
 +                   mutate(Type = factor(Type, levels = c("Simple SIR", 
 +                                                         "EpiModel SIR"))),
@@ -1587,6 +1582,15 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
     &= \frac{1}{a}t.
 \end{align*}
 \end{proof}
+
+{[}a{]}Welcome to ``trackdown'' version of our Rmd document. Hopefully
+this is useful for discussions. Let's try to convert \sout{} and colors
+to make it cleaner. {[}b{]}Ben says: I'm not sure this an improvement
+{[}c{]}based on an earlier read of this section, I might suggest
+something like ``and streamline the analysis process'' - is that a
+selling point you want to highlight? {[}d{]}Ben says: It's unclear why
+you want to highlight the figure again - could you be clearer on that? /
+what does it add to the conv/ why should they reference it?
 
 \bibliography{EpiCompare.bib}
 

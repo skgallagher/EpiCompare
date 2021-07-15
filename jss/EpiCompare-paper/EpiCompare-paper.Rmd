@@ -65,7 +65,6 @@ header-includes:
 options(prompt = 'R> ', continue = '+ ')
 options(kableExtra.latex.load_packages = FALSE)
 
-
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
                       fig.align = "center",
                       echo=TRUE, warning=FALSE, message=FALSE,
@@ -82,12 +81,11 @@ devtools::load_all("../../")
 
 \newtheorem{theorem}{Theorem}
 
-
 # Introduction {short-title="Intro" #sec:intro}
 
 The recent (and on-going) COVID-19 global pandemic has galvanized public interest in understanding more about infectious disease modeling and has highlighted the usefulness of research in the area of infectious disease epidemiology. Infectious diseases inflict enormous burdens on the world: millions of lives lost and trillions of dollars spent yearly. Infectious disease models typically attempt to do one or more of the following: 1) predict the spread of current and future epidemics \citep[e.g. flu prediction][]{Biggerstaff2016}, 2) analyze past and current epidemics to increase scientific knowledge \citep[e.g. historical measle outbreaks][]{Neal2004}, and 3) forecast or project epidemic scenarios under pre-specified parameters \citep[e.g.][]{ferguson2020}. At the same time, descriptive statistics and visualizations from universities, many branches and levels of government, and news organizations  are an important first step of the process, as has been seen in the current COVID-19 pandemic \citep{dong2020,cdc-covid-tracker2021,wp-covid-tracker2021}. 
 
-With many visualization and exploratory tools, models and modeling paradigms, and reviews and comparisons in the literature and through the MIDAS (Models of Infectious Disease Agent Study) network \citep{midasnetwork2021} available, this field has a number of devices to \shannon{\sout{aid}} \shannon{help}\footnote{\ben{[Ben says: I'm not sure this an improvement]}}  an individual practitioner decide the correct approach. For example, \proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and \pkg{pomp} have all made significant steps in standardizing the flow of the data analysis pipeline for epidemic modeling through digitizing data sets, making accessible statistical models, and providing a plethora of educational material for both coding novices and experts alike \citep{surveillance2017,Jenness2018,King2016}. 
+With many visualization and exploratory tools, models and modeling paradigms, and reviews and comparisons in the literature and through the MIDAS (Models of Infectious Disease Agent Study) network \citep{midasnetwork2021} available, this field has a number of devices to \shannon{\sout{aid}} \shannon{help}[b] an individual practitioner decide the correct approach. For example, \proglang{R} packages such as \pkg{surveillance}, \pkg{EpiModel}, and \pkg{pomp} have all made significant steps in standardizing the flow of the data analysis pipeline for epidemic modeling through digitizing data sets, making accessible statistical models, and providing a plethora of educational material for both coding novices and experts alike \citep{surveillance2017,Jenness2018,King2016}. 
 
 At the same time, analysis packages often only address a specific portion of the analysis pipeline. These modeling tools usually require learning package-specific syntax and often don't provide easy ways to compare and assess their models on new data. Moreover, exploring modeling and comparing epidemics require transforming and \textit{tidying} data in different ways. To fill these gaps, we present our \proglang{R} package \pkg{EpiCompare}. Our package's primary focus is to aid and advance research in the area of comparison and assessment of epidemic and epidemiological models. In Figure \ref{fig:pipeline}, we illustrate the data analysis pipeline of infectious diseases  as 1) data pre-processing, 2) exploratory data analysis (EDA), 3) modeling and simulating, 4) post-processing, and 5) comparison and assessment; where each previous part of the pipeline influences the next. \pkg{EpiCompare} provides tools to aids practitioners in all areas of this pipeline.
 
@@ -128,7 +126,6 @@ where $N$ is the total number of individuals, $\beta$ is the rate of infection, 
 
 From this model, the reproduction number is the ratio of the infection rate to the recovery rate, $R_0 = \beta/\gamma$.
 
-
 ```{r echo = FALSE}
 devtools::load_all()
 library(tidyr)
@@ -140,7 +137,6 @@ set.seed(1)
 
 theme_set(theme_bw(base_size = 24))
 ```
-
 
 ```{r echo = FALSE, fig.cap = "\\label{fig:different-scales-standard}Example of two epidemics with different $\\beta$ and $\\gamma$ parameters but the same initial reproduction number $R_0$ = 2.  Both epidemics are generated from models with $N= 1000$ individuals with $S(0) = 990$ and $I(0) = 10$."  }
 set.seed(1225)
@@ -187,7 +183,6 @@ ggplot(data = df_long,
        title = latex2exp::TeX("Comparing two epidemics over first 15 days with same $R_0$")) +
   coord_cartesian(xlim = c(0, 15))
 ```
-
 
 Even though Figure \ref{fig:different-scales-standard}’s visual analysis might be able to present more complex properties of the epidemic, one might wish to understand how these two simulated epidemics’ $R_0$ values compare. Even though these two simulated epidemics appear different in these figures (including having different infection peaks), there is no real intuitive way to compare the epidemics' $R_0$ values. In fact, both of these simulated epidemics started with the same population (1000 total people with 10 infected) and have the same $R_0$ value, just with slightly different infection and recovery rates ($\beta_1, \gamma_1 = 0.8, 0.4$, and $\beta_2, \gamma_2 = .64, .32$). Even for simple generative models, this time-dependent visualization cannot be used to compare a very simple but powerful numerical summary, $R_0$.
 
@@ -292,7 +287,6 @@ Overall, there are many tools to aid in the assessment and comparison of epidemi
 
 In this section, we present the tools implemented in \pkg{EpiCompare} and explain how they aid in the  data analysis pipeline.  In Figure \ref{fig:pipeline2}, we show how our package's functions fit into the data analysis pipeline introduced in Figure \ref{fig:pipeline}.  All front-facing functions in \pkg{EpiCompare} are aimed to be as user-friendly as possible. We also focus on providing the user "tidyverse" style functions, that encourage piping objects from one function to the next and follow clear "verb" naming schemes \citep{Wickham2019}. Although users can incorporate \pkg{EpiCompare} into any step in the data analysis pipeline, there are two primary points of entry.  The first point of entry is the very beginning with pre-processing and visualizing raw data, and the second point of entry is after modeling and simulation. Figure \ref{fig:pipeline2} captures these different paths, and we highlight how to leverage \pkg{EpiCompare} functionalities in the subsections below.
 
-
 **Data pre-processing**
 
 The first step of most data analysis is "cleaning" the raw data so it can be explored. Before data can be explored, they must be collected. Sometimes individual records are collected, with times of different states of the epidemic (infection, recovery, etc.) as well as individual information like network structure, location, and sub-population information. Other data collections focus on aggregate counts of individuals in each epidemic state.  In fact, many times only the number of new infections at each time step (e.g. weekly case counts) is observed.  In this setting, compartment totals (amounts of individuals in each state) are then imputed from those case counts and using other information about the disease and the population of interest.  In \pkg{EpiCompare}, we focus on understanding the overall impact of an outbreak at the aggregate/population level, which allows for streamlined examination of overall trends of an epidemic.
@@ -303,24 +297,19 @@ To help the practitioner examine epidemics from an aggregate/population lens, we
 
 Besides aiding subpopulation analysis, `agents_to_aggregate()` can  accommodate a wide range of information about each individual. In fact, this function can account for infinitely many states.  This functionality allows the practitioner to aggregate information relative to common states (e.g. "Susceptible", "Infectious", and "Recovered") as well as more complex states (e.g. "Exposed", "iMmune", "Hospitalized"). Additionally, `agents_to_aggregate()` permits indicators for death/exit and birth/entry dates. Overall, this function is a powerful tool for pre-processing data.
 
-
 **Exploratory data analysis (EDA)**
 
  In the early stages of a project, familiarizing oneself with the data usually means figuring out useful combinations of visualizations and numerical summaries of the data both at population and subpopulation level.  An expert coder can start with `agents_to_aggregate()` to successfully accomplish exploratory data analysis (EDA) in many ways. \pkg{EpiCompare} also includes tools that allow a novice coder to rapidly explore data, provided there are three unique epidemiological states (like in the SIR model). Building on \pkg{ggplot2} and \pkg{ggtern} packages, \pkg{EpiCompare}'s `geom_aggregate()` provides a way to explore how different subpopulations experience of an epidemic \citep{Wickham2016, Hamilton2018}. The function `geom_aggregate()` provides a visualization tool to holistically examine aggregate level information across different subpopulations by visualizing each subpopulation's epidemic trajectory in the three-dimensional state space.  Visualization tools for three-state models were developed because SIR models are some of the most common and basic epidemic state-based models and our three-dimensional simplex representation of these epidemics emphasizes a time-invariant representation of the data (for a refresher see Section \ref{sec:time-invariant}).
 
 **Model fitting and simulations**
 
-
 After getting a sense of what a past or current epidemic looks like with EDA, the next step in the data analysis pipeline is often model fitting and/or simulation.  While \pkg{EpiCompare} does not focus on fitting models to data, we do provide some flexible functions for simulation of basic discrete-time epidemic-state models. These functions simulate individual-level information based on practitioner estimated transition rates between states and can be combined with `agents_to_aggregate()` to view these simulations through an aggregate lens.  The function `simulate_SIR_agents()` simulates a basic SIR epidemic with user inputs for the number of simulations, the initial number in each state, the infection and recovery parameters $(\beta, \gamma$), and the total number of discrete time steps.    Beyond SIR models, the function `simulate_agents()` takes as input a user-specified state-transition matrix and other epidemic parameters to allow the user to create simulations for an outbreak with \textit{any} number of states and any number of transitions among them.  This flexibility in states can be used to also reflect group-based dynamics.  Both of these functions allow users to explore the space of models in an intuitive way without getting bogged down by too much mathematical detail. For consistency, we have made output from `simulate_agents()` and `simulate_SIR_agents()` compatible with `agents_to_aggregate()` so aggregate information may easily be accessed.
 
-
 **Post-processing**
-
 
 If practitioners wish to compare models-to-observations or even models-to-models, they need to post-process their models and simulations to disseminate the results in an easily digestible format.  In \pkg{EpiCompare}, we provide (1) functions to standardize simulation and model output from external packages and (2) a function to transform standardized simulation and model output into a format amenable to time-invariant analysis.
 
 Modeling and simulation output  can be very complex objects, and as a result, a number of epidemic modeling \proglang{R} packages return a special class.  The special classes often contain a plethora of information about residuals, model diagnostics, input parameters, and more.  While incredibly useful, these special classes can be difficult for novice coders to handle. To this end, \pkg{EpiCompare} provides a series of fortify-style methods, called \code{fortify_aggregate()} which transform output from infectious disease modeling and simulation packages like \pkg{pomp} and \pkg{EpiModel} into tidy-styled data frames which contain information about the total number of individuals in each state at a given time, for a given simulation.  These fortify functions have output that is consistent with that of \code{agents_to_aggregate()}.  These standardized outputs can then be piped to summaries, tables, and plots.
-
 
 Because epidemic data is stored in a temporal way, we provide the function, \code{filament_compression()}, to transform temporally defined epidemics to their filamental representations. These filaments can then be fairly compared to one another or passed to further time-invariant analysis tools described below.
 
@@ -331,7 +320,6 @@ Because epidemic data is stored in a temporal way, we provide the function, \cod
 The last step of the data analysis pipeline often ends with plots, tables, and summary statistics that are used to assess model performance and compare across models or simulations. In \pkg{EpiCompare} we provide a set of comparison and assessment tools for model and simulation results that extend beyond the standard performance metrics (e.g. mean squared error or AIC) and into the lens of time-invariant analysis.  We have found that these tools are specifically applicable for situations where only one season or cycle of an epidemic has occurred or is the object of interest.
 
 The first set of of tools surround the creation of prediction regions. We can create a prediction regions from model simulations to examine if our model simulations capture the true epidemic trajectory. We do so in a time-invariant way and utilizing filamental representations of the model simulations and the true epidemic. For three-state epidemic models, we provide the `ggplot`/`ggtern` extension `geom_prediction_band()` which creates a prediction region around the top $1-\alpha$ proportion of the simulations. In this visual setting, comparing this prediction region to the true epidemic trajectory can be done by eye. In \pkg{EpiCompare}, we also provide these prediction regions for epidemic models with with more than three states. The functions `create_convex_hull_structure()` and `create_delta_ball_structure()` create different geometric representations of prediction regions for any dimensional state-based model. For both of these geometric structures, we provide functions to check if a path is contained (`contained()`)]. We can also use these prediction regions to visually or mathematically compare how similar two sets of simulations are. In \pkg{EpiCompare} we provide the `hausdorff_dist()` function to calculate the Hausdorff distance between multiple prediction regions, when visual comparison is not possible.
-
 
  We also provide functions to calculate the "extremeness" of a true epidemic trajectory compared to simulated epidemics via the equi-distance filamental trajectory representation as mentioned in Section \ref{sec:beyond-r0-sir}.] We provide implementations of a few distance-based score functions that capture how "reasonable" an epidemic is relative to other epidemics, and these scores can be turned into an extremeness measure with `mean(sim_scores > truth_score)`. [Specifically, functions like  `distance_pseudo_density_function()` can calculate a pseudo-density estimate of the true epidemic relative to simulated ones. Functions `distance_depth_function()` and `local_distance_depth_function()` provide depth scores that suggest how geometrically central an epidemic is to simulations.
 
@@ -372,7 +360,6 @@ hagelloch_raw %>% select(PN, HN, NAME, AGE, SEX, CL,  PRO, ERU, IFTO) %>%
   kable_styling(position = "center", latex_options = "hold_position")
 ```
 
-
 ## Pre-processing and EDA
 
 [[The goal of this is to show how EpiCompare can be used to transform the data for basic tablaes and plotting, especially with regards to aggregating the data for the SIR model.]]
@@ -385,7 +372,6 @@ hagelloch_sir <- hagelloch_raw %>%
                       min_max_time = c(0, 55)) %>%
   rename(time = t, S = X0, I = X1, R = X2)
 
-
 ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
   coord_tern() +
   geom_path() +
@@ -396,7 +382,6 @@ ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
 ```
 
 In Figure \ref{fig:hag-tern-raw}, we can focus on the infections over time by analyzing the vertical axis.  Specifically, we see two peaks of infection.  This is interesting because the SIR model, which is sometimes used to model the spread of measles, generally has one defined peak of infection.  We may wonder if the two peaks in the observed data may be due to random noise or if a model more complex than the simple SIR is needed to adequately capture these two peaks.
-
 
 With regards to our goal of identifying interesting subgroups with different infection behavior, previous study tells us that measles outbreaks are often associated with children within the same grade level, and we examine if this is the case here. By combining the \pkg{dplyr} function \code{facet_wrap()} with \code{geom_aggregate()} we can easily analyze this scenario,
 
@@ -410,7 +395,6 @@ hagelloch_raw %>%
   facet_wrap(~CL)
 ```
 
-
 Immediately in Fig. \ref{fig:tern-class-data}, we see that time invariant infection curve is different for the pre-school class compared to the 1st class.  In the 1st class, we see about 95\% of the class become infected and less than 10\% of them having recovered, which may be indicative of a super-spreading event.  This suspicion is further supported in that `r max(table(hagelloch_raw$IFTO[hagelloch_raw$CL == "1st class"]))` of the `r nrow(hagelloch_raw[hagelloch_raw$CL == "1st class",])` 1st class students have been reportedly infected by the same individual.  We now have some evidence that class structure may play a role in the spread of infection.  We can further analyze this claim with modeling and simulation.
 
 ## Modeling and Simulation
@@ -419,9 +403,7 @@ Immediately in Fig. \ref{fig:tern-class-data}, we see that time invariant infect
 
 We now use modeling and simulation to informally test whether the baseline SIR model is a good fit for the data and whether incorporating a network-based structure dependent on the class of the children improves model fit.
 
-
 We first try to model the Hagelloch data with a baseline stochastic SIR model, which we refer to as the 'simple SIR.' In our full vignette \shannon{(available online),} we show how to fit this simple SIR model via maximum likelihood, a common approach used to fit parameters, and simulate from the model with those best fit parameters. Our function \code{simulate_agents()} (or \code{simulate_SIR_agents()})  generates individual level data according to discrete-time multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example, the below code generates 100 simulations of an outbreak of a disease with one initial infector in a population of $n= 188$ individuals, a scenario analogous to the actual outbreak.
-
 
 ```{r}
 trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
@@ -449,7 +431,6 @@ agents <- simulate_agents(trans_mat,
                        max_T,
                        n_sims,
                        verbose = FALSE)
-
 
 ```
 ```{r}
@@ -483,7 +464,6 @@ epimodel_sir <- netsim(est1, param, init, control)
 
 ```
 
-
 The output of this network model is \code{epimodel_sir}, an object of class \code{`r class(epimodel_sir)`}, which contains a plethora of modeling information.  In the following section, we will use the capabilities of \pkg{EpiCompare} to streamline the process of comparing the two models contained in the objects \code{agg_model} (the simple SIR) and \code{epimodel_sir} (the network SIR model).
 
 
@@ -503,11 +483,9 @@ fortified_net <- fortify_aggregate(epimodel_sir,
 
 With the two modeling objects both in the same format, we can then compare the models side-by-side.  The results are shown in Figure \ref{fig:hag-simple-sir}, where a 90\% prediction region is estimated for the two models and the actual data are plotted as black dots.  For the Simple SIR model, we see that while the prediction region covers the data fairly well, the prediction region clearly misses the second peak of infection.  This indicates that the simple SIR is not a good fit to our data, even after incorporating noise.  We also see that the prediction region is very large, covering up a large area of the ternary plot.  Together, this indicates that the simple SIR model produces a biased model with a large amount of variance.  On the other hand, for the EpiModel network model, we see that the prediction region covers the data quite well and takes up less area compared to the simple SIR.  With \pkg{EpiCompare}, we see that the model using the class structure is a better fit to the outbreak than the simple SIR model.
 
-
 ```{r cache = TRUE}
 
 both_models <- bind_rows(agg_model, fortified_net)
-
 
 g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
                   mutate(Type = factor(Type, levels = c("Simple SIR", 
@@ -517,7 +495,6 @@ g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
          alpha = .5,
          conf_level = .90) 
 ```
-
 
 ```{r , fig.cap = "\\label{fig:hag-simple-sir}  Original Hagelloch SIR data (black) along with 90\\% prediction band and actual simulation paths from the Simple SIR and the EpiModel SIR models."}
 g +   geom_path(data = both_models %>% filter(t != 0) %>%
@@ -536,7 +513,6 @@ g +   geom_path(data = both_models %>% filter(t != 0) %>%
   theme(legend.position = "bottom")
      
 ```
-
 
 Although the prediction region generated by the network model covers the observed data well visually, that does not mean that individual filaments generated from the network model are good fits to the observed data.  We can further examine the model fits by incorporating these filaments into our visualization.  In Fig. \ref{fig:hag-simple-sir} we show the individual filaments generated from the two sets of models as gray lines.  Examining these, we see that the individual lines typically only have one defined peak, whereas the data certainly looks like it has two distinct peaks, a feature possibly caused by our speculated super-spreader event. 
 
@@ -576,7 +552,6 @@ compression_df <- all_together_df %>% group_by(Type, sim) %>%
   filament_compression(data_columns = c("S","I","R"), 
                        number_points = 20)
 ```
-
 
 ```{r}
 tdmat <- compression_df %>% 
@@ -625,7 +600,6 @@ epimodel_sir_true_obs_info <- tdmat %>%
     sigma = "20%") 
 ```
 
-
 ```{r hagelloch-extremeness2, echo = FALSE}
 simple_sir_info <- simple_sir_true_obs_info %>%
   select(-sim) %>%
@@ -662,15 +636,13 @@ In conclusion, \pkg{EpiCompare} allows us to fully examine this outbreak at ever
 \shannon{[[NEWER TEXT}
 
 \footnote{\ben{[Ben says: Generally I found this whole section to be pretty passive and not well motivated on why we'd actually do the analysis.]}}
-To conclude our paper, we demonstrate the capabilities of \pkg{EpiCompare} with a complete data analysis of a measles outbreak in 1861-1862 Germany.  Specifically, we demonstrate how tools in \pkg{EpiCompare} can be used in each step of the data analysis pipeline \footnote{\ben{[Ben says: based on an earlier read of this section, I might suggest something like "and streamline the analysis process" - is that a selling point you want to highlight?]} \shannon{check out new re-write.  new goal is to motivate question of hagelloch and then show how epicompare helps}} \ben{\sout{(see Figure \ref{fig:pipeline})}}\footnote{\ben{[Ben says: It's unclear why you want to highlight the figure again - could you be clearere on that? / what does it add to the conv/ why should they reference it?]}}.  Additionally, we highlight how time-invariant analysis (see Section \ref{sec:time-invariant}) can be used to enhance understanding of an outbreak\footnote{\ben{[Ben says: I'm not sure this is necessary to state. Additionally - is it really true do we highlight this?]}}.
-
+To conclude our paper, we demonstrate the capabilities of \pkg{EpiCompare} with a complete data analysis of a measles outbreak in 1861-1862 Germany.  Specifically, we demonstrate how tools in \pkg{EpiCompare} can be used in each step of the data analysis pipeline [c]\shannon{check out new re-write.  new goal is to motivate question of hagelloch and then show how epicompare helps}} (see Figure \ref{fig:pipeline})[d].  Additionally, we highlight how time-invariant analysis (see Section \ref{sec:time-invariant}) can be used to enhance understanding of an outbreak\footnote{\ben{[Ben says: I'm not sure this is necessary to state. Additionally - is it really true do we highlight this?]}}.
 
 \footnote{\ben{[Ben says:The data introduction could be another subsection. Why does it fit better here?.   Other comment: This paragraph is pretty rambly. It is unclear what you want someone to take away from it. I might suggest highlight the fact that the data is "an ideal testing group for methodology".]}} Before demonstrating \pkg{EpiCompare}, we provide some context for the measles outbreak presented here.\footnote{\ben{[Ben says: this first sentence is pretty sign-post-y yet it only relates to the next few sentences. Update so it's less sign-post-y.]}}  The data was originally organized by \cite{pfeilsticker1863}, later made visible by \cite{oesterle1992}, and made available in an \proglang{R} by \cite{surveillance2017}. This data set includes a rich collection of features including household location, class level, and allged infector ID, and  is an ideal testing ground for methodology in infectious disease epidemiology \cite{Neal2004,britton2011,groendyke2012,becker2016}\footnote{\ben{[Ben says: This citation doesn't make sense - should it be "citep"?]}}.  In this data set, there are 188 children who became infected with the measles over the course approximately 90 days.
 
 
 
 \shannon{]]}
-
 
 \shannon{[[LESS NEW TEXT}
 
@@ -700,7 +672,6 @@ cif_rash  <- hagelloch_raw %>%
   mutate(type = "Rash")
 ```
 
-
 ```{r echo = FALSE}
 cif_rash %>% 
   dplyr::select(-type) %>%
@@ -713,9 +684,7 @@ cif_rash %>%
                       )
 ```
 
-
 One possible question of interest is the duration between initial onset of prodromes and the appearance of the measles rash\footnote{\ben{[Ben says: You don't give a good definition of prodromes above, and you only use the name twice. Is this a super common term in Epi? I find it a bit taxing on the reader to remember what this is referring to.]}}.  Since \code{agents_to_aggregate()} outputs a tidy-style data frame, it is a simple task to plot the two sets of incidence curves on the same graph (Fig. \ref{fig:cifs}).
-
 
 
 
@@ -744,7 +713,6 @@ ggplot(data = plot_df,
 
 ```
 
-
 ```{r echo = FALSE, results = 'hide'}
 data(hagelloch_raw)
 with(hagelloch_raw, sum(PRO > ERU, na.rm = TRUE))
@@ -758,7 +726,6 @@ hagelloch_sir <- hagelloch_raw %>%
   agents_to_aggregate(states = c(tI, tR),
                       min_max_time = c(0, 55)) %>%
   rename(time = t, S = X0, I = X1, R = X2)
-
 
 ggplot(hagelloch_sir, aes(x = S, y = I, z = R))+
   coord_tern() +
@@ -791,7 +758,6 @@ Up to this point, we have used \pkg{EpiCompare} in the context of observed data.
 
 We first try to model the Hagelloch data with a stochastic SIR model, which we refer to as the 'simple SIR.'\footnote{\ben{[Ben says: could / should this be thought of as a "base" model?]}}  In our full vignette \shannon{(available online),} we show how to fit this simple SIR model via maximum likelihood and simulate from the model with those best fit parameters\footnote{\ben{[Ben says: should you highlight that this is a common approach?]}}.  Our function \code{simulate_agents()}\footnote{\ben{[Ben Should somethings be said about the } `simulation_SIR_agents()` \ben{function?]}} generates individual level data according to discrete time multinomial draws, which depend on the number of individuals in each state at the previous time step and a matrix of transition probabilities.  For example, the below code generates 100 simulations of an outbreak of a disease with one initial infector in a population of $n= 188$ individuals.
 
-
 ```{r}
 trans_mat <- matrix(c("X0 * (1 - X1 * par1 / N)", "X0 * X1  * par1 / N", "0",
                   "0", "X1 * (1 - par2)", "par2 * X1",
@@ -818,7 +784,6 @@ agents <- simulate_agents(trans_mat,
                        max_T,
                        n_sims,
                        verbose = FALSE)
-
 
 ```
 ```{r}
@@ -850,7 +815,6 @@ epimodel_sir <- netsim(est1, param, init, control)
 
 ```
 
-
 The output of this model is \code{epimodel_sir}, an object of class \code{`r class(epimodel_sir)`}, which contains a plethora of modeling information. \footnote{\ben{[Ben says: what's the point for this sentence. It also doesn't flow/ connect to previous and later text.]}}
 
 
@@ -873,7 +837,6 @@ We can then analyze the results of the two models side by side as time-invariant
 ```{r cache = TRUE}
 
 both_models <- bind_rows(agg_model, fortified_net)
-
 
 g <- ggplot() + geom_prediction_band(data = both_models %>% filter(t != 0) %>%
                   mutate(Type = factor(Type, levels = c("Simple SIR", 
@@ -905,7 +868,6 @@ g +   geom_path(data = both_models %>% filter(t != 0) %>%
 ```
 
 However, both models are not a good fit to the filamental path as opposed to the individual points in $(S, I, R)$-space.  This can be\footnote{\ben{[Ben says: this is a very passive way to say such things. Try being more direct.]}} captured with the set of simulations both models predict (gray lines), which all generally have a single defined peak of infection whereas the data certainly looks like it has two distinct peaks, likely caused by our assumed super-spreader event.  This observation is backed up\footnote{\ben{[Ben says: describe this?]}} by the below analysis that demonstrates that the estimated pseudo-density of the observed epidemic (relative to the simulations from either model) is much less likely then **any** of the simulations (reported in Table \ref{tab:hags-extreme})\footnote{\shannon{Ben, do we want to add another sentence or two explaining the two columns in the table?  The second one I think makes sense to me but not the first.}} In conclusion, \pkg{EpiCompare} makes it clear that, at a glance, 1) the EpiModel network model is a better fit than the Simple SIR model, and 2) the fit is only good at the \sout{geometric filamental level as opposed to the epidemic trajectory filamental level.} \shannon{individual point level as opposed to the geometric filamental level.}\footnote{\ben{[Ben says: how would this look with the time plots? Do we add value here?]}}
-
 
 ```{r echo = F}
 simple_sir <- both_models %>% filter(Type == "Simple SIR") %>%
@@ -1023,7 +985,6 @@ rbind(simple_sir_info, eimodel_sir_info)  %>%
 
 \footnote{\ben{I think this paragraph captures some good goals, but I don't think we've done some of this. For example - we don't really highlight novice/expert usage, and we don't highlight side-by-side comparisons of models.}}Overall, \pkg{EpiCompare} aids in the data analysis pipeline for both novice and expert practitioners and coders alike.  These tools encourage model and simulation exploration of many of the existing and well-supported packages that already exist, and side-by-side comparison thereof. Finally, we hope that practicioners will consider using time-invariant analysis when trying to assess and compare epidemics and epidemic models.
 
-
 # A. Appendix {-}
 
 ## A.1 Proof of Theorem \ref{thm:sir-scale} {-}
@@ -1058,3 +1019,8 @@ Note that since the equations in Eq. \eqref{eq:harko-odes} are functions of the 
 
 
 
+
+[a]Welcome to "trackdown" version of our Rmd document. Hopefully this is useful for discussions. Let's try to convert \sout{} and colors to make it cleaner.
+[b]Ben says: I'm not sure this an improvement
+[c]based on an earlier read of this section, I might suggest something like "and streamline the analysis process" - is that a selling point you want to highlight?
+[d]Ben says: It's unclear why you want to highlight the figure again - could you be clearer on that? / what does it add to the conv/ why should they reference it?
