@@ -662,8 +662,8 @@ agents_to_aggregate.data.frame <- function(agents,
     tidyr::unnest(.data$new_data) %>% dplyr::select(-.data$count) %>%
     tidyr::pivot_wider(id_cols = "t",values_fill = list("cum_count" = 0),
                        names_from = "state", values_from = "cum_count") %>%
-    dplyr::filter(.data$t >= t_min) %>%
-    dplyr::arrange(.data$t) %>%
+    dplyr::filter(as.numeric(.data$t) >= t_min) %>% 
+    dplyr::arrange(as.numeric(.data$t)) %>%
     dplyr::select(t, dplyr::one_of(paste0("X", 0:K)))
 
 
