@@ -1128,4 +1128,101 @@ test_that(paste("'convex_hull' geom_prediction_band works with different",
 
 
 
-# 
+testthat::test_that("test geom_prediction_band errors correctly/clearly", {
+  multiple_hag <- rbind(hagelloch_sir %>% mutate(sim = 1),
+                        hagelloch_sir %>% mutate(sim = 2),
+                        hagelloch_sir %>% mutate(sim = 3),
+                        hagelloch_sir %>% mutate(sim = 4),
+                        hagelloch_sir %>% mutate(sim = 5),
+                        hagelloch_sir %>% mutate(sim = 6),
+                        hagelloch_sir %>% mutate(sim = 7),
+                        hagelloch_sir %>% mutate(sim = 8),
+                        hagelloch_sir %>% mutate(sim = 9),
+                        hagelloch_sir %>% mutate(sim = 10)) %>%
+    mutate(sim = as.numeric(sim),
+           sim_char = as.character(sim))
+  
+  # error if sim_group is string
+  vis <- multiple_hag %>%
+    ggplot() +
+    geom_prediction_band(aes(x=S, y=I, z = R, 
+                             sim_group = sim_char))
+  testthat::expect_warning(testthat::expect_error(plot(vis)))
+  
+  vis <- multiple_hag %>%
+    ggplot() +
+    geom_prediction_band(aes(x=S,y=I,z=R, sim_group =sim))
+  
+  testthat::expect_warning( # this is associated with the internal error 
+    #since that all observations had same value (so none were selected)
+    testthat::expect_message( # message about using filament_compression
+      testthat::expect_error(plot(vis)))) # overall error...
+  
+  set.seed(1)
+  multiple_hag2 <- lapply(1:10, function(idx){
+    n <- nrow(hagelloch_raw)
+    b_idx <- sample(n, size = n, replace = T)
+    hagelloch_raw[b_idx,] %>% agents_to_aggregate(states = c("tI", "tR")) %>%
+      mutate(sim = idx)
+  }) %>% do.call(rbind, .) %>%
+    rename(S = "X0",
+           I = "X1",
+           R = "X2")
+  
+  if (FALSE) {
+    multiple_hag2 %>%
+      ggplot() +
+      geom_path(aes(x=S, y =I, z = R, group = sim)) +
+      coord_tern()
+  }
+  
+  suppressMessages(vis <- multiple_hag2 %>%
+                     ggplot() +
+                     geom_prediction_band(aes(x=S,y=I,z=R, sim_group = sim),
+                                          dist_params = list(dist_approach = "temporal", 
+                                                             num_steps = "auto",
+                                                             quantile_approach = "depth", 
+                                                             quantile_approach_params = list())) +
+                     coord_tern())
+  
+  # error relative to saying temporal but the lengths not being the same
+  testthat::expect_error(plot(vis))
+  
+  vis <- multiple_hag %>%
+    ggplot() +
+    geom_prediction_band(aes(x=S,y=I,z=R, sim_group =sim),
+                         dist_params = list(dist_approach = "auto", 
+                                            num_steps = "auto",
+                                            quantile_approach = "depth2", 
+                                            quantile_approach_params = list()))
+  
+  # error due to quantile_approach string
+  testthat::expect_error(plot(vis),
+                         regexp = "quantile_approach")
+  
+  vis <- multiple_hag %>%
+    ggplot() +
+    geom_prediction_band(aes(x=S,y=I,z=R, sim_group =sim),
+                         dist_params = list(dist_approach = "auto2", 
+                                            num_steps = "auto",
+                                            quantile_approach = "depth", 
+                                            quantile_approach_params = list()))
+  
+  # error due to quantile_approach string
+  testthat::expect_error(plot(vis),
+                         regexp = "dist_approach")
+  
+  
+  vis <- multiple_hag2 %>%
+    ggplot() +
+    geom_prediction_band(aes(x=S,y=I,z=R, sim_group = sim),
+                         dist_params = list(dist_approach = "auto", 
+                                            num_steps = "auto2",
+                                            quantile_approach = "depth", 
+                                            quantile_approach_params = list())) +
+    coord_tern()
+  
+  testthat::expect_error(plot(vis),
+                         regexp = "num_steps")
+  
+})

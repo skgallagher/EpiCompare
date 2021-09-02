@@ -359,17 +359,26 @@ check_dist_params <- function(dist_params, data){
   if (dist_params[["dist_approach"]] == "auto"){
     dist_params[["dist_approach"]] <- "equa_dist"
   }
-  if (dist_params[["dist_approach"]] == "equa_dist" & 
+  if (dist_params[["dist_approach"]] == "equa_dist" && #don't really need num_steps if not equa_dist 
       dist_params[["num_steps"]] == "auto"){
     dist_params[["num_steps"]] <- 20
   }
   if (dist_params[["dist_approach"]] == "equa_dist"){
     x <- dist_params[["num_steps"]]
     tol <- 2*.Machine$double.eps
-    assertthat::assert_that(min(abs(c(x %% 1, x %% 1-1))) < tol,
-                            msg = paste("'dist_params$num_steps' must
-                                          be an positive integer or string 
-                                          'auto'."))
+    
+    if (!inherits(x, "numeric")){
+      stop(paste("'dist_params$num_steps' must",
+                 "be an positive integer or string", 
+                 "'auto'."),
+           call. = FALSE)
+    }
+    if (!(min(abs(c(x %% 1, x %% 1-1))) < tol)){
+       stop(paste("'dist_params$num_steps' must",
+                                        "be an positive integer or string", 
+                                        "'auto'."),
+            call. = FALSE)
+}
   }
   
   if (dist_params[["dist_approach"]] == "temporal"){
@@ -377,9 +386,9 @@ check_dist_params <- function(dist_params, data){
       dplyr::group_by(.data$sim_group) %>%
       dplyr::summarize(total = dplyr::n())
     assertthat::assert_that(length(unique(counts$total)) == 1,
-                            msg = paste("if dist_params$dist_approach is 
-                                          'temporal', then every path must
-                                          have the same number of points."))
+                            msg = paste("if dist_params$dist_approach is",
+                                        "'temporal', then every path must",
+                                        "have the same number of points."))
   }
   return(dist_params)
 }
@@ -396,10 +405,10 @@ StatPredBandKDE <- ggplot2::ggproto("StatPredBandKDE",
   compute_layer = function(self, data, params, layout){
     # first run the regular layer calculation to infer densities
 
-    data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
+    data_inner <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
     # required piece and group to be cleaned up
-    data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
+    data_cleaned_up <- data_inner %>% dplyr::mutate(piece_old = .data$piece,
                                        group_old = .data$group,
                                        piece = as.numeric(
                                          factor(paste(.data$PANEL,
@@ -542,7 +551,7 @@ inner_compute_group_paths_to_points <- function(data, scales, params,
                         alpha = 1 - conf_level, # switch from alpha to conf_level
                         tidy_dm = tidy_dm,
                         x_names_df = data2d_list_order_df)
-  
+  #browser()
   if (quantile_approach_string == "depth"){
     dd_parameters$quantile_func <- distance_depth_function
   } else if (quantile_approach_string == "local_depth"){
@@ -590,20 +599,8 @@ delta_ball_compute_group_paths_to_points <- function(data, scales, params,
                                                                         "quantile_approach" = "depth",
                                                                         "quantile_approach_params" = 
                                                                           list())) {
-  ## Checks
-  # sim_group input
-  assertthat::assert_that(!is.factor(data$sim_group),
-                          msg = paste("'sim_group' cannot be a factor"))
-  # dealing with different quantile approaches
-  
-  quantile_approach_string <- dist_params[["quantile_approach"]]
-  
-  assertthat::assert_that(quantile_approach_string %in% c("depth", 
-                                                          "local_depth",
-                                                          "psuedo_density"),
-                          msg = paste("quantile_approach string needs to",
-                                      "be one of the options."))
-  
+
+  #browser()
   # distance parameters 
   dist_params <- check_dist_params(dist_params, data)
   
@@ -748,6 +745,44 @@ convex_hull_compute_group_paths_to_points <- function(data, scales, params,
 }
 
 
+check_input_pb <- function(data, params, layout){
+  # basic checks 
+  if (is.factor(data$sim_group)){
+    stop("'sim_group' cannot be a factor")
+  }
+  # dealing with different quantile approaches
+  
+  quantile_approach_string <- params$dist_params[["quantile_approach"]]
+  
+  if (!(quantile_approach_string %in% c("depth", 
+                                        "local_depth",
+                                        "psuedo_density"))){
+    stop(paste("\n the function `geom_prediction_band`'s parameter `dist_params`",
+               "should be a list",
+               "and the named element \'quantile_approach\' string needs to",
+               "be one of the options (\'depth\', \'local_depth\', or",
+               "\'psuedo_density\')."), call. = FALSE)
+  }
+  
+  dist_approach_string <- params$dist_params[["dist_approach"]]
+  
+  
+  if (!(dist_approach_string %in% c("auto",
+                                    "equal_dist",
+                                    "temporal"))){
+    stop(paste("\n the function `geom_prediction_band`'s parameter `dist_params`",
+               "should be a list",
+               "and the named element \'dist_approach\' string needs to",
+               "be one of the options (\'auto\', \'equal_dist\', or",
+               "\'temporal\')."), call. = FALSE)
+  }
+  
+  
+  
+  # check dist_param
+  dist_params <- params$dist_params
+  . <- check_dist_params(dist_params = dist_params, data = data)
+}
 
 #' stat object for use in delta_ball based stat_prediction_band and
 #' geom_prediction_band
@@ -755,13 +790,16 @@ convex_hull_compute_group_paths_to_points <- function(data, scales, params,
 StatPredBandDeltaBall <- ggplot2::ggproto("StatPredBandDeltaBall",
   ggplot2::Stat,
   compute_layer =
-    function(self, data, params, layout){
+    function(self, data, params, layout,...){
       # first run the regular layer calculation to infer densities
+      check_input_pb(data, params, layout)
       
-      data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
-
+      check_dist_params(params$dist_params, data)
+      #browser()
+      data_inner <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout,...)
+      #browser()
       # required piece and group to be cleaned up
-      data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
+      data_cleaned_up <- data_inner %>% dplyr::mutate(piece_old = .data$piece,
                                          group_old = .data$group,
                                          piece = as.numeric(
                                            factor(paste(.data$PANEL,
@@ -784,10 +822,10 @@ StatPredBandSpherical <- ggplot2::ggproto("StatPredBandSpherical",
    compute_layer =
      function(self, data, params, layout){
        # first run the regular layer calculation to infer densities
-       data <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
+       data_inner <- ggplot2::ggproto_parent(ggplot2::Stat,self = self)$compute_layer(data, params, layout)
 
        # required piece and group to be cleaned up
-       data_cleaned_up <- data %>% dplyr::mutate(piece_old = .data$piece,
+       data_cleaned_up <- data_inner %>% dplyr::mutate(piece_old = .data$piece,
                                           group_old = .data$group,
                                           piece = as.numeric(
                                             factor(paste(.data$PANEL,
