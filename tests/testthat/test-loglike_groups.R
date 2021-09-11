@@ -19,11 +19,11 @@ test_that("get_infector_group", {
   hag_df <- hag_df %>% rename(infector_id = IFTO,
                               agent_id = PN,
                               group = CL)
-  out <- get_infector_group(hag_df)
-  expect_equal(out$infector_group[1],
-                 out$group[45])
-  expect_equal(out$infector_group[121], 
-               out$group[11])
+  hag_df$infector_group <- get_infector_group(hag_df)
+  expect_equal(hag_df$infector_group[1],
+                 hag_df$group[45])
+  expect_equal(hag_df$infector_group[121], 
+               hag_df$group[11])
 })
 
 
@@ -299,24 +299,7 @@ test_that("loglike_agent",{
    exp_out <- 0
    
    expect_equal(out, exp_out)
-   ## ################### 
-   ## 
-   ## max T == 5
-   ## START Susceptible, pI has a 0
-   t <- 0:5
-   tI <- 2
-   tR <- 3
-   pI <- seq()
-   pR <- seq(.10, .25, length = length(t))
-   out <- loglike_agent(t,
-                        tI,
-                        tR,
-                        pI,
-                        pR)
-   exp_out <- 0
-   
-   expect_equal(out, exp_out)
-   ## ################### 
+
 })
 
 test_that("loglike_3groups_internal",{
@@ -360,16 +343,16 @@ test_that("loglike_3groups_internal",{
   
   expect_true(out > 0)
   
-  
-  opt <- optim(par = par,
-               loglike_3_groups_internal,
-               agents_df = hag_df,
-               agg_df = aggregate_hag,
-               method = "L-BFGS-B",
-               lower = .01, upper = .999)
-  
-  betas <- matrix(opt$par[-10], nrow =3, byrow = TRUE)
-  gamma <- opt$par[10]
+  # 
+  # opt <- optim(par = par,
+  #              loglike_3_groups_internal,
+  #              agents_df = hag_df,
+  #              agg_df = aggregate_hag,
+  #              method = "L-BFGS-B",
+  #              lower = .01, upper = .999)
+  # 
+  # betas <- matrix(opt$par[-10], nrow =3, byrow = TRUE)
+  # gamma <- opt$par[10]
   
   
 })

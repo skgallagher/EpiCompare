@@ -255,7 +255,7 @@ loglike_agent <- function(t,
     loglike_vec <- na.omit(log(c(1 - pR[times_with_failed_recov + 1],
                                  pR[time_before_recov + 1][1])))
     if(any(is.infinite(loglike_vec))){
-      browser()
+     # browser()
       stop("Infinite loglike, this shouldn't be possible")
     }
     good_inds <- 1:min(max_t , length(loglike_vec))
@@ -283,13 +283,13 @@ loglike_agent <- function(t,
       }
     #  browser()
       time_before_recov <- tR-1
-      ## ADD + 1 because indexing sucks as times start with 0 but R does not
+      ## ADD + 1 because indexing sucks as times starting with 0 but R vector does not
       loglike_vec <- na.omit(log(c(1 - pI[times_with_failed_infection + 1],
                            prob_before_I,
                            1 - pR[times_with_failed_recov + 1],
                            pR[time_before_recov + 1][1])))
       if(any(is.infinite(loglike_vec))) {
-        browser()
+       # browser()
         stop("Infinite loglike, this shouldn't be possible")
       }
       ## USE ONLY STUFF IN TIME RANGE

@@ -51,9 +51,9 @@ test_that("sir model with demography -- epimodel", {
     init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
     control <- control.dcm(type = "SIR", nsteps = 500, dt = 0.5)
     mod <- dcm(param, init, control)
-    out <- fortify_aggregate(mod)
-    expect_equal(nrow(out),
-                 floor(mod$control$nsteps / mod$control$dt) -1)
+  #  out <- fortify_aggregate(mod)
+    expect_warning(expect_equal(nrow( fortify_aggregate(mod)),
+                 floor(mod$control$nsteps / mod$control$dt) -1))
 })
 
 
