@@ -137,7 +137,7 @@ data("hagelloch_raw")
   gamma <- best_params$par[10]
 
 print(best_params$par, digits = 2)
-
+## beta(ij) is infection prob of group j infects group i
 ```
 
 
@@ -235,7 +235,7 @@ ggplot() +
 
 ggplot() +
     geom_path(data = agg,
-              aes(x = X0, y = X1, z = X2, group = sim),
+              aes(x = X0, y = X1, z = X2, group = factor(sim)),
             alpha = .3, col = "gray40",
             conf_level = .90) +
         coord_tern() + theme_sir() +  geom_point(data = obs_groups,
