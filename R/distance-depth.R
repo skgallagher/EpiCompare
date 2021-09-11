@@ -239,7 +239,7 @@ top_curves_to_points.list <- function(x, alpha,
   if(missing(x_names_df) | is.null(x_names_df)) {
     stop("please provide ans x_names_df.")
   }
-  
+
   quantile_df <- quantile_func(tidy_dm, ..., df_out = T) %>% as.data.frame()
   
   quantile_name <- names(quantile_df)[!(names(quantile_df) %in% names(rownames(tidy_dm)))]
@@ -255,7 +255,13 @@ top_curves_to_points.list <- function(x, alpha,
     dplyr::left_join(quantile_df, by = names(rownames(tidy_dm)))
   
   deep_idx <- combined[["tctp_index"]][combined[["tctp_indicator"]]]
-
+  if(length(deep_idx) == 0){
+    stop(paste("Error: The ranking values of simulations and/or number of",
+               "simulations compared to the desired prediction region",
+               "made it such that no simulations were selected to be used"), 
+         call. = FALSE)
+  }
+  
   updated_df <- do.call(rbind, x[deep_idx])
   
   return(updated_df)

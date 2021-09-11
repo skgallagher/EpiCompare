@@ -966,3 +966,21 @@ test_that("agents_to_aggregate + integer_time_expansion = FALSE -- more basic",{
 
 })
 
+
+testthat::test_that("check integer_time_expand works", {
+  test_df <- data.frame("tI" = c(-5,-2,-1,3,4,5,7), 
+                        "tR" = c(-5,-2,-1,3,4,5,7)+4)
+  out <- agents_to_aggregate(test_df, states = c("tI","tR"),
+                             min_max_time = c(-6, 12))
+  
+  testthat::expect_equal(out$t, (-6):12)
+  
+  static_out <- data.frame(
+    t = (-6):12,
+    X0 = c(7,6,6,6,5,4,4,4,4,3,2,1,1,0,0,0,0,0,0),
+    X1 = c(0,1,1,1,2,2,2,2,1,1,2,3,3,3,2,1,1,0,0),
+    X2 = c(0,0,0,0,0,1,1,1,2,3,3,3,3,4,5,6,6,7,7)
+  ) %>% tibble::tibble()
+  
+  testthat::expect_equal(out, static_out)
+})
